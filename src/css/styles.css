@@ -1,0 +1,106 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+input {
+  outline: none;
+}
+button {
+  outline: none;
+}
+body {
+  margin: 0px;
+  padding: 0px;
+  background-color: #fdfefe;
+  min-width: 850px;
+}
+.hide {
+  display: none;
+}
+.show {
+  display: block;
+}
+.wrapper {
+  display: grid;
+}
+.setupBody {
+  width: 50%;
+  height: auto;
+  margin: auto;
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  margin-top: 100px;
+  padding: 20px 10px 20px 10px;
+}
+.setupBody header {
+  font-family: Georgia;
+  color: #82b440;
+  font-size: 2rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e5e5;
+}
+.setupForm .radInput:nth-child(1) {
+  margin-bottom: 20px;
+}
+.setupForm .setupFooter {
+  border-top: 1px solid #e5e5e5;
+  margin-top: 20px;
+}
+.setupForm .setupFooter button {
+  color: #fff;
+  background-color: #8fc04e;
+  padding: 5px;
+  border: none;
+  width: 50px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  float: right;
+}
+.setupForm .setupFooter button:hover {
+  background-color: #74a139;
+}
+.setupForm input {
+  cursor: pointer;
+}
+.setupForm label {
+  cursor: pointer;
+}
+.setupForm .setupSubBox {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+  padding: 0px 10px 0px 10px;
+}
+.setupForm .setupSubBox .setUpLeft {
+  width: 27%;
+  height: 30px;
+  float: left;
+}
+.setupForm .setupSubBox .setUpRight {
+  float: left;
+  width: 73%;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid #e5e5e5;
+}
+.setupForm .setupSubBox .setUpRight input {
+  border: none;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  padding: 10px;
+}
+.warning {
+  width: 80%;
+  margin: auto;
+  padding: 10px;
+  text-align: center;
+  height: auto;
+  background-color: #fff3f5;
+  color: #e74c3c;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  line-height: 20px;
+}

@@ -1,0 +1,138 @@
+@primary-color: #82b440;
+@border-color: #e5e5e5;
+@header-font: Georgia;
+@sub-text: 0.9rem;
+@sub-text-color: #7f8c8d;
+
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+input {
+  outline: none;
+}
+
+button {
+  outline: none;
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  background-color: #fdfefe;
+  min-width: 850px;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+.wrapper {
+  display: grid;
+}
+
+.setupBody {
+  width: 50%;
+  height: auto;
+  margin: auto;
+  border: 1px solid @border-color;
+  border-radius: 5px;
+  margin-top: 100px;
+  padding: 20px 10px 20px 10px;
+
+  header {
+    font-family: @header-font;
+    color: @primary-color;
+    font-size: 2rem;
+    font-weight: 600;
+    border-bottom: 1px solid @border-color;
+  }
+}
+
+.setupForm {
+  .radInput:nth-child(1) {
+    margin-bottom: 20px;
+  }
+
+  .setupFooter {
+    border-top: 1px solid @border-color;
+    margin-top: 20px;
+
+    button {
+      color: #fff;
+      background-color: lighten(@primary-color, 5%);
+      padding: 5px;
+      border: none;
+      width: 50px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      float: right;
+
+      &:hover {
+        background-color: darken(@primary-color, 5%);
+      }
+    }
+  }
+
+  input {
+    cursor: pointer;
+  }
+
+  label {
+    cursor: pointer;
+  }
+
+  .setupSubBox {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+
+    padding: 0px 10px 0px 10px;
+
+    .setUpLeft {
+      width: 27%;
+      height: 30px;
+      float: left;
+    }
+
+    .setUpRight {
+      float: left;
+      width: 73%;
+      height: 30px;
+      border-radius: 5px;
+      border: 1px solid @border-color;
+
+      input {
+        border: none;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        padding: 10px;
+      }
+    }
+  }
+}
+
+.warning {
+  width: 80%;
+  margin: auto;
+  padding: 10px;
+  text-align: center;
+  height: auto;
+  background-color: lighten(pink, 10%);
+  color: #e74c3c;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  line-height: 20px;
+}
+
+.premiumBox,
+.standardBox {
+}

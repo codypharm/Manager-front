@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="../src/css/styles.css" />
+    <title>Vemon</title>
+  </head>
+  <body>
+    <main class="wrapper">
+      <section class="setupBody">
+        <header>
+          Vemon
+        </header>
+
+        <section>
+          <p>
+            Lets set up your vemon account
+          </p>
+
+          <div class="warning hide"></div>
+          <form class="setupForm hide">
+            <input type="radio" name="acctType" value="standard" class="radInput
+            class="myInputs"" id="standard" data-box="standardBox"
+            onclick="showInputs(event)" /><label for="standard">Standard</label>
+            <br />
+            <input
+              type="radio"
+              name="acctType"
+              value="Premium"
+              class="radInput"
+              id="premium"
+              data-box="premiumBox"
+              onclick="showInputs(event)"
+            /><label for="premium">Premium</label>
+            <br />
+
+            <!--- ==============================  -->
+            <!-- standard box starts -->
+            <!--- ==============================  -->
+            <div class="standardBox hide">
+              <div class="setupSubBox">
+                <div class="setUpLeft">
+                  <label for="stdCompanyName"> Company name :</label>
+                </div>
+                <div class="setUpRight">
+                  <input
+                    type="text"
+                    class="myInputs"
+                    class="myInputs"
+                    id="standardName"
+                  />
+                </div>
+                <div style="clear:both"></div>
+              </div>
+
+              <div class="setupSubBox">
+                <div class="setUpLeft">
+                  <label for="stdAddress"> Address :</label>
+                </div>
+                <div class="setUpRight">
+                  <input type="text" class="myInputs" id="stdAddress" />
+                </div>
+                <div style="clear:both"></div>
+              </div>
+            </div>
+            <!--- ==============================  -->
+            <!-- standard box ends -->
+            <!--- ==============================  -->
+
+            <!--- ==============================  -->
+            <!-- premium box starts -->
+            <!--- ==============================  -->
+            <div class="premiumBox hide">
+              <div class="setupSubBox">
+                <div class="setUpLeft">
+                  <label for="companyName"> Company name :</label>
+                </div>
+                <div class="setUpRight">
+                  <input type="text" class="myInputs" id="companyName" />
+                </div>
+                <div style="clear:both"></div>
+              </div>
+
+              <div class="setupSubBox">
+                <div class="setUpLeft">
+                  <label for="premiumAddress"> Address :</label>
+                </div>
+                <div class="setUpRight">
+                  <input type="text" class="myInputs" id="premiumAddress" />
+                </div>
+                <div style="clear:both"></div>
+              </div>
+
+              <div class="setupSubBox">
+                <div class="setUpLeft">
+                  <label for="companyId"> Company Id :</label>
+                </div>
+                <div class="setUpRight">
+                  <input type="text" class="myInputs" id="companyId" />
+                </div>
+                <div style="clear:both"></div>
+              </div>
+
+              <div class="setupSubBox">
+                <div class="setUpLeft">
+                  <label for="branchId"> Branch id :</label>
+                </div>
+                <div class="setUpRight">
+                  <input type="text" class="myInputs" id="branchId" />
+                </div>
+                <div style="clear:both"></div>
+              </div>
+            </div>
+
+            <!--- ==============================  -->
+            <!-- premium box ends -->
+            <!--- ==============================  -->
+
+            <br />
+            <input
+              type="checkbox"
+              name="terms"
+              value="terms"
+              class="radInput"
+              id="termCheck"
+            /><a href="#">Agree to our terms and condition </a>
+            <br />
+
+            <div class="setupFooter">
+              <button onclick="showManagerDetail(event)">Next</button>
+            </div>
+
+            <div style="clear: both;"></div>
+          </form>
+        </section>
+
+        <form class="managerFor"></form>
+      </section>
+    </main>
+  </body>
+
+  <script src="./renderer.js"></script>
+</html>

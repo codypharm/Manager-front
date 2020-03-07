@@ -20,7 +20,7 @@
           </p>
 
           <div class="warning hide"></div>
-          <form class="setupForm hide">
+          <form class="setupForm ">
             <input type="radio" name="acctType" value="standard" class="radInput
             class="myInputs"" id="standard" data-box="standardBox"
             onclick="showInputs(event)" /><label for="standard">Standard</label>
@@ -136,7 +136,89 @@
           </form>
         </section>
 
-        <form class="managerFor"></form>
+        <!--- ==============================  -->
+        <!-- manager's form starts -->
+        <!--- ==============================  -->
+        <form class="managerForm hide">
+          <div class="formFields">
+            <label for="fname">
+              First name:
+            </label>
+
+            <div class="managerInput">
+              <input
+                type="text"
+                placeholder="Enter manager's firstname"
+                id="fname"
+              />
+            </div>
+          </div>
+
+          <div class="formFields">
+            <label for="lname">
+              Last name:
+            </label>
+
+            <div class="managerInput">
+              <input
+                type="text"
+                placeholder="Enter manager's lastname"
+                id="lname"
+              />
+            </div>
+          </div>
+
+          <div class="formFields">
+            <label for="email">
+              Email:
+            </label>
+
+            <div class="managerInput">
+              <input
+                type="email"
+                placeholder="Enter manager's email"
+                id="email"
+              />
+            </div>
+          </div>
+
+          <div class="formFields">
+            <label for="pwd">
+              Password:
+            </label>
+
+            <div class="managerInput">
+              <input
+                type="password"
+                placeholder="Enter manager's password eg, Smith12="
+                id="pwd"
+                oninput="emptySecPassword(event)"
+              />
+            </div>
+          </div>
+
+          <div class="formFields">
+            <label for="confirmPwd">
+              Confirm password:
+            </label>
+
+            <div class="managerInput">
+              <input
+                type="text"
+                id="confirmPwd"
+                oninput="comparePassword(event)"
+              />
+            </div>
+          </div>
+
+          <div class="formFooter">
+            <button onclick="enterDetails(event)">Next</button>
+          </div>
+        </form>
+
+        <!--- ==============================  -->
+        <!-- manager's form starts -->
+        <!--- ==============================  -->
       </section>
     </main>
   </body>

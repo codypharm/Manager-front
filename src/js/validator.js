@@ -6,8 +6,27 @@ class Validator extends Database {
     super();
   }
 
-  createSetup(details) {
-    console.log(details);
+  createSetup() {
+    return this.couch.createDatabase("vemon_setup");
+  }
+
+  generateId() {
+    return this.couch.uniqid();
+  }
+
+  insertDetails(details, id) {
+    return this.couch.insert("vemon_setup", {
+      id: id,
+      package: details.package,
+      companyName: details.companyName,
+      address: details.address,
+      companyId: details.companyId,
+      branchId: details.branchId,
+      manager_firstname: details.manager_firstname,
+      manager_lastname: details.manager_lastname,
+      manager_password: details.manager_password,
+      manager_email: details.manager_email
+    });
   }
 
   isEmpty(inputs) {

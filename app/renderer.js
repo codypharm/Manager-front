@@ -1,11 +1,13 @@
 //import db file
 const Validator = require("../src/js/validator");
+const { remote } = require("electron");
 
 //instantiate classes
 const validate = new Validator();
 
 //details store
 let details = {
+  package: "",
   companyName: "",
   address: "",
   companyId: "",
@@ -76,7 +78,8 @@ const processStandard = errorDiv => {
     displayError(errorDiv, "Please you need to accept our terms");
   } else {
     //asign values to details object
-    details = { companyName, stdAddress };
+    let package = "standard";
+    details = { package, companyName, stdAddress };
     //alter form
     changeForm(setupForm, managerForm);
   }
@@ -108,7 +111,8 @@ const processPremium = errorDiv => {
   } else if (document.getElementById("termCheck").checked == false) {
     displayError(errorDiv, "Please you need to accept our terms");
   } else {
-    details = { companyName, premiumAddress, companyId, branchId };
+    let package = "premium";
+    details = { package, companyName, premiumAddress, companyId, branchId };
     //alter form
     changeForm(setupForm, managerForm);
   }
@@ -191,7 +195,29 @@ const enterDetails = e => {
     details.manager_email = email.value.trim();
 
     //create database
-    validate.createSetup(details);
+    let idGen = validate.generateId();
+    idGen.then(ids => {
+      const id = ids[0];
+      let vemonDb = validate.createSetup();
+      vemonDb.then(
+        () => {
+          let detailInsertion = validate.insertDetails(details, id);
+          detailInsertion.then(
+            ({ data, headers, status }) => {
+              remote
+                .getCurrentWindow()
+                .loadURL(`file://${__dirname}/index.html`);
+            },
+            err => {
+              console.warn(err);
+            }
+          );
+        },
+        err => {
+          console.warn(err);
+        }
+      );
+    });
   }
 };
 

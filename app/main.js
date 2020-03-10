@@ -1,6 +1,6 @@
 "use strict";
 
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const Database = require("../src/js/db");
 
 //const path = require("path");
@@ -33,7 +33,7 @@ const createWindow = () => {
     }
   });
 
-  //handle the promise
+  //handle dblist the promise
   db.listDb().then(dbs => {
     displayPage(dbs);
   });
@@ -42,6 +42,7 @@ const createWindow = () => {
     if (dbs.includes("vemon_setup")) {
       // and load the setup.html of the app.
       mainWindow.loadURL(`file://${__dirname}/index.html`);
+      //get current page
     } else {
       // and load the index.html of the app.
       mainWindow.loadURL(`file://${__dirname}/setup.html`);

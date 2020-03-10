@@ -1,9 +1,15 @@
 //import db file
 const Validator = require("../src/js/validator");
-const { remote } = require("electron");
+const Store = require("../src/js/store");
+const Database = require("../src/js/db");
+const { remote, ipcRenderer } = require("electron");
+const fetch = remote.require("electron-fetch").default;
+const fs = require("fs");
 
 //instantiate classes
 const validate = new Validator();
+const store = new Store();
+const db = new Database();
 
 //details store
 let details = {
@@ -240,3 +246,24 @@ const emptySecPassword = e => {
   secPwd.value = "";
   secPwd.style.border = "none";
 };
+
+//handle the promise
+db.listDb().then(dbs => {
+  //check if we have set up
+  if (dbs.includes("vemon_setup")) {
+    //check if user is logged in
+    let { loginStatus } = store.getLoginDetail();
+
+    if (loginStatus == false) {
+      //display login page
+      let url = "./pages/login.html";
+      fs.readFile(url, "utf-8", (err, data) => {
+        if (err) {
+          console.log(err);
+        }
+        document.getElementsByTagName("main")[0].innerHTML = data;
+      });
+    }
+  }
+});
+//ipcRenderer.send("as-message", "hello");

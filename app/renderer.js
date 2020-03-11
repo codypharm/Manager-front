@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 //import db file
 const Validator = require("../src/js/validator");
 const Store = require("../src/js/store");
@@ -6,10 +7,13 @@ const { remote, ipcRenderer } = require("electron");
 const fetch = remote.require("electron-fetch").default;
 const fs = require("fs");
 
+const Login = require("../models/loginModel");
+
 //instantiate classes
 const validate = new Validator();
 const store = new Store();
 const db = new Database();
+const login = new Login();
 
 //details store
 let details = {
@@ -200,19 +204,37 @@ const enterDetails = e => {
     details.manager_password = pwd.value.trim();
     details.manager_email = email.value.trim();
 
-    //create database
+    //user creation
+    const createUser = userId => {
+      //create vemon_setup
+      let usersDb = validate.createDb("users");
+      usersDb.then(() => {
+        let userDetailInsertion = validate.insertUser(details, userId);
+        userDetailInsertion.then(({ data, headers, status }) => {
+          remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
+        });
+      });
+    };
+
+    //create setup  database
+    //generate id
     let idGen = validate.generateId();
     idGen.then(ids => {
       const id = ids[0];
-      let vemonDb = validate.createSetup();
+      //create vemon_setup
+      let vemonDb = validate.createDb("vemon_setup");
       vemonDb.then(
         () => {
+          //insert details
           let detailInsertion = validate.insertDetails(details, id);
           detailInsertion.then(
             ({ data, headers, status }) => {
-              remote
-                .getCurrentWindow()
-                .loadURL(`file://${__dirname}/index.html`);
+              //generate id
+              let userIdGen = validate.generateId();
+              userIdGen.then(ids => {
+                const userId = ids[0];
+                createUser(userId);
+              });
             },
             err => {
               console.warn(err);
@@ -247,7 +269,7 @@ const emptySecPassword = e => {
   secPwd.style.border = "none";
 };
 
-//handle the promise
+//handle the promise from get database list
 db.listDb().then(dbs => {
   //check if we have set up
   if (dbs.includes("vemon_setup")) {
@@ -267,3 +289,71 @@ db.listDb().then(dbs => {
   }
 });
 //ipcRenderer.send("as-message", "hello");
+
+//login processing begins here
+const processLogin = e => {
+  e.preventDefault();
+
+  //get error div
+  let errorDiv = document.getElementsByClassName("warning")[0];
+  //hide error box
+  if (!errorDiv.classList.contains("hide")) {
+    errorDiv.classList.add("hide");
+  }
+
+  let btn = e.target;
+  let email = document.getElementById("email");
+  let pwd = document.getElementById("pwd");
+  let inputs = [email, pwd];
+
+  if (validate.isEmpty(inputs)) {
+    displayError(errorDiv, "Please fill all fields");
+  } else if (validate.isNotEmail(email.value.trim())) {
+    displayError(errorDiv, "Email invalid");
+  } else {
+    //get userss promise
+    let userPromise = login.getUsers();
+    userPromise.then(
+      ({ data, headers, status }) => {
+        //get users
+        let users = data.rows;
+        //filter users for a match
+        let match = login.filterUsers(users, email, pwd);
+        if (match) {
+          //check if account is blocked
+          let access = login.checkAccess(users, email);
+
+          if (access) {
+            //get user details and store
+            let userObj = login.getUserData(users, email);
+            let user = userObj.value;
+            //store them in electron store
+            if (store.setUserData(user)) {
+              //display app container
+              let url = "./pages/container.html";
+              fs.readFile(url, "utf-8", (err, data) => {
+                if (err) {
+                  console.log(err);
+                }
+                document.getElementsByTagName("main")[0].innerHTML = data;
+                document
+                  .getElementsByTagName("body")[0]
+                  .classList.remove("setupBack");
+              });
+            }
+          } else {
+            displayError(
+              errorDiv,
+              "Access denied, please contact appropriate personel"
+            );
+          }
+        } else {
+          displayError(errorDiv, "Invalid email or wrong password");
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
+};

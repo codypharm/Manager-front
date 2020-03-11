@@ -2,6 +2,7 @@
 
 const { app, BrowserWindow, ipcMain } = require("electron");
 const Database = require("../src/js/db");
+const Store = require("../src/js/store");
 
 //const path = require("path");
 // eslint-disable-next-line
@@ -10,8 +11,9 @@ require("electron-reload")(__dirname);
 //enable the use of css grid
 app.commandLine.appendSwitch("enable-experimental-web-platform-features");
 
-//instantiate database
+//instantiate classes
 const db = new Database();
+const store = new Store();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -32,6 +34,9 @@ const createWindow = () => {
       nodeIntegration: true
     }
   });
+
+  // force log user out
+  store.forceLogout();
 
   //handle dblist the promise
   db.listDb().then(dbs => {

@@ -10,6 +10,9 @@ class Store {
     };
     //instantiate store
     this.store = new store({ schema });
+  }
+
+  forceLogout() {
     this.store.set("loginDetails", {
       loginStatus: false
     });
@@ -17,6 +20,19 @@ class Store {
 
   getLoginDetail() {
     return this.store.get("loginDetails");
+  }
+  setUserData(user) {
+    this.store.set("loginDetails", {
+      loginStatus: true,
+      fname: user.fname,
+      lname: user.lname,
+      email: user.email,
+      position: user.position,
+      access: user.access,
+      docId: user.id
+    });
+
+    return true;
   }
 }
 

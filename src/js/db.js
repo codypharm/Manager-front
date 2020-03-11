@@ -8,6 +8,10 @@ class Database {
         password: "12345"
       }
     });
+
+    this.viewUrl = {
+      users: "_design/all_users/_view/users"
+    };
   }
 
   listDb() {

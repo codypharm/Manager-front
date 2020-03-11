@@ -6,8 +6,8 @@ class Validator extends Database {
     super();
   }
 
-  createSetup() {
-    return this.couch.createDatabase("vemon_setup");
+  createDb(dbName) {
+    return this.couch.createDatabase(dbName);
   }
 
   generateId() {
@@ -18,14 +18,35 @@ class Validator extends Database {
     return this.couch.insert("vemon_setup", {
       id: id,
       package: details.package,
-      companyName: details.companyName,
+      companyName:
+        details.companyName[0].toUpperCase() + details.companyName.slice(1),
       address: details.address,
       companyId: details.companyId,
       branchId: details.branchId,
-      manager_firstname: details.manager_firstname,
-      manager_lastname: details.manager_lastname,
+      manager_firstname:
+        details.manager_firstname[0].toUpperCase() +
+        details.manager_firstname.slice(1),
+      manager_lastname:
+        details.manager_lastname[0].toUpperCase() +
+        details.manager_lastname.slice(1),
       manager_password: details.manager_password,
       manager_email: details.manager_email
+    });
+  }
+
+  insertUser(details, id) {
+    return this.couch.insert("users", {
+      id: id,
+      firstname:
+        details.manager_firstname[0].toUpperCase() +
+        details.manager_firstname.slice(1),
+      lastname:
+        details.manager_lastname[0].toUpperCase() +
+        details.manager_lastname.slice(1),
+      password: details.manager_password,
+      email: details.manager_email,
+      position: "manager",
+      access: "open"
     });
   }
 
@@ -36,7 +57,7 @@ class Validator extends Database {
     });
 
     //if any input is empty
-    if (emptyInputs.length > 1) {
+    if (emptyInputs.length > 0) {
       return true;
     }
   }

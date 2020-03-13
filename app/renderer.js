@@ -285,6 +285,16 @@ db.listDb().then(dbs => {
         }
         document.getElementsByTagName("main")[0].innerHTML = data;
       });
+    } else {
+      //display app container since user is logged in
+      document.getElementsByTagName("body")[0].classList.remove("setupBack");
+      let url = "./pages/container.html";
+      fs.readFile(url, "utf-8", (err, data) => {
+        if (err) {
+          console.log(err);
+        }
+        document.getElementsByTagName("main")[0].innerHTML = data;
+      });
     }
   }
 });
@@ -356,4 +366,20 @@ const processLogin = e => {
       }
     );
   }
+};
+
+// sidebar handler
+const hideSideBar = e => {
+  let sideBar = document.getElementsByClassName("sidePane")[0];
+  let pageBase = document.getElementsByClassName("pageBase")[0];
+
+  sideBar.classList.toggle("hide");
+  pageBase.classList.toggle("reducePad");
+};
+
+//setting dropper
+const drop = e => {
+  let element = document
+    .getElementsByClassName("userDrop")[0]
+    .classList.toggle("hide");
 };

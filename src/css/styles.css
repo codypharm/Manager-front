@@ -11,8 +11,8 @@ button {
 body {
   margin: 0px;
   padding: 0px;
+  min-width: 600px;
   background-color: #fdfefe;
-  min-width: 850px;
 }
 .hide {
   display: none;
@@ -20,13 +20,11 @@ body {
 .show {
   display: block;
 }
-.wrapper {
-  display: grid;
-}
+/*
 .setupBack {
   background-image: url("../../images/background.jpg");
-  background-position: center;
-}
+  background-position: cover;
+}*/
 .setupBody {
   width: 30%;
   min-width: 400px;
@@ -164,4 +162,177 @@ body {
 .loginWrapper {
   width: 100%;
   height: 690px;
+}
+.container {
+  width: auto;
+  height: auto;
+}
+.sidePane {
+  width: 200px;
+  position: fixed;
+  height: 100%;
+  background-color: #2d3136;
+}
+.sidePane .logo {
+  width: 100%;
+  height: 60px;
+  background-color: #101010;
+}
+.pageBase {
+  float: left;
+  width: 100%;
+  height: auto;
+  padding-left: 200px;
+}
+.pageBase .pageHead {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border-top: 1px solid #cccccc;
+  -webkit-box-shadow: 0px 3px 2px 0px #cccccc;
+  -moz-box-shadow: 0px 3px 2px 0px #cccccc;
+  box-shadow: 0px 3px 2px 0px #cccccc;
+  padding: 10px 20px 0px 20px;
+}
+.pageBase .pageHead .cube {
+  float: left;
+  color: #82b440;
+  height: 40px;
+  width: 30px;
+  text-align: center;
+  line-height: 40px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.pageBase .pageHead .cube:hover {
+  border: 2px solid #82b440;
+  color: #fff;
+}
+.pageBase .headCenter {
+  height: 40px;
+  width: 330px;
+  float: left;
+  margin-left: 5%;
+  padding-top: 5px;
+}
+.pageBase .headCenter .shortLinks {
+  float: left;
+  height: 100%;
+  width: 32%;
+  max-width: 100px;
+  margin-right: 3%;
+  border: 1px solid #82b440;
+  cursor: pointer;
+}
+.pageBase .headCenter .shortLinks:hover {
+  border: 2px solid #82b440;
+}
+.pageBase .headCenter .shortLinks .centerIcon {
+  float: left;
+  padding: 5px;
+  width: 30%;
+  height: 100%;
+}
+.pageBase .headCenter .shortLinks .centerText {
+  float: left;
+  padding: 5px;
+  text-align: center;
+  color: #82b440;
+  width: 70%;
+  height: 100%;
+  padding-right: 15px;
+}
+.reducePad {
+  padding: 0px;
+}
+.thirdHead {
+  float: right;
+  width: 70px;
+  height: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.thirdHead .rightIcons {
+  float: left;
+  width: 50%;
+  height: 100%;
+  padding: 5px;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+.thirdHead .rightIcons:hover {
+  padding: 0px;
+}
+.thirdHead .rightIcons .notCounter {
+  position: absolute;
+  top: 5px;
+  background-color: red;
+  padding: 1px;
+  padding-right: 4px;
+  padding-left: 4px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 5px;
+}
+.userDrop {
+  position: absolute;
+  right: 20px;
+  top: 60px;
+  width: 150px;
+  height: 100px;
+  z-index: 10000;
+  border-radius: 5px;
+  background-color: #fff;
+}
+.userDrop::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 85%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #ffffff transparent;
+}
+.userImg {
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  margin: auto;
+  margin-top: 30px;
+}
+.userImg img {
+  border-radius: 100px;
+}
+.nameBox {
+  width: 100%;
+  height: auto;
+  line-height: 20px;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: center;
+  word-break: none;
+  padding: 0px 10px 0px 10px;
+  color: #e5e5e5;
+}
+.position {
+  width: 100%;
+  height: auto;
+  font-size: 0.9rem;
+  color: #82b440;
+  padding: 0px 10px 0px 10px;
+  text-align: center;
+}
+.menuBox {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+@media only screen and (max-width: 1024px) {
+  .pageBase .pageHead {
+    padding-right: 10px;
+  }
 }

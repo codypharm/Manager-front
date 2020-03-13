@@ -28,8 +28,8 @@ let mainWindow;
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 900,
+    minHeight: 500,
+    minWidth: 700,
     webPreferences: {
       nodeIntegration: true
     }
@@ -47,10 +47,12 @@ const createWindow = () => {
     if (dbs.includes("vemon_setup")) {
       // and load the setup.html of the app.
       mainWindow.loadURL(`file://${__dirname}/index.html`);
+      mainWindow.maximize();
       //get current page
     } else {
       // and load the index.html of the app.
       mainWindow.loadURL(`file://${__dirname}/setup.html`);
+      mainWindow.maximize();
     }
   };
 

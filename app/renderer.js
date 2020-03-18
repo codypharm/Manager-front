@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //import db file
 const Validator = require("../src/js/validator");
@@ -341,6 +342,7 @@ const processLogin = e => {
             if (store.setUserData(user)) {
               //display app container
               let url = "./pages/container.html";
+
               fs.readFile(url, "utf-8", (err, data) => {
                 if (err) {
                   console.log(err);
@@ -382,4 +384,25 @@ const drop = e => {
   let element = document
     .getElementsByClassName("userDrop")[0]
     .classList.toggle("hide");
+};
+
+//menu drop settings
+const dropSales = e => {
+  let sub = document.getElementsByClassName("subMenu1")[0];
+  sub.classList.toggle("tap");
+};
+
+const dropStock = e => {
+  let sub = document.getElementsByClassName("subMenu2")[0];
+  sub.classList.toggle("tap");
+};
+
+const dropStaff = e => {
+  let sub = document.getElementsByClassName("subMenu3")[0];
+  sub.classList.toggle("tap");
+};
+
+const dropInvoice = e => {
+  let sub = document.getElementsByClassName("subMenu4")[0];
+  sub.classList.toggle("tap");
 };

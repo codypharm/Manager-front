@@ -1,4 +1,6 @@
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -12,7 +14,7 @@ body {
   margin: 0px;
   padding: 0px;
   min-width: 600px;
-  background-color: #fdfefe;
+  background-color: #f8f9fa;
 }
 .hide {
   display: none;
@@ -41,7 +43,7 @@ body {
 }
 .setupBody header {
   font-family: Georgia;
-  color: #82b440;
+  color: #00c853;
   font-size: 2rem;
   font-weight: 600;
   border-bottom: 1px solid #e5e5e5;
@@ -55,7 +57,7 @@ body {
 }
 .setupForm .setupFooter button {
   color: #fff;
-  background-color: #82b440;
+  background-color: #00c853;
   padding: 5px;
   border: none;
   width: 50px;
@@ -65,7 +67,7 @@ body {
   float: right;
 }
 .setupForm .setupFooter button:hover {
-  background-color: #304318;
+  background-color: #002f14;
 }
 .setupForm input {
   cursor: pointer;
@@ -148,7 +150,7 @@ body {
 }
 .formFooter button {
   float: right;
-  background-color: #82b440;
+  background-color: #00c853;
   color: #fff;
   border-radius: 5px;
   border: none;
@@ -157,7 +159,7 @@ body {
   margin-right: 5px;
 }
 .formFooter button:hover {
-  background-color: #304318;
+  background-color: #002f14;
 }
 .loginWrapper {
   width: 100%;
@@ -176,7 +178,6 @@ body {
 .sidePane .logo {
   width: 100%;
   height: 60px;
-  background-color: #101010;
 }
 .pageBase {
   float: left;
@@ -187,6 +188,7 @@ body {
 .pageBase .pageHead {
   position: relative;
   width: 100%;
+  background-color: #ffffff;
   height: 60px;
   border-top: 1px solid #cccccc;
   -webkit-box-shadow: 0px 3px 2px 0px #cccccc;
@@ -196,18 +198,23 @@ body {
 }
 .pageBase .pageHead .cube {
   float: left;
-  color: #82b440;
+  color: #00c853;
   height: 40px;
-  width: 30px;
+  width: 40px;
   text-align: center;
   line-height: 40px;
   border-radius: 5px;
   cursor: pointer;
   padding-left: 5px;
   padding-right: 5px;
+  border: 1px solid #00c853;
+  padding-top: 3px;
+}
+.pageBase .pageHead .cube i {
+  font-size: 1.5rem;
 }
 .pageBase .pageHead .cube:hover {
-  border: 2px solid #82b440;
+  background-color: #00c853;
   color: #fff;
 }
 .pageBase .headCenter {
@@ -223,11 +230,9 @@ body {
   width: 32%;
   max-width: 100px;
   margin-right: 3%;
-  border: 1px solid #82b440;
+  border: 1px solid #00c853;
   cursor: pointer;
-}
-.pageBase .headCenter .shortLinks:hover {
-  border: 2px solid #82b440;
+  color: #00c853;
 }
 .pageBase .headCenter .shortLinks .centerIcon {
   float: left;
@@ -239,10 +244,13 @@ body {
   float: left;
   padding: 5px;
   text-align: center;
-  color: #82b440;
   width: 70%;
   height: 100%;
   padding-right: 15px;
+}
+.pageBase .headCenter .shortLinks:hover {
+  background-color: #00c853;
+  color: #ffffff;
 }
 .reducePad {
   padding: 0px;
@@ -322,14 +330,49 @@ body {
   width: 100%;
   height: auto;
   font-size: 0.9rem;
-  color: #82b440;
+  color: #00c853;
   padding: 0px 10px 0px 10px;
   text-align: center;
 }
 .menuBox {
   width: 100%;
   height: auto;
-  margin-top: 20px;
+  margin-top: 30px;
+  /* aim all child ul */
+  /*  get all li with tap class(js placed)*/
+}
+.menuBox a {
+  color: #e5e5e5;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  display: block;
+  padding: 10px 0 10px 20px;
+  text-decoration: none;
+}
+.menuBox a:hover {
+  background-color: #00c853;
+}
+.menuBox li {
+  list-style-type: none;
+}
+.menuBox .main-nav-ul ul {
+  display: none;
+}
+.menuBox .main-nav-ul li.tap ul {
+  display: block;
+  background-color: #191919;
+}
+.menuBox .main-nav-ul .subArrow:after {
+  content: "\f0da";
+  font-family: "Font Awesome 5 Free";
+  float: right;
+  margin-right: 20px;
+  transform: rotate(90deg);
+}
+.menuBox .main-nav-ul li.tap .subArrow:after {
+  content: "\f0d8";
+  font-family: "Font Awesome 5 Free";
 }
 @media only screen and (max-width: 1024px) {
   .pageBase .pageHead {

@@ -32,6 +32,8 @@
     "electron-reload": "^1.5.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^5.1.1",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.4.1",
     "node-couchdb": "^1.3.0"
   }
 }

@@ -207,7 +207,7 @@ body {
   position: fixed;
   height: 100%;
 
-  background-color: #2d3136;
+  background-color: #32373c;
   .logo {
     width: 100%;
     height: 60px;
@@ -396,14 +396,14 @@ body {
   a {
     color: @border-color;
     font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
+
     display: block;
     padding: 10px 0 10px 20px;
     text-decoration: none;
 
     &:hover {
-      background-color: @primary-color;
+      background-color: #191e23;
+      color: @primary-color;
     }
   }
 
@@ -420,7 +420,15 @@ body {
 
   .main-nav-ul li.tap ul {
     display: block;
-    background-color: darken(@border-color, 80%);
+    background-color: #191e23;
+  }
+
+  .main-nav-ul li.selected {
+    background-color: @primary-color;
+  }
+
+  .main-nav-ul li.selectedDropper ul {
+    display: block;
   }
 
   .main-nav-ul .subArrow:after {
@@ -435,6 +443,16 @@ body {
     content: "\f0d8";
     font-family: "Font Awesome 5 Free";
   }
+}
+
+.pagePlate {
+  width: 97%;
+  height: auto;
+  min-height: 600px;
+  background-color: #fff;
+  margin-top: 20px;
+  margin-left: 20px;
+  padding: 20px;
 }
 
 //sizes below standard desktop size

@@ -406,3 +406,233 @@ const dropInvoice = e => {
   let sub = document.getElementsByClassName("subMenu4")[0];
   sub.classList.toggle("tap");
 };
+
+//link selection starts
+
+const pageLoader = page => {
+  pagePlate = document.getElementsByClassName("pagePlate")[0];
+  let url = `./pages/${page}.html`;
+
+  fs.readFile(url, "utf-8", (err, data) => {
+    if (err) {
+      console.log(err);
+    }
+    pagePlate.innerHTML = data;
+  });
+};
+
+//selection remover
+const selectionRemover = () => {
+  //get all li
+  let allLi = document.getElementsByTagName("li");
+  for (var li of allLi) {
+    if (li.classList.contains("selected")) {
+      li.classList.remove("selected");
+    }
+
+    if (li.classList.contains("selectedDropper")) {
+      li.classList.remove("selectedDropper");
+    }
+
+    if (li.classList.contains("tap")) {
+      li.classList.remove("tap");
+    }
+  }
+};
+
+//class Adder
+const addClass = (elem, className) => {
+  elem.classList.add(className);
+};
+
+//dashboard
+const loadDashboard = e => {
+  let dashboard = document.getElementsByClassName("dashboard")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(dashboard, "selected");
+  pageLoader("dashboard");
+};
+
+//all sales
+const loadAllSales = e => {
+  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
+  let allSales = document.getElementsByClassName("allSales")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(allSales, "selected");
+  addClass(subMenu1, "selectedDropper");
+  pageLoader("allSales");
+};
+
+//cash sales
+const loadCashSales = e => {
+  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
+  let cashSales = document.getElementsByClassName("cashSales")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(cashSales, "selected");
+  addClass(subMenu1, "selectedDropper");
+  pageLoader("cashSales");
+};
+
+//credit sales
+const loadCreditSales = e => {
+  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
+  let creditSales = document.getElementsByClassName("creditSales")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(creditSales, "selected");
+  addClass(subMenu1, "selectedDropper");
+  pageLoader("creditSales");
+};
+
+//online sales
+const loadOnlineSales = e => {
+  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
+  let onlineSales = document.getElementsByClassName("onlineSales")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(onlineSales, "selected");
+  addClass(subMenu1, "selectedDropper");
+  pageLoader("onlineSales");
+};
+
+//add sales
+const loadAddSales = e => {
+  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
+  let addSales = document.getElementsByClassName("addSales")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(addSales, "selected");
+  addClass(subMenu1, "selectedDropper");
+  pageLoader("addSales");
+};
+
+//stock list
+const loadAllStock = e => {
+  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
+  let allStock = document.getElementsByClassName("allStock")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(allStock, "selected");
+  addClass(subMenu2, "selectedDropper");
+  pageLoader("allStock");
+};
+
+//expired stock
+const loadExpiredStock = e => {
+  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
+  let expiredStock = document.getElementsByClassName("expiredStock")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(expiredStock, "selected");
+  addClass(subMenu2, "selectedDropper");
+  pageLoader("expiredStock");
+};
+
+//stock exhausted
+const loadExhaustedStock = e => {
+  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
+  let exhaustedStock = document.getElementsByClassName("exhaustedStock")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(exhaustedStock, "selected");
+  addClass(subMenu2, "selectedDropper");
+  pageLoader("exhaustedStock");
+};
+
+//stock list
+const loadAddStock = e => {
+  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
+  let addStock = document.getElementsByClassName("addStock")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(addStock, "selected");
+  addClass(subMenu2, "selectedDropper");
+  pageLoader("addStock");
+};
+
+//staff list
+const loadStaffList = e => {
+  let subMenu3 = document.getElementsByClassName("subMenu3")[0];
+  let staffList = document.getElementsByClassName("staffList")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(staffList, "selected");
+  addClass(subMenu3, "selectedDropper");
+  pageLoader("staffList");
+};
+
+//attendance
+const loadAttendance = e => {
+  let subMenu3 = document.getElementsByClassName("subMenu3")[0];
+  let attendance = document.getElementsByClassName("attendance")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(attendance, "selected");
+  addClass(subMenu3, "selectedDropper");
+  pageLoader("attendance");
+};
+
+//staff add
+const loadAddStaff = e => {
+  let subMenu3 = document.getElementsByClassName("subMenu3")[0];
+  let addStaff = document.getElementsByClassName("addStaff")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(addStaff, "selected");
+  addClass(subMenu3, "selectedDropper");
+  pageLoader("staffAdd");
+};
+
+//all invoices
+const loadAllInvoices = e => {
+  let subMenu4 = document.getElementsByClassName("subMenu4")[0];
+  let allInvoices = document.getElementsByClassName("allInvoices")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(allInvoices, "selected");
+  addClass(subMenu4, "selectedDropper");
+  pageLoader("allInvoices");
+};
+
+//cleared invoices
+const loadClearedInvoices = e => {
+  let subMenu4 = document.getElementsByClassName("subMenu4")[0];
+  let clearedInvoices = document.getElementsByClassName("clearedInvoices")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(clearedInvoices, "selected");
+  addClass(subMenu4, "selectedDropper");
+  pageLoader("clearedInvoices");
+};
+
+//debt invoices
+const loadDebtInvoices = e => {
+  let subMenu4 = document.getElementsByClassName("subMenu4")[0];
+  let debtInvoices = document.getElementsByClassName("debtInvoices")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(debtInvoices, "selected");
+  addClass(subMenu4, "selectedDropper");
+  pageLoader("debtInvoices");
+};
+
+//expenses
+const loadExpenses = e => {
+  let expenses = document.getElementsByClassName("expenses")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(expenses, "selected");
+  pageLoader("expenses");
+};
+
+//expenses
+const loadReports = e => {
+  let reports = document.getElementsByClassName("reports")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(reports, "selected");
+  pageLoader("expenses");
+};

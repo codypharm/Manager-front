@@ -15,44 +15,80 @@
     </div>
     <div class="menuBox">
       <ul class="main-nav-ul">
-        <li><a href="#">Dashboard</a></li>
-        <li class="subMenu1" onclick="dropSales(event)">
+        <li class="dashboard selected" onclick="loadDashboard(event)">
+          <a href="#">Dashboard</a>
+        </li>
+        <li class="subMenu1 " onclick="dropSales(event)">
           <a href="#">Sales <span class="subArrow"></span></a>
           <ul>
-            <li><a href="#">All</a></li>
-            <li><a href="#">Cash</a></li>
-            <li><a href="#">Credit</a></li>
-            <li><a href="#">Online</a></li>
-            <li><a href="#">Add Sales</a></li>
+            <li class="allSales" onclick="loadAllSales(event)">
+              <a href="#">All</a>
+            </li>
+            <li class="cashSales" onclick="loadCashSales(event)">
+              <a href="#">Cash</a>
+            </li>
+            <li class="creditSales" onclick="loadCreditSales(event)">
+              <a href="#">Credit</a>
+            </li>
+            <li class="onlineSales" onclick="loadOnlineSales(event)">
+              <a href="#">Online</a>
+            </li>
+            <li class="addSales" onclick="loadAddSales(event)">
+              <a href="#">Add Sales</a>
+            </li>
           </ul>
         </li>
         <li class="subMenu2" onclick="dropStock(event)">
           <a href="#">Stock <span class="subArrow"></span></a>
           <ul>
-            <li><a href="#">All</a></li>
-            <li><a href="#">Expired</a></li>
-            <li><a href="#">Exhausted</a></li>
-            <li><a href="#">Add Stock</a></li>
+            <li class="allStock" onclick="loadAllStock(event)">
+              <a href="#">All</a>
+            </li>
+            <li class="expiredStock" onclick="loadExpiredStock(event)">
+              <a href="#">Expired</a>
+            </li>
+            <li class="exhaustedStock" onclick="loadExhaustedStock(event)">
+              <a href="#">Exhausted</a>
+            </li>
+            <li class="addStock" onclick="loadAddStock(event)">
+              <a href="#">Add Stock</a>
+            </li>
           </ul>
         </li>
         <li class="subMenu3" onclick="dropStaff(event)">
           <a href="#">Staff <span class="subArrow"></span></a>
           <ul>
-            <li><a href="#">Staff List</a></li>
-            <li><a href="#">Attendance</a></li>
-            <li><a href="#">Add Staff</a></li>
+            <li class="staffList" onclick="loadStaffList(event)">
+              <a href="#">Staff List</a>
+            </li>
+            <li class="attendance" onclick="loadAttendance(event)">
+              <a href="#">Attendance</a>
+            </li>
+            <li class="addStaff" onclick="loadAddStaff(event)">
+              <a href="#">Add Staff</a>
+            </li>
           </ul>
         </li>
         <li class="subMenu4" onclick="dropInvoice(event)">
           <a href="#">Invoices <span class="subArrow"></span></a>
           <ul>
-            <li><a href="#">All</a></li>
-            <li><a href="#">Cleared</a></li>
-            <li><a href="#">Debt</a></li>
+            <li class="allInvoices" onclick="loadAllInvoices(event)">
+              <a href="#">All</a>
+            </li>
+            <li class="clearedInvoices" onclick="loadClearedInvoices(event)">
+              <a href="#">Cleared</a>
+            </li>
+            <li class="debtInvoices" onclick="loadDebtInvoices(event)">
+              <a href="#">Debt</a>
+            </li>
           </ul>
         </li>
-        <li><a href="#">Expenses</a></li>
-        <li><a href="#">Reports</a></li>
+        <li class="expenses" onclick="loadExpenses(event)">
+          <a href="#">Expenses</a>
+        </li>
+        <li class="reports" onclick="loadReports(event)">
+          <a href="#">Reports</a>
+        </li>
       </ul>
     </div>
   </sidebar>
@@ -132,7 +168,15 @@
     <!--page head ends -->
     <!--==================-->
 
-    jk
+    <!--==================-->
+    <!--page plate starts -->
+    <!--==================-->
+    <div class="pagePlate">
+      hk
+    </div>
+    <!--==================-->
+    <!--page plate ends -->
+    <!--==================-->
   </section>
 
   <!--==================-->

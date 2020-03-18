@@ -173,7 +173,7 @@ body {
   width: 200px;
   position: fixed;
   height: 100%;
-  background-color: #2d3136;
+  background-color: #32373c;
 }
 .sidePane .logo {
   width: 100%;
@@ -344,14 +344,13 @@ body {
 .menuBox a {
   color: #e5e5e5;
   font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
   display: block;
   padding: 10px 0 10px 20px;
   text-decoration: none;
 }
 .menuBox a:hover {
-  background-color: #00c853;
+  background-color: #191e23;
+  color: #00c853;
 }
 .menuBox li {
   list-style-type: none;
@@ -361,7 +360,13 @@ body {
 }
 .menuBox .main-nav-ul li.tap ul {
   display: block;
-  background-color: #191919;
+  background-color: #191e23;
+}
+.menuBox .main-nav-ul li.selected {
+  background-color: #00c853;
+}
+.menuBox .main-nav-ul li.selectedDropper ul {
+  display: block;
 }
 .menuBox .main-nav-ul .subArrow:after {
   content: "\f0da";
@@ -373,6 +378,15 @@ body {
 .menuBox .main-nav-ul li.tap .subArrow:after {
   content: "\f0d8";
   font-family: "Font Awesome 5 Free";
+}
+.pagePlate {
+  width: 97%;
+  height: auto;
+  min-height: 600px;
+  background-color: #fff;
+  margin-top: 20px;
+  margin-left: 20px;
+  padding: 20px;
 }
 @media only screen and (max-width: 1024px) {
   .pageBase .pageHead {

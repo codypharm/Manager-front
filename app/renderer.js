@@ -270,6 +270,19 @@ const emptySecPassword = e => {
   secPwd.style.border = "none";
 };
 
+//page loader
+const pageLoader = page => {
+  pagePlate = document.getElementsByClassName("pagePlate")[0];
+  let url = `./pages/${page}.html`;
+
+  fs.readFile(url, "utf-8", (err, data) => {
+    if (err) {
+      console.log(err);
+    }
+    pagePlate.innerHTML = data;
+  });
+};
+
 //handle the promise from get database list
 db.listDb().then(dbs => {
   //check if we have set up
@@ -295,6 +308,9 @@ db.listDb().then(dbs => {
           console.log(err);
         }
         document.getElementsByTagName("main")[0].innerHTML = data;
+        //load dashboard
+        //load work page
+        pageLoader("staffAdd");
       });
     }
   }
@@ -348,6 +364,7 @@ const processLogin = e => {
                   console.log(err);
                 }
                 document.getElementsByTagName("main")[0].innerHTML = data;
+                pageLoader("dashboard");
                 document
                   .getElementsByTagName("body")[0]
                   .classList.remove("setupBack");
@@ -408,18 +425,6 @@ const dropInvoice = e => {
 };
 
 //link selection starts
-
-const pageLoader = page => {
-  pagePlate = document.getElementsByClassName("pagePlate")[0];
-  let url = `./pages/${page}.html`;
-
-  fs.readFile(url, "utf-8", (err, data) => {
-    if (err) {
-      console.log(err);
-    }
-    pagePlate.innerHTML = data;
-  });
-};
 
 //selection remover
 const selectionRemover = () => {
@@ -634,5 +639,5 @@ const loadReports = e => {
   //remove previous selections
   selectionRemover();
   addClass(reports, "selected");
-  pageLoader("expenses");
+  pageLoader("reports");
 };

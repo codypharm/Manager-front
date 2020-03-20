@@ -82,7 +82,7 @@ body {
       float: right;
 
       &:hover {
-        background-color: darken(@primary-color, 30%);
+        background-color: darken(@primary-color, 10%);
       }
     }
   }
@@ -206,7 +206,7 @@ body {
   width: 200px;
   position: fixed;
   height: 100%;
-
+  overflow: auto;
   background-color: #32373c;
   .logo {
     width: 100%;
@@ -453,6 +453,150 @@ body {
   margin-top: 20px;
   margin-left: 20px;
   padding: 20px;
+}
+
+.staffForm {
+  width: 80%;
+  max-width: 400px;
+  margin: auto;
+  margin-top: 30px;
+  border-radius: 5px;
+  background-color: #ffffff;
+  height: auto;
+  padding: 20px 40px 30px 40px;
+  -webkit-box-shadow: 0px 0px 5px 5px rgba(248, 248, 248, 1);
+  -moz-box-shadow: 0px 0px 5px 5px rgba(248, 248, 248, 1);
+  box-shadow: 0px 0px 5px 5px rgba(248, 248, 248, 1);
+
+  .formTitle {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 20px;
+    color: @primary-color;
+    border-bottom: 2px solid @border-color;
+  }
+
+  .formField {
+    width: 100%;
+    height: auto;
+    font-size: 0.9rem;
+    margin-top: 20px;
+    span {
+      display: block;
+      color: red;
+      width: 100%;
+    }
+    label {
+      display: block;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .formInput {
+      cursor: pointer;
+      border: 1px solid @border-color;
+      height: 40px;
+      padding-right: 10px;
+      width: 100%;
+      margin-top: 10px;
+
+      input {
+        width: 93%;
+        height: 100%;
+        border: none;
+        padding: 5px;
+        padding-left: 10px;
+      }
+    }
+
+    .fname:after {
+      content: "\f007";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .email:after {
+      content: "\f0e0";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .number:after {
+      content: "\f095";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .address:after {
+      content: "\f2bb";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .pwd:after {
+      content: "\f084";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .radioBox {
+      width: 100%;
+      height: auto;
+      margin-top: 20px;
+
+      input[type="radio"] {
+        opacity: 0;
+        position: fixed;
+        width: 0;
+      }
+
+      label {
+        display: inline-block;
+        background-color: #fff;
+        padding: 10px 20px;
+        width: 100px;
+        border-radius: 5px;
+        border: 1px solid @border-color;
+
+        &:hover {
+          background-color: @primary-color;
+          color: #fff;
+        }
+      }
+
+      input[type="radio"]:checked + label {
+        background-color: @primary-color;
+        color: #fff;
+      }
+
+      input[type="radio"]:focus label {
+        background-color: @primary-color;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.primaryBtn {
+  padding: 10px 20px 10px 20px;
+  color: #fff;
+  text-align: center;
+  margin-top: 30px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: @primary-color;
+
+  &:hover {
+    background-color: darken(@primary-color, 10%);
+  }
+}
+
+.floatRight {
+  float: right;
 }
 
 //sizes below standard desktop size

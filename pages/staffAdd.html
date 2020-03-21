@@ -1,109 +1,204 @@
-<section class="staffForm">
-  <div class="formTitle">
-    Staff Registration
-  </div>
-
-  <!-- ======== =======  -->
-  <!-- form fields    -->
-  <!--===================-->
-  <form>
-    <div class="formField">
-      <label for="fname">Firstname</label>
-      <div class="formInput fname">
-        <input type="text" placeholder="enter first name" id="fname" />
-      </div>
-      <span></span>
+<div class="staffFormBase">
+  <section class="staffForm">
+    <div class="formTitle">
+      Staff Registration
     </div>
 
-    <div class="formField">
-      <label for="lname">Lastname</label>
-      <div class="formInput fname">
-        <input type="text" placeholder="enter last name" id="lname" />
-      </div>
-      <span></span>
-    </div>
-
-    <div class="formField">
-      <label for="email">Email</label>
-      <div class="formInput email">
-        <input type="text" placeholder="enter email" id="email" />
-      </div>
-      <span></span>
-    </div>
-
-    <div class="formField">
-      <label for="number">Phone Number</label>
-      <div class="formInput number">
-        <input type="text" placeholder="enter phone number" id="number" />
-      </div>
-      <span></span>
-    </div>
-
-    <div class="formField">
-      <label for="street">Street</label>
-      <div class="formInput address">
-        <input type="text" placeholder="enter street" id="street" />
-      </div>
-      <span></span>
-    </div>
-
-    <div class="formField">
-      <label for="town">Town/City</label>
-      <div class="formInput address">
-        <input type="text" placeholder="enter town/city" id="town" />
-      </div>
-      <span></span>
-    </div>
-
-    <div class="formField">
-      <label for="state">State</label>
-      <div class="formInput address">
-        <input type="text" placeholder="enter state" id="state" list="states" />
-        <datalist id="states">
-          <option value="Anambra"></option>
-        </datalist>
-      </div>
-      <span></span>
-    </div>
-
-    <div class="formField">
-      <label>Permision Level</label>
-      <div class="radioBox">
-        <input type="radio" name="permission" id="admin" />
-        <label for="admin">Admin</label>
-
-        <input type="radio" name="permission" id="member" />
-        <label for="member">Member</label>
-      </div>
-      <span></span>
-    </div>
-
-    <div class="passwordBearer">
+    <!-- ======== =======  -->
+    <!-- form fields    -->
+    <!--===================-->
+    <form class="staffReg">
       <div class="formField">
-        <label for="pwd">Password</label>
-        <div class="formInput pwd">
-          <input type="password" placeholder="enter password" id="pwd" />
+        <label for="fname">Firstname</label>
+        <div class="formInput fname">
+          <input
+            type="text"
+            placeholder="enter first name"
+            id="fname"
+            oninput="fnameAlpha(event)"
+          />
+        </div>
+        <span id="fnameError"></span>
+      </div>
+
+      <div class="formField">
+        <label for="lname">Lastname</label>
+        <div class="formInput fname">
+          <input
+            type="text"
+            placeholder="enter last name"
+            id="lname"
+            oninput="lnameAlpha(event)"
+          />
+        </div>
+        <span id="lnameError"></span>
+      </div>
+
+      <div class="formField">
+        <label for="email">Email</label>
+        <div class="formInput email">
+          <input
+            type="text"
+            placeholder="enter email"
+            id="email"
+            oninput="validateEmail(event)"
+          />
+        </div>
+        <span id="emailError"></span>
+      </div>
+
+      <div class="formField">
+        <label for="position">Position</label>
+        <div class="formInput fname">
+          <input type="text" placeholder="enter staff position" id="position" />
         </div>
         <span></span>
       </div>
 
       <div class="formField">
-        <label for="pwd2">Confirm Password</label>
-        <div class="formInput pwd">
-          <input type="password" placeholder="confirm password" id="pwd2" />
+        <label for="number">Phone Number</label>
+        <div class="formInput number">
+          <input
+            type="text"
+            placeholder="enter phone number"
+            id="number"
+            oninput="validateNumber(event)"
+          />
         </div>
+        <span id="numberError"></span>
       </div>
 
-      <span></span>
-    </div>
+      <div class="formField">
+        <label for="street">Street</label>
+        <div class="formInput address">
+          <input type="text" placeholder="enter street" id="street" />
+        </div>
+        <span></span>
+      </div>
 
-    <button class="primaryBtn floatRight" onclick="register(event)">
-      Register
-    </button>
+      <div class="formField">
+        <label for="town">Town/City</label>
+        <div class="formInput address">
+          <input type="text" placeholder="enter town/city" id="town" />
+        </div>
+        <span></span>
+      </div>
 
-    <div style="clear: both"></div>
-  </form>
-  <!-- ======== =======  -->
-  <!-- form field end   -->
-  <!--===================-->
-</section>
+      <div class="formField">
+        <label for="state">State</label>
+        <div class="formInput address">
+          <input
+            type="text"
+            placeholder="enter state"
+            id="state"
+            list="states"
+            oninput="stateAlpha(event)"
+          />
+          <datalist id="states">
+            <option value="Abia"></option>
+            <option value="Adamawa"></option>
+            <option value="Akwa Ibom"></option>
+            <option value="Anambra"></option>
+            <option value="Bauchi"></option>
+            <option value="Bayelsa"></option>
+            <option value="Benue"></option>
+            <option value="Borno"></option>
+            <option value="Cross River"></option>
+            <option value="Delta"></option>
+            <option value="Ebonyi"></option>
+            <option value="Enugu"></option>
+            <option value="Edo"></option>
+            <option value="Ekiti"></option>
+            <option value="Gombe"></option>
+            <option value="Imo"></option>
+            <option value="Jigawa"></option>
+            <option value="Kaduna"></option>
+            <option value="Kano"></option>
+            <option value="Katsina"></option>
+            <option value="Kebbi"></option>
+            <option value="Kogi"></option>
+            <option value="Kwara"></option>
+            <option value="Lagos"></option>
+            <option value="Nasarawa"></option>
+            <option value="Niger"></option>
+            <option value="Ogun"></option>
+            <option value="Ondo"></option>
+            <option value="Osun"></option>
+            <option value="Oyo"></option>
+            <option value="Plateau"></option>
+            <option value="Rivers"></option>
+            <option value="Sokoto"></option>
+            <option value="Taraba"></option>
+            <option value="Yobe"></option>
+            <option value="Zamfara"></option>
+            <option value="FCT"></option>
+          </datalist>
+        </div>
+        <span id="stateError"></span>
+      </div>
+
+      <div class="formField">
+        <label>Permision Level</label>
+        <div class="radioBox">
+          <input
+            type="radio"
+            name="permission"
+            id="admin"
+            onclick="showPwd(event)"
+          />
+          <label for="admin">Admin</label>
+
+          <input
+            type="radio"
+            name="permission"
+            id="member"
+            onclick="hidePwd(event)"
+          />
+          <label for="member">Member</label>
+        </div>
+        <span></span>
+      </div>
+
+      <div class="passwordBearer hide">
+        <div class="formField">
+          <label for="pwd">Password</label>
+          <div class="formInput pwd">
+            <input
+              type="password"
+              placeholder="enter password"
+              id="pwd"
+              oninput="validatePwd(event)"
+            />
+          </div>
+          <span id="pwdError"></span>
+        </div>
+
+        <div class="formField">
+          <label for="pwd2">Confirm Password</label>
+          <div class="formInput pwd pwd2">
+            <input
+              type="password"
+              placeholder="confirm password"
+              id="pwd2"
+              oninput="validateSecPwd(event)"
+            />
+          </div>
+        </div>
+
+        <span id="secPwdError"></span>
+      </div>
+
+      <br />
+      <div class="warning hide"></div>
+      <div class="success hide"></div>
+      <button class="primaryBtn floatRight" onclick="register(event)">
+        Register
+      </button>
+
+      <div style="clear: both"></div>
+    </form>
+    <!-- ======== =======  -->
+    <!-- form field end   -->
+    <!--===================-->
+  </section>
+</div>

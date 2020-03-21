@@ -1,5 +1,9 @@
 //import db file
 const Database = require("./db");
+const {
+  verifyPhoneNumber,
+  COUNTRY_CODE
+} = require("nigerian-phone-number-validator");
 
 class Validator extends Database {
   constructor() {
@@ -64,7 +68,14 @@ class Validator extends Database {
 
   isNotAlpha(value) {
     //check if alphabet only
-    if (!/^[a-zA-Z]+$/.test(value)) {
+    if (!/^[a-zA-Z\s]+$/.test(value)) {
+      return true;
+    }
+  }
+
+  isNotPhoneNumber(number) {
+    //check if its valid phone number
+    if (!verifyPhoneNumber(number)) {
       return true;
     }
   }

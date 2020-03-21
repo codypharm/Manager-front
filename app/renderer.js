@@ -63,6 +63,23 @@ const displayError = (element, error) => {
   }
 };
 
+//success display
+const displaySuccess = message => {
+  let element = document.getElementsByClassName("success")[0];
+  if (element.classList.contains("hide")) {
+    element.classList.remove("hide");
+    element.textContent = message;
+  }
+};
+
+//success hide
+const hideSuccess = message => {
+  let element = document.getElementsByClassName("success")[0];
+  if (!element.classList.contains("hide")) {
+    element.classList.add("hide");
+  }
+};
+
 //define change form
 const changeForm = (formToHide, formToShow) => {
   if (!formToHide.classList.contains("hide")) {

@@ -46,6 +46,7 @@ const createWindow = () => {
   const displayPage = dbs => {
     if (dbs.includes("vemon_setup")) {
       // and load the setup.html of the app.
+
       mainWindow.loadURL(`file://${__dirname}/index.html`);
       mainWindow.maximize();
       //get current page

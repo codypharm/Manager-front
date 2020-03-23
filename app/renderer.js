@@ -473,6 +473,7 @@ const loadDashboard = e => {
   //remove previous selections
   selectionRemover();
   addClass(dashboard, "selected");
+
   pageLoader("dashboard");
 };
 

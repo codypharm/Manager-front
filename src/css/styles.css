@@ -185,6 +185,7 @@ body {
 .sidePane {
   width: 200px;
   position: fixed;
+  z-index: 10000;
   height: 100%;
   overflow: auto;
   background-color: #32373c;
@@ -199,18 +200,19 @@ body {
   height: auto;
   padding-left: 200px;
 }
-.pageBase .pageHead {
-  position: relative;
+.pageHead {
   width: 100%;
   background-color: #ffffff;
+  position: fixed;
   height: 60px;
+  z-index: 10;
   border-top: 1px solid #cccccc;
   -webkit-box-shadow: 0px 3px 2px 0px #cccccc;
   -moz-box-shadow: 0px 3px 2px 0px #cccccc;
   box-shadow: 0px 3px 2px 0px #cccccc;
-  padding: 10px 20px 0px 20px;
+  padding: 10px 20px 0px 220px;
 }
-.pageBase .pageHead .cube {
+.pageHead .cube {
   float: left;
   color: #00c853;
   height: 40px;
@@ -224,21 +226,21 @@ body {
   border: 1px solid #00c853;
   padding-top: 3px;
 }
-.pageBase .pageHead .cube i {
+.pageHead .cube i {
   font-size: 1.5rem;
 }
-.pageBase .pageHead .cube:hover {
+.pageHead .cube:hover {
   background-color: #00c853;
   color: #fff;
 }
-.pageBase .headCenter {
+.pageHead .headCenter {
   height: 40px;
   width: 330px;
   float: left;
   margin-left: 5%;
   padding-top: 5px;
 }
-.pageBase .headCenter .shortLinks {
+.pageHead .headCenter .shortLinks {
   float: left;
   height: 100%;
   width: 32%;
@@ -248,13 +250,13 @@ body {
   cursor: pointer;
   color: #00c853;
 }
-.pageBase .headCenter .shortLinks .centerIcon {
+.pageHead .headCenter .shortLinks .centerIcon {
   float: left;
   padding: 5px;
   width: 30%;
   height: 100%;
 }
-.pageBase .headCenter .shortLinks .centerText {
+.pageHead .headCenter .shortLinks .centerText {
   float: left;
   padding: 5px;
   text-align: center;
@@ -262,15 +264,19 @@ body {
   height: 100%;
   padding-right: 15px;
 }
-.pageBase .headCenter .shortLinks:hover {
+.pageHead .headCenter .shortLinks:hover {
   background-color: #00c853;
   color: #ffffff;
 }
 .reducePad {
   padding: 0px;
 }
+.reduceHeadPad {
+  padding-left: 20px;
+}
 .thirdHead {
   float: right;
+  margin-left: 10%;
   width: 70px;
   height: 100%;
   padding-top: 5px;
@@ -398,7 +404,7 @@ body {
   height: auto;
   min-height: 600px;
   background-color: #fff;
-  margin-top: 20px;
+  margin-top: 100px;
   margin-left: 20px;
   padding: 20px;
 }
@@ -541,8 +547,182 @@ body {
 .floatRight {
   float: right;
 }
+.staffListBase {
+  width: 100%;
+  height: auto;
+  /* current user */
+  /*other users */
+}
+.staffListBase .currentUser {
+  width: 30%;
+  min-width: 300px;
+  height: auto;
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  float: left;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+.staffListBase .currentUser .cardImg {
+  width: 170px;
+  height: 170px;
+  margin: auto;
+  margin-top: 20px;
+  border-radius: 100px;
+  padding: 10px 10px 10px 10px;
+}
+.staffListBase .currentUser .cardImg img {
+  border-radius: 100px;
+}
+.staffListBase .currentUser .staffName {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  margin-top: 16px;
+  font-size: 1rem;
+  word-break: none;
+}
+.staffListBase .currentUser .staffPosition {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.staffListBase .currentUser .statusBox {
+  width: 120px;
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  border-radius: 5px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.staffListBase .currentUser .activate {
+  background-color: #00c853;
+  color: #fff;
+}
+.staffListBase .currentUser .activate:hover {
+  background-color: #00953e;
+}
+.staffListBase .currentUser .block {
+  background-color: red;
+  color: #fff;
+}
+.staffListBase .currentUser .block:hover {
+  background-color: #cc0000;
+}
+.staffListBase .currentUser .staffAction {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+}
+.staffListBase .currentUser .staffAction .actions {
+  width: 50%;
+  margin: 0;
+  height: 100%;
+  line-height: 40px;
+  text-align: center;
+  background-color: #e5e5e5;
+  cursor: pointer;
+  float: left;
+}
+.staffListBase .currentUser .staffAction .actions:hover {
+  background-color: #c4c4c4;
+  color: #fff;
+}
+.staffListBase .otherUsers .listCard {
+  width: 30%;
+  min-width: 300px;
+  height: auto;
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  float: left;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+.staffListBase .otherUsers .listCard .cardImg {
+  width: 170px;
+  height: 170px;
+  margin: auto;
+  margin-top: 20px;
+  border-radius: 100px;
+  padding: 10px 10px 10px 10px;
+}
+.staffListBase .otherUsers .listCard .cardImg img {
+  border-radius: 100px;
+}
+.staffListBase .otherUsers .listCard .staffName {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  margin-top: 16px;
+  font-size: 1rem;
+  word-break: none;
+}
+.staffListBase .otherUsers .listCard .staffPosition {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.staffListBase .otherUsers .listCard .statusBox {
+  width: 120px;
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  border-radius: 5px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.staffListBase .otherUsers .listCard .activate {
+  background-color: #00c853;
+  color: #fff;
+}
+.staffListBase .otherUsers .listCard .activate:hover {
+  background-color: #00953e;
+}
+.staffListBase .otherUsers .listCard .block {
+  background-color: red;
+  color: #fff;
+}
+.staffListBase .otherUsers .listCard .block:hover {
+  background-color: #cc0000;
+}
+.staffListBase .otherUsers .listCard .staffAction {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+}
+.staffListBase .otherUsers .listCard .staffAction .actions {
+  width: 50%;
+  margin: 0;
+  height: 100%;
+  line-height: 40px;
+  text-align: center;
+  background-color: #e5e5e5;
+  cursor: pointer;
+  float: left;
+}
+.staffListBase .otherUsers .listCard .staffAction .actions:hover {
+  background-color: #c4c4c4;
+  color: #fff;
+}
 @media only screen and (max-width: 1024px) {
   .pageBase .pageHead {
     padding-right: 10px;
+  }
+  .staffListBase .currentUser {
+    float: none;
+    margin: auto;
+    margin-bottom: 20px;
+  }
+  .staffListBase .otherUsers .listCard {
+    float: none;
+    margin: auto;
+    margin-bottom: 20px;
   }
 }

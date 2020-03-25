@@ -1,10 +1,7 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 
-// validate comes from renderer process
-//require files
-const StaffModel = require("../models/staffModel");
-//instantiate classes
-const staffModel = new StaffModel();
+//validate came from files.js-
+/* eslint-disable no-unused-vars */
 
 const fnameAlpha = e => {
   let fname = e.target.value.trim();
@@ -196,7 +193,7 @@ const register = e => {
     town: town.value.trim(),
     pwd: pwd.value.trim(),
     permission: permissionLevel,
-    position: position
+    position: position.value.trim()
   };
 
   let inputs = [fname, lname, email, number, street, town, state, position];
@@ -248,4 +245,41 @@ const register = e => {
     //check if email exists
     emailExists(errorDiv, email, btn, details);
   }
+};
+
+const showList = () => {
+  let users = staffModel.getUsers();
+  users.then(({ data, headers, status }) => {
+    //show staff template
+
+    displayStaff(data.rows);
+  });
+};
+
+//view click
+const viewStaff = e => {
+  let selectedEmail = e.target.dataset.staffemail;
+  pageLoader("staffView");
+  //get users and filter with email provided
+  let users = staffModel.getUsers();
+  users.then(({ data, headers, status }) => {
+    //filter
+    staffDetails = staffModel.filterStaffDetails(data.rows, selectedEmail);
+    console.log(staffDetails);
+    console.log(selectedEmail);
+  });
+};
+
+//view click
+const editStaff = e => {
+  let selectedEmail = e.target.dataset.staffemail;
+  pageLoader("staffEdit");
+  //get users and filter with email provided
+  let users = staffModel.getUsers();
+  users.then(({ data, headers, status }) => {
+    //filter
+    staffDetails = staffModel.filterStaffDetails(data.rows, selectedEmail);
+    console.log(staffDetails);
+    console.log(selectedEmail);
+  });
 };

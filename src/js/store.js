@@ -21,6 +21,7 @@ class Store {
   getLoginDetail() {
     return this.store.get("loginDetails");
   }
+
   setUserData(user) {
     this.store.set("loginDetails", {
       loginStatus: true,
@@ -28,6 +29,7 @@ class Store {
       lname: user.lname,
       email: user.email,
       position: user.position,
+      image: user.image,
       access: user.access,
       docId: user.id
     });

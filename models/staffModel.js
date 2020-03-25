@@ -44,6 +44,17 @@ class staffModel extends Database {
       return true;
     }
   }
+
+  filterStaffDetails(users, email) {
+    let match = users.filter(user => {
+      //filter email match
+      return user.value.email == email;
+    });
+
+    if (match.length > 0) {
+      return match;
+    }
+  }
 }
 
 module.exports = staffModel;

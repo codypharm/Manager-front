@@ -27,7 +27,6 @@
     "prettier": "^1.19.1"
   },
   "dependencies": {
-    "electron-ejs": "^1.2.1",
     "electron-fetch": "^1.4.0",
     "electron-less": "^1.1.0",
     "electron-reload": "^1.5.0",

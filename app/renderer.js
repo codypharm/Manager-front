@@ -1,20 +1,5 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-//import db file
-const Validator = require("../src/js/validator");
-const Store = require("../src/js/store");
-const Database = require("../src/js/db");
-const { remote, ipcRenderer } = require("electron");
-const fetch = remote.require("electron-fetch").default;
-const fs = require("fs");
-
-const Login = require("../models/loginModel");
-
-//instantiate classes
-const validate = new Validator();
-const store = new Store();
-const db = new Database();
-const login = new Login();
 
 //details store
 let details = {
@@ -288,7 +273,7 @@ const emptySecPassword = e => {
 };
 
 //page loader
-const pageLoader = page => {
+const pageLoader = (page, fxn = false) => {
   pagePlate = document.getElementsByClassName("pagePlate")[0];
   let url = `./pages/${page}.html`;
 
@@ -297,6 +282,9 @@ const pageLoader = page => {
       console.log(err);
     }
     pagePlate.innerHTML = data;
+    if (fxn != false) {
+      fxn();
+    }
   });
 };
 
@@ -327,7 +315,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("staffAdd");
+        pageLoader("staffList", showList);
       });
     }
   }
@@ -408,9 +396,11 @@ const processLogin = e => {
 const hideSideBar = e => {
   let sideBar = document.getElementsByClassName("sidePane")[0];
   let pageBase = document.getElementsByClassName("pageBase")[0];
+  let pageHead = document.getElementsByClassName("pageHead")[0];
 
   sideBar.classList.toggle("hide");
   pageBase.classList.toggle("reducePad");
+  pageHead.classList.toggle("reduceHeadPad");
 };
 
 //setting dropper
@@ -584,7 +574,7 @@ const loadStaffList = e => {
   selectionRemover();
   addClass(staffList, "selected");
   addClass(subMenu3, "selectedDropper");
-  pageLoader("staffList");
+  pageLoader("staffList", showList);
 };
 
 //attendance

@@ -219,6 +219,7 @@ body {
 .sidePane {
   width: 200px;
   position: fixed;
+  z-index: 10000;
   height: 100%;
   overflow: auto;
   background-color: #32373c;
@@ -233,37 +234,39 @@ body {
   width: 100%;
   height: auto;
   padding-left: 200px;
-  .pageHead {
-    position: relative;
-    width: 100%;
-    background-color: #ffffff;
-    height: 60px;
-    border-top: 1px solid #cccccc;
-    -webkit-box-shadow: 0px 3px 2px 0px rgba(204, 204, 204, 1);
-    -moz-box-shadow: 0px 3px 2px 0px rgba(204, 204, 204, 1);
-    box-shadow: 0px 3px 2px 0px rgba(204, 204, 204, 1);
-    padding: 10px 20px 0px 20px;
-    .cube {
-      float: left;
-      color: @primary-color;
+}
 
-      height: 40px;
-      width: 40px;
-      text-align: center;
-      line-height: 40px;
-      border-radius: 5px;
-      cursor: pointer;
-      padding-left: 5px;
-      padding-right: 5px;
-      border: 1px solid @primary-color;
-      padding-top: 3px;
-      i {
-        font-size: 1.5rem;
-      }
-      &:hover {
-        background-color: @primary-color;
-        color: #fff;
-      }
+.pageHead {
+  width: 100%;
+  background-color: #ffffff;
+  position: fixed;
+  height: 60px;
+  z-index: 10;
+  border-top: 1px solid #cccccc;
+  -webkit-box-shadow: 0px 3px 2px 0px rgba(204, 204, 204, 1);
+  -moz-box-shadow: 0px 3px 2px 0px rgba(204, 204, 204, 1);
+  box-shadow: 0px 3px 2px 0px rgba(204, 204, 204, 1);
+  padding: 10px 20px 0px 220px;
+  .cube {
+    float: left;
+    color: @primary-color;
+
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid @primary-color;
+    padding-top: 3px;
+    i {
+      font-size: 1.5rem;
+    }
+    &:hover {
+      background-color: @primary-color;
+      color: #fff;
     }
   }
 
@@ -314,8 +317,13 @@ body {
   padding: 0px;
 }
 
+.reduceHeadPad {
+  padding-left: 20px;
+}
+
 .thirdHead {
   float: right;
+  margin-left: 10%;
   width: 70px;
   height: 100%;
   padding-top: 5px;
@@ -464,7 +472,7 @@ body {
   height: auto;
   min-height: 600px;
   background-color: #fff;
-  margin-top: 20px;
+  margin-top: 100px;
   margin-left: 20px;
   padding: 20px;
 }
@@ -631,11 +639,212 @@ body {
   float: right;
 }
 
+.staffListBase {
+  width: 100%;
+  height: auto;
+  /* current user */
+  .currentUser {
+    width: 30%;
+    min-width: 300px;
+    height: auto;
+    border: 1px solid @border-color;
+    border-radius: 5px;
+
+    float: left;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    .cardImg {
+      width: 170px;
+      height: 170px;
+      margin: auto;
+      margin-top: 20px;
+
+      border-radius: 100px;
+      padding: 10px 10px 10px 10px;
+      img {
+        border-radius: 100px;
+      }
+    }
+
+    .staffName {
+      width: 100%;
+      height: auto;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 1rem;
+      word-break: none;
+    }
+
+    .staffPosition {
+      width: 100%;
+      height: auto;
+
+      text-align: center;
+      font-size: @sub-text;
+    }
+
+    .statusBox {
+      width: 120px;
+      text-align: center;
+      margin: auto;
+      margin-top: 10px;
+      border-radius: 5px;
+      height: 30px;
+      line-height: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .activate {
+      background-color: @primary-color;
+      color: #fff;
+      &:hover {
+        background-color: darken(@primary-color, 10%);
+      }
+    }
+
+    .block {
+      background-color: red;
+      color: #fff;
+      &:hover {
+        background-color: darken(red, 10%);
+      }
+    }
+
+    .staffAction {
+      width: 100%;
+      height: 40px;
+      margin-top: 20px;
+
+      .actions {
+        width: 50%;
+        margin: 0;
+        height: 100%;
+        line-height: 40px;
+        text-align: center;
+        background-color: @border-color;
+        cursor: pointer;
+        float: left;
+        &:hover {
+          background-color: darken(@border-color, 13%);
+          color: #fff;
+        }
+      }
+    }
+  }
+  /*other users */
+  .otherUsers {
+    .listCard {
+      width: 30%;
+      min-width: 300px;
+      height: auto;
+      border: 1px solid @border-color;
+      border-radius: 5px;
+      float: left;
+      margin-left: 20px;
+      margin-bottom: 20px;
+      .cardImg {
+        width: 170px;
+        height: 170px;
+        margin: auto;
+        margin-top: 20px;
+
+        border-radius: 100px;
+        padding: 10px 10px 10px 10px;
+        img {
+          border-radius: 100px;
+        }
+      }
+
+      .staffName {
+        width: 100%;
+        height: auto;
+        text-align: center;
+        margin-top: 16px;
+        font-size: 1rem;
+        word-break: none;
+      }
+
+      .staffPosition {
+        width: 100%;
+        height: auto;
+
+        text-align: center;
+        font-size: @sub-text;
+      }
+
+      .statusBox {
+        width: 120px;
+        text-align: center;
+        margin: auto;
+        margin-top: 10px;
+        border-radius: 5px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      .activate {
+        background-color: @primary-color;
+        color: #fff;
+        &:hover {
+          background-color: darken(@primary-color, 10%);
+        }
+      }
+
+      .block {
+        background-color: red;
+        color: #fff;
+        &:hover {
+          background-color: darken(red, 10%);
+        }
+      }
+
+      .staffAction {
+        width: 100%;
+        height: 40px;
+        margin-top: 20px;
+
+        .actions {
+          width: 50%;
+          margin: 0;
+          height: 100%;
+          line-height: 40px;
+          text-align: center;
+          background-color: @border-color;
+          cursor: pointer;
+          float: left;
+          &:hover {
+            background-color: darken(@border-color, 13%);
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+
 //sizes below standard desktop size
 @media only screen and (max-width: 1024px) {
   .pageBase {
     .pageHead {
       padding-right: 10px;
+    }
+  }
+
+  .staffListBase {
+    .currentUser {
+      float: none;
+      margin: auto;
+      margin-bottom: 20px;
+    }
+    .otherUsers {
+      .listCard {
+        float: none;
+        margin: auto;
+        margin-bottom: 20px;
+      }
     }
   }
 }

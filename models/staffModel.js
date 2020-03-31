@@ -24,6 +24,7 @@ class staffModel extends Database {
       email: details.email,
       number: details.number,
       position: details.position,
+      gender: details.gender,
       address: {
         street: details.street,
         town: details.town,
@@ -35,9 +36,42 @@ class staffModel extends Database {
     });
   }
 
+  updateUser(id, rev, details) {
+    return this.couch.update("users", {
+      _id: id,
+      _rev: rev,
+      firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
+      lastname: details.lname[0].toUpperCase() + details.lname.slice(1),
+      email: details.email,
+      number: details.number,
+      position: details.position,
+      gender: details.gender,
+      address: {
+        street: details.street,
+        town: details.town,
+        state: details.state
+      },
+      //pwd: details.pwd,
+      permission: details.permission,
+      access: details.access,
+      image: details.image,
+      pwd: details.pwd
+    });
+  }
+
   filterUsers(users, email) {
     let match = users.filter(user => {
       return user.value.email == email.value.trim();
+    });
+
+    if (match.length > 0) {
+      return true;
+    }
+  }
+
+  filterNumber(users, number) {
+    let match = users.filter(user => {
+      return user.value.number == number.value.trim();
     });
 
     if (match.length > 0) {

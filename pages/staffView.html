@@ -1,1 +1,106 @@
-view
+<div class="sectionHead">
+  <div class="sectionHeadIcon">
+    <i class="fas fa-user"></i>
+  </div>
+  <div class="sectionHeader">
+    <h2>Staff Detail</h2>
+  </div>
+  <div class="sectionActions">
+    <button
+      class="editButton"
+      data-staffEmail="addEmail"
+      onclick="editStaff(event)"
+    >
+      Edit
+    </button>
+
+    <button class="editButton" onclick="loadStaffList(event)">
+      Back
+    </button>
+  </div>
+  <div style="clear:both"></div>
+</div>
+
+<div class="viewContainer">
+  <div class="viewLeft">
+    <div class="viewImage">
+      <img class="staffImage" src="" width="100%" height="100%" />
+    </div>
+    <div class="viewName"></div>
+    <div class="viewPosition"></div>
+  </div>
+  <div class="viewRight">
+    <div class="staffDetailField">
+      <div class="fieldTop ">
+        Staff Id:
+      </div>
+
+      <div class="fieldBottom id"></div>
+    </div>
+
+    <div class="staffDetailField">
+      <div class="fieldTop">
+        Gender:
+      </div>
+
+      <div class="fieldBottom gender"></div>
+    </div>
+
+    <div class="staffDetailField">
+      <div class="fieldTop">
+        Email:
+      </div>
+
+      <div class="fieldBottom email"></div>
+    </div>
+
+    <div class="staffDetailField">
+      <div class="fieldTop">
+        Phone Number:
+      </div>
+
+      <div class="fieldBottom number"></div>
+    </div>
+
+    <div class="staffDetailField">
+      <div class="fieldTop">
+        Street:
+      </div>
+
+      <div class="fieldBottom street"></div>
+    </div>
+
+    <div class="staffDetailField">
+      <div class="fieldTop">
+        Town/City:
+      </div>
+
+      <div class="fieldBottom town"></div>
+    </div>
+
+    <div class="staffDetailField">
+      <div class="fieldTop">
+        State:
+      </div>
+
+      <div class="fieldBottom state"></div>
+    </div>
+    <div class="staffDetailField">
+      <div class="fieldTop">
+        Permission:
+      </div>
+
+      <div class="fieldBottom permission"></div>
+    </div>
+
+    <div class="staffDetailField">
+      <div class="fieldTop">
+        Access:
+      </div>
+
+      <div class="fieldBottom access"></div>
+    </div>
+  </div>
+
+  <div style="clear:both"></div>
+</div>

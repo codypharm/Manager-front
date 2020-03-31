@@ -280,10 +280,11 @@ const pageLoader = (page, fxn = false) => {
   fs.readFile(url, "utf-8", (err, data) => {
     if (err) {
       console.log(err);
-    }
-    pagePlate.innerHTML = data;
-    if (fxn != false) {
-      fxn();
+    } else {
+      pagePlate.innerHTML = data;
+      if (fxn != false) {
+        fxn();
+      }
     }
   });
 };
@@ -315,7 +316,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("staffList", showList);
+        pageLoader("staffEdit");
       });
     }
   }
@@ -575,6 +576,20 @@ const loadStaffList = e => {
   addClass(staffList, "selected");
   addClass(subMenu3, "selectedDropper");
   pageLoader("staffList", showList);
+};
+
+//view click
+const viewStaff = e => {
+  let selectedEmail = e.target.dataset.staffemail;
+  //get users and filter with email provided
+
+  pageLoader("staffView", showStaffDetails(selectedEmail));
+};
+
+//view click
+const editStaff = e => {
+  let selectedEmail = e.target.dataset.staffemail;
+  pageLoader("staffEdit", showStaffValues(selectedEmail));
 };
 
 //attendance

@@ -1,1 +1,253 @@
-edit
+<div class="sectionHead">
+  <div class="sectionHeadIcon">
+    <i class="fas fa-user-cog"></i>
+  </div>
+  <div class="sectionHeader">
+    <h2>Edit Detail</h2>
+  </div>
+  <div class="sectionActions">
+    <button class="editButton" onclick="loadStaffList(event)">
+      Back
+    </button>
+  </div>
+  <div style="clear:both"></div>
+</div>
+
+<div class="viewContainer">
+  <!--left box  -->
+  <div class="viewLeft">
+    <div class="viewImage">
+      <img id="staffImage" src="" width="100%" height="100%" />
+    </div>
+    <div class="viewName"></div>
+    <div class="viewPosition"></div>
+  </div>
+
+  <!--left box ends-->
+
+  <!--right box starts-->
+  <div class="viewRight">
+    <form>
+      <div class="staffDetailField">
+        <div class="fieldTop ">
+          <label for="fname">Firstname:</label>
+        </div>
+
+        <div class="fieldBottom fname editName">
+          <input
+            type="text"
+            placeholder="enter firstname"
+            id="fname"
+            oninput="fnameAlpha(event)"
+          />
+        </div>
+        <span id="fnameError"></span>
+      </div>
+      <div class="staffDetailField">
+        <div class="fieldTop ">
+          <label for="lname">Lastname:</label>
+        </div>
+
+        <div class="fieldBottom lname editName">
+          <input
+            type="text"
+            placeholder="enter lastname"
+            id="lname"
+            oninput="lnameAlpha(event)"
+          />
+        </div>
+        <span id="lnameError"></span>
+      </div>
+
+      <div class="staffDetailField">
+        <div class="fieldTop ">
+          <label for="position">Position:</label>
+        </div>
+
+        <div class="fieldBottom pos  editName">
+          <input type="text" placeholder="enter staff position" id="position" />
+        </div>
+      </div>
+
+      <div class="staffDetailField">
+        <div class="fieldTop">
+          <label for="gender"> Gender:</label>
+        </div>
+
+        <div class="fieldBottom gender editName">
+          <select id="gender">
+            <option value="">Select</option>
+            <option value="female" id="female">Female</option>
+            <option value="male" id="male">Male</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="staffDetailField">
+        <div class="fieldTop">
+          <label for="email"> Email:</label>
+        </div>
+
+        <div class="fieldBottom email editEmail">
+          <input
+            type="text"
+            placeholder="enter email address"
+            id="email"
+            oninput="validateEmail(event)"
+          />
+        </div>
+        <span id="emailError"></span>
+      </div>
+
+      <div class="staffDetailField">
+        <div class="fieldTop">
+          <label for="number"> Phone Number:</label>
+        </div>
+
+        <div class="fieldBottom number editNumber">
+          <input
+            type="text"
+            placeholder="enter phone number"
+            id="number"
+            oninput="validateNumber(event)"
+          />
+        </div>
+        <span id="numberError"></span>
+      </div>
+
+      <div class="staffDetailField">
+        <div class="fieldTop">
+          <label for="street"> Street:</label>
+        </div>
+
+        <div class="fieldBottom street editAddress">
+          <input type="text" placeholder="enter street" id="street" />
+        </div>
+      </div>
+
+      <div class="staffDetailField">
+        <div class="fieldTop">
+          <label for="town">Town/City:</label>
+        </div>
+
+        <div class="fieldBottom town editAddress">
+          <input type="text" placeholder="enter town/city" id="town" />
+        </div>
+      </div>
+
+      <div class="staffDetailField">
+        <div class="fieldTop">
+          <label for="state">State:</label>
+        </div>
+
+        <div class="fieldBottom state editAddress">
+          <input
+            type="text"
+            placeholder="enter state"
+            id="state"
+            list="states"
+            oninput="stateAlpha(event)"
+          />
+          <datalist id="states">
+            <option value="Abia"></option>
+            <option value="Adamawa"></option>
+            <option value="Akwa Ibom"></option>
+            <option value="Anambra"></option>
+            <option value="Bauchi"></option>
+            <option value="Bayelsa"></option>
+            <option value="Benue"></option>
+            <option value="Borno"></option>
+            <option value="Cross River"></option>
+            <option value="Delta"></option>
+            <option value="Ebonyi"></option>
+            <option value="Enugu"></option>
+            <option value="Edo"></option>
+            <option value="Ekiti"></option>
+            <option value="Gombe"></option>
+            <option value="Imo"></option>
+            <option value="Jigawa"></option>
+            <option value="Kaduna"></option>
+            <option value="Kano"></option>
+            <option value="Katsina"></option>
+            <option value="Kebbi"></option>
+            <option value="Kogi"></option>
+            <option value="Kwara"></option>
+            <option value="Lagos"></option>
+            <option value="Nasarawa"></option>
+            <option value="Niger"></option>
+            <option value="Ogun"></option>
+            <option value="Ondo"></option>
+            <option value="Osun"></option>
+            <option value="Oyo"></option>
+            <option value="Plateau"></option>
+            <option value="Rivers"></option>
+            <option value="Sokoto"></option>
+            <option value="Taraba"></option>
+            <option value="Yobe"></option>
+            <option value="Zamfara"></option>
+            <option value="FCT"></option>
+          </datalist>
+        </div>
+        <span id="stateError"></span>
+      </div>
+      <div class="staffDetailField">
+        <div class="fieldTop">
+          Permission:
+        </div>
+
+        <div class="fieldBottom permission editPerm">
+          <select id="permission" onchange="handlePwdBox(event)">
+            <option value="">Select</option>
+            <option value="admin" id="admin">Admin</option>
+            <option value="member" id="memeber">Member</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="pwdCarrier hide">
+        <div class="staffDetailField">
+          <div class="fieldTop">
+            <label for="pwd">Password:</label>
+          </div>
+
+          <div class="fieldBottom pwd editPwd">
+            <input
+              type="password"
+              placeholder="enter password"
+              id="pwd"
+              oninput="validatePwd(event)"
+            />
+          </div>
+          <span id="pwdError"></span>
+        </div>
+
+        <div class="staffDetailField">
+          <div class="fieldTop">
+            <label for="pwd2">Comfirm password:</label>
+          </div>
+
+          <div class="fieldBottom pwd2 editPwd">
+            <input
+              type="password"
+              placeholder="confirm password "
+              id="pwd2"
+              oninput="validateSecPwd(event)"
+            />
+          </div>
+          <span id="secPwdError"></span>
+        </div>
+      </div>
+
+      <br />
+      <div class="warning hide"></div>
+      <div class="success hide"></div>
+      <button class="primaryBtn floatRight" onclick="saveDetails(event)">
+        save
+      </button>
+    </form>
+  </div>
+
+  <!-- right box ends -->
+
+  <div style="clear:both"></div>
+</div>

@@ -472,6 +472,14 @@ body {
   padding: 5px;
   padding-left: 10px;
 }
+.staffForm .formField .formInput select {
+  width: 93%;
+  height: 100%;
+  border: none;
+  padding: 5px;
+  padding-left: 10px;
+  cursor: pointer;
+}
 .staffForm .formField .fname:after {
   content: "\f007";
   font-family: "Font Awesome 5 Free";
@@ -494,6 +502,11 @@ body {
 }
 .staffForm .formField .pwd:after {
   content: "\f084";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.staffForm .formField .gender:after {
+  content: "\f007";
   font-family: "Font Awesome 5 Free";
   color: #ccc;
 }
@@ -711,6 +724,196 @@ body {
   background-color: #c4c4c4;
   color: #fff;
 }
+.sectionHead {
+  width: 100%;
+  height: 60px;
+  border-bottom: 2px solid #e5e5e5;
+  font-family: Georgia;
+}
+.sectionHead .sectionHeadIcon {
+  width: auto;
+  height: 100%;
+  padding: 0px 10px 0px 10px;
+  float: left;
+  font-size: 2em;
+  color: #00c853;
+}
+.sectionHead .sectionHeader {
+  float: left;
+  width: auto;
+  height: 100%;
+  padding-top: 12px;
+  padding-left: 15px;
+}
+.sectionHead .sectionActions {
+  float: right;
+  height: 100%;
+  padding-top: 12px;
+}
+.sectionHead .sectionActions button {
+  border: none;
+  cursor: pointer;
+  background-color: #ccc;
+  font-weight: 600;
+  border-radius: 5px;
+  margin-right: 15px;
+  width: auto;
+  height: 40px;
+  line-height: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.sectionHead .sectionActions button:hover {
+  background-color: #999999;
+  color: #fff;
+}
+.viewContainer {
+  width: 100%;
+  height: auto;
+  margin-top: 40px;
+  padding: 20px;
+}
+.viewContainer .viewLeft {
+  width: 40%;
+  float: left;
+  margin-bottom: 20px;
+}
+.viewContainer .viewLeft .viewImage {
+  width: 300px;
+  height: 300px;
+  border-radius: 300px;
+  margin: auto;
+}
+.viewContainer .viewLeft .viewImage img {
+  border-radius: 300px;
+}
+.viewContainer .viewLeft .viewName {
+  width: 100%;
+  padding: 0px 20px 0px 20px;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.3rem;
+}
+.viewContainer .viewLeft .viewPosition {
+  width: 100%;
+  padding: 0px 20px 0px 20px;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+.viewContainer .viewRight {
+  width: 60%;
+  padding-left: 30px;
+  float: left;
+  margin-bottom: 20px;
+  border-left: 2px solid #e5e5e5;
+}
+.viewContainer .viewRight .staffDetailField {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+.viewContainer .viewRight .staffDetailField span {
+  color: red;
+  font-size: 0.9rem;
+}
+.viewContainer .viewRight .staffDetailField .fieldTop {
+  width: 100%;
+  height: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.viewContainer .viewRight .staffDetailField .fieldTop label {
+  cursor: pointer;
+}
+.viewContainer .viewRight .staffDetailField .fieldBottom {
+  width: 100%;
+  height: auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  line-height: 20px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.viewContainer .viewRight .staffDetailField .fieldBottom input {
+  width: 93%;
+  height: 40px;
+  padding: 5px 0px 5px 5px;
+  margin-bottom: -10px;
+  border: none;
+  cursor: pointer;
+}
+.viewContainer .viewRight .staffDetailField .fieldBottom select {
+  width: 93%;
+  height: 40px;
+  padding: 5px 0px 5px 5px;
+  margin-bottom: -10px;
+  border: none;
+  cursor: pointer;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField span {
+  color: red;
+  font-size: 0.9rem;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField .fieldTop {
+  width: 100%;
+  height: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField .fieldTop label {
+  cursor: pointer;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField .fieldBottom {
+  width: 100%;
+  height: auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  line-height: 20px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField .fieldBottom input {
+  width: 93%;
+  height: 40px;
+  padding: 5px 0px 5px 5px;
+  margin-bottom: -10px;
+  border: none;
+  cursor: pointer;
+}
+.editName:after {
+  content: "\f4ff";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.editEmail:after {
+  content: "\f0e0";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.editNumber:after {
+  content: "\f095";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.editAddress:after {
+  content: "\f2bb";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.editPwd:after {
+  content: "\f084";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.editPerm:after {
+  content: "\f084";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
 @media only screen and (max-width: 1024px) {
   .pageBase .pageHead {
     padding-right: 10px;
@@ -724,5 +927,14 @@ body {
     float: none;
     margin: auto;
     margin-bottom: 20px;
+  }
+  .viewContainer .viewLeft {
+    width: 100%;
+    float: none;
+  }
+  .viewContainer .viewRight {
+    width: 100%;
+    float: none;
+    border: none;
   }
 }

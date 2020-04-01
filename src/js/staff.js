@@ -444,6 +444,7 @@ const showList = () => {
 
 //append details to view
 const appendDetails = details => {
+  document.getElementById("editBtn").dataset.staffemail = details.value.email;
   document.getElementsByClassName("viewName")[0].textContent =
     details.value.fname + " " + details.value.lname;
   document.getElementsByClassName("viewPosition")[0].textContent =
@@ -471,6 +472,7 @@ const appendDetails = details => {
 //append values to form
 const appendValues = details => {
   oldDetails = details;
+
   document.getElementById("fname").value = details.value.fname;
   document.getElementById("lname").value = details.value.lname;
   document.getElementById("email").value = details.value.email;

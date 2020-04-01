@@ -887,6 +887,33 @@ body {
   }
 }
 
+.searchContainer {
+  width: 450px;
+  height: 40px;
+
+  float: right;
+
+  .search {
+    width: 100%;
+    height: 100%;
+    border: 2px solid @border-color;
+    border-radius: 20px;
+    float: left;
+    input {
+      width: 90%;
+      height: 100%;
+      border: none;
+      border-radius: 20px;
+      padding-left: 20px;
+    }
+  }
+  .search:after {
+    content: "\f002";
+    font-family: "Font Awesome 5 Free";
+    color: @primary-color;
+  }
+}
+
 .viewContainer {
   width: 100%;
   height: auto;
@@ -1088,6 +1115,18 @@ body {
       width: 100%;
       float: none;
       border: none;
+    }
+  }
+
+  .searchContainer {
+    width: 200px;
+    height: 40px;
+
+    float: right;
+    .search {
+      input {
+        width: 85%;
+      }
     }
   }
 }

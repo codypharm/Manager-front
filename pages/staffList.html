@@ -39,9 +39,23 @@
     <div class="statusBox activate">Online</div>
 
     <div class="staffAction">
-      <div class="actions">View</div>
+      <div
+        class="actions"
+        id="currentStaffView"
+        data-staffEmail=""
+        onclick="viewStaff(event)"
+      >
+        View
+      </div>
 
-      <div class="actions">Edit</div>
+      <div
+        class="actions"
+        id="currentStaffEdit"
+        data-staffEmail=""
+        onclick="editStaff(event)"
+      >
+        Edit
+      </div>
     </div>
   </div>
 

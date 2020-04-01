@@ -236,9 +236,9 @@ body {
 .pageHead .headCenter {
   height: 40px;
   width: 330px;
+  margin-left: 3%;
   float: left;
-  margin-left: 5%;
-  padding-top: 5px;
+  padding-top: 3px;
 }
 .pageHead .headCenter .shortLinks {
   float: left;
@@ -276,7 +276,6 @@ body {
 }
 .thirdHead {
   float: right;
-  margin-left: 10%;
   width: 70px;
   height: 100%;
   padding-top: 5px;
@@ -939,8 +938,12 @@ body {
   color: #ccc;
 }
 @media only screen and (max-width: 1024px) {
-  .pageBase .pageHead {
-    padding-right: 10px;
+  .pageHead {
+    padding-right: 5px;
+    padding-left: 205px;
+  }
+  .headCenter {
+    margin-left: 10px;
   }
   .staffListBase .currentUser {
     float: none;

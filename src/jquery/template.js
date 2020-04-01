@@ -16,8 +16,11 @@ const displayStaff = data => {
   } = store.getLoginDetail();
 
   //display current user details first
-  $(".currentStaffName").append(Mustache.render(fname + " " + lname));
-  $(".currentStaffPosition").append(Mustache.render(position));
+  $(".currentStaffName").append(fname + " " + lname);
+  $(".currentStaffPosition").append(position);
+  $("#currentStaffView").attr("data-staffEmail", email);
+  $("#currentStaffEdit").attr("data-staffEmail", email);
+
   $.each(data, function(index, item) {
     let template =
       "" +

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //import db file
 const Database = require("../src/js/db");
@@ -17,6 +18,7 @@ class staffModel extends Database {
   }
 
   insertDetails(details, id) {
+    let date = new Date();
     return this.couch.insert("users", {
       id: id,
       firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
@@ -25,6 +27,7 @@ class staffModel extends Database {
       number: details.number,
       position: details.position,
       gender: details.gender,
+      image: "../images/profile.png",
       address: {
         street: details.street,
         town: details.town,
@@ -32,11 +35,16 @@ class staffModel extends Database {
       },
       pwd: details.pwd,
       permission: details.permission,
-      access: "open"
+      access: "open",
+      regDay: date.getDate(),
+      regMonth: date.getMonth(),
+      regYear: date.getFullYear()
     });
   }
 
   updateUser(id, rev, details) {
+    let date = new Date();
+    let loginDetail = store.getLoginDetail();
     return this.couch.update("users", {
       _id: id,
       _rev: rev,
@@ -55,7 +63,45 @@ class staffModel extends Database {
       permission: details.permission,
       access: details.access,
       image: details.image,
-      pwd: details.pwd
+      pwd: details.pwd,
+      regDay: details.regDay,
+      regMonth: details.regMonth,
+      regYear: details.regYear,
+      updateDay: date.getDate(),
+      updateMonth: date.getMonth(),
+      updateYear: date.getFullYear(),
+      editedBy: loginDetail.fname + " " + loginDetail.lname,
+      editorEmail: loginDetail.email
+    });
+  }
+  //update status
+  updateStatus(id, rev, details) {
+    return this.couch.update("users", {
+      _id: id,
+      _rev: rev,
+      firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
+      lastname: details.lname[0].toUpperCase() + details.lname.slice(1),
+      email: details.email,
+      number: details.number,
+      position: details.position,
+      gender: details.gender,
+      address: {
+        street: details.street,
+        town: details.town,
+        state: details.state
+      },
+      permission: details.permission,
+      access: details.access,
+      image: details.image,
+      pwd: details.pwd,
+      regDay: details.regDay,
+      regMonth: details.regMonth,
+      regYear: details.regYear,
+      updateDay: details.updateDay,
+      updateMonth: details.updateMonth,
+      updateYear: details.updateYear,
+      editedBy: details.editedBy,
+      editorEmail: details.editorEmail
     });
   }
 
@@ -83,6 +129,17 @@ class staffModel extends Database {
     let match = users.filter(user => {
       //filter email match
       return user.value.email == email;
+    });
+
+    if (match.length > 0) {
+      return match;
+    }
+  }
+
+  filterOutUser(users, email) {
+    let match = users.filter(user => {
+      //filter email match
+      return user.value.email !== email;
     });
 
     if (match.length > 0) {

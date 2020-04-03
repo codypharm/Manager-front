@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "electron-fetch": "^1.4.0",
+    "electron-handlebars": "^2.0.0",
     "electron-less": "^1.1.0",
     "electron-reload": "^1.5.0",
     "electron-squirrel-startup": "^1.0.0",

@@ -2,6 +2,7 @@
 const Database = require("./db");
 const {
   verifyPhoneNumber,
+  // eslint-disable-next-line no-unused-vars
   COUNTRY_CODE
 } = require("nigerian-phone-number-validator");
 
@@ -39,8 +40,10 @@ class Validator extends Database {
   }
 
   insertUser(details, id) {
+    let date = new Date();
     return this.couch.insert("users", {
       id: id,
+      image: "../images/profile.png",
       firstname:
         details.manager_firstname[0].toUpperCase() +
         details.manager_firstname.slice(1),
@@ -50,7 +53,10 @@ class Validator extends Database {
       password: details.manager_password,
       email: details.manager_email,
       position: "manager",
-      access: "open"
+      access: "open",
+      regDay: date.getDate(),
+      regMonth: date.getMonth(),
+      regYear: date.getFullYear()
     });
   }
 

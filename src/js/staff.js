@@ -189,6 +189,7 @@ const emailExists = (errorDiv, email, btn, details) => {
 const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
   let id = oldDetails.id;
   let rev = oldDetails.value.rev;
+
   let update = staffModel.updateUser(id, rev, newDetails);
   update.then(
     ({ data, headers, status }) => {
@@ -205,7 +206,7 @@ const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
     },
     err => {
       // eslint-disable-next-line no-undef
-      displayError(errorDiv, "oops!! an error occured");
+      displayError(errorDiv, err);
       resetSaveBtn(btn);
     }
   );
@@ -252,7 +253,10 @@ const saveDetails = e => {
     position: position.value.trim(),
     access: oldDetails.value.access,
     image: image,
-    pwd: pwd.value.trim()
+    pwd: pwd.value.trim(),
+    regDay: oldDetails.value.regDay,
+    regMonth: oldDetails.value.regMonth,
+    regYear: oldDetails.value.regYear
   };
 
   let inputs = [
@@ -467,6 +471,20 @@ const appendDetails = details => {
     details.value.permission;
   document.getElementsByClassName("access")[0].textContent =
     details.value.access;
+  document.getElementsByClassName("regDate")[0].textContent =
+    details.value.regDay +
+    " / " +
+    details.value.regMonth +
+    " / " +
+    details.value.regYear;
+  if (details.value.updateDay != undefined) {
+    document.getElementsByClassName("updateDate")[0].textContent =
+      details.value.updateDay +
+      " / " +
+      details.value.updateMonth +
+      " / " +
+      details.value.updateYear;
+  }
 };
 
 //append values to form
@@ -524,4 +542,74 @@ const showStaffValues = selectedEmail => {
     [staffDetails] = staffModel.filterStaffDetails(data.rows, selectedEmail);
     appendValues(staffDetails);
   });
+};
+
+//update status
+const updateStatus = (e, staffEmail) => {
+  //confirm command
+  let confirmation = "Click OK to continue";
+  if (confirm(confirmation)) {
+    //add waiting
+    e.target.textContent = "Please wait...";
+    //get command
+    let command = e.target.dataset.acctStatus;
+    //declare new access
+    let access = command === "block" ? "closed" : "open";
+
+    let newClass = command === "block" ? "activate" : "block";
+
+    //get users
+    let users = staffModel.getUsers();
+    users.then(({ data, headers, status }) => {
+      let [selectedUser] = staffModel.filterStaffDetails(data.rows, staffEmail);
+      let id = selectedUser.id;
+      let rev = selectedUser.value.rev;
+
+      //create details of user
+      let details = {
+        fname: selectedUser.value.fname,
+        lname: selectedUser.value.lname,
+        email: selectedUser.value.email,
+        number: selectedUser.value.number,
+        position: selectedUser.value.position,
+        gender: selectedUser.value.gender,
+        street: selectedUser.value.address.street,
+        town: selectedUser.value.address.town,
+        state: selectedUser.value.address.state,
+        permission: selectedUser.value.permission,
+        access: access,
+        image: selectedUser.value.image,
+        pwd: selectedUser.value.pwd,
+        regDay: selectedUser.value.regDay,
+        regMonth: selectedUser.value.regMonth,
+        regYear: selectedUser.value.regYear,
+        updateDay: selectedUser.value.updateDay,
+        updateMonth: selectedUser.value.updateMonth,
+        updateYear: selectedUser.value.updateYear,
+        editedBy: selectedUser.value.editedBy,
+        editorEmail: selectedUser.value.editorEmail
+      };
+      //update details
+      let updator = staffModel.updateStatus(id, rev, details);
+      updator.then(({ data, header, status }) => {
+        if (status == 201) {
+          let target = e.target;
+          //remove both block and activate classes
+          if (target.classList.contains("block")) {
+            target.classList.remove("block");
+          } else if (target.classList.contains("activate")) {
+            target.classList.remove("activate");
+          }
+          //add new class
+          target.classList.add(newClass);
+          //add new dataset
+          target.dataset.acctStatus = newClass;
+          //add new text
+          target.innerHTML = newClass;
+        } else {
+          console.log("error");
+        }
+      });
+    });
+  }
 };

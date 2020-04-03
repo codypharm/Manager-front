@@ -9,6 +9,7 @@ const Store = require("../src/js/store");
 const Database = require("../src/js/db");
 const { remote, ipcRenderer } = require("electron");
 const fetch = remote.require("electron-fetch").default;
+const handleBar = remote.require("electron-handlebars");
 const fs = require("fs");
 
 const Login = require("../models/loginModel");

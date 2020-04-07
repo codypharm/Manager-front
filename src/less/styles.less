@@ -5,6 +5,7 @@
 @sub-text-color: #7f8c8d;
 @button-back: #ccc;
 @text-font: 1rem;
+@myBlue: #00689f;
 * {
   margin: 0;
   padding: 0;
@@ -212,7 +213,7 @@ body {
   height: 690px;
 }
 
-.container {
+.mycontainer {
   width: auto;
   height: auto;
 }
@@ -844,7 +845,7 @@ body {
   width: 100%;
   height: 60px;
   border-bottom: 2px solid @border-color;
-
+  margin-bottom: 40px;
   font-family: @header-font;
   .sectionHeadIcon {
     width: auto;
@@ -858,7 +859,7 @@ body {
     float: left;
     width: auto;
     height: 100%;
-    padding-top: 12px;
+    padding-top: 10px;
     padding-left: 15px;
   }
 
@@ -882,6 +883,33 @@ body {
       &:hover {
         background-color: darken(@border-color, 30%);
         color: #fff;
+      }
+    }
+
+    .cancelBtn {
+      background-color: #ffca4f;
+      color: #fff;
+
+      &:hover {
+        background-color: darken(#ffca4f, 10%);
+      }
+    }
+
+    .editBtn {
+      background-color: @primary-color;
+      color: #fff;
+
+      &:hover {
+        background-color: darken(@primary-color, 10%);
+      }
+    }
+
+    .backBtn {
+      background-color: #0089d2;
+      color: #fff;
+
+      &:hover {
+        background-color: darken(#0089d2, 10%);
       }
     }
   }
@@ -1081,6 +1109,196 @@ body {
   color: #ccc;
 }
 
+.stockingBox {
+  width: 100%;
+  height: auto;
+  padding: 0px 10px 0px 10px;
+}
+
+.leftStock {
+  float: left;
+  width: 49%;
+  margin-right: 2%;
+  height: auto;
+}
+
+.rightStock {
+  float: left;
+  width: 49%;
+  height: auto;
+}
+
+.stockHead {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background-color: @button-back;
+  margin-bottom: 20px;
+}
+
+.stockChild {
+  border: 1px solid @border-color;
+  border-radius: 5px;
+  width: 100%;
+  height: 1100px;
+  padding: 30px 20px 20px 20px;
+}
+
+.otherBox {
+  width: 100%;
+  height: auto;
+  .sub {
+    float: left;
+    width: 49%;
+  }
+
+  .sub:nth-child(1) {
+    margin-right: 2%;
+  }
+
+  .sub:nth-child(3) {
+    margin-right: 2%;
+  }
+}
+
+.stockFormField {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+  label {
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    font-size: 0.9rem;
+  }
+
+  .stockInputBox {
+    width: 100%;
+    height: 40px;
+    border: 1px solid @border-color;
+    input {
+      height: 100%;
+      width: 89%;
+      border: none;
+      font-size: 0.9rem;
+      line-height: 35px;
+      padding: 0px 10px 0px 10px;
+      cursor: pointer;
+    }
+
+    .subInput {
+      width: 80%;
+    }
+  }
+
+  .errorLog {
+    width: 100%;
+    height: auto;
+    border: none;
+    textarea {
+      width: 100%;
+      height: 200px;
+      resize: none;
+
+      padding: 10px;
+      cursor: pointer;
+    }
+  }
+
+  .pencil:after {
+    content: "\f044";
+    font-family: "Font Awesome 5 Free";
+    color: #ccc;
+  }
+
+  .date:after {
+    content: "\f252";
+    font-family: "Font Awesome 5 Free";
+    color: #ccc;
+  }
+}
+
+.btnBox {
+  width: 110px;
+  height: auto;
+  float: right;
+  margin-top: 10px;
+  background-color: @button-back;
+  button {
+    cursor: pointer;
+    height: auto;
+    width: 70%;
+    background-color: @button-back;
+    border: none;
+    padding: 10px 10px 10px 10px;
+    text-align: center;
+    &:hover {
+      background-color: darken(@button-back, 10%);
+    }
+  }
+}
+
+.btnBox:after {
+  content: "\f0ab";
+  font-family: "Font Awesome 5 Free";
+  color: #eee;
+}
+
+.editPen {
+  cursor: pointer;
+  float: right;
+  font-size: 14px;
+  margin-left: 20px;
+  margin-right: 20px;
+  text-align: center;
+  width: 25px;
+  background-color: @border-color;
+  border-radius: 5px;
+  margin-top: 5px;
+  &:hover {
+    background-color: @myBlue;
+    color: #fff;
+  }
+}
+
+.cancelPen {
+  cursor: pointer;
+  float: right;
+  font-size: 15px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 5px;
+  text-align: center;
+  width: 25px;
+
+  border-radius: 5px;
+  background-color: @border-color;
+  &:hover {
+    background-color: red;
+    color: #fff;
+  }
+}
+
+.minTab {
+  min-width: 170px;
+}
+
+.prodBtnBox {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.prodFinBox {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.addBtn {
+  display: both;
+  margin: both;
+}
+
 //sizes below standard desktop size
 @media only screen and (max-width: 1024px) {
   .pageHead {
@@ -1131,5 +1349,16 @@ body {
         width: 85%;
       }
     }
+  }
+
+  .leftStock {
+    float: none;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .rightStock {
+    float: none;
+    width: 100%;
   }
 }

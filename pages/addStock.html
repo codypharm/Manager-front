@@ -1,1 +1,225 @@
-add stok
+<div class="container">
+  <div class="sectionHead">
+    <div class="sectionHeadIcon">
+      <i class="fas fa-boxes"></i>
+    </div>
+    <div class="sectionHeader">
+      <h2>Stock Entry</h2>
+    </div>
+    <div class="sectionActions">
+      <button class="cancelBtn" onclick="cancelRecord(event)">
+        Cancel
+      </button>
+    </div>
+    <div style="clear:both"></div>
+  </div>
+
+  <!-- main stocking form -->
+  <section class="stockingBox">
+    <!-- left stock  -->
+    <div class="leftStock">
+      <div class="stockHead">Add Product</div>
+      <div class="stockChild">
+        <form>
+          <div class="stockFormField">
+            <label for="produtId">Product Id:</label>
+            <div class="stockInputBox pencil">
+              <input
+                type="text"
+                maxlength="6"
+                id="productId"
+                placeholder="please enter product id"
+              />
+            </div>
+            <div class="btnBox">
+              <button>Generate</button>
+            </div>
+            <div style="clear: both;"></div>
+          </div>
+
+          <div class="stockFormField">
+            <label for="productName">Product Name:</label>
+            <div class="stockInputBox pencil">
+              <input
+                type="text"
+                id="productName"
+                placeholder="please enter product name"
+              />
+            </div>
+          </div>
+
+          <div class="stockFormField">
+            <label for="productBrand">Product Brand:</label>
+            <div class="stockInputBox pencil">
+              <input
+                type="text"
+                id="productBrand"
+                placeholder="please enter brand  brand"
+              />
+            </div>
+          </div>
+
+          <div class="stockFormField">
+            <label for="expiryDate">Expiry Date:</label>
+            <div class="stockInputBox date">
+              <input
+                type="date"
+                id="expiryDate"
+                placeholder="please enter expiry
+            date"
+              />
+            </div>
+          </div>
+
+          <div class="stockFormField">
+            <label for="totalCost">Total Cost:</label>
+            <div class="stockInputBox pencil">
+              <input
+                type="number"
+                id="totalCost"
+                placeholder="please enter total cost of product"
+              />
+            </div>
+          </div>
+
+          <div class="otherBox">
+            <div class="sub">
+              <div class="stockFormField">
+                <label for="qty">Quantity:</label>
+                <div class="stockInputBox pencil">
+                  <input
+                    class="subInput"
+                    type="number"
+                    id="qty"
+                    placeholder="please enter quantity"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="sub">
+              <div class="stockFormField">
+                <label for="unit">Product Unit:</label>
+                <div class="stockInputBox pencil">
+                  <input
+                    class="subInput"
+                    type="number"
+                    id="unit"
+                    placeholder="please enter unit "
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="sub">
+              <div class="stockFormField">
+                <label for="form">Product Form:</label>
+                <div class="stockInputBox pencil">
+                  <input
+                    class="subInput"
+                    type="number"
+                    id="form"
+                    placeholder="please enter form"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="sub">
+              <div class="stockFormField">
+                <label for="price">Sale Price:</label>
+                <div class="stockInputBox pencil">
+                  <input
+                    class="subInput"
+                    type="number"
+                    id="price"
+                    placeholder="please enter price"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div style="clear: both;"></div>
+          </div>
+
+          <div class="stockFormField">
+            <label for="errorLog">Log Error:</label>
+            <div class="stockInputBox errorLog">
+              <textarea
+                placeholder="log any error with this batch..."
+                id="errorLog"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="prodBtnBox">
+            <button class="btn  btn-success addBtn">
+              ADD
+            </button>
+          </div>
+          <div style="clear:both"></div>
+        </form>
+      </div>
+    </div>
+    <!-- right stock  -->
+    <div class="rightStock">
+      <div class="stockHead">Products</div>
+      <div class="stockChild">
+        <div class="row ">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  Product
+                </td>
+                <th>
+                  Action
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Paracetamolygy gui iu iugiu  tab</td>
+                <td class="minTab">
+                  <div class="cancelPen">
+                    <i class="fas fa-times" ></i>    
+                  </div>
+                  <div class="editPen">
+                    <i class="fas fa-pen" ></i>    
+                  </div>
+
+                  
+                </td>
+              </tr>
+
+              <tr>
+                <td>Paracetamol </td>
+                <td>
+                  <div class="cancelPen">
+                    <i class="fas fa-times" ></i>    
+                  </div>
+                  <div class="editPen">
+                    <i class="fas fa-pen" ></i>    
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+         
+        </div>
+
+        <div class="prodFinBox">
+          <button class="btn  btn-success addBtn">
+            UPLOAD
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- stock boxes finaly end here-->
+    <div style="clear:both"></div>
+  </section>
+
+  <!-- stocking form ends -->
+</div>

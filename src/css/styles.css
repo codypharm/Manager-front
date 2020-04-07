@@ -178,7 +178,7 @@ body {
   width: 100%;
   height: 690px;
 }
-.container {
+.mycontainer {
   width: auto;
   height: auto;
 }
@@ -727,6 +727,7 @@ body {
   width: 100%;
   height: 60px;
   border-bottom: 2px solid #e5e5e5;
+  margin-bottom: 40px;
   font-family: Georgia;
 }
 .sectionHead .sectionHeadIcon {
@@ -741,7 +742,7 @@ body {
   float: left;
   width: auto;
   height: 100%;
-  padding-top: 12px;
+  padding-top: 10px;
   padding-left: 15px;
 }
 .sectionHead .sectionActions {
@@ -765,6 +766,27 @@ body {
 .sectionHead .sectionActions button:hover {
   background-color: #999999;
   color: #fff;
+}
+.sectionHead .sectionActions .cancelBtn {
+  background-color: #ffca4f;
+  color: #fff;
+}
+.sectionHead .sectionActions .cancelBtn:hover {
+  background-color: #ffbb1c;
+}
+.sectionHead .sectionActions .editBtn {
+  background-color: #00c853;
+  color: #fff;
+}
+.sectionHead .sectionActions .editBtn:hover {
+  background-color: #00953e;
+}
+.sectionHead .sectionActions .backBtn {
+  background-color: #0089d2;
+  color: #fff;
+}
+.sectionHead .sectionActions .backBtn:hover {
+  background-color: #00689f;
 }
 .searchContainer {
   width: 450px;
@@ -937,6 +959,172 @@ body {
   font-family: "Font Awesome 5 Free";
   color: #ccc;
 }
+.stockingBox {
+  width: 100%;
+  height: auto;
+  padding: 0px 10px 0px 10px;
+}
+.leftStock {
+  float: left;
+  width: 49%;
+  margin-right: 2%;
+  height: auto;
+}
+.rightStock {
+  float: left;
+  width: 49%;
+  height: auto;
+}
+.stockHead {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background-color: #ccc;
+  margin-bottom: 20px;
+}
+.stockChild {
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  width: 100%;
+  height: 1100px;
+  padding: 30px 20px 20px 20px;
+}
+.otherBox {
+  width: 100%;
+  height: auto;
+}
+.otherBox .sub {
+  float: left;
+  width: 49%;
+}
+.otherBox .sub:nth-child(1) {
+  margin-right: 2%;
+}
+.otherBox .sub:nth-child(3) {
+  margin-right: 2%;
+}
+.stockFormField {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+.stockFormField label {
+  display: block;
+  height: 30px;
+  line-height: 30px;
+  font-size: 0.9rem;
+}
+.stockFormField .stockInputBox {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #e5e5e5;
+}
+.stockFormField .stockInputBox input {
+  height: 100%;
+  width: 89%;
+  border: none;
+  font-size: 0.9rem;
+  line-height: 35px;
+  padding: 0px 10px 0px 10px;
+  cursor: pointer;
+}
+.stockFormField .stockInputBox .subInput {
+  width: 80%;
+}
+.stockFormField .errorLog {
+  width: 100%;
+  height: auto;
+  border: none;
+}
+.stockFormField .errorLog textarea {
+  width: 100%;
+  height: 200px;
+  resize: none;
+  padding: 10px;
+  cursor: pointer;
+}
+.stockFormField .pencil:after {
+  content: "\f044";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.stockFormField .date:after {
+  content: "\f252";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.btnBox {
+  width: 110px;
+  height: auto;
+  float: right;
+  margin-top: 10px;
+  background-color: #ccc;
+}
+.btnBox button {
+  cursor: pointer;
+  height: auto;
+  width: 70%;
+  background-color: #ccc;
+  border: none;
+  padding: 10px 10px 10px 10px;
+  text-align: center;
+}
+.btnBox button:hover {
+  background-color: #b3b3b3;
+}
+.btnBox:after {
+  content: "\f0ab";
+  font-family: "Font Awesome 5 Free";
+  color: #eee;
+}
+.editPen {
+  cursor: pointer;
+  float: right;
+  font-size: 14px;
+  margin-left: 20px;
+  margin-right: 20px;
+  text-align: center;
+  width: 25px;
+  background-color: #e5e5e5;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+.editPen:hover {
+  background-color: #00689f;
+  color: #fff;
+}
+.cancelPen {
+  cursor: pointer;
+  float: right;
+  font-size: 15px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 5px;
+  text-align: center;
+  width: 25px;
+  border-radius: 5px;
+  background-color: #e5e5e5;
+}
+.cancelPen:hover {
+  background-color: red;
+  color: #fff;
+}
+.minTab {
+  min-width: 170px;
+}
+.prodBtnBox {
+  margin-top: 40px;
+  text-align: center;
+}
+.prodFinBox {
+  margin-top: 40px;
+  text-align: center;
+}
+.addBtn {
+  display: both;
+  margin: both;
+}
 @media only screen and (max-width: 1024px) {
   .pageHead {
     padding-right: 5px;
@@ -971,5 +1159,14 @@ body {
   }
   .searchContainer .search input {
     width: 85%;
+  }
+  .leftStock {
+    float: none;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+  .rightStock {
+    float: none;
+    width: 100%;
   }
 }

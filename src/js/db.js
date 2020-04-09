@@ -10,7 +10,8 @@ class Database {
     });
 
     this.viewUrl = {
-      users: "_design/all_users/_view/users"
+      users: "_design/all_users/_view/users",
+      stock: "_design/all_stock/_view/allStock"
     };
   }
 

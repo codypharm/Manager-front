@@ -20,19 +20,20 @@
     <div class="leftStock">
       <div class="stockHead">Add Product</div>
       <div class="stockChild">
-        <form>
+        <form onsubmit="addProduct(event)">
           <div class="stockFormField">
             <label for="produtId">Product Id:</label>
             <div class="stockInputBox pencil">
               <input
                 type="text"
-                maxlength="6"
+                
                 id="productId"
                 placeholder="please enter product id"
               />
             </div>
             <div class="btnBox">
-              <button>Generate</button>
+              <div class="button" onclick="generateProductId(event)">Generate</div>
+              
             </div>
             <div style="clear: both;"></div>
           </div>
@@ -117,10 +118,20 @@
                 <div class="stockInputBox pencil">
                   <input
                     class="subInput"
-                    type="number"
+                    type="text"
                     id="form"
+                    list="forms"
+                    
                     placeholder="please enter form"
                   />
+                  <datalist id="forms">
+                    <option value="N/A"></option>
+                    <option value="Bottle"></option>
+                    <option value="Packet"></option>
+                    <option value="Piece"></option>
+                    <option value="Sachet"></option>
+                    <option value="Tablet"></option>
+                  </datalist>
                 </div>
               </div>
             </div>
@@ -153,7 +164,7 @@
           </div>
 
           <div class="prodBtnBox">
-            <button class="btn  btn-success addBtn">
+            <button type="submit" class="btn  btn-success addBtn">
               ADD
             </button>
           </div>
@@ -177,32 +188,8 @@
                 </td>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>Paracetamolygy gui iu iugiu  tab</td>
-                <td class="minTab">
-                  <div class="cancelPen">
-                    <i class="fas fa-times" ></i>    
-                  </div>
-                  <div class="editPen">
-                    <i class="fas fa-pen" ></i>    
-                  </div>
-
-                  
-                </td>
-              </tr>
-
-              <tr>
-                <td>Paracetamol </td>
-                <td>
-                  <div class="cancelPen">
-                    <i class="fas fa-times" ></i>    
-                  </div>
-                  <div class="editPen">
-                    <i class="fas fa-pen" ></i>    
-                  </div>
-                </td>
-              </tr>
+            <tbody id="tableBody">
+              
             </tbody>
           </table>
 
@@ -222,4 +209,6 @@
   </section>
 
   <!-- stocking form ends -->
+
+ 
 </div>

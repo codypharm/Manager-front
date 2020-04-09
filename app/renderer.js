@@ -14,6 +14,11 @@ let details = {
   manager_email: ""
 };
 
+const showModal = message => {
+  $(".myModal").trigger("click");
+  $("#modalBody").html(message);
+};
+
 // eslint-disable-next-line no-unused-vars
 const showInputs = e => {
   let target = e.target;

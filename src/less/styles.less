@@ -1225,10 +1225,11 @@ body {
   float: right;
   margin-top: 10px;
   background-color: @button-back;
-  button {
+  .button {
     cursor: pointer;
+    float: left;
     height: auto;
-    width: 70%;
+    width: 100%;
     background-color: @button-back;
     border: none;
     padding: 10px 10px 10px 10px;
@@ -1237,12 +1238,6 @@ body {
       background-color: darken(@button-back, 10%);
     }
   }
-}
-
-.btnBox:after {
-  content: "\f0ab";
-  font-family: "Font Awesome 5 Free";
-  color: #eee;
 }
 
 .editPen {
@@ -1284,6 +1279,10 @@ body {
   min-width: 170px;
 }
 
+.breakWord {
+  word-break: break-all;
+}
+
 .prodBtnBox {
   margin-top: 40px;
   text-align: center;
@@ -1297,6 +1296,14 @@ body {
 .addBtn {
   display: both;
   margin: both;
+}
+
+.myModal {
+  display: none;
+}
+
+.modal {
+  z-index: 1000000;
 }
 
 //sizes below standard desktop size

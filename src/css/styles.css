@@ -1061,22 +1061,18 @@ body {
   margin-top: 10px;
   background-color: #ccc;
 }
-.btnBox button {
+.btnBox .button {
   cursor: pointer;
+  float: left;
   height: auto;
-  width: 70%;
+  width: 100%;
   background-color: #ccc;
   border: none;
   padding: 10px 10px 10px 10px;
   text-align: center;
 }
-.btnBox button:hover {
+.btnBox .button:hover {
   background-color: #b3b3b3;
-}
-.btnBox:after {
-  content: "\f0ab";
-  font-family: "Font Awesome 5 Free";
-  color: #eee;
 }
 .editPen {
   cursor: pointer;
@@ -1113,6 +1109,9 @@ body {
 .minTab {
   min-width: 170px;
 }
+.breakWord {
+  word-break: break-all;
+}
 .prodBtnBox {
   margin-top: 40px;
   text-align: center;
@@ -1124,6 +1123,12 @@ body {
 .addBtn {
   display: both;
   margin: both;
+}
+.myModal {
+  display: none;
+}
+.modal {
+  z-index: 1000000;
 }
 @media only screen and (max-width: 1024px) {
   .pageHead {

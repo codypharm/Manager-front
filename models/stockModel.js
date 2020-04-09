@@ -150,6 +150,16 @@ class stockModel extends Database {
     }
   }
 
+  getProduct(recordedProduct, id) {
+    let match = recordedProduct.filter(product => {
+      return product.productId == id;
+    });
+
+    if (match.length > 0) {
+      return match;
+    }
+  }
+
   getLastProduct(recordedProduct, n) {
     if (recordedProduct == null) return void 0;
     if (n == null) return recordedProduct[recordedProduct.length - 1];

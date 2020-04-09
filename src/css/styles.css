@@ -1130,6 +1130,10 @@ body {
 .modal {
   z-index: 1000000;
 }
+.otherBtn {
+  margin-top: 40px;
+  text-align: center;
+}
 @media only screen and (max-width: 1024px) {
   .pageHead {
     padding-right: 5px;

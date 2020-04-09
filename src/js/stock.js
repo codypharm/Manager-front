@@ -92,6 +92,36 @@ const add = currentProduct => {
   document.getElementById("productId").focus();
 };
 
+const addToDom = product => {
+  //get dom and append value
+  document.getElementById("productId").value = product.productId;
+  document.getElementById("productName").value = product.name;
+  document.getElementById("productBrand").value = product.brand;
+  document.getElementById("expiryDate").value = product.expDate;
+  document.getElementById("totalCost").value = product.totalCost;
+  document.getElementById("qty").value = product.qty;
+  document.getElementById("unit").value = product.unit;
+  document.getElementById("form").value = product.form;
+  document.getElementById("price").value = product.price;
+  document.getElementById("errorLog").value = product.error;
+};
+
+const swapBtn = () => {
+  //swap buttons
+  document.getElementsByClassName("prodBtnBox")[0].classList.toggle("hide");
+  document.getElementsByClassName("editBtnBox")[0].classList.toggle("hide");
+};
+
+const editRecord = e => {
+  let id = e.target.dataset.id;
+  //get values
+  let [product] = stockModel.getProduct(recordedProduct, id);
+  //append them to the dom
+  addToDom(product);
+  //swap buttons
+  swapBtn();
+};
+
 const cancelRecord = e => {
   let id = e.target.dataset.id;
   let confirmation = "Click OK to remove this product from list";

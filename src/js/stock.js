@@ -55,28 +55,57 @@ const generateProductId = e => {
 
 const add = currentProduct => {
   let tbody = document.getElementById("tableBody");
+  //insert row to table
   let row = tbody.insertRow();
-
+  //add data set to row
+  row.dataset.id = currentProduct.productId;
+  //insert cell
   let cell1 = row.insertCell(0);
   let cell2 = row.insertCell(1);
+
+  //add classes
   cell2.classList.add("minTab");
   cell1.classList.add("breakWord");
+
+  //add html
   cell1.innerHTML = currentProduct.name;
   cell2.innerHTML =
-    "<div class='cancelPen' data-id='" +
+    "<div class='cancelPen ' onclick='cancelRecord(event)' data-id=" +
     currentProduct.productId +
-    "'>" +
-    "<i class='fas fa-times'  ></i> " +
+    ">" +
+    "<i class='fas fa-times'  data-id=" +
+    currentProduct.productId +
+    "></i> " +
     "</div>" +
-    "<div class='editPen' data-id='" +
+    "<div class='editPen' onclick='editRecord(event)' data-id=" +
     currentProduct.productId +
-    "'>" +
-    " <i class='fas fa-pen' ></i>" +
+    ">" +
+    " <i class='fas fa-pen' data-id=" +
+    currentProduct.productId +
+    " ></i>" +
     "</div>";
+
+  //reset from
+  document.getElementsByClassName("stockingForm")[0].reset();
+
+  //focus on first field
+  document.getElementById("productId").focus();
+};
+
+const cancelRecord = e => {
+  let id = e.target.dataset.id;
+  let confirmation = "Click OK to remove this product from list";
+  if (confirm(confirmation)) {
+    //delete it from recorded products
+    recordedProduct = stockModel.deleteProduct(recordedProduct, id);
+    //remove from list
+    document.querySelector("[data-id = " + id + "]").style.display = "none";
+  }
 };
 
 const addProduct = e => {
   e.preventDefault();
+
   //get all the values
   let id = document.getElementById("productId");
   let name = document.getElementById("productName");
@@ -95,7 +124,7 @@ const addProduct = e => {
     brand: brand.value.trim(),
     expDate: expDate.value.trim(),
     totalCost: totalCost.value.trim(),
-    form: name.value.trim(),
+    form: form.value.trim(),
     unit: unit.value.trim(),
     qty: qty.value.trim(),
     price: price.value.trim(),
@@ -170,9 +199,12 @@ const addProduct = e => {
   } else if (stockModel.productInList(recordedProduct, name, productId)) {
     showModal("This product has been recorded, please edit it if you want");
   } else {
+    //push to recorded product id
     recordedProduct.push(detail);
 
+    //get last input
     let currentProduct = stockModel.getLastProduct(recordedProduct);
+    //append to list
     add(currentProduct);
   }
 };

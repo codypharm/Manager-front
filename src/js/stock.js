@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 
+var { dialog, BrowserWindow } = remote.require("electron");
+
 //global variable
 var stock;
 const getStock = stockModel.getStock();
@@ -85,7 +87,7 @@ const add = currentProduct => {
     " ></i>" +
     "</div>";
 
-  //reset from
+  //reset form
   document.getElementsByClassName("stockingForm")[0].reset();
 
   //focus on first field
@@ -108,8 +110,23 @@ const addToDom = product => {
 
 const swapBtn = () => {
   //swap buttons
-  document.getElementsByClassName("prodBtnBox")[0].classList.toggle("hide");
-  document.getElementsByClassName("editBtnBox")[0].classList.toggle("hide");
+  let add = document.getElementsByClassName("prodBtnBox")[0];
+  if (!add.classList.contains("hide")) {
+    add.classList.add("hide");
+  } else {
+    add.classList.remove("hide");
+    //reset form
+    document.getElementsByClassName("stockingForm")[0].reset();
+  }
+
+  let otherBtn = document.getElementsByClassName("editBtnBox")[0];
+  if (!otherBtn.classList.contains("hide")) {
+    otherBtn.classList.add("hide");
+  } else {
+    otherBtn.classList.remove("hide");
+  }
+
+  document.getElementById("productId").focus();
 };
 
 const editRecord = e => {
@@ -120,17 +137,33 @@ const editRecord = e => {
   addToDom(product);
   //swap buttons
   swapBtn();
+  document.getElementById("hiddenInput").value = id;
 };
 
 const cancelRecord = e => {
   let id = e.target.dataset.id;
-  let confirmation = "Click OK to remove this product from list";
-  if (confirm(confirmation)) {
-    //delete it from recorded products
-    recordedProduct = stockModel.deleteProduct(recordedProduct, id);
-    //remove from list
-    document.querySelector("[data-id = " + id + "]").style.display = "none";
-  }
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Ok to delete item from list"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      removeRecord(id);
+    }
+  });
+};
+
+const removeRecord = id => {
+  let currid = id;
+  //remove from list
+  document.querySelector("[data-id = " + id + "]").style.display = "none";
 };
 
 const addProduct = e => {
@@ -236,5 +269,126 @@ const addProduct = e => {
     let currentProduct = stockModel.getLastProduct(recordedProduct);
     //append to list
     add(currentProduct);
+  }
+};
+
+//cancel edit
+const cancelEdit = e => {
+  e.preventDefault();
+  //reset form
+  document.getElementsByClassName("stockingForm")[0].reset();
+
+  //focus on first field
+  document.getElementById("productId").focus();
+  //swap button
+  swapBtn();
+};
+
+//update record
+const updateRecord = e => {
+  e.preventDefault();
+
+  //get target id
+  let updateTargetId = document.getElementById("hiddenInput").value;
+
+  //get all the values
+  let id = document.getElementById("productId");
+  let name = document.getElementById("productName");
+  let brand = document.getElementById("productBrand");
+  let expDate = document.getElementById("expiryDate");
+  let totalCost = document.getElementById("totalCost");
+  let form = document.getElementById("form");
+  let qty = document.getElementById("qty");
+  let price = document.getElementById("price");
+  let unit = document.getElementById("unit");
+  let error = document.getElementById("errorLog");
+
+  let detail = {
+    productId: id.value.trim(),
+    name: name.value.trim(),
+    brand: brand.value.trim(),
+    expDate: expDate.value.trim(),
+    totalCost: totalCost.value.trim(),
+    form: form.value.trim(),
+    unit: unit.value.trim(),
+    qty: qty.value.trim(),
+    price: price.value.trim(),
+    error: error.value.trim()
+  };
+
+  let inputs = [id, name, brand, totalCost, qty, price, unit];
+
+  if (stockModel.isEmpty(inputs)) {
+    showModal("Please fill all fields marked *");
+  } else if (
+    stockModel.idExists(stock, id) &&
+    stockModel.noNameMatch(stock, id, name)
+  ) {
+    showModal("Product Id already exist for another product");
+    name.value = "";
+    name.focus();
+  } else if (stockModel.nameError(stock, id, name)) {
+    showModal("Product name already exist with another product Id");
+    name.value = "";
+    name.focus();
+  } else if (
+    stockModel.idExists(stock, id) &&
+    stockModel.noBrandMatch(stock, id, brand)
+  ) {
+    showModal("Product Id already exist with another brand");
+
+    brand.value = "";
+    brand.focus();
+  } else if (
+    stockModel.idExists(stock, id) &&
+    stockModel.noFormMatch(stock, id, form)
+  ) {
+    showModal(" Product Id already exist with another product form");
+
+    form.focus();
+  } else if (
+    stockModel.idExists(stock, id) &&
+    stockModel.expError(stock, id, expDate)
+  ) {
+    showModal(
+      "A product with a matching product Id has been recorded with expiry date, please add expiry date"
+    );
+
+    expDate.focus();
+  } else if (
+    stockModel.idExists(stock, id) &&
+    stockModel.unitError(stock, id, unit)
+  ) {
+    showModal(
+      "A product with a matching product Id has been recorded with a different unit"
+    );
+
+    expDate.focus();
+  } else if (
+    stockModel.idExists(stock, id) &&
+    stockModel.priceError(stock, id, price)
+  ) {
+    showModal(
+      "A product with a matching product Id has been recorded with a different price"
+    );
+
+    expDate.focus();
+  } else if (totalCost.value < 1) {
+    showModal("Total cost cannot be less than one");
+  } else if (qty.value < 1) {
+    showModal("Quantity cost cannot be less than one");
+  } else if (unit.value < 1) {
+    showModal("Unit cost cannot be less than one");
+  } else if (price.value < 1) {
+    showModal("Price cost cannot be less than one");
+  } else {
+    let currentRecord = stockModel.updateRecord(
+      recordedProduct,
+      detail,
+      updateTargetId
+    );
+    updateRecordList(currentRecord);
+
+    swapBtn();
   }
 };

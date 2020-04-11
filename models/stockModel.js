@@ -160,6 +160,24 @@ class stockModel extends Database {
     }
   }
 
+  updateRecord(recordedProduct, detail, updateTargetId) {
+    recordedProduct.forEach(product => {
+      if (product.productId == updateTargetId) {
+        product.productId = detail.productId;
+        product.name = detail.name;
+        product.brand = detail.brand;
+        product.expDate = detail.expDate;
+        product.totalCost = detail.totalCost;
+        product.form = detail.form;
+        product.unit = detail.unit;
+        product.qty = detail.qty;
+        product.price = detail.price;
+        product.error = detail.error;
+      }
+    });
+    return recordedProduct;
+  }
+
   getLastProduct(recordedProduct, n) {
     if (recordedProduct == null) return void 0;
     if (n == null) return recordedProduct[recordedProduct.length - 1];

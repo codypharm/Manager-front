@@ -42,3 +42,17 @@ const displayStaff = data => {
 
   let container = (document.getElementById("otherUsers").innerHTML = myhtml);
 };
+
+//update record list
+const updateRecordList = recordedProduct => {
+  let newObj = {
+    data: recordedProduct
+  };
+
+  let template = document.getElementById("recordTemplateContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("tableBody").innerHTML = myhtml);
+};

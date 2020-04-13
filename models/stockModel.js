@@ -39,7 +39,7 @@ class stockModel extends Database {
     let match = stock.filter(product => {
       return (
         product.value.prodId == id.value.trim() &&
-        product.value.name != name.value.trim()
+        product.value.name.toUpperCase() != name.value.trim().toUpperCase()
       );
     });
 
@@ -52,7 +52,7 @@ class stockModel extends Database {
     let match = stock.filter(product => {
       return (
         product.value.prodId != id.value.trim() &&
-        product.value.name == name.value.trim()
+        product.value.name.toUpperCase() == name.value.trim().toUpperCase()
       );
     });
 
@@ -65,7 +65,7 @@ class stockModel extends Database {
     let match = stock.filter(product => {
       return (
         product.value.prodId == id.value.trim() &&
-        product.value.brand != brand.value.trim()
+        product.value.brand.toUpperCase() != brand.value.trim().toUpperCase()
       );
     });
 
@@ -78,7 +78,7 @@ class stockModel extends Database {
     let match = stock.filter(product => {
       return (
         product.value.prodId == id.value.trim() &&
-        product.value.form != form.value.trim()
+        product.value.form.toUpperCase() != form.value.trim().toUpperCase()
       );
     });
 
@@ -97,6 +97,13 @@ class stockModel extends Database {
     });
 
     if (match.length > 0) {
+      return true;
+    }
+  }
+
+  notAlphaNumeric(id) {
+    let regex = /^[a-z0-9]+$/i;
+    if (!regex.test(id.value.trim())) {
       return true;
     }
   }
@@ -130,8 +137,24 @@ class stockModel extends Database {
   productInList(recordedProduct, name, productId) {
     let match = recordedProduct.filter(product => {
       return (
-        product.productId == productId.value.trim() ||
-        product.name == name.value.trim()
+        product.productId.toUpperCase() ==
+          productId.value.trim().toUpperCase() ||
+        product.name.toUpperCase() == name.value.trim().toUpperCase()
+      );
+    });
+
+    if (match.length > 0) {
+      return true;
+    }
+  }
+
+  productInEditList(recordedProduct, name, productId, no) {
+    let match = recordedProduct.filter(product => {
+      return (
+        (product.productId.toUpperCase() ==
+          productId.value.trim().toUpperCase() ||
+          product.name.toUpperCase() == name.value.trim().toUpperCase()) &&
+        product.no != no
       );
     });
 
@@ -146,6 +169,7 @@ class stockModel extends Database {
     });
 
     if (match.length > 0) {
+      store.setRecordStore(match);
       return match;
     }
   }
@@ -160,9 +184,9 @@ class stockModel extends Database {
     }
   }
 
-  updateRecord(recordedProduct, detail, updateTargetId) {
+  updateRecord(recordedProduct, detail, updateTargetNo) {
     recordedProduct.forEach(product => {
-      if (product.productId == updateTargetId) {
+      if (product.no == updateTargetNo) {
         product.productId = detail.productId;
         product.name = detail.name;
         product.brand = detail.brand;
@@ -175,6 +199,7 @@ class stockModel extends Database {
         product.error = detail.error;
       }
     });
+    store.setRecordStore(recordedProduct);
     return recordedProduct;
   }
 

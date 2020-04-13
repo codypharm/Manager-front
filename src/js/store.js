@@ -6,6 +6,9 @@ class Store {
     const schema = {
       loginDetails: {
         type: "object"
+      },
+      recordedProducts: {
+        type: "object"
       }
     };
     //instantiate store
@@ -22,6 +25,10 @@ class Store {
     return this.store.get("loginDetails");
   }
 
+  getRecordStore() {
+    return this.store.get("recordedProducts");
+  }
+
   setUserData(user) {
     this.store.set("loginDetails", {
       loginStatus: true,
@@ -35,6 +42,12 @@ class Store {
     });
 
     return true;
+  }
+
+  setRecordStore(recordedProduct) {
+    this.store.set("recordedProducts", {
+      record: recordedProduct
+    });
   }
 }
 

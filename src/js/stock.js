@@ -12,6 +12,18 @@ getStock.then(({ data, header, status }) => {
 //product id generator
 
 var recordedProduct = [];
+var listNumber = 0;
+
+const loadPreviousContent = () => {
+  //get products in store
+  let { record } = store.getRecordStore();
+  //get last list number
+  listNumber = record.reverse()[0].no;
+  console.log(listNumber);
+  recordedProduct = record;
+  //show list
+  updateRecordList(recordedProduct);
+};
 
 const generateProductId = e => {
   e.preventDefault();
@@ -106,6 +118,7 @@ const addToDom = product => {
   document.getElementById("form").value = product.form;
   document.getElementById("price").value = product.price;
   document.getElementById("errorLog").value = product.error;
+  document.getElementById("hiddenInput").value = product.no;
 };
 
 const swapBtn = () => {
@@ -113,17 +126,21 @@ const swapBtn = () => {
   let add = document.getElementsByClassName("prodBtnBox")[0];
   if (!add.classList.contains("hide")) {
     add.classList.add("hide");
+    document.getElementById("addBtn").disabled = true;
   } else {
     add.classList.remove("hide");
     //reset form
     document.getElementsByClassName("stockingForm")[0].reset();
+    document.getElementById("addBtn").disabled = false;
   }
 
   let otherBtn = document.getElementsByClassName("editBtnBox")[0];
   if (!otherBtn.classList.contains("hide")) {
     otherBtn.classList.add("hide");
+    document.getElementById("addBtn").disabled = true;
   } else {
     otherBtn.classList.remove("hide");
+    document.getElementById("addBtn").disabled = false;
   }
 
   document.getElementById("productId").focus();
@@ -137,7 +154,6 @@ const editRecord = e => {
   addToDom(product);
   //swap buttons
   swapBtn();
-  document.getElementById("hiddenInput").value = id;
 };
 
 const cancelRecord = e => {
@@ -164,9 +180,14 @@ const removeRecord = id => {
   let currid = id;
   //remove from list
   document.querySelector("[data-id = " + id + "]").style.display = "none";
+  //remove from storage
+  recordedProduct = stockModel.deleteProduct(recordedProduct, id);
 };
 
 const addProduct = e => {
+  //add to list number
+  listNumber += 1;
+
   e.preventDefault();
 
   //get all the values
@@ -182,6 +203,7 @@ const addProduct = e => {
   let error = document.getElementById("errorLog");
 
   let detail = {
+    no: listNumber,
     productId: id.value.trim(),
     name: name.value.trim(),
     brand: brand.value.trim(),
@@ -198,6 +220,8 @@ const addProduct = e => {
 
   if (stockModel.isEmpty(inputs)) {
     showModal("Please fill all fields marked *");
+  } else if (stockModel.notAlphaNumeric(id)) {
+    showModal("Product Id should contain only number and alphabet");
   } else if (
     stockModel.idExists(stock, id) &&
     stockModel.noNameMatch(stock, id, name)
@@ -260,11 +284,15 @@ const addProduct = e => {
   } else if (price.value < 1) {
     showModal("Price cost cannot be less than one");
   } else if (stockModel.productInList(recordedProduct, name, productId)) {
-    showModal("This product has been recorded, please edit it if you want");
+    showModal(
+      "A product with matching productId or name  has been recorded, please edit it if you want"
+    );
   } else {
     //push to recorded product id
     recordedProduct.push(detail);
-
+    console.log(recordedProduct);
+    //// store i electron
+    store.setRecordStore(recordedProduct);
     //get last input
     let currentProduct = stockModel.getLastProduct(recordedProduct);
     //append to list
@@ -289,7 +317,7 @@ const updateRecord = e => {
   e.preventDefault();
 
   //get target id
-  let updateTargetId = document.getElementById("hiddenInput").value;
+  let updateTargetNo = document.getElementById("hiddenInput").value;
 
   //get all the values
   let id = document.getElementById("productId");
@@ -320,6 +348,8 @@ const updateRecord = e => {
 
   if (stockModel.isEmpty(inputs)) {
     showModal("Please fill all fields marked *");
+  } else if (stockModel.notAlphaNumeric(id)) {
+    showModal("Product Id should contain only number and alphabet");
   } else if (
     stockModel.idExists(stock, id) &&
     stockModel.noNameMatch(stock, id, name)
@@ -381,11 +411,17 @@ const updateRecord = e => {
     showModal("Unit cost cannot be less than one");
   } else if (price.value < 1) {
     showModal("Price cost cannot be less than one");
+  } else if (
+    stockModel.productInEditList(recordedProduct, name, id, updateTargetNo)
+  ) {
+    showModal(
+      "A product with matching productId or name has been recorded, please edit it if you want"
+    );
   } else {
     let currentRecord = stockModel.updateRecord(
       recordedProduct,
       detail,
-      updateTargetId
+      updateTargetNo
     );
     updateRecordList(currentRecord);
 

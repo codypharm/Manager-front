@@ -18,11 +18,15 @@ const loadPreviousContent = () => {
   //get products in store
   let { record } = store.getRecordStore();
   //get last list number
-  listNumber = record.reverse()[0].no;
-  console.log(listNumber);
-  recordedProduct = record;
-  //show list
-  updateRecordList(recordedProduct);
+  if (record.length > 0) {
+    listNumber = record.reverse()[0].no;
+    recordedProduct = record;
+    //show list
+    updateRecordList(recordedProduct);
+  } else {
+    document.getElementById("tableBody").innerHTML =
+      "<div style='padding-top: 20px; padding-left: 20px'>No existing record</div>";
+  }
 };
 
 const generateProductId = e => {
@@ -69,6 +73,7 @@ const generateProductId = e => {
 
 const add = currentProduct => {
   let tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
   //insert row to table
   let row = tbody.insertRow();
   //add data set to row
@@ -290,7 +295,7 @@ const addProduct = e => {
   } else {
     //push to recorded product id
     recordedProduct.push(detail);
-    console.log(recordedProduct);
+
     //// store i electron
     store.setRecordStore(recordedProduct);
     //get last input
@@ -427,4 +432,33 @@ const updateRecord = e => {
 
     swapBtn();
   }
+};
+
+//cancel all record
+const cancelAllRecord = e => {
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Ok to delete record"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      //empty record
+      recordedProduct = [];
+      //set number to zero
+      listNumber = 0;
+
+      //empty store
+      store.setRecordStore(recordedProduct);
+      //display record  empty message
+      document.getElementById("tableBody").innerHTML =
+        "<div style='padding-top: 20px; padding-left: 20px'>No existing record</div>";
+    }
+  });
 };

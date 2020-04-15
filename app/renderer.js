@@ -321,7 +321,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("addStock", loadPreviousContent);
+        pageLoader("addStock", loadStoreContent);
       });
     }
   }
@@ -569,7 +569,7 @@ const loadAddStock = e => {
   selectionRemover();
   addClass(addStock, "selected");
   addClass(subMenu2, "selectedDropper");
-  pageLoader("addStock", loadPreviousContent);
+  pageLoader("addStock", loadStoreContent);
 };
 
 //staff list

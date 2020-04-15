@@ -20,7 +20,7 @@
     <div class="leftStock">
       <div class="stockHead">Add Product</div>
       <div class="stockChild">
-        <form class="stockingForm" onsubmit="addProduct(event)">
+        <form class="stockingForm" onsubmit="wait(event)" >
           <div class="stockFormField">
             <label for="produtId">Product Id:</label>
             <div class="stockInputBox pencil">
@@ -164,9 +164,9 @@
           </div>
 
           <div class="prodBtnBox">
-            <button type="submit" class="btn  btn-success addBtn" id="addBtn">
+            <a href="#"  disabled  class="btn  btn-success addBtn" id="addBtn" onclick="addProduct(event)">
               ADD
-            </button>
+            </a>
           </div>
 
           <input type="hidden" id="hiddenInput" />
@@ -176,7 +176,7 @@
               <a href="#" class="btn btn-secondary " onclick="cancelEdit(event)">Cancel</a>
             </div>
             <div class="col-sm-6 otherBtn">
-              <button class="btn btn-primary" id="updateTarget"  onclick="updateRecord(event)">Save</button>
+              <a href="#" class="btn btn-primary" id="updateTarget"  onclick="updateRecord(event)">Save</a>
             </div>
           </div>
           <div style="clear:both"></div>
@@ -208,7 +208,7 @@
         </div>
 
         <div class="prodFinBox">
-          <button class="btn  btn-success addBtn" disabled >
+          <button class="btn  btn-success addBtn" id="uploadBtn" disabled onclick="uploadList(event)" >
             UPLOAD
           </button>
         </div>

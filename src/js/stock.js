@@ -14,16 +14,22 @@ getStock.then(({ data, header, status }) => {
 var recordedProduct = [];
 var listNumber = 0;
 
-const loadPreviousContent = () => {
+const loadStoreContent = () => {
+  //ensure btn is active
+  document.getElementById("addBtn").disabled = false;
+
   //get products in store
   let { record } = store.getRecordStore();
+
   //get last list number
-  if (record.length > 0) {
+  if (record != undefined && record.length > 0) {
     listNumber = record.reverse()[0].no;
     recordedProduct = record;
     //show list
     updateRecordList(recordedProduct);
+    document.getElementById("uploadBtn").disabled = false;
   } else {
+    document.getElementById("uploadBtn").disabled = true;
     document.getElementById("tableBody").innerHTML =
       "<div style='padding-top: 20px; padding-left: 20px'>No existing record</div>";
   }
@@ -31,41 +37,13 @@ const loadPreviousContent = () => {
 
 const generateProductId = e => {
   e.preventDefault();
-  let alpha = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z"
-  ];
+  let csNum = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   let val = "";
   for (let i = 0; i < 3; i++) {
     let num;
-    num = Math.floor(Math.random() * 26);
-    val += alpha[num];
+    num = Math.floor(Math.random() * 10);
+    val += csNum[num];
     val += Math.floor(Math.random() * 10);
-    +",";
   }
 
   document.getElementById("productId").value = val;
@@ -73,37 +51,7 @@ const generateProductId = e => {
 
 const add = currentProduct => {
   let tbody = document.getElementById("tableBody");
-  tbody.innerHTML = "";
-  //insert row to table
-  let row = tbody.insertRow();
-  //add data set to row
-  row.dataset.id = currentProduct.productId;
-  //insert cell
-  let cell1 = row.insertCell(0);
-  let cell2 = row.insertCell(1);
-
-  //add classes
-  cell2.classList.add("minTab");
-  cell1.classList.add("breakWord");
-
-  //add html
-  cell1.innerHTML = currentProduct.name;
-  cell2.innerHTML =
-    "<div class='cancelPen ' onclick='cancelRecord(event)' data-id=" +
-    currentProduct.productId +
-    ">" +
-    "<i class='fas fa-times'  data-id=" +
-    currentProduct.productId +
-    "></i> " +
-    "</div>" +
-    "<div class='editPen' onclick='editRecord(event)' data-id=" +
-    currentProduct.productId +
-    ">" +
-    " <i class='fas fa-pen' data-id=" +
-    currentProduct.productId +
-    " ></i>" +
-    "</div>";
-
+  loadStoreContent();
   //reset form
   document.getElementsByClassName("stockingForm")[0].reset();
 
@@ -130,22 +78,21 @@ const swapBtn = () => {
   //swap buttons
   let add = document.getElementsByClassName("prodBtnBox")[0];
   if (!add.classList.contains("hide")) {
-    add.classList.add("hide");
     document.getElementById("addBtn").disabled = true;
+
+    add.classList.add("hide");
   } else {
+    document.getElementById("addBtn").disabled = false;
     add.classList.remove("hide");
     //reset form
     document.getElementsByClassName("stockingForm")[0].reset();
-    document.getElementById("addBtn").disabled = false;
   }
 
   let otherBtn = document.getElementsByClassName("editBtnBox")[0];
   if (!otherBtn.classList.contains("hide")) {
     otherBtn.classList.add("hide");
-    document.getElementById("addBtn").disabled = true;
   } else {
     otherBtn.classList.remove("hide");
-    document.getElementById("addBtn").disabled = false;
   }
 
   document.getElementById("productId").focus();
@@ -153,12 +100,15 @@ const swapBtn = () => {
 
 const editRecord = e => {
   let id = e.target.dataset.id;
+  let editBtn = document.getElementsByClassName("editBtnBox")[0];
   //get values
   let [product] = stockModel.getProduct(recordedProduct, id);
   //append them to the dom
   addToDom(product);
   //swap buttons
-  swapBtn();
+  if (editBtn.classList.contains("hide")) {
+    swapBtn();
+  }
 };
 
 const cancelRecord = e => {
@@ -183,10 +133,14 @@ const cancelRecord = e => {
 
 const removeRecord = id => {
   let currid = id;
-  //remove from list
-  document.querySelector("[data-id = " + id + "]").style.display = "none";
+
   //remove from storage
   recordedProduct = stockModel.deleteProduct(recordedProduct, id);
+
+  //set store
+  store.setRecordStore(recordedProduct);
+  //reload list
+  loadStoreContent();
 };
 
 const addProduct = e => {
@@ -206,6 +160,7 @@ const addProduct = e => {
   let price = document.getElementById("price");
   let unit = document.getElementById("unit");
   let error = document.getElementById("errorLog");
+  let uploadBtn = document.getElementById("uploadBtn");
 
   let detail = {
     no: listNumber,
@@ -225,8 +180,8 @@ const addProduct = e => {
 
   if (stockModel.isEmpty(inputs)) {
     showModal("Please fill all fields marked *");
-  } else if (stockModel.notAlphaNumeric(id)) {
-    showModal("Product Id should contain only number and alphabet");
+  } else if (stockModel.notNumeric(id)) {
+    showModal("Product Id should contain only numbers ");
   } else if (
     stockModel.idExists(stock, id) &&
     stockModel.noNameMatch(stock, id, name)
@@ -302,6 +257,10 @@ const addProduct = e => {
     let currentProduct = stockModel.getLastProduct(recordedProduct);
     //append to list
     add(currentProduct);
+
+    if (uploadBtn.disabled == true) {
+      uploadBtn.disabled = false;
+    }
   }
 };
 
@@ -353,8 +312,8 @@ const updateRecord = e => {
 
   if (stockModel.isEmpty(inputs)) {
     showModal("Please fill all fields marked *");
-  } else if (stockModel.notAlphaNumeric(id)) {
-    showModal("Product Id should contain only number and alphabet");
+  } else if (stockModel.notNumeric(id)) {
+    showModal("Product Id should contain only number ");
   } else if (
     stockModel.idExists(stock, id) &&
     stockModel.noNameMatch(stock, id, name)
@@ -456,9 +415,47 @@ const cancelAllRecord = e => {
 
       //empty store
       store.setRecordStore(recordedProduct);
+      //reset form
+      document.getElementsByClassName("stockingForm")[0].reset();
+
       //display record  empty message
       document.getElementById("tableBody").innerHTML =
         "<div style='padding-top: 20px; padding-left: 20px'>No existing record</div>";
+
+      //focus on first field
+      document.getElementById("productId").focus();
+      //display button
+      document.getElementById("uploadBtn").disabled = true;
     }
+  });
+};
+
+//upload listNumber
+const uploadList = e => {
+  recordedProduct.forEach(product => {
+    //get id for database task
+    let idGen = stockModel.generateId();
+    idGen.then(ids => {
+      let id = ids[0];
+
+      //upload
+      let detailInsertion = stockModel.uploadList(product, id);
+      detailInsertion.then(
+        ({ data, headers, status }) => {
+          if (status == 201) {
+            //reload list
+            removeRecord(product.productId);
+
+            //rest form
+            document.getElementsByClassName("stockingForm")[0].reset();
+          } else {
+            console.log("error");
+          }
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    });
   });
 };

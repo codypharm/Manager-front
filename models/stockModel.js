@@ -101,8 +101,8 @@ class stockModel extends Database {
     }
   }
 
-  notAlphaNumeric(id) {
-    let regex = /^[a-z0-9]+$/i;
+  notNumeric(id) {
+    let regex = /^[0-9]+$/i;
     if (!regex.test(id.value.trim())) {
       return true;
     }
@@ -137,8 +137,7 @@ class stockModel extends Database {
   productInList(recordedProduct, name, productId) {
     let match = recordedProduct.filter(product => {
       return (
-        product.productId.toUpperCase() ==
-          productId.value.trim().toUpperCase() ||
+        product.productId == productId.value.trim() ||
         product.name.toUpperCase() == name.value.trim().toUpperCase()
       );
     });
@@ -151,8 +150,7 @@ class stockModel extends Database {
   productInEditList(recordedProduct, name, productId, no) {
     let match = recordedProduct.filter(product => {
       return (
-        (product.productId.toUpperCase() ==
-          productId.value.trim().toUpperCase() ||
+        (product.productId == productId.value.trim() ||
           product.name.toUpperCase() == name.value.trim().toUpperCase()) &&
         product.no != no
       );
@@ -169,7 +167,6 @@ class stockModel extends Database {
     });
 
     if (match.length > 0) {
-      store.setRecordStore(match);
       return match;
     }
   }
@@ -207,6 +204,45 @@ class stockModel extends Database {
     if (recordedProduct == null) return void 0;
     if (n == null) return recordedProduct[recordedProduct.length - 1];
     return recordedProduct.slice(Math.max(recordedProduct.length - n, 0));
+  }
+
+  generateId() {
+    return this.couch.uniqid();
+  }
+
+  uploadList(product, id) {
+    let batchId = "BT";
+    batchId += Math.floor(Math.random() * 10000000);
+    let loginDetail = store.getLoginDetail();
+    let date = new Date();
+
+    //define error
+    let error;
+
+    if (product.error != "") {
+      error = product.error[0].toUpperCase() + product.error.slice(1);
+    } else {
+      error = "";
+    }
+    return this.couch.insert("stock", {
+      id: id,
+      name: product.name[0].toUpperCase() + product.name.slice(1),
+      productId: product.productId,
+      brand: product.brand[0].toUpperCase() + product.brand.slice(1),
+      expDate: product.expDate,
+      totalCost: product.totalCost,
+      qty: product.qty,
+      unit: product.unit,
+      form: product.form[0].toUpperCase() + product.form.slice(1),
+      price: product.price,
+      error: error,
+      batchId: batchId,
+      day: date.getDate(),
+      month: date.getMonth(),
+      year: date.getFullYear(),
+      recorder: loginDetail.fname + " " + loginDetail.lname,
+      recorderEmail: loginDetail.email
+    });
   }
 }
 

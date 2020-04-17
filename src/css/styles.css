@@ -1134,6 +1134,34 @@ body {
   margin-top: 40px;
   text-align: center;
 }
+.cusWidthInp {
+  width: 70%;
+}
+.cusWidthBtn {
+  width: 30%;
+  padding-top: 32px;
+}
+.inputWidth {
+  width: 100px;
+}
+.cartCancelPen {
+  cursor: pointer;
+  font-size: 15px;
+  margin: auto;
+  text-align: center;
+  width: 25px;
+  border-radius: 5px;
+  background-color: #e5e5e5;
+}
+.cartCancelPen:hover {
+  background-color: red;
+  color: #fff;
+}
+.addMaxHeight {
+  max-height: 850px;
+  overflow: auto;
+  border: 1px solid green;
+}
 @media only screen and (max-width: 1024px) {
   .pageHead {
     padding-right: 5px;

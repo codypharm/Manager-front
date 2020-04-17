@@ -1,1 +1,195 @@
-addsalees
+<div class="sectionHead">
+  <div class="sectionHeadIcon">
+    <i class="fas fa-cart-plus"></i>
+  </div>
+  <div class="sectionHeader">
+    <h2>Add Sale</h2>
+  </div>
+  <div class="sectionActions">
+    <button class="cancelBtn" onclick="cancelAllRecord(event)">
+      Cancel
+    </button>
+  </div>
+  <div style="clear:both"></div>
+</div>
+
+<!-- main stocking form -->
+<section class="stockingBox row">
+  <div class="col-lg-5  mt-10 mb-sm-5 ">
+    <div class="stockHead">Add Sale</div>
+    <div class="pt-4 pb-2 pl-3 pr-3 border">
+      <form action="">
+        <label for="prodName">ProductID:</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fas fa-edit"></i>
+            </span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Product id or name"
+            id="prodName"
+          />
+        </div>
+        <div class="clearfix mt-1">
+          <div class="float-left pr-1 cusWidthInp ">
+            <label for="qty">Quantity:</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fas fa-edit"></i>
+                </span>
+              </div>
+              <input
+                type="number"
+                placeholder="enter quantity"
+                class="form-control"
+                id="qty"
+              />
+            </div>
+          </div>
+
+          <div class="float-right text-right cusWidthBtn">
+            <div class="form-group ">
+              <button class="btn btn-primary btn-md w-100">Add</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-7 pr-0 pl-0 ">
+    <div class="stockHead">Cart</div>
+    <div class="border  addMaxHeight">
+      <div class="table-responsive">
+        <table class="table table-condensed">
+          <thead>
+            <th class="text-center">Product</th>
+            <th class="text-center">Qty</th>
+            <th class="text-center">Price</th>
+            <th class="text-center">A/C</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="">
+                parcetamol panda
+              </td>
+              <td class=" text-center">
+                <input type="number" class="inputWidth pl-1" min="0" />
+              </td>
+              <td class="text-center">
+                1000
+              </td>
+              <td class="text-center">
+                <div class="cartCancelPen" onclick="" data-id="">
+                  <i class="fas fa-times" data-id=""></i>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>
+                <strong>Total</strong>
+              </td>
+              <td class="text-center">
+                1000
+              </td>
+              <td class="text-center">
+                1000
+              </td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>
+                <strong>Disccount</strong>
+              </td>
+              <td class="text-center">
+                -
+              </td>
+              <td class="text-center">
+                <input
+                  type="number"
+                  class="inputWidth pl-1"
+                  min="0"
+                  value="0"
+                />
+              </td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>
+                <strong>Net Price</strong>
+              </td>
+              <td class="text-center">
+                -
+              </td>
+              <td class="text-center">
+                2000
+              </td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>
+                <strong>Transaction Type</strong>
+              </td>
+              <td class="text-center">
+                -
+              </td>
+              <td class="text-center">
+                <div class="form-group">
+                  <select class="form-control">
+                    <option value="">Select</option>
+                    <option value="cash">Cash</option>
+                    <option value="credit">Credit</option>
+                    <option value="online">Online</option>
+                  </select>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="card card-default m-5 w-80">
+        <div class="card-header">Customer detail</div>
+        <div class="card-body">
+          <form action="" class="form">
+            <div class="form-group">
+              <input
+                type="text"
+                placeholder="Customer Name"
+                class="form-control"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                placeholder="Customer Address"
+                class="form-control"
+              />
+            </div>
+
+            <div class="form">
+              <input
+                type="text"
+                placeholder="Phone number"
+                class="form-control"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="text-center mb-5">
+        <button class="btn btn-success">Process</button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -321,7 +321,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("addSales");
+        pageLoader("addSales", loadCart);
       });
     }
   }
@@ -525,7 +525,7 @@ const loadAddSales = e => {
   selectionRemover();
   addClass(addSales, "selected");
   addClass(subMenu1, "selectedDropper");
-  pageLoader("addSales");
+  pageLoader("addSales", loadCart);
 };
 
 //stock list

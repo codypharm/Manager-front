@@ -18,7 +18,8 @@
   <div class="col-lg-5  mt-10 mb-sm-5 ">
     <div class="stockHead">Add Sale</div>
     <div class="pt-4 pb-2 pl-3 pr-3 border">
-      <form action="">
+      <div class="alert alert-danger hide " id="hide"></div>
+      <form action="" id="saleForm" onsubmit="processSale(event)">
         <label for="prodName">ProductID:</label>
         <div class="input-group">
           <div class="input-group-prepend">
@@ -31,6 +32,7 @@
             class="form-control"
             placeholder="Product id or name"
             id="prodName"
+            autofocus
           />
         </div>
         <div class="clearfix mt-1">
@@ -47,6 +49,8 @@
                 placeholder="enter quantity"
                 class="form-control"
                 id="qty"
+                min="0"
+                value="0"
               />
             </div>
           </div>
@@ -72,24 +76,7 @@
             <th class="text-center">Price</th>
             <th class="text-center">A/C</th>
           </thead>
-          <tbody>
-            <tr>
-              <td class="">
-                parcetamol panda
-              </td>
-              <td class=" text-center">
-                <input type="number" class="inputWidth pl-1" min="0" />
-              </td>
-              <td class="text-center">
-                1000
-              </td>
-              <td class="text-center">
-                <div class="cartCancelPen" onclick="" data-id="">
-                  <i class="fas fa-times" data-id=""></i>
-                </div>
-              </td>
-            </tr>
-          </tbody>
+          <tbody id="cartBox"></tbody>
           <tfoot>
             <tr>
               <td>
@@ -193,3 +180,24 @@
     </div>
   </div>
 </section>
+
+<script id="cartContainer" type="text/xhandlebars-template">
+  {{#each data}}
+  <tr>
+    <td class="">
+      {{name}}
+    </td>
+    <td class=" text-center">
+      <input type="number" value="{{qty}}" class="inputWidth pl-1" min="0" />
+    </td>
+    <td class="text-center">
+      {{price}}
+    </td>
+    <td class="text-center">
+      <div class="cartCancelPen" onclick="" data-id="{{productId}}">
+        <i class="fas fa-times" data-id="{{productId}}"></i>
+      </div>
+    </td>
+  </tr>
+  {{/each}}
+</script>

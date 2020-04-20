@@ -56,3 +56,16 @@ const updateRecordList = recordedProduct => {
 
   let container = (document.getElementById("tableBody").innerHTML = myhtml);
 };
+
+const updateCart = products => {
+  let newObj = {
+    data: products
+  };
+
+  let template = document.getElementById("cartContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("cartBox").innerHTML = myhtml);
+};

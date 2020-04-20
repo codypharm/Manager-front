@@ -3,18 +3,19 @@
 
 var { dialog, BrowserWindow } = remote.require("electron");
 
+//product id generator
+
 //global variable
 var stock;
-const getStock = stockModel.getStock();
-getStock.then(({ data, header, status }) => {
-  stock = data.rows;
-});
-//product id generator
 
 var recordedProduct = [];
 var listNumber = 0;
 
 const loadStoreContent = () => {
+  const getStock = stockModel.getStock();
+  getStock.then(({ data, header, status }) => {
+    stock = data.rows;
+  });
   //ensure btn is active
   document.getElementById("addBtn").disabled = false;
 

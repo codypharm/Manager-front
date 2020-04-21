@@ -9,6 +9,9 @@ class Store {
       },
       recordedProducts: {
         type: "object"
+      },
+      records: {
+        type: "object"
       }
     };
     //instantiate store
@@ -29,6 +32,10 @@ class Store {
     return this.store.get("recordedProducts");
   }
 
+  getSaleStore() {
+    return this.store.get("records");
+  }
+
   setUserData(user) {
     this.store.set("loginDetails", {
       loginStatus: true,
@@ -47,6 +54,12 @@ class Store {
   setRecordStore(recordedProduct) {
     this.store.set("recordedProducts", {
       record: recordedProduct
+    });
+  }
+
+  setSaleStore(record) {
+    this.store.set("records", {
+      record: record
     });
   }
 }

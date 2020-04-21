@@ -45,12 +45,15 @@ class salesModel extends Database {
   getUnit(stock, id) {
     let unit = 0;
     stock.forEach(product => {
-      if (product.value.prodId == id) {
+      if (
+        product.value.prodId == id ||
+        product.value.name.toUpperCase() == id.toUpperCase()
+      ) {
         unit = product.value.unit;
       }
     });
 
-    return parseInt(unit, 10);
+    return unit;
   }
 
   getMatchInCart(cart, id) {
@@ -77,6 +80,16 @@ class salesModel extends Database {
 
     if (match.length > 0) {
       return true;
+    }
+  }
+
+  deleteSale(cart, id) {
+    let match = cart.filter(product => {
+      return product.productId != id;
+    });
+
+    if (match.length > 0) {
+      return match;
     }
   }
 
@@ -109,7 +122,8 @@ class salesModel extends Database {
           brand: product.value.brand,
           qty: qty,
           initialPrice: product.value.price,
-          price: price
+          price: price,
+          unit: product.value.unit
         };
       }
     });
@@ -125,11 +139,22 @@ class salesModel extends Database {
         product.name.toUpperCase() == id.toUpperCase()
       ) {
         price = (product.initialPrice * qty) / unit;
+
         product.qty = qty;
         product.price = price;
       }
     });
     return cart;
+  }
+
+  calculateTotal(cart) {
+    let price = 0;
+    let qty = 0;
+    cart.forEach(product => {
+      price += Number(product.price);
+      qty += Number(product.qty);
+    });
+    return [price, qty];
   }
 }
 

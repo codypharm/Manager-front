@@ -1,31 +1,37 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 //globale variables
-var cart = [
-  {
-    id: "62a2edc226e48763b1ff2a883b0154ec",
-    name: "Acepol",
-    productId: "675280",
-    brand: "Bio",
-    qty: "1",
-    price: "100",
-    initialPrice: "100"
-  },
-  {
-    id: "62a2edc226e48763b1ff2a883b01286e",
-    name: "Para",
-    productId: "123456",
-    qty: "1",
-    price: "120",
-    initialPrice: "120"
-  }
-];
+var cart = [];
 
 //global variable
 var stock;
 
 const hideWarning = () => {
   document.getElementById("hide").classList.add("hide");
+};
+
+//calculation for net price
+const calculateNetPrice = () => {
+  let disccount = document.getElementById("disccount").value;
+  let totalPrice = document.getElementById("totalPrice").textContent;
+
+  //calculate
+  if (disccount > 0) {
+    let value = Number(totalPrice - (disccount / 100) * totalPrice);
+    document.getElementById("netPrice").textContent = Math.ceil(value);
+  } else {
+    document.getElementById("netPrice").textContent = totalPrice;
+  }
+};
+
+//calculate total
+const calculateTotal = cart => {
+  let [totalPrice, totalQty] = salesModel.calculateTotal(cart);
+  document.getElementById("totalQty").textContent = totalQty;
+  document.getElementById("totalPrice").textContent = totalPrice;
+
+  //calculate net price
+  calculateNetPrice();
 };
 
 //load cart
@@ -35,7 +41,17 @@ const loadCart = () => {
     stock = data.rows;
   });
 
-  updateCart(cart);
+  //get products in store
+  let { record } = store.getSaleStore();
+  //get last list
+  if (record != undefined && record.length > 0) {
+    cart = record;
+
+    updateCart(cart);
+
+    //calculate total quantity
+    calculateTotal(cart);
+  }
 };
 
 const showWarning = message => {
@@ -49,14 +65,23 @@ const addToCart = (cart, prodId, qty, unit) => {
   //check if product is in cart
   if (salesModel.checkCart(cart, prodId)) {
     cart = salesModel.updateCartValue(cart, prodId, qty, unit);
+    //set store
+    store.setSaleStore(cart);
     updateCart(cart);
+    //calculate total quantity
+    calculateTotal(cart);
   } else {
     //get product object
     let newProduct = salesModel.getProduct(stock, prodId, qty, unit);
 
     cart.push(newProduct);
+    //set store
+    store.setSaleStore(cart);
     //update cart
     updateCart(cart);
+
+    //calculate total quantity
+    calculateTotal(cart);
   }
 
   setTimeout(() => {
@@ -67,7 +92,7 @@ const addToCart = (cart, prodId, qty, unit) => {
 
 //check if in cart
 const addCart = (cart, prodId, qty) => {
-  qty += Number(salesModel.getMatchInCart(cart, prodId.value.trim()));
+  qty += Number(salesModel.getMatchInCart(cart, prodId));
 
   return qty;
 };
@@ -90,6 +115,7 @@ const processSale = e => {
   let qty = 0;
   let prodId = document.getElementById("prodName");
   qty = Number(document.getElementById("qty").value);
+
   let unit = Number(salesModel.getUnit(stock, prodId.value.trim()));
 
   //if no quantity is provided
@@ -98,9 +124,8 @@ const processSale = e => {
 
     qty += unit;
   }
-
   //check if product is in cart and add it
-  qty = addCart(cart, prodId, qty);
+  qty = addCart(cart, prodId.value.trim(), qty);
 
   //adding up quantity of matching products
   let matchQty = addUpMatch(stock, prodId.value.trim());
@@ -112,9 +137,66 @@ const processSale = e => {
   } else if (!salesModel.productExists(stock, prodId)) {
     showWarning("No match found !!!");
   } else if (qty > matchQty) {
-    showWarning("Out of stock !!!");
+    showWarning("Quantity entered is not available !!!");
   } else {
     //updateCart
     addToCart(cart, prodId.value.trim(), qty, unit);
   }
+};
+
+const addUpQty = (e, prodId, unit) => {
+  prodId = prodId.toString();
+
+  let qty = Number(e.target.value);
+
+  //adding up quantity of matching products
+  let matchQty = addUpMatch(stock, prodId);
+  if (qty > matchQty) {
+    showWarning("Quantity entered is not available !!!");
+    //set it back to 1 or unit quantity
+    e.target.value = unit;
+  } else if (qty == 0) {
+    //set it back to 1 or unit quantity
+    e.target.value = unit;
+  } else {
+    cart = salesModel.updateCartValue(cart, prodId, qty, unit);
+    //set store
+    store.setSaleStore(cart);
+    //update cart
+    updateCart(cart);
+    e.target.focus();
+    //calculate total quantity
+    calculateTotal(cart);
+  }
+};
+
+//delete
+const deleteMatch = prodId => {
+  cart = salesModel.deleteSale(cart, prodId);
+
+  store.setSaleStore(cart);
+  updateCart(cart);
+  //calculate total quantity
+  calculateTotal(cart);
+};
+
+//delete a saleFormconst
+const cancelCurSale = e => {
+  let prodId = e.target.dataset.id;
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Ok to delete item from list"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      deleteMatch(prodId);
+    }
+  });
 };

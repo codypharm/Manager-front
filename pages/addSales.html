@@ -82,11 +82,11 @@
               <td>
                 <strong>Total</strong>
               </td>
-              <td class="text-center">
-                1000
+              <td class="text-center" id="totalQty">
+                -
               </td>
-              <td class="text-center">
-                1000
+              <td class="text-center" id="totalPrice">
+                -
               </td>
               <td></td>
             </tr>
@@ -104,6 +104,8 @@
                   class="inputWidth pl-1"
                   min="0"
                   value="0"
+                  id="disccount"
+                  oninput="calculateNetPrice()"
                 />
               </td>
               <td></td>
@@ -116,8 +118,8 @@
               <td class="text-center">
                 -
               </td>
-              <td class="text-center">
-                2000
+              <td class="text-center" id="netPrice">
+                -
               </td>
               <td></td>
             </tr>
@@ -188,13 +190,13 @@
       {{name}}
     </td>
     <td class=" text-center">
-      <input type="number" value="{{qty}}" class="inputWidth pl-1" min="0" />
+      <input type="number" value="{{qty}}"  class="inputWidth pl-1"  oninput="addUpQty(event,{{productId}},{{unit}})"/>
     </td>
     <td class="text-center">
       {{price}}
     </td>
     <td class="text-center">
-      <div class="cartCancelPen" onclick="" data-id="{{productId}}">
+      <div class="cartCancelPen" onclick="cancelCurSale(event)" data-id="{{productId}}">
         <i class="fas fa-times" data-id="{{productId}}"></i>
       </div>
     </td>

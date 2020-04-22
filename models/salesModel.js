@@ -2,6 +2,11 @@
 /* eslint-disable no-unused-vars */
 //import db file
 const Database = require("../src/js/db");
+const {
+  verifyPhoneNumber,
+  // eslint-disable-next-line no-unused-vars
+  COUNTRY_CODE
+} = require("nigerian-phone-number-validator");
 
 class salesModel extends Database {
   constructor() {
@@ -25,6 +30,29 @@ class salesModel extends Database {
 
     //if any input is empty
     if (emptyInputs.length > 0) {
+      return true;
+    }
+  }
+
+  isNotAlpha(value) {
+    //check if alphabet only
+    if (!/^[a-zA-Z\s]+$/.test(value)) {
+      return true;
+    }
+  }
+
+  isNotPhoneNumber(number) {
+    //check if its valid phone number
+    if (!verifyPhoneNumber(number)) {
+      return true;
+    }
+  }
+
+  isNotEmail(value) {
+    if (
+      // eslint-disable-next-line no-useless-escape
+      !/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(value)
+    ) {
       return true;
     }
   }
@@ -54,6 +82,16 @@ class salesModel extends Database {
     });
 
     return unit;
+  }
+
+  getMatch(stock, id) {
+    let match = stock.filter(product => {
+      return product.value.prodId == id && Number(product.value.qty) > 0;
+    });
+
+    if (match.length > 0) {
+      return match;
+    }
   }
 
   getMatchInCart(cart, id) {

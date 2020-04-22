@@ -200,3 +200,136 @@ const cancelCurSale = e => {
     }
   });
 };
+
+//handle transaction type
+const handleTransType = e => {
+  let transType = e.target.value;
+  let transBox = document.getElementById("transBox");
+  let myForm = document.getElementById("customerForm");
+  if (transType == "credit") {
+    if (transBox.classList.contains("hide")) {
+      transBox.classList.remove("hide");
+    }
+  } else {
+    if (!transBox.classList.contains("hide")) {
+      transBox.classList.add("hide");
+      myForm.reset();
+    }
+  }
+};
+
+const sub = (obj, qty) => {
+  if (Number(obj.value.qty) > Number(qty)) {
+    obj.value.qty = Number(obj.value.qty) - Number(qty);
+    qty = 0;
+    return [obj, qty];
+  } else if (Number(obj.value.qty) < Number(qty)) {
+    qty = Number(qty) - Number(obj.value.qty);
+    obj.value.qty = 0;
+
+    return [obj, qty];
+  } else {
+    obj.value.qty = 0;
+    qty = 0;
+    return [obj, qty];
+  }
+};
+
+const execute = (match, qty) => {
+  //reverse the array
+  match = match.reverse();
+  //loop throughnthe match
+  match.forEach(obj => {
+    //get new values of each obj or product and qty remaining from purchase qty
+    let [newProd, newQty] = sub(obj, qty);
+    //assign new qty value to qty
+    qty = newQty;
+
+    salesModel.updateStock(stock, newProd);
+  });
+};
+
+//continue process
+const process = cart => {
+  let match;
+  let newValue;
+  //loop through cart
+  cart.forEach(product => {
+    //get matching product from db
+    match = salesModel.getMatch(stock, product.productId);
+    //get quantity bought
+    let qty = product.qty;
+    //handle each match
+    execute(match, qty);
+  });
+};
+
+//process cart
+const processCart = e => {
+  let totalPrice = document.getElementById("totalPrice");
+  let totalQty = document.getElementById("totalQty");
+  let disccount = document.getElementById("disccount").value;
+  let netPrice = document.getElementById("netPrice");
+  let transType = document.getElementById("transType").value;
+  let name = document.getElementById("customerName");
+  let number = document.getElementById("customerNumber");
+  let address = document.getElementById("customerAddress");
+  let deposit = document.getElementById("deposit");
+
+  let inputs = [name, number, address, deposit];
+
+  if (transType == "") {
+    showModal("Please enter a transaction type.");
+  } else if (transType == "credit" && salesModel.isEmpty(inputs)) {
+    showModal("Please fill all fields");
+  } else if (
+    transType == "credit" &&
+    salesModel.isNotAlpha(name.value.trim())
+  ) {
+    showModal("Please neter a valid name.");
+  } else if (
+    transType == "credit" &&
+    salesModel.isNotPhoneNumber(number.value.trim())
+  ) {
+    showModal("Please enter a valid phone number.");
+  } else {
+    //process
+    process(cart, totalQty);
+  }
+};
+
+const emptyTable = () => {
+  document.getElementById("totalPrice").textContent = "-";
+  document.getElementById("totalQty").textContent = "-";
+  document.getElementById("disccount").value = "0";
+  document.getElementById("netPrice").textContent = "-";
+  document.getElementById("transType").value = "";
+  document.getElementById("customerForm").reset();
+  let box = document.getElementById("transBox");
+  if (!box.classList.contains("hide")) {
+    box.classList.add("hide");
+  }
+};
+
+//cancel all sales in rocess
+const cancelAllSales = e => {
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Ok to delete item from cart"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      cart = [];
+      store.setSaleStore(cart);
+      updateCart(cart);
+      emptyTable();
+    }
+  });
+};

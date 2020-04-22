@@ -6,7 +6,7 @@
     <h2>Add Sale</h2>
   </div>
   <div class="sectionActions">
-    <button class="cancelBtn" onclick="cancelAllRecord(event)">
+    <button class="cancelBtn" onclick="cancelAllSales(event)">
       Cancel
     </button>
   </div>
@@ -77,7 +77,8 @@
             <th class="text-center">A/C</th>
           </thead>
           <tbody id="cartBox"></tbody>
-          <tfoot>
+
+          <tfoot id="tfoot">
             <tr>
               <td>
                 <strong>Total</strong>
@@ -133,7 +134,11 @@
               </td>
               <td class="text-center">
                 <div class="form-group">
-                  <select class="form-control">
+                  <select
+                    class="form-control"
+                    onchange="handleTransType(event)"
+                    id="transType"
+                  >
                     <option value="">Select</option>
                     <option value="cash">Cash</option>
                     <option value="credit">Credit</option>
@@ -146,15 +151,16 @@
           </tfoot>
         </table>
       </div>
-      <div class="card card-default m-5 w-80">
+      <div class="card card-default m-5 w-80 hide" id="transBox">
         <div class="card-header">Customer detail</div>
         <div class="card-body">
-          <form action="" class="form">
+          <form action="" id="customerForm">
             <div class="form-group">
               <input
                 type="text"
                 placeholder="Customer Name"
                 class="form-control"
+                id="customerName"
               />
             </div>
             <div class="form-group">
@@ -162,14 +168,27 @@
                 type="text"
                 placeholder="Customer Address"
                 class="form-control"
+                id="customerAddress"
               />
             </div>
 
-            <div class="form">
+            <div class="form-group">
               <input
                 type="text"
                 placeholder="Phone number"
                 class="form-control"
+                id="customerNumber"
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="number"
+                placeholder="Amount deposited"
+                class="form-control"
+                min="0"
+                value="0"
+                id="deposit"
               />
             </div>
           </form>
@@ -177,7 +196,9 @@
       </div>
 
       <div class="text-center mb-5">
-        <button class="btn btn-success">Process</button>
+        <button class="btn btn-success" onclick="processCart(event)">
+          Process
+        </button>
       </div>
     </div>
   </div>

@@ -194,6 +194,29 @@ class salesModel extends Database {
     });
     return [price, qty];
   }
+
+  updateStock(product) {
+    return this.couch.update("stock", {
+      _id: product.id,
+      _rev: product.value.rev,
+      batchId: product.value.batchId,
+      productId: product.value.prodId,
+      brand: product.value.brand,
+      name: product.value.name,
+      qty: product.value.qty,
+      form: product.value.form,
+      unit: product.value.unit,
+      price: product.value.price,
+      totalCost: product.value.totalCost,
+      expDate: product.value.expDate,
+      error: product.value.error,
+      day: product.value.day,
+      month: product.value.month,
+      year: product.value.year,
+      recorder: product.value.recName,
+      recorderEmail: product.value.recEmail
+    });
+  }
 }
 
 module.exports = salesModel;

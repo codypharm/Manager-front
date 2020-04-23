@@ -235,6 +235,19 @@ const sub = (obj, qty) => {
   }
 };
 
+//invoice id genration
+const generateReceiptId = () => {
+  let csNum = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  let val = "";
+  for (let i = 0; i < 5; i++) {
+    let num;
+    num = Math.floor(Math.random() * 10);
+    val += csNum[num];
+    val += Math.floor(Math.random() * 10);
+  }
+  return val;
+};
+
 const execute = (match, qty) => {
   //reverse the array
   match = match.reverse();
@@ -245,7 +258,15 @@ const execute = (match, qty) => {
     //assign new qty value to qty
     qty = newQty;
 
-    salesModel.updateStock(stock, newProd);
+    let stockUpdate = salesModel.updateStock(newProd);
+    stockUpdate.then(
+      ({ data, headers, status }) => {
+        console.log(status);
+      },
+      err => {
+        console.log(err);
+      }
+    );
   });
 };
 
@@ -293,8 +314,23 @@ const processCart = e => {
   ) {
     showModal("Please enter a valid phone number.");
   } else {
-    //process
-    process(cart, totalQty);
+    //get window object
+    const window = BrowserWindow.getFocusedWindow();
+    //show dialog
+    let resp = dialog.showMessageBox(window, {
+      title: "Vemon",
+      buttons: ["Yes", "Cancel"],
+      type: "info",
+      message: "All you sure all purchase have been recorded"
+    });
+
+    //check if response is yes
+    resp.then((response, checkboxChecked) => {
+      if (response.response == 0) {
+        //process
+        process(cart, totalQty);
+      }
+    });
   }
 };
 

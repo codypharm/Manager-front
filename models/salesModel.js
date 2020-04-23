@@ -234,6 +234,36 @@ class salesModel extends Database {
       year: date.getFullYear()
     });
   }
+
+  insertInvoice(
+    id,
+    invoiceId,
+    customerAddress,
+    customerName,
+    customerNumber,
+    deposit,
+    transType,
+    disccount,
+    netPrice,
+    totalPrice,
+    amtPaid,
+    balance
+  ) {
+    return this.couch.insert("invoice", {
+      id: id,
+      invoiceId: invoiceId,
+      customerAddress: customerAddress,
+      customerName: customerName,
+      customerNumber: customerName,
+      deposit: deposit,
+      transType: transType,
+      disccount: disccount,
+      netPrice: netPrice,
+      totalPrice: totalPrice,
+      amtPaid: amtPaid,
+      balance: balance
+    });
+  }
 }
 
 module.exports = salesModel;

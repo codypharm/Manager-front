@@ -248,7 +248,44 @@ const generateInvoiceId = () => {
   return val;
 };
 
-//insert sale ito db
+const execInvoice = (
+  invoiceId,
+  customerAddress,
+  customerName,
+  customerNumber,
+  deposit,
+  transType,
+  disccount,
+  netPrice,
+  totalPrice,
+  amtPaid,
+  balance
+) => {
+  let idGen = salesModel.generateId();
+  idGen.then(ids => {
+    let id = ids[0];
+    //insert details
+    let detailInsertion = salesModel.insertInvoice(
+      id,
+      invoiceId,
+      customerAddress,
+      customerName,
+      customerNumber,
+      deposit,
+      transType,
+      disccount,
+      netPrice,
+      totalPrice,
+      amtPaid,
+      balance
+    );
+    detailInsertion.then(({ data, headers, status }) => {
+      console.log(status);
+    });
+  });
+};
+
+//insert sale into db
 const insertSale = cart => {
   //get some neccesary details
   let amtPaid;
@@ -272,10 +309,10 @@ const insertSale = cart => {
 
   //get invoice detilas
   let invoiceId = generateInvoiceId();
-  //loop through the cart and insert details
+  //loop through the cart and insert details to sales db
   cart.forEach(product => {
     //generate id for user
-    let idGen = staffModel.generateId();
+    let idGen = salesModel.generateId();
     idGen.then(ids => {
       let id = ids[0];
       //insert details
@@ -290,6 +327,21 @@ const insertSale = cart => {
       });
     });
   });
+
+  //insert details into invoice db
+  execInvoice(
+    invoiceId,
+    customerAddress,
+    customerName,
+    customerNumber,
+    deposit,
+    transType,
+    disccount,
+    netPrice,
+    totalPrice,
+    amtPaid,
+    balance
+  );
 };
 
 //subtrat qty form stock and update stock table

@@ -236,7 +236,7 @@ const sub = (obj, qty) => {
 };
 
 //invoice id genration
-const generateReceiptId = () => {
+const generateInvoiceId = () => {
   let csNum = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   let val = "";
   for (let i = 0; i < 5; i++) {
@@ -248,6 +248,51 @@ const generateReceiptId = () => {
   return val;
 };
 
+//insert sale ito db
+const insertSale = cart => {
+  //get some neccesary details
+  let amtPaid;
+  let balance;
+  let customerName = document.getElementById("customerName");
+  let customerAddress = document.getElementById("customerAddress");
+  let customerNumber = document.getElementById("customerNumber");
+  let deposit = document.getElementById("deposit").value;
+  let transType = document.getElementById("transType").value;
+  let disccount = document.getElementById("disccount").value;
+  let netPrice = document.getElementById("netPrice").textContent;
+  let totalPrice = document.getElementById("totalPrice").textContent;
+
+  if (deposit == 0 || deposit == "") {
+    amtPaid = netPrice;
+    balance = 0;
+  } else {
+    amtPaid = deposit;
+    balance = Number(netPrice) - Number(deposit);
+  }
+
+  //get invoice detilas
+  let invoiceId = generateInvoiceId();
+  //loop through the cart and insert details
+  cart.forEach(product => {
+    //generate id for user
+    let idGen = staffModel.generateId();
+    idGen.then(ids => {
+      let id = ids[0];
+      //insert details
+      let detailInsertion = salesModel.insertSales(
+        product,
+        id,
+        invoiceId,
+        transType
+      );
+      detailInsertion.then(({ data, headers, status }) => {
+        console.log(status);
+      });
+    });
+  });
+};
+
+//subtrat qty form stock and update stock table
 const execute = (match, qty) => {
   //reverse the array
   match = match.reverse();
@@ -283,6 +328,9 @@ const process = cart => {
     //handle each match
     execute(match, qty);
   });
+
+  //insert into sales
+  insertSale(cart);
 };
 
 //process cart

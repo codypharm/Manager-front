@@ -217,6 +217,23 @@ class salesModel extends Database {
       recorderEmail: product.value.recEmail
     });
   }
+
+  insertSales(product, id, invoiceId, transType) {
+    let date = new Date();
+    return this.couch.insert("sales", {
+      id: id,
+      qty: product.qty,
+      name: product.name,
+      price: product.price,
+      productId: product.productId,
+      brand: product.brand,
+      invoiceId: invoiceId,
+      transactionType: transType,
+      day: date.getDate(),
+      month: date.getMonth(),
+      year: date.getFullYear()
+    });
+  }
 }
 
 module.exports = salesModel;

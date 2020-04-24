@@ -52,6 +52,22 @@ const loadCart = () => {
     //calculate total quantity
     calculateTotal(cart);
   }
+
+  showStaticModal();
+};
+
+//table reseter
+const emptyTable = () => {
+  document.getElementById("totalPrice").textContent = "-";
+  document.getElementById("totalQty").textContent = "-";
+  document.getElementById("disccount").value = "0";
+  document.getElementById("netPrice").textContent = "-";
+  document.getElementById("transType").value = "";
+  document.getElementById("customerForm").reset();
+  let box = document.getElementById("transBox");
+  if (!box.classList.contains("hide")) {
+    box.classList.add("hide");
+  }
 };
 
 const showWarning = message => {
@@ -280,7 +296,13 @@ const execInvoice = (
       balance
     );
     detailInsertion.then(({ data, headers, status }) => {
-      console.log(status);
+      if (status == 201) {
+        //display and print invoice
+        cart = [];
+        store.setSaleStore(cart);
+        updateCart(cart);
+        emptyTable();
+      }
     });
   });
 };
@@ -290,9 +312,9 @@ const insertSale = cart => {
   //get some neccesary details
   let amtPaid;
   let balance;
-  let customerName = document.getElementById("customerName");
-  let customerAddress = document.getElementById("customerAddress");
-  let customerNumber = document.getElementById("customerNumber");
+  let customerName = document.getElementById("customerName").value;
+  let customerAddress = document.getElementById("customerAddress").value;
+  let customerNumber = document.getElementById("customerNumber").value;
   let deposit = document.getElementById("deposit").value;
   let transType = document.getElementById("transType").value;
   let disccount = document.getElementById("disccount").value;
@@ -307,7 +329,7 @@ const insertSale = cart => {
     balance = Number(netPrice) - Number(deposit);
   }
 
-  //get invoice detilas
+  //get invoice details
   let invoiceId = generateInvoiceId();
   //loop through the cart and insert details to sales db
   cart.forEach(product => {
@@ -320,11 +342,10 @@ const insertSale = cart => {
         product,
         id,
         invoiceId,
-        transType
+        transType,
+        disccount
       );
-      detailInsertion.then(({ data, headers, status }) => {
-        console.log(status);
-      });
+      detailInsertion.then(({ data, headers, status }) => {});
     });
   });
 
@@ -344,7 +365,7 @@ const insertSale = cart => {
   );
 };
 
-//subtrat qty form stock and update stock table
+//subtract qty from stock and update stock table
 const execute = (match, qty) => {
   //reverse the array
   match = match.reverse();
@@ -357,9 +378,7 @@ const execute = (match, qty) => {
 
     let stockUpdate = salesModel.updateStock(newProd);
     stockUpdate.then(
-      ({ data, headers, status }) => {
-        console.log(status);
-      },
+      ({ data, headers, status }) => {},
       err => {
         console.log(err);
       }
@@ -387,63 +406,55 @@ const process = cart => {
 
 //process cart
 const processCart = e => {
-  let totalPrice = document.getElementById("totalPrice");
-  let totalQty = document.getElementById("totalQty");
-  let disccount = document.getElementById("disccount").value;
-  let netPrice = document.getElementById("netPrice");
-  let transType = document.getElementById("transType").value;
-  let name = document.getElementById("customerName");
-  let number = document.getElementById("customerNumber");
-  let address = document.getElementById("customerAddress");
-  let deposit = document.getElementById("deposit");
+  //check if cart is empty
+  if (cart.length > 0) {
+    let totalPrice = document.getElementById("totalPrice");
+    let totalQty = document.getElementById("totalQty");
+    let disccount = document.getElementById("disccount").value;
+    let netPrice = document.getElementById("netPrice");
+    let transType = document.getElementById("transType").value;
+    let name = document.getElementById("customerName");
+    let number = document.getElementById("customerNumber");
+    let address = document.getElementById("customerAddress");
+    let deposit = document.getElementById("deposit");
 
-  let inputs = [name, number, address, deposit];
+    let inputs = [name, number, address, deposit];
 
-  if (transType == "") {
-    showModal("Please enter a transaction type.");
-  } else if (transType == "credit" && salesModel.isEmpty(inputs)) {
-    showModal("Please fill all fields");
-  } else if (
-    transType == "credit" &&
-    salesModel.isNotAlpha(name.value.trim())
-  ) {
-    showModal("Please neter a valid name.");
-  } else if (
-    transType == "credit" &&
-    salesModel.isNotPhoneNumber(number.value.trim())
-  ) {
-    showModal("Please enter a valid phone number.");
+    if (transType == "") {
+      showModal("Please enter a transaction type.");
+    } else if (transType == "credit" && salesModel.isEmpty(inputs)) {
+      showModal("Please fill all fields");
+    } else if (
+      transType == "credit" &&
+      salesModel.isNotAlpha(name.value.trim())
+    ) {
+      showModal("Please neter a valid name.");
+    } else if (
+      transType == "credit" &&
+      salesModel.isNotPhoneNumber(number.value.trim())
+    ) {
+      showModal("Please enter a valid phone number.");
+    } else {
+      //get window object
+      const window = BrowserWindow.getFocusedWindow();
+      //show dialog
+      let resp = dialog.showMessageBox(window, {
+        title: "Vemon",
+        buttons: ["Yes", "Cancel"],
+        type: "info",
+        message: "Are you sure all purchase have been recorded"
+      });
+
+      //check if response is yes
+      resp.then((response, checkboxChecked) => {
+        if (response.response == 0) {
+          //process
+          process(cart, totalQty);
+        }
+      });
+    }
   } else {
-    //get window object
-    const window = BrowserWindow.getFocusedWindow();
-    //show dialog
-    let resp = dialog.showMessageBox(window, {
-      title: "Vemon",
-      buttons: ["Yes", "Cancel"],
-      type: "info",
-      message: "All you sure all purchase have been recorded"
-    });
-
-    //check if response is yes
-    resp.then((response, checkboxChecked) => {
-      if (response.response == 0) {
-        //process
-        process(cart, totalQty);
-      }
-    });
-  }
-};
-
-const emptyTable = () => {
-  document.getElementById("totalPrice").textContent = "-";
-  document.getElementById("totalQty").textContent = "-";
-  document.getElementById("disccount").value = "0";
-  document.getElementById("netPrice").textContent = "-";
-  document.getElementById("transType").value = "";
-  document.getElementById("customerForm").reset();
-  let box = document.getElementById("transBox");
-  if (!box.classList.contains("hide")) {
-    box.classList.add("hide");
+    showModal("please record a purchase first");
   }
 };
 
@@ -462,6 +473,7 @@ const cancelAllSales = e => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
+      //cleanup
       cart = [];
       store.setSaleStore(cart);
       updateCart(cart);

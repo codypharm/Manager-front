@@ -218,7 +218,7 @@ class salesModel extends Database {
     });
   }
 
-  insertSales(product, id, invoiceId, transType) {
+  insertSales(product, id, invoiceId, transType, disccount) {
     let date = new Date();
     return this.couch.insert("sales", {
       id: id,
@@ -229,6 +229,7 @@ class salesModel extends Database {
       brand: product.brand,
       invoiceId: invoiceId,
       transactionType: transType,
+      disccount: disccount,
       day: date.getDate(),
       month: date.getMonth(),
       year: date.getFullYear()

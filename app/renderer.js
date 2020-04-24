@@ -19,6 +19,11 @@ const showModal = message => {
   $("#modalBody").html(message);
 };
 
+const showStaticModal = message => {
+  $(".staticModal").modal("show");
+  $("#staticBody").html(message);
+};
+
 // eslint-disable-next-line no-unused-vars
 const showInputs = e => {
   let target = e.target;

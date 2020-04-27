@@ -12,6 +12,10 @@ class Store {
       },
       records: {
         type: "object"
+      },
+
+      setupDetail: {
+        type: "object"
       }
     };
     //instantiate store
@@ -22,6 +26,10 @@ class Store {
     this.store.set("loginDetails", {
       loginStatus: false
     });
+  }
+
+  getSetupDetail() {
+    return this.store.get("setupDetail");
   }
 
   getLoginDetail() {
@@ -49,6 +57,12 @@ class Store {
     });
 
     return true;
+  }
+
+  setSetupDetail(detail) {
+    this.store.set("setupDetail", {
+      detail: detail
+    });
   }
 
   setRecordStore(recordedProduct) {

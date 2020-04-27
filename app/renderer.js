@@ -1,6 +1,17 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 
+//get setup details
+var setUpDetails;
+let viewUrl = db.viewUrl.setup;
+
+let info = db.couch.get("vemon_setup", viewUrl);
+info.then(({ data, headers, status }) => {
+  setUpDetails = data.rows;
+  //store data in electron store
+  store.setSetupDetail(setUpDetails);
+});
+
 //details store
 let details = {
   package: "",
@@ -22,6 +33,7 @@ const showModal = message => {
 const showStaticModal = message => {
   $(".staticModal").modal("show");
   $("#staticBody").html(message);
+  return true;
 };
 
 // eslint-disable-next-line no-unused-vars

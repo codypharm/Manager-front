@@ -69,3 +69,16 @@ const updateCart = products => {
 
   let container = (document.getElementById("cartBox").innerHTML = myhtml);
 };
+
+const displayPurchase = purchase => {
+  let newObj = {
+    data: purchase
+  };
+
+  let template = document.getElementById("purchaseContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("purchase").innerHTML = myhtml);
+};

@@ -6,6 +6,84 @@ var cart = [];
 //global variable
 var stock;
 
+var invoiceTemplate =
+  '<h4 class="text-center" id="companyName"></h4>' +
+  '<div class="text-center mt-2" id="companyAddress"></div>' +
+  '<div class="text-center mt-2" id="companyNumber"></div>' +
+  '<h5 class="text-center mt-2" id="transTypeStatic"></h5>' +
+  "<div>" +
+  '  <table class="table table-borderless table-sm mt-3">' +
+  "   <tr>" +
+  "     <td>" +
+  "       <strong>Invoice Id:</strong>" +
+  "    </td>" +
+  '    <td id="invoiceId"></td>' +
+  "  </tr>" +
+  "  <tr>" +
+  "  <td>" +
+  "    <strong>Date:</strong>" +
+  "  </td>" +
+  '  <td id="date"></td>' +
+  " </tr>" +
+  "</table>" +
+  "</div>" +
+  '<div class="border border-dark"></div>' +
+  "<div>" +
+  ' <table class="table  table-borderless table-sm mt-3">' +
+  "<thead" +
+  ' class="border border-dark border-top-0 border-left-0 border-right-0"' +
+  ">" +
+  "  <tr>" +
+  "   <th>" +
+  "    ITEM" +
+  "   </th>" +
+  "<th>" +
+  "    QTY" +
+  "  </th>" +
+  "  <th>" +
+  "    Price" +
+  "  </th>" +
+  " </tr>" +
+  " </thead>" +
+  " <tbody" +
+  ' class="border border-dark border-top-0 border-left-0 border-right-0"' +
+  ' id="purchase"' +
+  "  ></tbody>" +
+  '<tfoot class="pt-3">' +
+  " <tr>" +
+  "   <th>Sub Total</th>" +
+  "   <td></td>" +
+  '  <td><stong id="total"></stong></td>' +
+  " </tr>" +
+  " <tr>" +
+  "  <th>Disccount</th>" +
+  "  <td></td>" +
+  '  <td id="disccountStatic"></td>' +
+  "</tr>" +
+  " <tr>" +
+  "   <th>Net Price</th>" +
+  "   <td></td>" +
+  '  <td id="netPriceStatic"></td>' +
+  " </tr>" +
+  " <tr>" +
+  "   <th>Amount Paid</th>" +
+  "   <td></td>" +
+  '   <td id="amtPaid"></td>' +
+  " </tr>" +
+  " <tr>" +
+  "  <th>Balance</th>" +
+  "  <td></td>" +
+  '  <td id="balance">0</td>' +
+  " </tr>" +
+  "</tfoot>" +
+  " </table>" +
+  "<div" +
+  '  class="border border-right-0 border-left-0 text-center pt-3 pb-3"' +
+  ">" +
+  "  <strong>THANK YOU</strong>" +
+  "</div>" +
+  "</div>";
+
 const hideWarning = () => {
   document.getElementById("hide").classList.add("hide");
 };
@@ -52,8 +130,6 @@ const loadCart = () => {
     //calculate total quantity
     calculateTotal(cart);
   }
-
-  showStaticModal();
 };
 
 //table reseter
@@ -62,7 +138,7 @@ const emptyTable = () => {
   document.getElementById("totalQty").textContent = "-";
   document.getElementById("disccount").value = "0";
   document.getElementById("netPrice").textContent = "-";
-  document.getElementById("transType").value = "";
+  document.getElementById("transType").selectedIndex = 0;
   document.getElementById("customerForm").reset();
   let box = document.getElementById("transBox");
   if (!box.classList.contains("hide")) {
@@ -103,7 +179,7 @@ const addToCart = (cart, prodId, qty, unit) => {
   setTimeout(() => {
     document.getElementById("saleForm").reset();
     document.getElementById("prodName").focus();
-  }, 1000);
+  });
 };
 
 //check if in cart
@@ -153,7 +229,7 @@ const processSale = e => {
   } else if (!salesModel.productExists(stock, prodId)) {
     showWarning("No match found !!!");
   } else if (qty > matchQty) {
-    showWarning("Quantity entered is not available !!!");
+    showWarning("Quantity entered is not available or stock is exhausted !!!");
   } else {
     //updateCart
     addToCart(cart, prodId.value.trim(), qty, unit);
@@ -168,7 +244,7 @@ const addUpQty = (e, prodId, unit) => {
   //adding up quantity of matching products
   let matchQty = addUpMatch(stock, prodId);
   if (qty > matchQty) {
-    showWarning("Quantity entered is not available !!!");
+    showWarning("Quantity entered is not available or stock is exhausted !!!");
     //set it back to 1 or unit quantity
     e.target.value = unit;
   } else if (qty == 0) {
@@ -235,20 +311,63 @@ const handleTransType = e => {
 };
 
 const sub = (obj, qty) => {
+  //if stock if more than purchase quantity
   if (Number(obj.value.qty) > Number(qty)) {
+    //subtract purchase
     obj.value.qty = Number(obj.value.qty) - Number(qty);
+    //purchase  = 0
     qty = 0;
+    //return new values
     return [obj, qty];
+    //if purcahse is more than stock
   } else if (Number(obj.value.qty) < Number(qty)) {
+    //subtract purcahse from stock
     qty = Number(qty) - Number(obj.value.qty);
+    //stock = 0
     obj.value.qty = 0;
 
+    //return new values
     return [obj, qty];
+    //if stock == purchase
   } else {
+    //purchse = 0
     obj.value.qty = 0;
+    //stock == 0
     qty = 0;
+
+    //return new values
     return [obj, qty];
   }
+};
+
+const loadInvoiceStaticSection = (
+  invoiceId,
+  deposit,
+  transType,
+  disccount,
+  netPrice,
+  totalPrice,
+  amtPaid,
+  balance
+) => {
+  let date = new Date();
+  let { detail } = store.getSetupDetail();
+  document.getElementById("companyName").textContent =
+    detail[0].value.companyName;
+  document.getElementById("companyAddress").textContent =
+    detail[0].value.companyAddress;
+  document.getElementById("companyNumber").textContent =
+    detail[0].value.branchPhone;
+  document.getElementById("transTypeStatic").textContent =
+    transType.toUpperCase() + " TRANSACTION";
+  document.getElementById("invoiceId").textContent = invoiceId;
+  document.getElementById("total").textContent = totalPrice;
+  document.getElementById("disccountStatic").textContent = disccount + "%";
+  document.getElementById("netPriceStatic").textContent = netPrice;
+  document.getElementById("amtPaid").textContent = amtPaid;
+  document.getElementById("balance").textContent = balance;
+  document.getElementById("date").textContent =
+    date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear();
 };
 
 //invoice id genration
@@ -298,10 +417,28 @@ const execInvoice = (
     detailInsertion.then(({ data, headers, status }) => {
       if (status == 201) {
         //display and print invoice
-        cart = [];
-        store.setSaleStore(cart);
-        updateCart(cart);
-        emptyTable();
+        if (showStaticModal(invoiceTemplate)) {
+          //load purchase to inoice
+          displayPurchase(cart);
+          //enter static part of invoice
+          loadInvoiceStaticSection(
+            invoiceId,
+            deposit,
+            transType,
+            disccount,
+            netPrice,
+            totalPrice,
+            amtPaid,
+            balance
+          );
+
+          //clean up
+          cart = [];
+          store.setSaleStore(cart);
+          updateCart(cart);
+          emptyTable();
+          document.getElementById("prodName").focus();
+        }
       }
     });
   });

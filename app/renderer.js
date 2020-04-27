@@ -338,7 +338,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("addSales", loadCart);
+        pageLoader("addStock", loadStoreContent);
       });
     }
   }

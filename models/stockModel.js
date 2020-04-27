@@ -181,6 +181,16 @@ class stockModel extends Database {
     }
   }
 
+  getMatch(stock, id) {
+    let match = stock.filter(product => {
+      return product.value.prodId == id;
+    });
+
+    if (match.length > 0) {
+      return match;
+    }
+  }
+
   updateRecord(recordedProduct, detail, updateTargetNo) {
     recordedProduct.forEach(product => {
       if (product.no == updateTargetNo) {

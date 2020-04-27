@@ -460,3 +460,18 @@ const uploadList = e => {
     });
   });
 };
+
+//fill up input
+const fillUp = e => {
+  let id = e.target;
+  if (stockModel.idExists(stock, id)) {
+    //get match
+    let match = stockModel.getMatch(stock, id.value.trim());
+    let matchFocus = match[0];
+    document.getElementById("productName").value = matchFocus.value.name;
+    document.getElementById("productBrand").value = matchFocus.value.brand;
+    document.getElementById("unit").value = matchFocus.value.unit;
+    document.getElementById("form").value = matchFocus.value.form;
+    document.getElementById("price").value = matchFocus.value.price;
+  }
+};

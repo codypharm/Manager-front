@@ -338,7 +338,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("addStock", loadStoreContent);
+        pageLoader("allSales", LoadCurrentSales);
       });
     }
   }
@@ -498,7 +498,7 @@ const loadAllSales = e => {
   selectionRemover();
   addClass(allSales, "selected");
   addClass(subMenu1, "selectedDropper");
-  pageLoader("allSales");
+  pageLoader("allSales", LoadCurrentSales);
 };
 
 //cash sales

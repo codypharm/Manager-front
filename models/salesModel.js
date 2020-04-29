@@ -265,6 +265,80 @@ class salesModel extends Database {
       balance: balance
     });
   }
+
+  //handling sales form
+
+  getSales() {
+    let viewUrl = this.viewUrl.sales;
+    return this.couch.get("sales", viewUrl);
+  }
+
+  getMatchSales(sales, day, month, year) {
+    let match = sales.filter(sale => {
+      return (
+        sale.value.day == Number(day) &&
+        sale.value.month == Number(month) &&
+        sale.value.year == Number(year)
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getCashSales(sales) {
+    let match = sales.filter(sale => {
+      return sale.value.transType == "cash";
+    });
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getOnlineSales(sales) {
+    let match = sales.filter(sale => {
+      return sale.value.transType == "online";
+    });
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getCreditSales(sales) {
+    let match = sales.filter(sale => {
+      return sale.value.transType == "credit";
+    });
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+  getTotalSales(match) {
+    let total = 0;
+    //loop through all sales
+    match.forEach(sale => {
+      total += Number(sale.value.price);
+    });
+    return total;
+  }
+
+  getAvgDisccount(match) {
+    let totalDisccount = 0;
+    //loop through match
+    match.forEach(sale => {
+      totalDisccount += Number(sale.value.disccount);
+    });
+    let averageDisccount = totalDisccount / match.length;
+    return Math.ceil(averageDisccount);
+  }
 }
 
 module.exports = salesModel;

@@ -1,1 +1,149 @@
-credit
+<div class="sectionHead">
+  <div class="sectionHeadIcon">
+    <i class="fas fa-clipboard"></i>
+  </div>
+  <div class="sectionHeader">
+    <h2>Credit Sale Register</h2>
+  </div>
+
+  <div style="clear:both"></div>
+</div>
+
+<!-- main stocking form -->
+<section class="stockingBox row m-auto">
+  <div class="col-sm-9 col-lg-4 border m-auto  p-3 ">
+    <form action="">
+      <h5 class="">Date:</h5>
+      <div class="row">
+        <div class="col">
+          <input
+            type="text"
+            class="form-control text-center"
+            placeholder="DD"
+          />
+        </div>
+        <div class="col">
+          <input
+            type="text"
+            class="form-control text-center"
+            placeholder="MM"
+          />
+        </div>
+
+        <div class="col">
+          <input
+            type="text"
+            class="form-control text-center"
+            placeholder="YYYY"
+          />
+        </div>
+      </div>
+      <div class="row pt-4 ">
+        <div class="col text-center">
+          <button class="btn btn-primary">Process</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="row  m-auto pt-4">
+  <div class="card card-default w-100">
+    <div class="card-header">Sales For 20-01-2020</div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <th>Product</th>
+            <th>Product Id</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Paracetamol</td>
+              <td>129489309</td>
+              <td>15</td>
+              <td>450</td>
+            </tr>
+            <tr>
+              <td>Paracetamol</td>
+              <td>129489309</td>
+              <td>15</td>
+              <td>450</td>
+            </tr>
+            <tr>
+              <td>Paracetamol</td>
+              <td>129489309</td>
+              <td>15</td>
+              <td>450</td>
+            </tr>
+            <tr>
+              <td>Paracetamol</td>
+              <td>129489309</td>
+              <td>15</td>
+              <td>450</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="row m-auto pt-4">
+  <div class="border w-100 mt-5">
+    <table class="table table-sm">
+      <thead class="thead-light">
+        <th>Total</th>
+        <th>Cash Sales</th>
+        <th>Online Sales</th>
+        <th>Credit Sales</th>
+        <th>Disccount</th>
+        <th>Balance</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1000</td>
+          <td>500</td>
+          <td>150</td>
+          <td>500</td>
+          <td>10</td>
+          <td>1000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script id="cartContainer" type="text/xhandlebars-template">
+  {{#each data}}
+  <tr>
+    <td class="">
+      {{name}}
+    </td>
+    <td class=" text-center">
+      <input type="number" value="{{qty}}"  class="inputWidth pl-1"  oninput="addUpQty(event,{{productId}},{{unit}})"/>
+    </td>
+    <td class="text-center">
+      {{price}}
+    </td>
+    <td class="text-center">
+      <div class="cartCancelPen" onclick="cancelCurSale(event)" data-id="{{productId}}">
+        <i class="fas fa-times" data-id="{{productId}}"></i>
+      </div>
+    </td>
+  </tr>
+  {{/each}}
+</script>
+
+<script id="purchaseContainer" type="text/xhandlebars-template">
+  {{#each data}}
+  <tr>
+    <td>{{name}}</td>
+    <td>{{qty}}</td>
+    <td>{{price}}</td>
+  </tr>
+
+  {{/each}}
+</script>

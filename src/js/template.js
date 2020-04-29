@@ -82,3 +82,16 @@ const displayPurchase = purchase => {
 
   let container = (document.getElementById("purchase").innerHTML = myhtml);
 };
+
+const displayMatchSales = sales => {
+  let newObj = {
+    data: sales
+  };
+
+  let template = document.getElementById("salesContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("salesList").innerHTML = myhtml);
+};

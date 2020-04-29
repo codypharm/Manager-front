@@ -5,6 +5,7 @@ var cart = [];
 
 //global variable
 var stock;
+var sales;
 
 var invoiceTemplate =
   '<h4 class="text-center" id="companyName"></h4>' +
@@ -617,4 +618,162 @@ const cancelAllSales = e => {
       emptyTable();
     }
   });
+};
+
+//sales listing js starts
+
+//add up total
+const addUpDispSalesMoney = match => {
+  let total = salesModel.getTotalSales(match);
+  document.getElementById("totalSales").textContent = total;
+};
+
+//get total cash sales on display.
+const addUpDispCashSales = match => {
+  //get cash sales
+  let cashSales = salesModel.getCashSales(match);
+  if (cashSales == false) {
+    document.getElementById("totalCashSales").textContent = 0;
+  } else {
+    let total = 0;
+    //loop through cash sales
+    cashSales.forEach(sale => {
+      total += Number(sale.value.price);
+    });
+    document.getElementById("totalCashSales").textContent = total;
+  }
+};
+
+//get total online sales on display
+const addUpDispCreditSales = match => {
+  //get credit sales
+  let creditSales = salesModel.getCreditSales(match);
+  if (creditSales == false) {
+    document.getElementById("totalCreditSales").textContent = 0;
+  } else {
+    let total = 0;
+    //loop through cash sales
+    creditSales.forEach(sale => {
+      total += Number(sale.value.price);
+    });
+    document.getElementById("totalCreditSales").textContent = total;
+  }
+};
+
+//get total online sales on display.
+const addUpDispOnlineSales = match => {
+  //get cash sales
+  let onlineSales = salesModel.getOnlineSales(match);
+  if (onlineSales == false) {
+    document.getElementById("totalOnlineSales").textContent = 0;
+  } else {
+    let total = 0;
+    //loop through cash sales
+    onlineSales.forEach(sale => {
+      total += Number(sale.value.price);
+    });
+    document.getElementById("totalOnlineSales").textContent = total;
+  }
+};
+
+//get average disccount
+const getAverageDisccount = match => {
+  let averageDisccount = salesModel.getAvgDisccount(match);
+  document.getElementById("avgDisccount").textContent = averageDisccount;
+};
+
+//get Balance
+const getBalance = match => {
+  let total = salesModel.getTotalSales(match);
+  let avgDis = salesModel.getAvgDisccount(match);
+  let balance = total - (avgDis * total) / 100;
+  document.getElementById("balance").textContent = balance;
+};
+
+//mark all empty summary box
+const allSummaryHandle = () => {
+  document.getElementById("totalSales").textContent = "-";
+  document.getElementById("totalCashSales").textContent = "-";
+  document.getElementById("totalOnlineSales").textContent = "-";
+  document.getElementById("totalCreditSales").textContent = "-";
+  document.getElementById("avgDisccount").textContent = "-";
+  document.getElementById("balance").textContent = "-";
+};
+
+//get sales matching the date provided
+const getSales = (day, month, year) => {
+  //get sales if sales ahve been defined
+  let match = salesModel.getMatchSales(sales, day, month, year);
+
+  if (match != false) {
+    displayMatchSales(match);
+    document.getElementById("dispDate").textContent =
+      day + "-" + month + "-" + year;
+    //get total sales on display
+    addUpDispSalesMoney(match);
+
+    //get total cash sales on display
+    addUpDispCashSales(match);
+
+    //get total online sales on display
+    addUpDispOnlineSales(match);
+
+    //get total online sales on display
+    addUpDispCreditSales(match);
+
+    //get average disccount
+    getAverageDisccount(match);
+
+    //get balance
+    getBalance(match);
+  } else {
+    document.getElementById("salesList").innerHTML =
+      " <tr>" +
+      ' <td colspan="5" class="text-center">' +
+      "  <span>No sales found</span>" +
+      " </td>" +
+      " </tr>";
+
+    allSummaryHandle();
+  }
+};
+
+//load ing page
+const LoadCurrentSales = () => {
+  let date = new Date();
+  let day = date.getDate();
+  let month = date.getMonth();
+  let year = date.getFullYear();
+
+  //get sales
+  let salesGet = salesModel.getSales();
+  salesGet.then(({ data, headers, status }) => {
+    sales = data.rows;
+    //get sales for the mathching date
+    getSales(day, month, year);
+
+    //enable button
+    document.getElementById("processBtn").disabled = false;
+  });
+
+  document.getElementById("saleDay").value = day;
+  document.getElementById("saleMonth").value = month;
+  document.getElementById("saleYear").value = year;
+};
+
+//load sales on button click
+const loadSales = e => {
+  e.preventDefault();
+
+  document.getElementById("salesList").innerHTML =
+    "<tr>" +
+    '<td colspan="5" class="text-center" >' +
+    '<div class="spinner-grow text-success"></div>' +
+    "</td>" +
+    "</tr>";
+  let day = document.getElementById("saleDay").value;
+  let month = document.getElementById("saleMonth").value;
+  let year = document.getElementById("saleYear").value;
+
+  getSales(day, month, year);
 };

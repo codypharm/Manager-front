@@ -338,7 +338,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("allSales", LoadCurrentSales);
+        pageLoader("onlineSales", loadOtherSales("online"));
       });
     }
   }
@@ -509,7 +509,7 @@ const loadCashSales = e => {
   selectionRemover();
   addClass(cashSales, "selected");
   addClass(subMenu1, "selectedDropper");
-  pageLoader("cashSales");
+  pageLoader("cashSales", loadOtherSales("cash"));
 };
 
 //credit sales
@@ -531,7 +531,7 @@ const loadOnlineSales = e => {
   selectionRemover();
   addClass(onlineSales, "selected");
   addClass(subMenu1, "selectedDropper");
-  pageLoader("onlineSales");
+  pageLoader("onlineSales", loadOtherSales("online"));
 };
 
 //add sales

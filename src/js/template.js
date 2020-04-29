@@ -95,3 +95,29 @@ const displayMatchSales = sales => {
 
   let container = (document.getElementById("salesList").innerHTML = myhtml);
 };
+
+const displayMatchCashSales = sales => {
+  let newObj = {
+    data: sales
+  };
+
+  let template = document.getElementById("cashSalesContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("salesList").innerHTML = myhtml);
+};
+
+const displayMatchOnlineSales = sales => {
+  let newObj = {
+    data: sales
+  };
+
+  let template = document.getElementById("onlineSalesContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("salesList").innerHTML = myhtml);
+};

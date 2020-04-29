@@ -289,6 +289,23 @@ class salesModel extends Database {
     }
   }
 
+  getOtherMatchSales(sales, day, month, year, saleType) {
+    let match = sales.filter(sale => {
+      return (
+        sale.value.day == Number(day) &&
+        sale.value.month == Number(month) &&
+        sale.value.year == Number(year) &&
+        sale.value.transType == saleType
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
   getCashSales(sales) {
     let match = sales.filter(sale => {
       return sale.value.transType == "cash";
@@ -330,11 +347,34 @@ class salesModel extends Database {
     return total;
   }
 
+  getOtherTotalSales(match, saleType) {
+    let total = 0;
+    //loop through all sales
+    match.forEach(sale => {
+      if (sale.value.transType == saleType) {
+        total += Number(sale.value.price);
+      }
+    });
+    return total;
+  }
+
   getAvgDisccount(match) {
     let totalDisccount = 0;
     //loop through match
     match.forEach(sale => {
       totalDisccount += Number(sale.value.disccount);
+    });
+    let averageDisccount = totalDisccount / match.length;
+    return Math.ceil(averageDisccount);
+  }
+
+  getOtherAvgDisccount(match, saleType) {
+    let totalDisccount = 0;
+    //loop through match
+    match.forEach(sale => {
+      if (sale.value.transType == saleType) {
+        totalDisccount += Number(sale.value.disccount);
+      }
     });
     let averageDisccount = totalDisccount / match.length;
     return Math.ceil(averageDisccount);

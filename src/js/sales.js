@@ -628,6 +628,12 @@ const addUpDispSalesMoney = match => {
   document.getElementById("totalSales").textContent = total;
 };
 
+//get total sales on display
+const addUpOtherDispSalesMoney = (match, saleType) => {
+  let total = salesModel.getOtherTotalSales(match, saleType);
+  document.getElementById("totalSales").textContent = total;
+};
+
 //get total cash sales on display.
 const addUpDispCashSales = match => {
   //get cash sales
@@ -682,6 +688,13 @@ const getAverageDisccount = match => {
   document.getElementById("avgDisccount").textContent = averageDisccount;
 };
 
+//get average disccount for other sale types
+const getOtherAverageDisccount = (match, saleType) => {
+  let averageDisccount = salesModel.getOtherAvgDisccount(match, saleType);
+
+  document.getElementById("avgDisccount").textContent = averageDisccount;
+};
+
 //get Balance
 const getBalance = match => {
   let total = salesModel.getTotalSales(match);
@@ -690,12 +703,22 @@ const getBalance = match => {
   document.getElementById("balance").textContent = balance;
 };
 
+//get other balance
+const getOtherBalance = (match, saleType) => {
+  let total = salesModel.getOtherTotalSales(match, saleType);
+  let avgDis = salesModel.getOtherAvgDisccount(match, saleType);
+  let balance = total - (avgDis * total) / 100;
+  document.getElementById("balance").textContent = balance;
+};
+
 //mark all empty summary box
-const allSummaryHandle = () => {
+const allSummaryHandle = saleType => {
   document.getElementById("totalSales").textContent = "-";
-  document.getElementById("totalCashSales").textContent = "-";
-  document.getElementById("totalOnlineSales").textContent = "-";
-  document.getElementById("totalCreditSales").textContent = "-";
+  if (saleType == "all") {
+    document.getElementById("totalCashSales").textContent = "-";
+    document.getElementById("totalOnlineSales").textContent = "-";
+    document.getElementById("totalCreditSales").textContent = "-";
+  }
   document.getElementById("avgDisccount").textContent = "-";
   document.getElementById("balance").textContent = "-";
 };
@@ -734,11 +757,44 @@ const getSales = (day, month, year) => {
       " </td>" +
       " </tr>";
 
-    allSummaryHandle();
+    allSummaryHandle("all");
   }
 };
 
-//load ing page
+//get sales for the mathching date and sale type
+const getOtherSales = (day, month, year, saleType) => {
+  //get sales if sales have been defined
+  let match = salesModel.getOtherMatchSales(sales, day, month, year, saleType);
+
+  if (match != false) {
+    if (saleType == "cash") {
+      displayMatchCashSales(match);
+    } else if (saleType == "online") {
+      displayMatchOnlineSales(match);
+    }
+    document.getElementById("dispDate").textContent =
+      day + "-" + month + "-" + year;
+    //get total sales on display
+    addUpOtherDispSalesMoney(match, saleType);
+
+    //get average disccount
+    getOtherAverageDisccount(match, saleType);
+
+    //get balance
+    getOtherBalance(match, saleType);
+  } else {
+    document.getElementById("salesList").innerHTML =
+      " <tr>" +
+      ' <td colspan="5" class="text-center">' +
+      "  <span>No sales found</span>" +
+      " </td>" +
+      " </tr>";
+
+    allSummaryHandle(saleType);
+  }
+};
+
+//load current page
 const LoadCurrentSales = () => {
   let date = new Date();
   let day = date.getDate();
@@ -761,6 +817,29 @@ const LoadCurrentSales = () => {
   document.getElementById("saleYear").value = year;
 };
 
+//load sales for online credit and cash transactions
+const loadOtherSales = saleType => {
+  let date = new Date();
+  let day = date.getDate();
+  let month = date.getMonth();
+  let year = date.getFullYear();
+
+  //get sales
+  let salesGet = salesModel.getSales();
+  salesGet.then(({ data, headers, status }) => {
+    sales = data.rows;
+    //get sales for the mathching date
+    getOtherSales(day, month, year, saleType);
+
+    //enable button
+    document.getElementById("processBtn").disabled = false;
+
+    document.getElementById("otherSaleDay").value = day;
+    document.getElementById("otherSaleMonth").value = month;
+    document.getElementById("otherSaleYear").value = year;
+  });
+};
+
 //load sales on button click
 const loadSales = e => {
   e.preventDefault();
@@ -776,4 +855,22 @@ const loadSales = e => {
   let year = document.getElementById("saleYear").value;
 
   getSales(day, month, year);
+};
+
+//load other sales
+const loadOtherSelectedSales = (e, saleType) => {
+  e.preventDefault();
+
+  document.getElementById("salesList").innerHTML =
+    "<tr>" +
+    '<td colspan="5" class="text-center" >' +
+    '<div class="spinner-grow text-success"></div>' +
+    "</td>" +
+    "</tr>";
+  let day = document.getElementById("otherSaleDay").value;
+  let month = document.getElementById("otherSaleMonth").value;
+  let year = document.getElementById("otherSaleYear").value;
+
+  //get sales for the mathching date
+  getOtherSales(day, month, year, saleType);
 };

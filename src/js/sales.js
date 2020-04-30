@@ -771,6 +771,8 @@ const getOtherSales = (day, month, year, saleType) => {
       displayMatchCashSales(match);
     } else if (saleType == "online") {
       displayMatchOnlineSales(match);
+    } else if (saleType == "credit") {
+      displayMatchCreditSales(match);
     }
     document.getElementById("dispDate").textContent =
       day + "-" + month + "-" + year;
@@ -823,7 +825,9 @@ const loadOtherSales = saleType => {
   let day = date.getDate();
   let month = date.getMonth();
   let year = date.getFullYear();
-
+  document.getElementById("otherSaleDay").value = day;
+  document.getElementById("otherSaleMonth").value = month;
+  document.getElementById("otherSaleYear").value = year;
   //get sales
   let salesGet = salesModel.getSales();
   salesGet.then(({ data, headers, status }) => {
@@ -833,10 +837,6 @@ const loadOtherSales = saleType => {
 
     //enable button
     document.getElementById("processBtn").disabled = false;
-
-    document.getElementById("otherSaleDay").value = day;
-    document.getElementById("otherSaleMonth").value = month;
-    document.getElementById("otherSaleYear").value = year;
   });
 };
 

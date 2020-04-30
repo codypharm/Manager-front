@@ -121,3 +121,16 @@ const displayMatchOnlineSales = sales => {
 
   let container = (document.getElementById("salesList").innerHTML = myhtml);
 };
+
+const displayMatchCreditSales = sales => {
+  let newObj = {
+    data: sales
+  };
+
+  let template = document.getElementById("creditSalesContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("salesList").innerHTML = myhtml);
+};

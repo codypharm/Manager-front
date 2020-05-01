@@ -4,6 +4,7 @@
 // validate comes from renderer process
 //require files
 const SalesModel = require("../models/salesModel");
+const InvoiceModel = require("../models/invoiceModel");
 const StaffModel = require("../models/staffModel");
 const StockModel = require("../models/stockModel");
 const Validator = require("../src/js/validator");
@@ -25,3 +26,4 @@ const login = new Login();
 const staffModel = new StaffModel();
 const stockModel = new StockModel();
 const salesModel = new SalesModel();
+const invoiceModel = new InvoiceModel();

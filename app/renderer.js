@@ -305,7 +305,31 @@ const pageLoader = (page, fxn = false) => {
     } else {
       pagePlate.innerHTML = data;
       if (fxn != false) {
-        fxn();
+        switch (page) {
+          case "onlineSales":
+            fxn("online");
+            break;
+
+          case "cashSales":
+            fxn("cash");
+            break;
+
+          case "creditSales":
+            fxn("credit");
+            break;
+
+          case "debtInvoices":
+            fxn("debt");
+            break;
+
+          case "clearedInvoices":
+            fxn("cleared");
+            break;
+
+          default:
+            fxn();
+            break;
+        }
       }
     }
   });
@@ -338,7 +362,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("onlineSales", loadOtherSales("online"));
+        pageLoader("allInvoices", loadCurrentInvoices);
       });
     }
   }
@@ -498,7 +522,7 @@ const loadAllSales = e => {
   selectionRemover();
   addClass(allSales, "selected");
   addClass(subMenu1, "selectedDropper");
-  pageLoader("allSales", LoadCurrentSales);
+  pageLoader("allSales", loadCurrentSales);
 };
 
 //cash sales
@@ -509,7 +533,7 @@ const loadCashSales = e => {
   selectionRemover();
   addClass(cashSales, "selected");
   addClass(subMenu1, "selectedDropper");
-  pageLoader("cashSales", loadOtherSales("cash"));
+  pageLoader("cashSales", loadOtherSales);
 };
 
 //credit sales
@@ -520,7 +544,7 @@ const loadCreditSales = e => {
   selectionRemover();
   addClass(creditSales, "selected");
   addClass(subMenu1, "selectedDropper");
-  pageLoader("creditSales");
+  pageLoader("creditSales", loadOtherSales);
 };
 
 //online sales
@@ -531,7 +555,7 @@ const loadOnlineSales = e => {
   selectionRemover();
   addClass(onlineSales, "selected");
   addClass(subMenu1, "selectedDropper");
-  pageLoader("onlineSales", loadOtherSales("online"));
+  pageLoader("onlineSales", loadOtherSales);
 };
 
 //add sales
@@ -644,7 +668,7 @@ const loadAllInvoices = e => {
   selectionRemover();
   addClass(allInvoices, "selected");
   addClass(subMenu4, "selectedDropper");
-  pageLoader("allInvoices");
+  pageLoader("allInvoices", loadCurrentInvoices);
 };
 
 //cleared invoices
@@ -655,7 +679,7 @@ const loadClearedInvoices = e => {
   selectionRemover();
   addClass(clearedInvoices, "selected");
   addClass(subMenu4, "selectedDropper");
-  pageLoader("clearedInvoices");
+  pageLoader("clearedInvoices", loadOtherInvoices);
 };
 
 //debt invoices
@@ -666,7 +690,7 @@ const loadDebtInvoices = e => {
   selectionRemover();
   addClass(debtInvoices, "selected");
   addClass(subMenu4, "selectedDropper");
-  pageLoader("debtInvoices");
+  pageLoader("debtInvoices", loadOtherInvoices);
 };
 
 //expenses

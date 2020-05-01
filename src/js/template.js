@@ -83,6 +83,19 @@ const displayPurchase = purchase => {
   let container = (document.getElementById("purchase").innerHTML = myhtml);
 };
 
+const displaySalesInvoice = sales => {
+  let newObj = {
+    data: sales
+  };
+
+  let template = document.getElementById("invoiceSalesContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("purchase").innerHTML = myhtml);
+};
+
 const displayMatchSales = sales => {
   let newObj = {
     data: sales
@@ -133,4 +146,25 @@ const displayMatchCreditSales = sales => {
   let myhtml = compiledData(newObj);
 
   let container = (document.getElementById("salesList").innerHTML = myhtml);
+};
+
+const displayMatchInvoices = invoices => {
+  let newObj = {
+    data: invoices
+  };
+
+  Handlebars.registerHelper("invoiceStatus", balance => {
+    if (Number(balance) > 0) {
+      return "pending";
+    } else {
+      return "cleared";
+    }
+  });
+
+  let template = document.getElementById("invoiceContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("invoicesList").innerHTML = myhtml);
 };

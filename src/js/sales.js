@@ -8,9 +8,9 @@ var stock;
 var sales;
 
 var invoiceTemplate =
-  '<h4 class="text-center" id="companyName"></h4>' +
-  '<div class="text-center mt-2" id="companyAddress"></div>' +
-  '<div class="text-center mt-2" id="companyNumber"></div>' +
+  '<h4 class="text-center" id="companyStaticName"></h4>' +
+  '<div class="text-center mt-2" id="companyStaticAddress"></div>' +
+  '<div class="text-center mt-2" id="companyStaticNumber"></div>' +
   '<h5 class="text-center mt-2" id="transTypeStatic"></h5>' +
   "<div>" +
   '  <table class="table table-borderless table-sm mt-3">' +
@@ -353,11 +353,11 @@ const loadInvoiceStaticSection = (
 ) => {
   let date = new Date();
   let { detail } = store.getSetupDetail();
-  document.getElementById("companyName").textContent =
+  document.getElementById("companyStaticName").textContent =
     detail[0].value.companyName;
-  document.getElementById("companyAddress").textContent =
+  document.getElementById("companyStaticAddress").textContent =
     detail[0].value.companyAddress;
-  document.getElementById("companyNumber").textContent =
+  document.getElementById("companyStaticNumber").textContent =
     detail[0].value.branchPhone;
   document.getElementById("transTypeStatic").textContent =
     transType.toUpperCase() + " TRANSACTION";
@@ -419,7 +419,7 @@ const execInvoice = (
       if (status == 201) {
         //display and print invoice
         if (showStaticModal(invoiceTemplate)) {
-          //load purchase to inoice
+          //load purchase to invoice
           displayPurchase(cart);
           //enter static part of invoice
           loadInvoiceStaticSection(
@@ -796,8 +796,8 @@ const getOtherSales = (day, month, year, saleType) => {
   }
 };
 
-//load current page
-const LoadCurrentSales = () => {
+//load current sales page
+const loadCurrentSales = () => {
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth();

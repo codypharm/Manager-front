@@ -250,19 +250,23 @@ class salesModel extends Database {
     amtPaid,
     balance
   ) {
+    let date = new Date();
     return this.couch.insert("invoice", {
       id: id,
       invoiceId: invoiceId,
       customerAddress: customerAddress,
       customerName: customerName,
-      customerNumber: customerName,
-      deposit: deposit,
+      customerNumber: customerNumber,
+
       transType: transType,
       disccount: disccount,
       netPrice: netPrice,
       totalPrice: totalPrice,
       amtPaid: amtPaid,
-      balance: balance
+      balance: balance,
+      day: date.getDate(),
+      month: date.getMonth(),
+      year: date.getFullYear()
     });
   }
 

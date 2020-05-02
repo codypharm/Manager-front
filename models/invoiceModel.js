@@ -12,6 +12,34 @@ class Invoice extends Database {
     return this.couch.get("invoice", viewUrl);
   }
 
+  getOtherMatchInvoices(invoices, day, month, year, invoiceType) {
+    let match = invoices.filter(invoice => {
+      if (invoiceType == "cleared") {
+        return (
+          invoice.value.transType == "credit" &&
+          Number(invoice.value.balance) < 1 &&
+          invoice.value.day == Number(day) &&
+          invoice.value.month == Number(month) &&
+          invoice.value.year == Number(year)
+        );
+      } else if (invoiceType == "debt") {
+        return (
+          invoice.value.transType == "credit" &&
+          Number(invoice.value.balance) > 0 &&
+          invoice.value.day == Number(day) &&
+          invoice.value.month == Number(month) &&
+          invoice.value.year == Number(year)
+        );
+      }
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
   getMatchInvoices(invoices, day, month, year) {
     let match = invoices.filter(invoice => {
       return (

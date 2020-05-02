@@ -96,6 +96,33 @@ const displaySalesInvoice = sales => {
   let container = (document.getElementById("purchase").innerHTML = myhtml);
 };
 
+const displayClearedSalesInvoice = sales => {
+  let newObj = {
+    data: sales
+  };
+
+  let template = document.getElementById("invoiceClearedSalesContainer")
+    .innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("purchase").innerHTML = myhtml);
+};
+
+const displayDebtSalesInvoice = sales => {
+  let newObj = {
+    data: sales
+  };
+
+  let template = document.getElementById("invoiceDebtSalesContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("purchase").innerHTML = myhtml);
+};
+
 const displayMatchSales = sales => {
   let newObj = {
     data: sales
@@ -162,6 +189,32 @@ const displayMatchInvoices = invoices => {
   });
 
   let template = document.getElementById("invoiceContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("invoicesList").innerHTML = myhtml);
+};
+
+const displayClearedMatchInvoices = invoices => {
+  let newObj = {
+    data: invoices
+  };
+
+  let template = document.getElementById("clearedInvoiceContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("invoicesList").innerHTML = myhtml);
+};
+
+const displayDebtMatchInvoices = invoices => {
+  let newObj = {
+    data: invoices
+  };
+
+  let template = document.getElementById("debtInvoiceContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
 
   let myhtml = compiledData(newObj);

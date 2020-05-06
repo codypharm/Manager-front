@@ -4,6 +4,61 @@
 //globale variables
 var invoices;
 
+//debt payment template
+var debtForm =
+  '<form action="form">' +
+  '<div class=" alert alert-danger hide" id="errorModalBox"></div>' +
+  '<div class=" alert alert-success hide" id="successModalBox"></div>' +
+  '<label for="amt">Total Amount:</label>' +
+  "<div" +
+  '  class="border border-success border-top-0 border-right-0 border-left-0 "' +
+  ">" +
+  " <input" +
+  '  type="text"' +
+  "  readonly" +
+  '  value=""' +
+  '  class="form-control border-success border-top-0 border-right-0 border-left-0 border-bottom-0 bg-light"' +
+  '  id="amt"' +
+  " />" +
+  "</div>" +
+  '<label for="paid" class="pt-3">Paid:</label>' +
+  "<div" +
+  '  class="border border-success border-top-0 border-right-0 border-left-0 "' +
+  ">" +
+  "  <input" +
+  '   type="text"' +
+  "   readonly" +
+  '   value=""' +
+  '   class="form-control border-success border-top-0 border-right-0 border-left-0 border-bottom-0 bg-light"' +
+  '   id="paid"' +
+  " />" +
+  "</div>" +
+  '<label for="balance" class="pt-3">Balance:</label>' +
+  "<div" +
+  ' class="border border-success border-top-0 border-right-0 border-left-0 "' +
+  ">" +
+  " <input" +
+  '   type="text"' +
+  "    readonly" +
+  '  value=""' +
+  '  class="form-control border-success border-top-0 border-right-0 border-left-0 border-bottom-0 bg-light"' +
+  '  id="invoiceClearBalance"' +
+  " />" +
+  "</div>" +
+  '<label for="paying" class="pt-3">Paying:</label>' +
+  "<div" +
+  ' class="border border-success border-top-0 border-right-0 border-left-0 "' +
+  ">" +
+  "<input" +
+  '  type="text"' +
+  '  placeholder="enter amount being paid"' +
+  '  class="form-control border-success border-top-0 border-right-0 border-left-0 border-bottom-0 bg-light"' +
+  '  id="paying"' +
+  " />" +
+  '<input type="hidden" id="invoiceHidden"/>' +
+  "</div>" +
+  "</form>";
+
 var invoiceOtherTemplate =
   '<h4 class="text-center" id="companyStaticName"></h4>' +
   '<div class="text-center mt-2" id="companyStaticAddress"></div>' +
@@ -164,7 +219,7 @@ const getOtherInvoices = (day, month, year, invoiceType) => {
 const loadCurrentInvoices = () => {
   let date = new Date();
   let day = date.getDate();
-  let month = date.getMonth();
+  let month = date.getMonth() + 1;
   let year = date.getFullYear();
 
   //get all invoices
@@ -187,7 +242,7 @@ const loadCurrentInvoices = () => {
 const loadOtherInvoices = invoiceType => {
   let date = new Date();
   let day = date.getDate();
-  let month = date.getMonth();
+  let month = date.getMonth() + 1;
   let year = date.getFullYear();
 
   //get all invoices
@@ -249,6 +304,7 @@ const viewInvoice = (e, invoiceId, invoiceType) => {
   //get details about this invoice
   let matchingInvoice = invoiceModel.getSelectedInvoice(invoices, invoiceId);
   let selectedInvoice = matchingInvoice[0];
+
   let salesLoader = salesModel.getSales();
   salesLoader.then(({ data, headers, status }) => {
     let sales = data.rows;
@@ -294,4 +350,98 @@ const viewInvoice = (e, invoiceId, invoiceType) => {
         selectedInvoice.value.balance;
     }
   });
+};
+
+//click clear button
+const clearInvoice = (e, id) => {
+  //show modal
+  let debtModal = showDebtForm(debtForm);
+  if (debtModal) {
+    //get detils for the invoice
+    let invoiceDetail = invoiceModel.getSelectedInvoice(invoices, id);
+    let detail = invoiceDetail[0];
+    document.getElementById("amt").value = detail.value.netPrice;
+    document.getElementById("paid").value = detail.value.amtPaid;
+    document.getElementById("invoiceClearBalance").value = detail.value.balance;
+    document.getElementById("clearProcessBtn").dataset.id = id;
+  }
+};
+
+//update invoices array
+const invoiceUpdator = (invoices, newBalance, newAmtPaid, detail) => {
+  invoices.forEach(invoice => {
+    if (invoice.value.invoiceId == detail.value.invoiceId) {
+      invoice.value.balance = newBalance;
+      invoice.value.amtPaid = newAmtPaid;
+    }
+  });
+  return invoices;
+};
+
+//process debt payment
+const processDebtPayment = e => {
+  e.preventDefault();
+  //hide alert boxes
+  let errorBox = document.getElementById("errorModalBox");
+  let successBox = document.getElementById("successModalBox");
+  if (!errorBox.classList.contains("hide")) {
+    errorBox.classList.add("hide");
+  }
+
+  if (!successBox.classList.contains("hide")) {
+    successBox.classList.add("hide");
+  }
+  let invoiceId = document.getElementById("clearProcessBtn").dataset.id;
+  let amtEntered = document.getElementById("paying").value;
+
+  //get detils for the invoice
+  let invoiceDetail = invoiceModel.getSelectedInvoice(invoices, invoiceId);
+
+  let detail = invoiceDetail[0];
+
+  let regex = /[0-9]/;
+  if (!regex.test(amtEntered)) {
+    errorBox.classList.remove("hide");
+    errorBox.textContent = "Please enter a valid input";
+  } else if (amtEntered > Number(detail.value.balance)) {
+    errorBox.classList.remove("hide");
+    errorBox.textContent = "Amount entered exceeds balance";
+  } else {
+    //get new paid amount
+    let newAmtPaid = Number(detail.value.amtPaid) + Number(amtEntered);
+    //get new balance
+    let newBalance = Number(detail.value.netPrice) - Number(newAmtPaid);
+    //update invoice in db
+    let invoiceUpdate = invoiceModel.updateInvoice(
+      detail,
+      newBalance,
+      newAmtPaid
+    );
+    invoiceUpdate.then(({ data, headers, status }) => {
+      if (status == 201) {
+        if (hideDebtModal()) {
+          successBox.classList.remove("hide");
+          successBox.textContent = "Transaction successfull";
+
+          document.getElementById("invoicesList").innerHTML =
+            "<tr>" +
+            '<td colspan="8" class="text-center" >' +
+            '<div class="spinner-grow text-success"></div>' +
+            "</td>" +
+            "</tr>";
+
+          let day = document.getElementById("otherInvoiceDay").value;
+          let month = document.getElementById("otherInvoiceMonth").value;
+          let year = document.getElementById("otherInvoiceYear").value;
+          //update invoices
+          invoices = invoiceUpdator(invoices, newBalance, newAmtPaid, detail);
+
+          //get other invoices for the mathching date
+          getOtherInvoices(day, month, year, "debt");
+        }
+      }
+    });
+  }
+
+  //hideDebtModal();
 };

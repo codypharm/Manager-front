@@ -248,7 +248,7 @@ class stockModel extends Database {
       error: error,
       batchId: batchId,
       day: date.getDate(),
-      month: date.getMonth(),
+      month: date.getMonth() + 1,
       year: date.getFullYear(),
       recorder: loginDetail.fname + " " + loginDetail.lname,
       recorderEmail: loginDetail.email

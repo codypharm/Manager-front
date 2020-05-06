@@ -36,6 +36,17 @@ const showStaticModal = message => {
   return true;
 };
 
+const showDebtForm = message => {
+  $(".updateStaticModal").modal("show");
+  $("#updateStaticBody").html(message);
+  return true;
+};
+
+const hideDebtModal = () => {
+  $(".updateStaticModal").modal("hide");
+  return true;
+};
+
 // eslint-disable-next-line no-unused-vars
 const showInputs = e => {
   let target = e.target;

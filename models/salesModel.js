@@ -231,7 +231,7 @@ class salesModel extends Database {
       transactionType: transType,
       disccount: disccount,
       day: date.getDate(),
-      month: date.getMonth(),
+      month: date.getMonth() + 1,
       year: date.getFullYear()
     });
   }
@@ -265,7 +265,7 @@ class salesModel extends Database {
       amtPaid: amtPaid,
       balance: balance,
       day: date.getDate(),
-      month: date.getMonth(),
+      month: date.getMonth() + 1,
       year: date.getFullYear()
     });
   }

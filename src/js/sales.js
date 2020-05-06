@@ -368,7 +368,7 @@ const loadInvoiceStaticSection = (
   document.getElementById("amtPaid").textContent = amtPaid;
   document.getElementById("balance").textContent = balance;
   document.getElementById("date").textContent =
-    date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear();
+    date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
 };
 
 //invoice id genration
@@ -459,7 +459,7 @@ const insertSale = cart => {
   let netPrice = document.getElementById("netPrice").textContent;
   let totalPrice = document.getElementById("totalPrice").textContent;
 
-  if (deposit == 0 || deposit == "") {
+  if ((deposit == 0 || deposit == "") && transType != "credit") {
     amtPaid = netPrice;
     balance = 0;
   } else {
@@ -800,7 +800,7 @@ const getOtherSales = (day, month, year, saleType) => {
 const loadCurrentSales = () => {
   let date = new Date();
   let day = date.getDate();
-  let month = date.getMonth();
+  let month = date.getMonth() + 1;
   let year = date.getFullYear();
 
   //get sales
@@ -823,7 +823,7 @@ const loadCurrentSales = () => {
 const loadOtherSales = saleType => {
   let date = new Date();
   let day = date.getDate();
-  let month = date.getMonth();
+  let month = date.getMonth() + 1;
   let year = date.getFullYear();
   document.getElementById("otherSaleDay").value = day;
   document.getElementById("otherSaleMonth").value = month;

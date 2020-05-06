@@ -75,6 +75,26 @@ class Invoice extends Database {
       return match;
     }
   }
+
+  updateInvoice(detail, newBalance, newAmtPaid) {
+    return this.couch.update("invoice", {
+      _id: detail.id,
+      _rev: detail.value.rev,
+      invoiceId: detail.value.invoiceId,
+      customerAddress: detail.value.customerAddress,
+      customerName: detail.value.customerName,
+      customerNumber: detail.value.customerNumber,
+      transType: "credit",
+      disccount: detail.value.disccount,
+      netPrice: detail.value.netPrice,
+      totalPrice: detail.value.totalPrice,
+      amtPaid: newAmtPaid,
+      balance: newBalance,
+      day: detail.value.day,
+      month: detail.value.month,
+      year: detail.value.year
+    });
+  }
 }
 
 module.exports = Invoice;

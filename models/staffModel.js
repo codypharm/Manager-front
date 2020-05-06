@@ -37,7 +37,7 @@ class staffModel extends Database {
       permission: details.permission,
       access: "open",
       regDay: date.getDate(),
-      regMonth: date.getMonth(),
+      regMonth: date.getMonth() + 1,
       regYear: date.getFullYear()
     });
   }
@@ -68,7 +68,7 @@ class staffModel extends Database {
       regMonth: details.regMonth,
       regYear: details.regYear,
       updateDay: date.getDate(),
-      updateMonth: date.getMonth(),
+      updateMonth: date.getMonth() + 1,
       updateYear: date.getFullYear(),
       editedBy: loginDetail.fname + " " + loginDetail.lname,
       editorEmail: loginDetail.email

@@ -4,6 +4,44 @@
 //globale variables
 var invoices;
 
+var debtclearanceInvoice =
+  '<h4 class="text-center" id="debtCompanyName"></h4>' +
+  '<div class="text-center mt-2" id="debtCompanyAddress"></div>' +
+  '<div class="text-center mt-2" id="debtCompanyNumber"></div>' +
+  '<div class="text-center mt-2" id="debtDate"></div>' +
+  '<h5 class="text-center mt-2">Debt Clearance</h5>' +
+  "<div>" +
+  ' <table class="table table-borderless table-sm mt-3">' +
+  " <tr>" +
+  " <td>" +
+  "       <strong>For:</strong>" +
+  "      </td>" +
+  '      <td id="clearedFor"></td>' +
+  "   </tr>" +
+  "    <tr>" +
+  "      <td>" +
+  "        <strong>Sub Total:</strong>" +
+  "      </td>" +
+  '     <td id="clearedTotal"></td>' +
+  "    </tr>" +
+  "   <tr>" +
+  "     <td>" +
+  "       <strong>Paid:</strong>" +
+  "     </td>" +
+  '     <td id="clearedPaid"></td>' +
+  "   </tr>" +
+  "   <tr>" +
+  "     <td>" +
+  "       <strong>Balance:</strong>" +
+  "     </td>" +
+  '     <td id="clearedBal"></td>' +
+  "   </tr>" +
+  " </table>" +
+  ' <div class="border border-right-0 border-left-0 text-center">' +
+  "  <h5>Thank You</h5>" +
+  " </div>" +
+  "</div>";
+
 //debt payment template
 var debtForm =
   '<form action="form">' +
@@ -240,6 +278,7 @@ const loadCurrentInvoices = () => {
 
 //load other invoices page
 const loadOtherInvoices = invoiceType => {
+  showStaticModal(debtclearanceInvoice);
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;

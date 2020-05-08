@@ -812,6 +812,30 @@ body {
   font-family: "Font Awesome 5 Free";
   color: #00c853;
 }
+.otherSearchContainer {
+  width: 450px;
+  height: 40px;
+  float: right;
+}
+.otherSearchContainer .search {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #e5e5e5;
+  border-radius: 20px;
+  float: left;
+}
+.otherSearchContainer .search input {
+  width: 90%;
+  height: 100%;
+  border: none;
+  border-radius: 20px;
+  padding-left: 20px;
+}
+.otherSearchContainer .search:after {
+  content: "\f002";
+  font-family: "Font Awesome 5 Free";
+  color: #00c853;
+}
 .viewContainer {
   width: 100%;
   height: auto;
@@ -1162,6 +1186,25 @@ body {
   overflow: auto;
   border: 1px solid green;
 }
+.cardHeadSearchBox {
+  border: 1px solid #e5e5e5;
+  background-color: #fff;
+  border-radius: 20px;
+  width: 180px;
+  display: none;
+}
+.cardHeadSearchBox .cardHeadSearch {
+  width: 80%;
+  border: none;
+  padding: 5px;
+  padding-left: 10px;
+  border-radius: 20px;
+}
+.cardHeadSearchBox:after {
+  content: "\f002";
+  font-family: "Font Awesome 5 Free";
+  color: #00c853;
+}
 @media only screen and (max-width: 1024px) {
   .pageHead {
     padding-right: 5px;
@@ -1197,6 +1240,9 @@ body {
   .searchContainer .search input {
     width: 85%;
   }
+  .otherSearchContainer {
+    display: none;
+  }
   .leftStock {
     float: none;
     width: 100%;
@@ -1205,5 +1251,8 @@ body {
   .rightStock {
     float: none;
     width: 100%;
+  }
+  .cardHeadSearchBox {
+    display: block;
   }
 }

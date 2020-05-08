@@ -727,11 +727,12 @@ const allSummaryHandle = saleType => {
 const getSales = (day, month, year) => {
   //get sales if sales ahve been defined
   let match = salesModel.getMatchSales(sales, day, month, year);
-
+  //display sales date
+  document.getElementById("dispDate").textContent =
+    day + "-" + month + "-" + year;
   if (match != false) {
     displayMatchSales(match);
-    document.getElementById("dispDate").textContent =
-      day + "-" + month + "-" + year;
+
     //get total sales on display
     addUpDispSalesMoney(match);
 
@@ -766,6 +767,9 @@ const getOtherSales = (day, month, year, saleType) => {
   //get sales if sales have been defined
   let match = salesModel.getOtherMatchSales(sales, day, month, year, saleType);
 
+  //display sales Date
+  document.getElementById("dispDate").textContent =
+    day + "-" + month + "-" + year;
   if (match != false) {
     if (saleType == "cash") {
       displayMatchCashSales(match);
@@ -774,8 +778,7 @@ const getOtherSales = (day, month, year, saleType) => {
     } else if (saleType == "credit") {
       displayMatchCreditSales(match);
     }
-    document.getElementById("dispDate").textContent =
-      day + "-" + month + "-" + year;
+
     //get total sales on display
     addUpOtherDispSalesMoney(match, saleType);
 

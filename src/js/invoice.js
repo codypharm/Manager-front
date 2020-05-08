@@ -186,11 +186,12 @@ const getInvoices = (day, month, year) => {
   //get sales if sales have been defined
   let match = invoiceModel.getMatchInvoices(invoices, day, month, year);
 
+  //display sales date
+  document.getElementById("dispDate").textContent =
+    day + "-" + month + "-" + year;
   if (match != false) {
     displayMatchInvoices(match);
 
-    document.getElementById("dispDate").textContent =
-      day + "-" + month + "-" + year;
     //get total sales on display
     /* addUpOtherDispSalesMoney(match, saleType);
 
@@ -222,14 +223,17 @@ const getOtherInvoices = (day, month, year, invoiceType) => {
     invoiceType
   );
 
+  //show display date
+  document.getElementById("dispDate").textContent =
+    day + "-" + month + "-" + year;
+
   if (match != false) {
     if (invoiceType == "cleared") {
       displayClearedMatchInvoices(match);
     } else {
       displayDebtMatchInvoices(match);
     }
-    document.getElementById("dispDate").textContent =
-      day + "-" + month + "-" + year;
+
     //get total sales on display
     /* addUpOtherDispSalesMoney(match, saleType);
 

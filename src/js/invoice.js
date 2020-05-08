@@ -4,13 +4,13 @@
 //globale variables
 var invoices;
 
-var debtclearanceInvoice =
+var debtClearanceInvoice =
   '<h4 class="text-center" id="debtCompanyName"></h4>' +
   '<div class="text-center mt-2" id="debtCompanyAddress"></div>' +
   '<div class="text-center mt-2" id="debtCompanyNumber"></div>' +
-  '<div class="text-center mt-2" id="debtDate"></div>' +
+  '<div class="text-center mt-2" id="debtClearanceDate"></div>' +
   '<h5 class="text-center mt-2">Debt Clearance</h5>' +
-  "<div>" +
+  '<div class="border border-bottom-0 border-right-0 border-left-0">' +
   ' <table class="table table-borderless table-sm mt-3">' +
   " <tr>" +
   " <td>" +
@@ -29,6 +29,12 @@ var debtclearanceInvoice =
   "       <strong>Paid:</strong>" +
   "     </td>" +
   '     <td id="clearedPaid"></td>' +
+  "   </tr>" +
+  "   <tr>" +
+  "     <td>" +
+  "       <strong>Total Paid:</strong>" +
+  "     </td>" +
+  '     <td id="clearedTotalPaid"></td>' +
   "   </tr>" +
   "   <tr>" +
   "     <td>" +
@@ -278,7 +284,6 @@ const loadCurrentInvoices = () => {
 
 //load other invoices page
 const loadOtherInvoices = invoiceType => {
-  showStaticModal(debtclearanceInvoice);
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -370,7 +375,7 @@ const viewInvoice = (e, invoiceId, invoiceType) => {
       document.getElementById("companyStaticName").textContent =
         detail[0].value.companyName;
       document.getElementById("companyStaticAddress").textContent =
-        detail[0].value.companyAddress;
+        detail[0].value.branchAddress;
       document.getElementById("companyStaticNumber").textContent =
         detail[0].value.branchPhone;
       document.getElementById("transTypeStatic").textContent =
@@ -436,48 +441,112 @@ const processDebtPayment = e => {
   //get detils for the invoice
   let invoiceDetail = invoiceModel.getSelectedInvoice(invoices, invoiceId);
 
-  let detail = invoiceDetail[0];
+  let myInvoiceDetail = invoiceDetail[0];
 
   let regex = /[0-9]/;
   if (!regex.test(amtEntered)) {
     errorBox.classList.remove("hide");
     errorBox.textContent = "Please enter a valid input";
-  } else if (amtEntered > Number(detail.value.balance)) {
+  } else if (amtEntered > Number(myInvoiceDetail.value.balance)) {
     errorBox.classList.remove("hide");
     errorBox.textContent = "Amount entered exceeds balance";
   } else {
     //get new paid amount
-    let newAmtPaid = Number(detail.value.amtPaid) + Number(amtEntered);
+    let newAmtPaid = Number(myInvoiceDetail.value.amtPaid) + Number(amtEntered);
     //get new balance
-    let newBalance = Number(detail.value.netPrice) - Number(newAmtPaid);
+    let newBalance =
+      Number(myInvoiceDetail.value.netPrice) - Number(newAmtPaid);
     //update invoice in db
     let invoiceUpdate = invoiceModel.updateInvoice(
-      detail,
+      myInvoiceDetail,
       newBalance,
       newAmtPaid
     );
     invoiceUpdate.then(({ data, headers, status }) => {
       if (status == 201) {
-        if (hideDebtModal()) {
-          successBox.classList.remove("hide");
-          successBox.textContent = "Transaction successfull";
+        let idGen = invoiceModel.generateId();
+        idGen.then(ids => {
+          let id = ids[0];
+          //store in debtClearance database
+          let insertClearance = invoiceModel.insertClearanceDetails(
+            id,
+            amtEntered,
+            invoiceId
+          );
 
-          document.getElementById("invoicesList").innerHTML =
-            "<tr>" +
-            '<td colspan="8" class="text-center" >' +
-            '<div class="spinner-grow text-success"></div>' +
-            "</td>" +
-            "</tr>";
+          insertClearance.then(({ data, headers, status }) => {
+            if (status == 201) {
+              //show Debt invoice
+              if (showDebtForm(debtClearanceInvoice)) {
+                //change form buttons
+                document
+                  .getElementById("clearanceFormBtn")
+                  .classList.toggle("hide");
+                document
+                  .getElementById("debtInvoiceFooter")
+                  .classList.toggle("hide");
 
-          let day = document.getElementById("otherInvoiceDay").value;
-          let month = document.getElementById("otherInvoiceMonth").value;
-          let year = document.getElementById("otherInvoiceYear").value;
-          //update invoices
-          invoices = invoiceUpdator(invoices, newBalance, newAmtPaid, detail);
+                //get company detials
+                let { detail } = store.getSetupDetail();
 
-          //get other invoices for the mathching date
-          getOtherInvoices(day, month, year, "debt");
-        }
+                //get detials for the invoice
+                let getDetail = invoiceModel.getSelectedInvoice(
+                  invoices,
+                  invoiceId
+                );
+                let currentInvoice = getDetail[0];
+
+                //generate Date
+                let date = new Date();
+                let clearanceDay = date.getDate();
+                let clearanceMonth = date.getMonth() + 1;
+                let clearanceYear = date.getFullYear();
+
+                // fill in invoice detail to the DOM
+                document.getElementById("debtCompanyName").textContent =
+                  detail[0].value.companyName;
+                document.getElementById("debtCompanyAddress").textContent =
+                  detail[0].value.branchAddress;
+                document.getElementById("debtCompanyNumber").textContent =
+                  detail[0].value.companyNumber;
+                document.getElementById("clearedFor").textContent = invoiceId;
+                document.getElementById("clearedTotal").textContent =
+                  currentInvoice.value.netPrice;
+                document.getElementById("clearedPaid").textContent = amtEntered;
+                document.getElementById(
+                  "clearedTotalPaid"
+                ).textContent = newAmtPaid;
+                document.getElementById("clearedBal").textContent = newBalance;
+                document.getElementById("debtClearanceDate").textContent =
+                  clearanceDay + "-" + clearanceMonth + "-" + clearanceYear;
+                //display success
+                /* successBox.classList.remove("hide");
+                successBox.textContent = "Transaction successfull";*/
+
+                document.getElementById("invoicesList").innerHTML =
+                  "<tr>" +
+                  '<td colspan="8" class="text-center" >' +
+                  '<div class="spinner-grow text-success"></div>' +
+                  "</td>" +
+                  "</tr>";
+
+                let day = document.getElementById("otherInvoiceDay").value;
+                let month = document.getElementById("otherInvoiceMonth").value;
+                let year = document.getElementById("otherInvoiceYear").value;
+                //update invoices
+                invoices = invoiceUpdator(
+                  invoices,
+                  newBalance,
+                  newAmtPaid,
+                  myInvoiceDetail
+                );
+
+                //get other invoices for the mathching date
+                getOtherInvoices(day, month, year, "debt");
+              }
+            }
+          });
+        });
       }
     });
   }

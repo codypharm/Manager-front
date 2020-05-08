@@ -14,7 +14,8 @@ class Database {
       stock: "_design/all_stock/_view/allStock",
       setup: "_design/setup/_view/setup",
       sales: "_design/sales/_view/sales",
-      invoices: "_design/invoices/_view/invoices"
+      invoices: "_design/invoices/_view/invoices",
+      allClearance: "_design/allClearance/_view/allClearance"
     };
   }
 

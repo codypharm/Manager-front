@@ -7,9 +7,18 @@ class Invoice extends Database {
     super();
   }
 
+  generateId() {
+    return this.couch.uniqid();
+  }
+
   getAllInvoices() {
     let viewUrl = this.viewUrl.invoices;
     return this.couch.get("invoice", viewUrl);
+  }
+
+  getAllClearance() {
+    let viewUrl = this.viewUrl.allClearance;
+    return this.couch.get("debt_clearance", viewUrl);
   }
 
   getOtherMatchInvoices(invoices, day, month, year, invoiceType) {
@@ -93,6 +102,18 @@ class Invoice extends Database {
       day: detail.value.day,
       month: detail.value.month,
       year: detail.value.year
+    });
+  }
+
+  insertClearanceDetails(id, amtEntered, invoiceId) {
+    let date = new Date();
+    return this.couch.insert("sales", {
+      id: id,
+      paymentFor: invoiceId,
+      currentAmtPaid: amtEntered,
+      day: date.getDate(),
+      month: date.getMonth() + 1,
+      year: date.getFullYear()
     });
   }
 }

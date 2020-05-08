@@ -356,7 +356,7 @@ const loadInvoiceStaticSection = (
   document.getElementById("companyStaticName").textContent =
     detail[0].value.companyName;
   document.getElementById("companyStaticAddress").textContent =
-    detail[0].value.companyAddress;
+    detail[0].value.branchAddress;
   document.getElementById("companyStaticNumber").textContent =
     detail[0].value.branchPhone;
   document.getElementById("transTypeStatic").textContent =

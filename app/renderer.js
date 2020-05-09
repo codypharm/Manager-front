@@ -373,7 +373,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("debtInvoices", loadOtherInvoices);
+        pageLoader("allSales", loadCurrentSales);
       });
     }
   }

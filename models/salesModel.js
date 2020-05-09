@@ -383,6 +383,34 @@ class salesModel extends Database {
     let averageDisccount = totalDisccount / match.length;
     return Math.ceil(averageDisccount);
   }
+
+  getMatchingSales(searchValue, sales, salesType, day, month, year) {
+    let match = sales.filter(sale => {
+      if (salesType == "all") {
+        return (
+          sale.value.day == day &&
+          sale.value.month == month &&
+          sale.value.year == year &&
+          (sale.value.name.toUpperCase() == searchValue.toUpperCase() ||
+            sale.value.productId == searchValue)
+        );
+      } else {
+        return (
+          sale.value.day == day &&
+          sale.value.month == month &&
+          sale.value.year == year &&
+          sale.value.transType == salesType &&
+          (sale.value.name.toUpperCase() == searchValue.toUpperCase() ||
+            sale.value.productId == searchValue)
+        );
+      }
+    });
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
 }
 
 module.exports = salesModel;

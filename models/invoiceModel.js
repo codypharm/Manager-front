@@ -145,7 +145,7 @@ class Invoice extends Database {
 
   insertClearanceDetails(id, amtEntered, invoiceId) {
     let date = new Date();
-    return this.couch.insert("sales", {
+    return this.couch.insert("debt_clearance", {
       id: id,
       paymentFor: invoiceId,
       currentAmtPaid: amtEntered,

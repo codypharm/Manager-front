@@ -400,7 +400,7 @@ const execInvoice = (
   let idGen = salesModel.generateId();
   idGen.then(ids => {
     let id = ids[0];
-    //insert details
+    //insert details into invoice
     let detailInsertion = salesModel.insertInvoice(
       id,
       invoiceId,
@@ -436,8 +436,7 @@ const execInvoice = (
           //clean up
           cart = [];
           store.setSaleStore(cart);
-          updateCart(cart);
-          emptyTable();
+
           document.getElementById("prodName").focus();
         }
       }
@@ -501,6 +500,11 @@ const insertSale = cart => {
     amtPaid,
     balance
   );
+
+  //clear cart table
+  updateCart([]);
+  //clear static part of cart table
+  emptyTable();
 };
 
 //subtract qty from stock and update stock table
@@ -876,4 +880,92 @@ const loadOtherSelectedSales = (e, saleType) => {
 
   //get sales for the mathching date
   getOtherSales(day, month, year, saleType);
+};
+
+//function for sales search
+const processSalesSearch = (e, salesType) => {
+  let searchValue = e.target.value.trim();
+
+  //get date values
+  let day;
+  let month;
+  let year;
+  if (salesType == "all") {
+    day = document.getElementById("saleDay").value;
+    month = document.getElementById("saleMonth").value;
+    year = document.getElementById("saleYear").value;
+  } else {
+    day = document.getElementById("otherSaleDay").value;
+    month = document.getElementById("otherSaleMonth").value;
+    year = document.getElementById("otherSaleYear").value;
+  }
+
+  if (searchValue.length > 0) {
+    //get matching sales
+    let matchingSales = salesModel.getMatchingSales(
+      searchValue,
+      sales,
+      salesType,
+      day,
+      month,
+      year
+    );
+
+    //display date
+    document.getElementById("dispDate").textContent = "all date";
+
+    //display value
+    if (matchingSales != false) {
+      if (salesType == "cash") {
+        displayMatchCashSales(matchingSales);
+      } else if (salesType == "online") {
+        displayMatchOnlineSales(matchingSales);
+      } else if (salesType == "credit") {
+        displayMatchCreditSales(matchingSales);
+      } else {
+        displayMatchSales(matchingSales);
+      }
+
+      if (salesType == "all") {
+        //get total sales on display
+        addUpDispSalesMoney(matchingSales);
+
+        //get total cash sales on display
+        addUpDispCashSales(matchingSales);
+
+        //get total online sales on display
+        addUpDispOnlineSales(matchingSales);
+
+        //get total online sales on display
+        addUpDispCreditSales(matchingSales);
+
+        //get average disccount
+        getAverageDisccount(matchingSales);
+
+        //get balance
+        getBalance(matchingSales);
+      } else {
+        //get total sales on display
+        addUpOtherDispSalesMoney(matchingSales, salesType);
+
+        //get average disccount
+        getOtherAverageDisccount(matchingSales, salesType);
+
+        //get balance
+        getOtherBalance(matchingSales, salesType);
+      }
+    } else {
+      document.getElementById("salesList").innerHTML =
+        " <tr>" +
+        ' <td colspan="5" class="text-center">' +
+        "  <span>No sales found</span>" +
+        " </td>" +
+        " </tr>";
+
+      allSummaryHandle(salesType);
+    }
+  } else {
+    //click process button
+    document.getElementById("processBtn").click();
+  }
 };

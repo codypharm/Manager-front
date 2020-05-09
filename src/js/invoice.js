@@ -229,8 +229,10 @@ const getOtherInvoices = (day, month, year, invoiceType) => {
 
   if (match != false) {
     if (invoiceType == "cleared") {
+      //display cleared invoices
       displayClearedMatchInvoices(match);
     } else {
+      //display debt invoices
       displayDebtMatchInvoices(match);
     }
 
@@ -348,7 +350,7 @@ const loadOtherEnteredInvoices = (e, invoiceType) => {
 };
 
 //invoice view button
-const viewInvoice = (e, invoiceId, invoiceType) => {
+const viewInvoice = (e, invoiceId, saleDate, invoiceType) => {
   //get details about this invoice
   let matchingInvoice = invoiceModel.getSelectedInvoice(invoices, invoiceId);
   let selectedInvoice = matchingInvoice[0];
@@ -372,7 +374,7 @@ const viewInvoice = (e, invoiceId, invoiceType) => {
         displayDebtSalesInvoice(matchedSales);
       }
       //get info from DOM
-      let saleDate = document.getElementById("dispDate").textContent;
+      //let saleDate = document.getElementById("dispDate").textContent;
 
       //add to DOM
       let { detail } = store.getSetupDetail();
@@ -556,4 +558,54 @@ const processDebtPayment = e => {
   }
 
   //hideDebtModal();
+};
+
+//function for handeling invoice search
+const processInvoiceSearch = (e, invoiceType) => {
+  let searchValue = e.target.value.trim();
+
+  //if no input was provided
+  if (!searchValue.length == 0) {
+    //fetch the invoice
+    let matchingInvoices = invoiceModel.getMatchingInvoice(
+      searchValue,
+      invoices,
+      invoiceType
+    );
+
+    if (matchingInvoices != false) {
+      //show display date
+      document.getElementById("dispDate").textContent = "all date";
+
+      if (invoiceType == "cleared") {
+        //display cleared invoices
+        displayClearedMatchInvoices(matchingInvoices);
+      } else if (invoiceType == "debt") {
+        //display debt invoices
+        displayDebtMatchInvoices(matchingInvoices);
+      } else {
+        displayMatchInvoices(matchingInvoices);
+      }
+    } else {
+      //display no record found
+      if (invoiceType == "cleared" || invoiceType == "all") {
+        document.getElementById("invoicesList").innerHTML =
+          " <tr>" +
+          ' <td colspan="7" class="text-center">' +
+          "  <span>No sales found</span>" +
+          " </td>" +
+          " </tr>";
+      } else {
+        document.getElementById("invoicesList").innerHTML =
+          " <tr>" +
+          ' <td colspan="8" class="text-center">' +
+          "  <span>No sales found</span>" +
+          " </td>" +
+          " </tr>";
+      }
+    }
+  } else {
+    //click process button
+    document.getElementById("processBtn").click();
+  }
 };

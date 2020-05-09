@@ -9,7 +9,11 @@
     <form>
       <div class="otherSearchContainer ">
         <div class="search">
-          <input type="text" placeholder="search invoices..." />
+          <input
+            type="text"
+            placeholder="search invoices..."
+            oninput="processInvoiceSearch(event,'debt')"
+          />
         </div>
       </div>
     </form>
@@ -68,13 +72,15 @@
   <div class="card card-default w-100">
     <div class="card-header clear-fix">
       <div class="float-left pt-1">
-        Sales Invoice For <span id="dispDate"></span>
+        Sales Invoice For <strong><span id="dispDate"></span></strong>
       </div>
+
       <div class="float-right cardHeadSearchBox">
         <input
           class=" cardHeadSearch"
-          type="search"
+          type="text"
           placeholder="search invoices..."
+          oninput="processInvoiceSearch(event,'debt')"
         />
       </div>
     </div>
@@ -112,7 +118,7 @@
     <td>
 
         <td>
-          <button type="button" class="btn btn-sm  btn-info" onclick="viewInvoice(event,'{{value.invoiceId}}','debt')">
+          <button type="button" class="btn btn-sm  btn-info" onclick="viewInvoice(event,'{{value.invoiceId}}','{{value.day}}-{{value.month}}-{{value.year}}','debt')">
             view
           </button>
         </td>

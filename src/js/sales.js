@@ -267,13 +267,19 @@ const addUpQty = (e, prodId, unit) => {
 const deleteMatch = prodId => {
   cart = salesModel.deleteSale(cart, prodId);
 
+  //store current cart detail
   store.setSaleStore(cart);
   updateCart(cart);
-  //calculate total quantity
-  calculateTotal(cart);
+  if (cart.length > 0) {
+    //calculate total quantity
+    calculateTotal(cart);
+  } else {
+    //empty table static part
+    emptyTable();
+  }
 };
 
-//delete a saleFormconst
+//delete a sale from cart
 const cancelCurSale = e => {
   let prodId = e.target.dataset.id;
   //get window object
@@ -435,7 +441,6 @@ const execInvoice = (
 
           //clean up
           cart = [];
-          store.setSaleStore(cart);
 
           document.getElementById("prodName").focus();
         }
@@ -505,6 +510,8 @@ const insertSale = cart => {
   updateCart([]);
   //clear static part of cart table
   emptyTable();
+  //empty cart from store
+  store.setSaleStore([]);
 };
 
 //subtract qty from stock and update stock table

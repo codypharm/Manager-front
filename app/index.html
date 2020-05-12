@@ -84,8 +84,6 @@
   <!-- modal for form update ends-->
 
   <!--static modal -->
-  <!-- Button trigger modal -->
-
   <!-- Modal -->
   <div
     class="modal fade staticModal"
@@ -150,6 +148,86 @@
     </div>
   </div>
   <!-- modal end-->
+
+  <!-- general purpose static modal starts-->
+
+  <!--static modal -->
+  <!-- Modal -->
+  <div
+    class="modal genStaticModal"
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-md mt-7"
+      role="document"
+    >
+      <div class="modal-content hide " id="expenseContent">
+        <form class="form" id="expFormDetail" onsubmit="submitExpenses(event)">
+        
+          <div class="modal-body" id="expForm">
+            <div class="alert alert-danger hide" id="expWarning"></div>
+    
+            <div class="alert alert-success hide" id="expSuccess"></div>
+            <div class="form-group">
+              <label for="expAmt">Amount:</label>
+              <div class="border border-top-0 border-right-0 border-left-0">
+                <input
+                  type="text"
+                  class="form-control border-right-0 border-top-0 border-left-0 border-bottom-0 bg-light"
+                  placeholder="enter amount"
+                  id="expAmt"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="expDescription">Description:</label>
+              <div class="border border-top-0 border-right-0 border-left-0">
+                <textarea
+                  class="form-control border-right-0 border-top-0 border-left-0 border-bottom-0 bg-light"
+                  id="expDescription"
+                  cols="2"
+                  rows="2"
+                  placeholder="enter exepense description"
+                ></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="expStaffId">Staff Id:</label>
+              <div class="border border-top-0 border-right-0 border-left-0">
+                <input
+                  type="text"
+                  class="form-control border-right-0 border-top-0 border-left-0 border-bottom-0 bg-light"
+                  placeholder="enter staff id"
+                  id="expStaffId"
+                />
+              </div>
+            </div>
+          
+        </div>
+        <div class="modal-footer border-top-0">
+          <button
+            type="button"
+            class="btn btn-secondary "
+            onclick="hideExpForm()"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Done
+          </button>
+        </div>
+      </div>
+    </form>
+    </div>
+  </div>
+  <!-- static modal ends -->
+
+  <!-- general purpose static modal ends-->
 </html>
 
 <script src="../src/js/files.js"></script>
@@ -163,4 +241,5 @@
 <script src="../src/js/stock.js"></script>
 <script src="../src/js/sales.js"></script>
 <script src="../src/js/invoice.js"></script>
+<script src="../src/js/expense.js"></script>
 <script src="../src/jquery/custom.js"></script>

@@ -4,10 +4,163 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
-    <link rel="stylesheet" href="../src/css/style.css" />
+    <title>Vemon</title>
+    <!-- Our project just needs Font Awesome Solid + Brands -->
+    <link href="../icons/fontawesome/css/fontawesome.css" rel="stylesheet" />
+    <link href="../icons/fontawesome/css/brands.css" rel="stylesheet" />
+    <link href="../icons/fontawesome/css/solid.css" rel="stylesheet" />
+
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../src/css/styles.css" />
+    <script>
+      window.jQuery = window.$ = require("jquery");
+    </script>
   </head>
-  <body>
-    We are live here and direct
+  <body class=" setupBack">
+    <main></main>
   </body>
+
+  <!-- modal for form update-->
+  <div
+    class="modal fade updateStaticModal"
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header ">
+          <h4 class="modal-title text-success">Vemon</h4>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body" id="updateStaticBody"></div>
+        <div class="modal-footer border-top-0" id="clearanceFormBtn">
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm "
+            data-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            id="clearProcessBtn"
+            onclick="processDebtPayment(event)"
+          >
+            Process
+          </button>
+        </div>
+        <div class="modal-footer border-top-0 hide" id="debtInvoiceFooter">
+          <button type="button" class="btn btn-success btn-sm ">
+            Reprint
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            data-dismiss="modal"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal for form update ends-->
+
+  <!--static modal -->
+  <!-- Button trigger modal -->
+
+  <!-- Modal -->
+  <div
+    class="modal fade staticModal"
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-bottom-0">
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="staticBody"></div>
+        <div class="modal-footer border-top-0">
+          <button type="button" class="btn btn-success ">
+            Print Again
+          </button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- static modal ends -->
+
+  <!-- mobile modal -->
+  <button
+    type="button"
+    class="btn btn-primary myModal"
+    data-toggle="modal"
+    data-target="#myModal"
+  >
+    open
+  </button>
+
+  <div class="modal  fade" id="myModal">
+    <div class="modal-dialog modal-dialog-centered  ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Vemon</h4>
+        </div>
+
+        <div class="modal-body" id="modalBody"></div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modal end-->
 </html>
+
+<script src="../src/js/files.js"></script>
+<!-- boostrap js -->
+<script src="../node_modules/popper.js/dist/umd/popper.js"></script>
+<script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+<script src="../lib/handlebar.js"></script>
+<script src="../src/js/template.js"></script>
+<script src="./renderer.js"></script>
+<script src="../src/js/staff.js"></script>
+<script src="../src/js/stock.js"></script>
+<script src="../src/js/sales.js"></script>
+<script src="../src/js/invoice.js"></script>
+<script src="../src/jquery/custom.js"></script>

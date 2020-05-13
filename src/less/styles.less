@@ -1,10 +1,14 @@
-@primary-color: #82b440;
+@primary-color: #00c853;
 @border-color: #e5e5e5;
 @header-font: Georgia;
 @sub-text: 0.9rem;
 @sub-text-color: #7f8c8d;
-
+@button-back: #ccc;
+@text-font: 1rem;
+@myBlue: #00689f;
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -20,8 +24,8 @@ button {
 body {
   margin: 0px;
   padding: 0px;
-  background-color: #fdfefe;
-  min-width: 850px;
+  min-width: 600px;
+  background-color: #f8f9fa;
 }
 
 .hide {
@@ -31,20 +35,25 @@ body {
 .show {
   display: block;
 }
-
-.wrapper {
-  display: grid;
-}
+/*
+.setupBack {
+  background-image: url("../../images/background.jpg");
+  background-position: cover;
+}*/
 
 .setupBody {
-  width: 50%;
+  width: 30%;
+  min-width: 400px;
   height: auto;
   margin: auto;
   border: 1px solid @border-color;
   border-radius: 5px;
-  margin-top: 100px;
+  margin-top: 200px;
   padding: 20px 10px 20px 10px;
-
+  background-color: #fff;
+  -webkit-box-shadow: 0px 0px 19px 0px rgba(204, 204, 204, 1);
+  -moz-box-shadow: 0px 0px 19px 0px rgba(204, 204, 204, 1);
+  box-shadow: 0px 0px 19px 0px rgba(204, 204, 204, 1);
   header {
     font-family: @header-font;
     color: @primary-color;
@@ -75,7 +84,7 @@ body {
       float: right;
 
       &:hover {
-        background-color: darken(@primary-color, 30%);
+        background-color: darken(@primary-color, 10%);
       }
     }
   }
@@ -133,6 +142,20 @@ body {
   line-height: 20px;
 }
 
+.success {
+  width: 80%;
+  margin: auto;
+  padding: 10px;
+  text-align: center;
+  height: auto;
+  background-color: #b2ff59;
+  color: green;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  line-height: 20px;
+}
+
 .managerForm {
   width: 100%;
   height: auto;
@@ -160,7 +183,7 @@ body {
       border: none;
       height: 100%;
       border-radius: 10px;
-      padding: 5px;
+      padding: 10px;
       font-size: 1rem;
     }
   }
@@ -182,5 +205,1262 @@ body {
     &:hover {
       background-color: darken(@primary-color, 30%);
     }
+  }
+}
+
+.loginWrapper {
+  width: 100%;
+  height: 690px;
+}
+
+.mycontainer {
+  width: auto;
+  height: auto;
+}
+
+.sidePane {
+  width: 200px;
+  position: fixed;
+  z-index: 10000;
+  height: 100%;
+  overflow: auto;
+  background-color: #32373c;
+  .logo {
+    width: 100%;
+    height: 60px;
+  }
+}
+
+.pageBase {
+  float: left;
+  width: 100%;
+  height: auto;
+  padding-left: 200px;
+}
+
+.pageHead {
+  width: 100%;
+  background-color: #ffffff;
+  position: fixed;
+  height: 60px;
+  z-index: 10;
+  border-top: 1px solid #cccccc;
+  -webkit-box-shadow: 0px 3px 2px 0px rgba(204, 204, 204, 1);
+  -moz-box-shadow: 0px 3px 2px 0px rgba(204, 204, 204, 1);
+  box-shadow: 0px 3px 2px 0px rgba(204, 204, 204, 1);
+  padding: 10px 20px 0px 220px;
+  .cube {
+    float: left;
+    color: @primary-color;
+
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid @primary-color;
+    padding-top: 3px;
+    i {
+      font-size: 1.5rem;
+    }
+    &:hover {
+      background-color: @primary-color;
+      color: #fff;
+    }
+  }
+
+  .headCenter {
+    height: 40px;
+    width: 330px;
+    margin-left: 3%;
+    float: left;
+
+    padding-top: 3px;
+
+    .shortLinks {
+      float: left;
+      height: 100%;
+      width: 32%;
+      max-width: 100px;
+      margin-right: 3%;
+      border: 1px solid @primary-color;
+      cursor: pointer;
+      color: @primary-color;
+
+      .centerIcon {
+        float: left;
+        padding: 5px;
+        width: 30%;
+        height: 100%;
+      }
+
+      .centerText {
+        float: left;
+        padding: 5px;
+        text-align: center;
+
+        width: 70%;
+        height: 100%;
+        padding-right: 15px;
+      }
+
+      &:hover {
+        background-color: @primary-color;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+.reducePad {
+  padding: 0px;
+}
+
+.reduceHeadPad {
+  padding-left: 20px;
+}
+
+.thirdHead {
+  float: right;
+
+  width: 70px;
+  height: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+
+  .rightIcons {
+    float: left;
+    width: 50%;
+    height: 100%;
+    padding: 5px;
+    padding-bottom: 10px;
+    cursor: pointer;
+    &:hover {
+      padding: 0px;
+    }
+
+    .notCounter {
+      position: absolute;
+      top: 5px;
+      background-color: red;
+      padding: 1px;
+      padding-right: 4px;
+      padding-left: 4px;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 5px;
+    }
+  }
+}
+
+.userDrop {
+  position: absolute;
+  right: 20px;
+  top: 60px;
+  width: 150px;
+  height: 100px;
+  z-index: 10000;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.userDrop::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 85%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #ffffff transparent;
+}
+
+.userImg {
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  margin: auto;
+  margin-top: 30px;
+
+  img {
+    border-radius: 100px;
+  }
+}
+
+.nameBox {
+  width: 100%;
+  height: auto;
+  line-height: 20px;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: center;
+  word-break: none;
+  padding: 0px 10px 0px 10px;
+  color: @border-color;
+}
+
+.position {
+  width: 100%;
+  height: auto;
+  font-size: 0.9rem;
+  color: @primary-color;
+  padding: 0px 10px 0px 10px;
+  text-align: center;
+}
+
+.menuBox {
+  width: 100%;
+  height: auto;
+  margin-top: 30px;
+
+  a {
+    color: @border-color;
+    font-size: 0.9rem;
+
+    display: block;
+    padding: 10px 0 10px 20px;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #191e23;
+      color: @primary-color;
+    }
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  /* aim all child ul */
+  .main-nav-ul ul {
+    display: none;
+  }
+
+  /*  get all li with tap class(js placed)*/
+
+  .main-nav-ul li.tap ul {
+    display: block;
+    background-color: #191e23;
+  }
+
+  .main-nav-ul li.selected {
+    background-color: @primary-color;
+  }
+
+  .main-nav-ul li.selectedDropper ul {
+    display: block;
+  }
+
+  .main-nav-ul .subArrow:after {
+    content: "\f0da";
+    font-family: "Font Awesome 5 Free";
+    float: right;
+    margin-right: 20px;
+    transform: rotate(90deg);
+  }
+
+  .main-nav-ul li.tap .subArrow:after {
+    content: "\f0d8";
+    font-family: "Font Awesome 5 Free";
+  }
+}
+
+.pagePlate {
+  width: 97%;
+  height: auto;
+  min-height: 600px;
+  background-color: #fff;
+  margin-top: 100px;
+  margin-left: 20px;
+  padding: 20px;
+}
+
+.staffFormBase {
+  width: 100%;
+  height: 100%;
+  padding: 20px 0px 30px 0px;
+  background-image: url("../../images/background\ \(3\).jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.staffForm {
+  width: 80%;
+  max-width: 400px;
+  margin: auto;
+  margin-top: 30px;
+  border-radius: 5px;
+  background-color: #ffffff;
+  height: auto;
+  padding: 20px 40px 30px 40px;
+  -webkit-box-shadow: 0px 0px 5px 5px rgba(248, 248, 248, 1);
+  -moz-box-shadow: 0px 0px 5px 5px rgba(248, 248, 248, 1);
+  box-shadow: 0px 0px 5px 5px rgba(248, 248, 248, 1);
+
+  .formTitle {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 20px;
+    color: @primary-color;
+    border-bottom: 2px solid @border-color;
+  }
+
+  .formField {
+    width: 100%;
+    height: auto;
+    font-size: 0.9rem;
+    margin-top: 20px;
+    span {
+      display: block;
+      color: red;
+      width: 100%;
+    }
+    label {
+      display: block;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .formInput {
+      cursor: pointer;
+      border: 1px solid @border-color;
+      height: 40px;
+      padding-right: 10px;
+      width: 100%;
+      margin-top: 10px;
+
+      input {
+        width: 93%;
+        height: 100%;
+        border: none;
+        padding: 5px;
+        padding-left: 10px;
+      }
+      select {
+        width: 93%;
+        height: 100%;
+        border: none;
+        padding: 5px;
+        padding-left: 10px;
+        cursor: pointer;
+      }
+    }
+
+    .fname:after {
+      content: "\f007";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .email:after {
+      content: "\f0e0";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .number:after {
+      content: "\f095";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .address:after {
+      content: "\f2bb";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .pwd:after {
+      content: "\f084";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .gender:after {
+      content: "\f007";
+      font-family: "Font Awesome 5 Free";
+      color: #ccc;
+    }
+
+    .radioBox {
+      width: 100%;
+      height: auto;
+      margin-top: 20px;
+
+      input[type="radio"] {
+        opacity: 0;
+        position: fixed;
+        width: 0;
+      }
+
+      label {
+        display: inline-block;
+        background-color: #fff;
+        padding: 10px 20px;
+        width: 100px;
+        border-radius: 5px;
+        border: 1px solid @border-color;
+
+        &:hover {
+          background-color: @primary-color;
+          color: #fff;
+        }
+      }
+
+      input[type="radio"]:checked + label {
+        background-color: @primary-color;
+        color: #fff;
+      }
+
+      input[type="radio"]:focus label {
+        background-color: @primary-color;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.passwordBearer {
+  span {
+    color: red;
+    font-size: 0.9rem;
+  }
+}
+
+.primaryBtn {
+  padding: 10px 20px 10px 20px;
+  color: #fff;
+  text-align: center;
+  margin-top: 30px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: @primary-color;
+
+  &:hover {
+    background-color: darken(@primary-color, 10%);
+  }
+}
+
+.floatRight {
+  float: right;
+}
+
+.staffListBase {
+  width: 100%;
+  height: auto;
+  /* current user */
+  .currentUser {
+    width: 30%;
+    min-width: 300px;
+    height: auto;
+    border: 1px solid @border-color;
+    border-radius: 5px;
+
+    float: left;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    .cardImg {
+      width: 170px;
+      height: 170px;
+      margin: auto;
+      margin-top: 20px;
+
+      border-radius: 100px;
+      padding: 10px 10px 10px 10px;
+      img {
+        border-radius: 100px;
+      }
+    }
+
+    .staffName {
+      width: 100%;
+      height: auto;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 1rem;
+      word-break: none;
+    }
+
+    .staffPosition {
+      width: 100%;
+      height: auto;
+
+      text-align: center;
+      font-size: @sub-text;
+    }
+
+    .statusBox {
+      width: 120px;
+      text-align: center;
+      margin: auto;
+      margin-top: 10px;
+      border-radius: 5px;
+      height: 30px;
+      line-height: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .activate {
+      background-color: @primary-color;
+      color: #fff;
+      &:hover {
+        background-color: darken(@primary-color, 10%);
+      }
+    }
+
+    .block {
+      background-color: red;
+      color: #fff;
+      &:hover {
+        background-color: darken(red, 10%);
+      }
+    }
+
+    .staffAction {
+      width: 100%;
+      height: 40px;
+      margin-top: 20px;
+
+      .actions {
+        width: 50%;
+        margin: 0;
+        height: 100%;
+        line-height: 40px;
+        text-align: center;
+        background-color: @border-color;
+        cursor: pointer;
+        float: left;
+        &:hover {
+          background-color: darken(@border-color, 13%);
+          color: #fff;
+        }
+      }
+    }
+  }
+  /*other users */
+  .otherUsers {
+    .listCard {
+      width: 30%;
+      min-width: 300px;
+      height: auto;
+      border: 1px solid @border-color;
+      border-radius: 5px;
+      float: left;
+      margin-left: 20px;
+      margin-bottom: 20px;
+      .cardImg {
+        width: 170px;
+        height: 170px;
+        margin: auto;
+        margin-top: 20px;
+
+        border-radius: 100px;
+        padding: 10px 10px 10px 10px;
+        img {
+          border-radius: 100px;
+        }
+      }
+
+      .staffName {
+        width: 100%;
+        height: auto;
+        text-align: center;
+        margin-top: 16px;
+        font-size: 1rem;
+        word-break: none;
+      }
+
+      .staffPosition {
+        width: 100%;
+        height: auto;
+
+        text-align: center;
+        font-size: @sub-text;
+      }
+
+      .statusBox {
+        width: 120px;
+        text-align: center;
+        margin: auto;
+        margin-top: 10px;
+        border-radius: 5px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      .activate {
+        background-color: @primary-color;
+        color: #fff;
+        &:hover {
+          background-color: darken(@primary-color, 10%);
+        }
+      }
+
+      .block {
+        background-color: red;
+        color: #fff;
+        &:hover {
+          background-color: darken(red, 10%);
+        }
+      }
+
+      .staffAction {
+        width: 100%;
+        height: 40px;
+        margin-top: 20px;
+
+        .actions {
+          width: 50%;
+          margin: 0;
+          height: 100%;
+          line-height: 40px;
+          text-align: center;
+          background-color: @border-color;
+          cursor: pointer;
+          float: left;
+          &:hover {
+            background-color: darken(@border-color, 13%);
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+
+.sectionHead {
+  width: 100%;
+  height: 60px;
+  border-bottom: 2px solid @border-color;
+  margin-bottom: 40px;
+  font-family: @header-font;
+  .sectionHeadIcon {
+    width: auto;
+    height: 100%;
+    padding: 0px 10px 0px 10px;
+    float: left;
+    font-size: 2em;
+    color: @primary-color;
+  }
+  .sectionHeader {
+    float: left;
+    width: auto;
+    height: 100%;
+    padding-top: 10px;
+    padding-left: 15px;
+  }
+
+  .sectionActions {
+    float: right;
+    height: 100%;
+    padding-top: 12px;
+
+    button {
+      border: none;
+      cursor: pointer;
+      background-color: @button-back;
+      font-weight: 600;
+      border-radius: 5px;
+      margin-right: 15px;
+      width: auto;
+      height: 40px;
+      line-height: 40px;
+      padding-left: 20px;
+      padding-right: 20px;
+      &:hover {
+        background-color: darken(@border-color, 30%);
+        color: #fff;
+      }
+    }
+
+    .cancelBtn {
+      background-color: #ffca4f;
+      color: #fff;
+
+      &:hover {
+        background-color: darken(#ffca4f, 10%);
+      }
+    }
+
+    .editBtn {
+      background-color: @primary-color;
+      color: #fff;
+
+      &:hover {
+        background-color: darken(@primary-color, 10%);
+      }
+    }
+
+    .backBtn {
+      background-color: #0089d2;
+      color: #fff;
+
+      &:hover {
+        background-color: darken(#0089d2, 10%);
+      }
+    }
+  }
+}
+
+.searchContainer {
+  width: 450px;
+  height: 40px;
+
+  float: right;
+
+  .search {
+    width: 100%;
+    height: 100%;
+    border: 2px solid @border-color;
+    border-radius: 20px;
+    float: left;
+    input {
+      width: 90%;
+      height: 100%;
+      border: none;
+      border-radius: 20px;
+      padding-left: 20px;
+    }
+  }
+  .search:after {
+    content: "\f002";
+    font-family: "Font Awesome 5 Free";
+    color: @primary-color;
+  }
+}
+
+.otherSearchContainer {
+  width: 450px;
+  height: 40px;
+
+  float: right;
+
+  .search {
+    width: 100%;
+    height: 100%;
+    border: 2px solid @border-color;
+    border-radius: 20px;
+    float: left;
+    input {
+      width: 90%;
+      height: 100%;
+      border: none;
+      border-radius: 20px;
+      padding-left: 20px;
+    }
+  }
+  .search:after {
+    content: "\f002";
+    font-family: "Font Awesome 5 Free";
+    color: @primary-color;
+  }
+}
+
+.viewContainer {
+  width: 100%;
+  height: auto;
+  margin-top: 40px;
+  padding: 20px;
+
+  .viewLeft {
+    width: 40%;
+
+    float: left;
+    margin-bottom: 20px;
+
+    .viewImage {
+      width: 300px;
+      height: 300px;
+      border-radius: 300px;
+
+      margin: auto;
+
+      img {
+        border-radius: 300px;
+      }
+    }
+    .viewName {
+      width: 100%;
+      padding: 0px 20px 0px 20px;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.3rem;
+    }
+
+    .viewPosition {
+      width: 100%;
+      padding: 0px 20px 0px 20px;
+      text-align: center;
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+  }
+
+  .viewRight {
+    width: 60%;
+    padding-left: 30px;
+    float: left;
+    margin-bottom: 20px;
+    border-left: 2px solid @border-color;
+    .staffDetailField {
+      width: 100%;
+      height: auto;
+      margin-top: 20px;
+      span {
+        color: red;
+        font-size: 0.9rem;
+      }
+      .fieldTop {
+        width: 100%;
+        height: 30px;
+        font-size: @text-font;
+        font-weight: 600;
+        label {
+          cursor: pointer;
+        }
+      }
+
+      .fieldBottom {
+        width: 100%;
+        height: auto;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        line-height: 20px;
+        border-bottom: 1px solid @border-color;
+        input {
+          width: 93%;
+          height: 40px;
+          padding: 5px 0px 5px 5px;
+          margin-bottom: -10px;
+          border: none;
+          cursor: pointer;
+        }
+
+        select {
+          width: 93%;
+          height: 40px;
+          padding: 5px 0px 5px 5px;
+          margin-bottom: -10px;
+          border: none;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .pwdCarrier {
+      .staffDetailField {
+        width: 100%;
+        height: auto;
+        margin-top: 20px;
+        span {
+          color: red;
+          font-size: 0.9rem;
+        }
+        .fieldTop {
+          width: 100%;
+          height: 30px;
+          font-size: @text-font;
+          font-weight: 600;
+          label {
+            cursor: pointer;
+          }
+        }
+
+        .fieldBottom {
+          width: 100%;
+          height: auto;
+          padding-top: 15px;
+          padding-bottom: 15px;
+          line-height: 20px;
+          border-bottom: 1px solid @border-color;
+          input {
+            width: 93%;
+            height: 40px;
+            padding: 5px 0px 5px 5px;
+            margin-bottom: -10px;
+            border: none;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
+
+.editName:after {
+  content: "\f4ff";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+
+.editEmail:after {
+  content: "\f0e0";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+
+.editNumber:after {
+  content: "\f095";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+
+.editAddress:after {
+  content: "\f2bb";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+
+.editPwd:after {
+  content: "\f084";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+
+.editPerm:after {
+  content: "\f084";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+
+.stockingBox {
+  width: 100%;
+  height: auto;
+  padding: 0px 10px 0px 10px;
+}
+
+.leftStock {
+  float: left;
+  width: 49%;
+  margin-right: 2%;
+  height: auto;
+}
+
+.rightStock {
+  float: left;
+  width: 49%;
+  height: auto;
+}
+
+.stockHead {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background-color: @button-back;
+  margin-bottom: 20px;
+}
+
+.stockChild {
+  border: 1px solid @border-color;
+  border-radius: 5px;
+  width: 100%;
+  height: 1100px;
+  padding: 30px 20px 20px 20px;
+}
+
+.otherBox {
+  width: 100%;
+  height: auto;
+  .sub {
+    float: left;
+    width: 49%;
+  }
+
+  .sub:nth-child(1) {
+    margin-right: 2%;
+  }
+
+  .sub:nth-child(3) {
+    margin-right: 2%;
+  }
+}
+
+.stockFormField {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+  label {
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    font-size: 0.9rem;
+  }
+
+  .stockInputBox {
+    width: 100%;
+    height: 40px;
+    border: 1px solid @border-color;
+    input {
+      height: 100%;
+      width: 89%;
+      border: none;
+      font-size: 0.9rem;
+      line-height: 35px;
+      padding: 0px 10px 0px 10px;
+      cursor: pointer;
+    }
+
+    .subInput {
+      width: 80%;
+    }
+  }
+
+  .errorLog {
+    width: 100%;
+    height: auto;
+    border: none;
+    textarea {
+      width: 100%;
+      height: 200px;
+      resize: none;
+
+      padding: 10px;
+      cursor: pointer;
+    }
+  }
+
+  .pencil:after {
+    content: "\f044";
+    font-family: "Font Awesome 5 Free";
+    color: #ccc;
+  }
+
+  .date:after {
+    content: "\f252";
+    font-family: "Font Awesome 5 Free";
+    color: #ccc;
+  }
+}
+
+.btnBox {
+  width: 110px;
+  height: auto;
+  float: right;
+  margin-top: 10px;
+  background-color: @button-back;
+  .button {
+    cursor: pointer;
+    float: left;
+    height: auto;
+    width: 100%;
+    background-color: @button-back;
+    border: none;
+    padding: 10px 10px 10px 10px;
+    text-align: center;
+    &:hover {
+      background-color: darken(@button-back, 10%);
+    }
+  }
+}
+
+.editPen {
+  cursor: pointer;
+  float: right;
+  font-size: 14px;
+  margin-left: 20px;
+  margin-right: 20px;
+  text-align: center;
+  width: 25px;
+  background-color: @border-color;
+  border-radius: 5px;
+  margin-top: 5px;
+  &:hover {
+    background-color: @myBlue;
+    color: #fff;
+  }
+}
+
+.cancelPen {
+  cursor: pointer;
+  float: right;
+  font-size: 15px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 5px;
+  text-align: center;
+  width: 25px;
+
+  border-radius: 5px;
+  background-color: @border-color;
+  &:hover {
+    background-color: red;
+    color: #fff;
+  }
+}
+
+.minTab {
+  min-width: 170px;
+}
+
+.breakWord {
+  word-break: break-all;
+}
+
+.prodBtnBox {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.prodFinBox {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.addBtn {
+  display: both;
+  margin: both;
+}
+
+.myModal {
+  display: none;
+}
+
+.modal {
+  z-index: 1000000;
+}
+
+.otherBtn {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.cusWidthInp {
+  width: 70%;
+}
+
+.cusWidthBtn {
+  width: 30%;
+  padding-top: 32px;
+}
+
+.inputWidth {
+  width: 100px;
+}
+
+.cartCancelPen {
+  cursor: pointer;
+
+  font-size: 15px;
+  margin: auto;
+  text-align: center;
+  width: 25px;
+  border-radius: 5px;
+  background-color: @border-color;
+  &:hover {
+    background-color: red;
+    color: #fff;
+  }
+}
+
+.addMaxHeight {
+  max-height: 850px;
+  overflow: auto;
+  border: 1px solid green;
+}
+
+.cardHeadSearchBox {
+  border: 1px solid @border-color;
+  background-color: #fff;
+  border-radius: 20px;
+  width: 180px;
+  display: none;
+  .cardHeadSearch {
+    width: 80%;
+    border: none;
+    padding: 5px;
+    padding-left: 10px;
+    border-radius: 20px;
+  }
+}
+
+.cardHeadSearchBox:after {
+  content: "\f002";
+  font-family: "Font Awesome 5 Free";
+  color: @primary-color;
+}
+
+//sizes below standard desktop size
+@media only screen and (max-width: 1024px) {
+  .pageHead {
+    padding-right: 5px;
+    padding-left: 205px;
+  }
+
+  .headCenter {
+    margin-left: 10px;
+  }
+
+  .staffListBase {
+    .currentUser {
+      float: none;
+      margin: auto;
+      margin-bottom: 20px;
+    }
+    .otherUsers {
+      .listCard {
+        float: none;
+        margin: auto;
+        margin-bottom: 20px;
+      }
+    }
+  }
+
+  .viewContainer {
+    .viewLeft {
+      width: 100%;
+
+      float: none;
+    }
+
+    .viewRight {
+      width: 100%;
+      float: none;
+      border: none;
+    }
+  }
+
+  .searchContainer {
+    width: 200px;
+    height: 40px;
+
+    float: right;
+    .search {
+      input {
+        width: 85%;
+      }
+    }
+  }
+
+  .otherSearchContainer {
+    display: none;
+  }
+
+  .leftStock {
+    float: none;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .rightStock {
+    float: none;
+    width: 100%;
+  }
+
+  .cardHeadSearchBox {
+    display: block;
   }
 }

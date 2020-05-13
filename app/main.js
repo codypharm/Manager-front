@@ -1,7 +1,9 @@
+/* eslint-disable no-undef */
 "use strict";
 
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const Database = require("../src/js/db");
+const Store = require("../src/js/store");
 
 //const path = require("path");
 // eslint-disable-next-line
@@ -10,8 +12,9 @@ require("electron-reload")(__dirname);
 //enable the use of css grid
 app.commandLine.appendSwitch("enable-experimental-web-platform-features");
 
-//instantiate database
+//instantiate classes
 const db = new Database();
+const store = new Store();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -26,25 +29,32 @@ let mainWindow;
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 900,
+    minHeight: 500,
+    minWidth: 700,
     webPreferences: {
       nodeIntegration: true
     }
   });
 
-  //handle the promise
+  // force log user out
+  store.forceLogout();
+
+  //handle dblist the promise
   db.listDb().then(dbs => {
     displayPage(dbs);
   });
 
   const displayPage = dbs => {
-    if (dbs.vemon_setup) {
+    if (dbs.includes("vemon_setup")) {
       // and load the setup.html of the app.
+
       mainWindow.loadURL(`file://${__dirname}/index.html`);
+      mainWindow.maximize();
+      //get current page
     } else {
       // and load the index.html of the app.
       mainWindow.loadURL(`file://${__dirname}/setup.html`);
+      mainWindow.maximize();
     }
   };
 

@@ -1,4 +1,6 @@
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -11,8 +13,8 @@ button {
 body {
   margin: 0px;
   padding: 0px;
-  background-color: #fdfefe;
-  min-width: 850px;
+  min-width: 600px;
+  background-color: #f8f9fa;
 }
 .hide {
   display: none;
@@ -20,21 +22,28 @@ body {
 .show {
   display: block;
 }
-.wrapper {
-  display: grid;
-}
+/*
+.setupBack {
+  background-image: url("../../images/background.jpg");
+  background-position: cover;
+}*/
 .setupBody {
-  width: 50%;
+  width: 30%;
+  min-width: 400px;
   height: auto;
   margin: auto;
   border: 1px solid #e5e5e5;
   border-radius: 5px;
-  margin-top: 100px;
+  margin-top: 200px;
   padding: 20px 10px 20px 10px;
+  background-color: #fff;
+  -webkit-box-shadow: 0px 0px 19px 0px #cccccc;
+  -moz-box-shadow: 0px 0px 19px 0px #cccccc;
+  box-shadow: 0px 0px 19px 0px #cccccc;
 }
 .setupBody header {
   font-family: Georgia;
-  color: #82b440;
+  color: #00c853;
   font-size: 2rem;
   font-weight: 600;
   border-bottom: 1px solid #e5e5e5;
@@ -48,7 +57,7 @@ body {
 }
 .setupForm .setupFooter button {
   color: #fff;
-  background-color: #82b440;
+  background-color: #00c853;
   padding: 5px;
   border: none;
   width: 50px;
@@ -58,7 +67,7 @@ body {
   float: right;
 }
 .setupForm .setupFooter button:hover {
-  background-color: #304318;
+  background-color: #00953e;
 }
 .setupForm input {
   cursor: pointer;
@@ -104,6 +113,19 @@ body {
   font-size: 0.8rem;
   line-height: 20px;
 }
+.success {
+  width: 80%;
+  margin: auto;
+  padding: 10px;
+  text-align: center;
+  height: auto;
+  background-color: #b2ff59;
+  color: green;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  line-height: 20px;
+}
 .managerForm {
   width: 100%;
   height: auto;
@@ -131,7 +153,7 @@ body {
   border: none;
   height: 100%;
   border-radius: 10px;
-  padding: 5px;
+  padding: 10px;
   font-size: 1rem;
 }
 .formFooter {
@@ -141,7 +163,7 @@ body {
 }
 .formFooter button {
   float: right;
-  background-color: #82b440;
+  background-color: #00c853;
   color: #fff;
   border-radius: 5px;
   border: none;
@@ -150,5 +172,1087 @@ body {
   margin-right: 5px;
 }
 .formFooter button:hover {
-  background-color: #304318;
+  background-color: #002f14;
+}
+.loginWrapper {
+  width: 100%;
+  height: 690px;
+}
+.mycontainer {
+  width: auto;
+  height: auto;
+}
+.sidePane {
+  width: 200px;
+  position: fixed;
+  z-index: 10000;
+  height: 100%;
+  overflow: auto;
+  background-color: #32373c;
+}
+.sidePane .logo {
+  width: 100%;
+  height: 60px;
+}
+.pageBase {
+  float: left;
+  width: 100%;
+  height: auto;
+  padding-left: 200px;
+}
+.pageHead {
+  width: 100%;
+  background-color: #ffffff;
+  position: fixed;
+  height: 60px;
+  z-index: 10;
+  border-top: 1px solid #cccccc;
+  -webkit-box-shadow: 0px 3px 2px 0px #cccccc;
+  -moz-box-shadow: 0px 3px 2px 0px #cccccc;
+  box-shadow: 0px 3px 2px 0px #cccccc;
+  padding: 10px 20px 0px 220px;
+}
+.pageHead .cube {
+  float: left;
+  color: #00c853;
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  line-height: 40px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 1px solid #00c853;
+  padding-top: 3px;
+}
+.pageHead .cube i {
+  font-size: 1.5rem;
+}
+.pageHead .cube:hover {
+  background-color: #00c853;
+  color: #fff;
+}
+.pageHead .headCenter {
+  height: 40px;
+  width: 330px;
+  margin-left: 3%;
+  float: left;
+  padding-top: 3px;
+}
+.pageHead .headCenter .shortLinks {
+  float: left;
+  height: 100%;
+  width: 32%;
+  max-width: 100px;
+  margin-right: 3%;
+  border: 1px solid #00c853;
+  cursor: pointer;
+  color: #00c853;
+}
+.pageHead .headCenter .shortLinks .centerIcon {
+  float: left;
+  padding: 5px;
+  width: 30%;
+  height: 100%;
+}
+.pageHead .headCenter .shortLinks .centerText {
+  float: left;
+  padding: 5px;
+  text-align: center;
+  width: 70%;
+  height: 100%;
+  padding-right: 15px;
+}
+.pageHead .headCenter .shortLinks:hover {
+  background-color: #00c853;
+  color: #ffffff;
+}
+.reducePad {
+  padding: 0px;
+}
+.reduceHeadPad {
+  padding-left: 20px;
+}
+.thirdHead {
+  float: right;
+  width: 70px;
+  height: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.thirdHead .rightIcons {
+  float: left;
+  width: 50%;
+  height: 100%;
+  padding: 5px;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+.thirdHead .rightIcons:hover {
+  padding: 0px;
+}
+.thirdHead .rightIcons .notCounter {
+  position: absolute;
+  top: 5px;
+  background-color: red;
+  padding: 1px;
+  padding-right: 4px;
+  padding-left: 4px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 5px;
+}
+.userDrop {
+  position: absolute;
+  right: 20px;
+  top: 60px;
+  width: 150px;
+  height: 100px;
+  z-index: 10000;
+  border-radius: 5px;
+  background-color: #fff;
+}
+.userDrop::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 85%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #ffffff transparent;
+}
+.userImg {
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  margin: auto;
+  margin-top: 30px;
+}
+.userImg img {
+  border-radius: 100px;
+}
+.nameBox {
+  width: 100%;
+  height: auto;
+  line-height: 20px;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: center;
+  word-break: none;
+  padding: 0px 10px 0px 10px;
+  color: #e5e5e5;
+}
+.position {
+  width: 100%;
+  height: auto;
+  font-size: 0.9rem;
+  color: #00c853;
+  padding: 0px 10px 0px 10px;
+  text-align: center;
+}
+.menuBox {
+  width: 100%;
+  height: auto;
+  margin-top: 30px;
+  /* aim all child ul */
+  /*  get all li with tap class(js placed)*/
+}
+.menuBox a {
+  color: #e5e5e5;
+  font-size: 0.9rem;
+  display: block;
+  padding: 10px 0 10px 20px;
+  text-decoration: none;
+}
+.menuBox a:hover {
+  background-color: #191e23;
+  color: #00c853;
+}
+.menuBox li {
+  list-style-type: none;
+}
+.menuBox .main-nav-ul ul {
+  display: none;
+}
+.menuBox .main-nav-ul li.tap ul {
+  display: block;
+  background-color: #191e23;
+}
+.menuBox .main-nav-ul li.selected {
+  background-color: #00c853;
+}
+.menuBox .main-nav-ul li.selectedDropper ul {
+  display: block;
+}
+.menuBox .main-nav-ul .subArrow:after {
+  content: "\f0da";
+  font-family: "Font Awesome 5 Free";
+  float: right;
+  margin-right: 20px;
+  transform: rotate(90deg);
+}
+.menuBox .main-nav-ul li.tap .subArrow:after {
+  content: "\f0d8";
+  font-family: "Font Awesome 5 Free";
+}
+.pagePlate {
+  width: 97%;
+  height: auto;
+  min-height: 600px;
+  background-color: #fff;
+  margin-top: 100px;
+  margin-left: 20px;
+  padding: 20px;
+}
+.staffFormBase {
+  width: 100%;
+  height: 100%;
+  padding: 20px 0px 30px 0px;
+  background-image: url("../../images/background\ \(3\).jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.staffForm {
+  width: 80%;
+  max-width: 400px;
+  margin: auto;
+  margin-top: 30px;
+  border-radius: 5px;
+  background-color: #ffffff;
+  height: auto;
+  padding: 20px 40px 30px 40px;
+  -webkit-box-shadow: 0px 0px 5px 5px #f8f8f8;
+  -moz-box-shadow: 0px 0px 5px 5px #f8f8f8;
+  box-shadow: 0px 0px 5px 5px #f8f8f8;
+}
+.staffForm .formTitle {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 20px;
+  color: #00c853;
+  border-bottom: 2px solid #e5e5e5;
+}
+.staffForm .formField {
+  width: 100%;
+  height: auto;
+  font-size: 0.9rem;
+  margin-top: 20px;
+}
+.staffForm .formField span {
+  display: block;
+  color: red;
+  width: 100%;
+}
+.staffForm .formField label {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+.staffForm .formField .formInput {
+  cursor: pointer;
+  border: 1px solid #e5e5e5;
+  height: 40px;
+  padding-right: 10px;
+  width: 100%;
+  margin-top: 10px;
+}
+.staffForm .formField .formInput input {
+  width: 93%;
+  height: 100%;
+  border: none;
+  padding: 5px;
+  padding-left: 10px;
+}
+.staffForm .formField .formInput select {
+  width: 93%;
+  height: 100%;
+  border: none;
+  padding: 5px;
+  padding-left: 10px;
+  cursor: pointer;
+}
+.staffForm .formField .fname:after {
+  content: "\f007";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.staffForm .formField .email:after {
+  content: "\f0e0";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.staffForm .formField .number:after {
+  content: "\f095";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.staffForm .formField .address:after {
+  content: "\f2bb";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.staffForm .formField .pwd:after {
+  content: "\f084";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.staffForm .formField .gender:after {
+  content: "\f007";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.staffForm .formField .radioBox {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+.staffForm .formField .radioBox input[type="radio"] {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+.staffForm .formField .radioBox label {
+  display: inline-block;
+  background-color: #fff;
+  padding: 10px 20px;
+  width: 100px;
+  border-radius: 5px;
+  border: 1px solid #e5e5e5;
+}
+.staffForm .formField .radioBox label:hover {
+  background-color: #00c853;
+  color: #fff;
+}
+.staffForm .formField .radioBox input[type="radio"]:checked + label {
+  background-color: #00c853;
+  color: #fff;
+}
+.staffForm .formField .radioBox input[type="radio"]:focus label {
+  background-color: #00c853;
+  color: #fff;
+}
+.passwordBearer span {
+  color: red;
+  font-size: 0.9rem;
+}
+.primaryBtn {
+  padding: 10px 20px 10px 20px;
+  color: #fff;
+  text-align: center;
+  margin-top: 30px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #00c853;
+}
+.primaryBtn:hover {
+  background-color: #00953e;
+}
+.floatRight {
+  float: right;
+}
+.staffListBase {
+  width: 100%;
+  height: auto;
+  /* current user */
+  /*other users */
+}
+.staffListBase .currentUser {
+  width: 30%;
+  min-width: 300px;
+  height: auto;
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  float: left;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+.staffListBase .currentUser .cardImg {
+  width: 170px;
+  height: 170px;
+  margin: auto;
+  margin-top: 20px;
+  border-radius: 100px;
+  padding: 10px 10px 10px 10px;
+}
+.staffListBase .currentUser .cardImg img {
+  border-radius: 100px;
+}
+.staffListBase .currentUser .staffName {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  margin-top: 16px;
+  font-size: 1rem;
+  word-break: none;
+}
+.staffListBase .currentUser .staffPosition {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.staffListBase .currentUser .statusBox {
+  width: 120px;
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  border-radius: 5px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.staffListBase .currentUser .activate {
+  background-color: #00c853;
+  color: #fff;
+}
+.staffListBase .currentUser .activate:hover {
+  background-color: #00953e;
+}
+.staffListBase .currentUser .block {
+  background-color: red;
+  color: #fff;
+}
+.staffListBase .currentUser .block:hover {
+  background-color: #cc0000;
+}
+.staffListBase .currentUser .staffAction {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+}
+.staffListBase .currentUser .staffAction .actions {
+  width: 50%;
+  margin: 0;
+  height: 100%;
+  line-height: 40px;
+  text-align: center;
+  background-color: #e5e5e5;
+  cursor: pointer;
+  float: left;
+}
+.staffListBase .currentUser .staffAction .actions:hover {
+  background-color: #c4c4c4;
+  color: #fff;
+}
+.staffListBase .otherUsers .listCard {
+  width: 30%;
+  min-width: 300px;
+  height: auto;
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  float: left;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+.staffListBase .otherUsers .listCard .cardImg {
+  width: 170px;
+  height: 170px;
+  margin: auto;
+  margin-top: 20px;
+  border-radius: 100px;
+  padding: 10px 10px 10px 10px;
+}
+.staffListBase .otherUsers .listCard .cardImg img {
+  border-radius: 100px;
+}
+.staffListBase .otherUsers .listCard .staffName {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  margin-top: 16px;
+  font-size: 1rem;
+  word-break: none;
+}
+.staffListBase .otherUsers .listCard .staffPosition {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.staffListBase .otherUsers .listCard .statusBox {
+  width: 120px;
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  border-radius: 5px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.staffListBase .otherUsers .listCard .activate {
+  background-color: #00c853;
+  color: #fff;
+}
+.staffListBase .otherUsers .listCard .activate:hover {
+  background-color: #00953e;
+}
+.staffListBase .otherUsers .listCard .block {
+  background-color: red;
+  color: #fff;
+}
+.staffListBase .otherUsers .listCard .block:hover {
+  background-color: #cc0000;
+}
+.staffListBase .otherUsers .listCard .staffAction {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+}
+.staffListBase .otherUsers .listCard .staffAction .actions {
+  width: 50%;
+  margin: 0;
+  height: 100%;
+  line-height: 40px;
+  text-align: center;
+  background-color: #e5e5e5;
+  cursor: pointer;
+  float: left;
+}
+.staffListBase .otherUsers .listCard .staffAction .actions:hover {
+  background-color: #c4c4c4;
+  color: #fff;
+}
+.sectionHead {
+  width: 100%;
+  height: 60px;
+  border-bottom: 2px solid #e5e5e5;
+  margin-bottom: 40px;
+  font-family: Georgia;
+}
+.sectionHead .sectionHeadIcon {
+  width: auto;
+  height: 100%;
+  padding: 0px 10px 0px 10px;
+  float: left;
+  font-size: 2em;
+  color: #00c853;
+}
+.sectionHead .sectionHeader {
+  float: left;
+  width: auto;
+  height: 100%;
+  padding-top: 10px;
+  padding-left: 15px;
+}
+.sectionHead .sectionActions {
+  float: right;
+  height: 100%;
+  padding-top: 12px;
+}
+.sectionHead .sectionActions button {
+  border: none;
+  cursor: pointer;
+  background-color: #ccc;
+  font-weight: 600;
+  border-radius: 5px;
+  margin-right: 15px;
+  width: auto;
+  height: 40px;
+  line-height: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.sectionHead .sectionActions button:hover {
+  background-color: #999999;
+  color: #fff;
+}
+.sectionHead .sectionActions .cancelBtn {
+  background-color: #ffca4f;
+  color: #fff;
+}
+.sectionHead .sectionActions .cancelBtn:hover {
+  background-color: #ffbb1c;
+}
+.sectionHead .sectionActions .editBtn {
+  background-color: #00c853;
+  color: #fff;
+}
+.sectionHead .sectionActions .editBtn:hover {
+  background-color: #00953e;
+}
+.sectionHead .sectionActions .backBtn {
+  background-color: #0089d2;
+  color: #fff;
+}
+.sectionHead .sectionActions .backBtn:hover {
+  background-color: #00689f;
+}
+.searchContainer {
+  width: 450px;
+  height: 40px;
+  float: right;
+}
+.searchContainer .search {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #e5e5e5;
+  border-radius: 20px;
+  float: left;
+}
+.searchContainer .search input {
+  width: 90%;
+  height: 100%;
+  border: none;
+  border-radius: 20px;
+  padding-left: 20px;
+}
+.searchContainer .search:after {
+  content: "\f002";
+  font-family: "Font Awesome 5 Free";
+  color: #00c853;
+}
+.otherSearchContainer {
+  width: 450px;
+  height: 40px;
+  float: right;
+}
+.otherSearchContainer .search {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #e5e5e5;
+  border-radius: 20px;
+  float: left;
+}
+.otherSearchContainer .search input {
+  width: 90%;
+  height: 100%;
+  border: none;
+  border-radius: 20px;
+  padding-left: 20px;
+}
+.otherSearchContainer .search:after {
+  content: "\f002";
+  font-family: "Font Awesome 5 Free";
+  color: #00c853;
+}
+.viewContainer {
+  width: 100%;
+  height: auto;
+  margin-top: 40px;
+  padding: 20px;
+}
+.viewContainer .viewLeft {
+  width: 40%;
+  float: left;
+  margin-bottom: 20px;
+}
+.viewContainer .viewLeft .viewImage {
+  width: 300px;
+  height: 300px;
+  border-radius: 300px;
+  margin: auto;
+}
+.viewContainer .viewLeft .viewImage img {
+  border-radius: 300px;
+}
+.viewContainer .viewLeft .viewName {
+  width: 100%;
+  padding: 0px 20px 0px 20px;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.3rem;
+}
+.viewContainer .viewLeft .viewPosition {
+  width: 100%;
+  padding: 0px 20px 0px 20px;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+.viewContainer .viewRight {
+  width: 60%;
+  padding-left: 30px;
+  float: left;
+  margin-bottom: 20px;
+  border-left: 2px solid #e5e5e5;
+}
+.viewContainer .viewRight .staffDetailField {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+.viewContainer .viewRight .staffDetailField span {
+  color: red;
+  font-size: 0.9rem;
+}
+.viewContainer .viewRight .staffDetailField .fieldTop {
+  width: 100%;
+  height: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.viewContainer .viewRight .staffDetailField .fieldTop label {
+  cursor: pointer;
+}
+.viewContainer .viewRight .staffDetailField .fieldBottom {
+  width: 100%;
+  height: auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  line-height: 20px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.viewContainer .viewRight .staffDetailField .fieldBottom input {
+  width: 93%;
+  height: 40px;
+  padding: 5px 0px 5px 5px;
+  margin-bottom: -10px;
+  border: none;
+  cursor: pointer;
+}
+.viewContainer .viewRight .staffDetailField .fieldBottom select {
+  width: 93%;
+  height: 40px;
+  padding: 5px 0px 5px 5px;
+  margin-bottom: -10px;
+  border: none;
+  cursor: pointer;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField span {
+  color: red;
+  font-size: 0.9rem;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField .fieldTop {
+  width: 100%;
+  height: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField .fieldTop label {
+  cursor: pointer;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField .fieldBottom {
+  width: 100%;
+  height: auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  line-height: 20px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.viewContainer .viewRight .pwdCarrier .staffDetailField .fieldBottom input {
+  width: 93%;
+  height: 40px;
+  padding: 5px 0px 5px 5px;
+  margin-bottom: -10px;
+  border: none;
+  cursor: pointer;
+}
+.editName:after {
+  content: "\f4ff";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.editEmail:after {
+  content: "\f0e0";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.editNumber:after {
+  content: "\f095";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.editAddress:after {
+  content: "\f2bb";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.editPwd:after {
+  content: "\f084";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.editPerm:after {
+  content: "\f084";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.stockingBox {
+  width: 100%;
+  height: auto;
+  padding: 0px 10px 0px 10px;
+}
+.leftStock {
+  float: left;
+  width: 49%;
+  margin-right: 2%;
+  height: auto;
+}
+.rightStock {
+  float: left;
+  width: 49%;
+  height: auto;
+}
+.stockHead {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background-color: #ccc;
+  margin-bottom: 20px;
+}
+.stockChild {
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  width: 100%;
+  height: 1100px;
+  padding: 30px 20px 20px 20px;
+}
+.otherBox {
+  width: 100%;
+  height: auto;
+}
+.otherBox .sub {
+  float: left;
+  width: 49%;
+}
+.otherBox .sub:nth-child(1) {
+  margin-right: 2%;
+}
+.otherBox .sub:nth-child(3) {
+  margin-right: 2%;
+}
+.stockFormField {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+.stockFormField label {
+  display: block;
+  height: 30px;
+  line-height: 30px;
+  font-size: 0.9rem;
+}
+.stockFormField .stockInputBox {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #e5e5e5;
+}
+.stockFormField .stockInputBox input {
+  height: 100%;
+  width: 89%;
+  border: none;
+  font-size: 0.9rem;
+  line-height: 35px;
+  padding: 0px 10px 0px 10px;
+  cursor: pointer;
+}
+.stockFormField .stockInputBox .subInput {
+  width: 80%;
+}
+.stockFormField .errorLog {
+  width: 100%;
+  height: auto;
+  border: none;
+}
+.stockFormField .errorLog textarea {
+  width: 100%;
+  height: 200px;
+  resize: none;
+  padding: 10px;
+  cursor: pointer;
+}
+.stockFormField .pencil:after {
+  content: "\f044";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.stockFormField .date:after {
+  content: "\f252";
+  font-family: "Font Awesome 5 Free";
+  color: #ccc;
+}
+.btnBox {
+  width: 110px;
+  height: auto;
+  float: right;
+  margin-top: 10px;
+  background-color: #ccc;
+}
+.btnBox .button {
+  cursor: pointer;
+  float: left;
+  height: auto;
+  width: 100%;
+  background-color: #ccc;
+  border: none;
+  padding: 10px 10px 10px 10px;
+  text-align: center;
+}
+.btnBox .button:hover {
+  background-color: #b3b3b3;
+}
+.editPen {
+  cursor: pointer;
+  float: right;
+  font-size: 14px;
+  margin-left: 20px;
+  margin-right: 20px;
+  text-align: center;
+  width: 25px;
+  background-color: #e5e5e5;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+.editPen:hover {
+  background-color: #00689f;
+  color: #fff;
+}
+.cancelPen {
+  cursor: pointer;
+  float: right;
+  font-size: 15px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 5px;
+  text-align: center;
+  width: 25px;
+  border-radius: 5px;
+  background-color: #e5e5e5;
+}
+.cancelPen:hover {
+  background-color: red;
+  color: #fff;
+}
+.minTab {
+  min-width: 170px;
+}
+.breakWord {
+  word-break: break-all;
+}
+.prodBtnBox {
+  margin-top: 40px;
+  text-align: center;
+}
+.prodFinBox {
+  margin-top: 40px;
+  text-align: center;
+}
+.addBtn {
+  display: both;
+  margin: both;
+}
+.myModal {
+  display: none;
+}
+.modal {
+  z-index: 1000000;
+}
+.otherBtn {
+  margin-top: 40px;
+  text-align: center;
+}
+.cusWidthInp {
+  width: 70%;
+}
+.cusWidthBtn {
+  width: 30%;
+  padding-top: 32px;
+}
+.inputWidth {
+  width: 100px;
+}
+.cartCancelPen {
+  cursor: pointer;
+  font-size: 15px;
+  margin: auto;
+  text-align: center;
+  width: 25px;
+  border-radius: 5px;
+  background-color: #e5e5e5;
+}
+.cartCancelPen:hover {
+  background-color: red;
+  color: #fff;
+}
+.addMaxHeight {
+  max-height: 850px;
+  overflow: auto;
+  border: 1px solid green;
+}
+.cardHeadSearchBox {
+  border: 1px solid #e5e5e5;
+  background-color: #fff;
+  border-radius: 20px;
+  width: 180px;
+  display: none;
+}
+.cardHeadSearchBox .cardHeadSearch {
+  width: 80%;
+  border: none;
+  padding: 5px;
+  padding-left: 10px;
+  border-radius: 20px;
+}
+.cardHeadSearchBox:after {
+  content: "\f002";
+  font-family: "Font Awesome 5 Free";
+  color: #00c853;
+}
+@media only screen and (max-width: 1024px) {
+  .pageHead {
+    padding-right: 5px;
+    padding-left: 205px;
+  }
+  .headCenter {
+    margin-left: 10px;
+  }
+  .staffListBase .currentUser {
+    float: none;
+    margin: auto;
+    margin-bottom: 20px;
+  }
+  .staffListBase .otherUsers .listCard {
+    float: none;
+    margin: auto;
+    margin-bottom: 20px;
+  }
+  .viewContainer .viewLeft {
+    width: 100%;
+    float: none;
+  }
+  .viewContainer .viewRight {
+    width: 100%;
+    float: none;
+    border: none;
+  }
+  .searchContainer {
+    width: 200px;
+    height: 40px;
+    float: right;
+  }
+  .searchContainer .search input {
+    width: 85%;
+  }
+  .otherSearchContainer {
+    display: none;
+  }
+  .leftStock {
+    float: none;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+  .rightStock {
+    float: none;
+    width: 100%;
+  }
+  .cardHeadSearchBox {
+    display: block;
+  }
 }

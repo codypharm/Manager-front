@@ -1,0 +1,186 @@
+<div class="mycontainer">
+  <sidebar class="sidePane">
+    <div class="logo">
+      logo
+    </div>
+
+    <div class="userImg">
+      <img src="../images/profile.png" width="100%" height="100%" />
+    </div>
+    <div class="nameBox">
+      Ikeji Chukwunonso
+    </div>
+    <div class="position">
+      Manager
+    </div>
+    <div class="menuBox">
+      <ul class="main-nav-ul">
+        <li class="dashboard selected" onclick="loadDashboard(event)">
+          <a href="#">Dashboard</a>
+        </li>
+        <li class="subMenu1 " onclick="dropSales(event)">
+          <a href="#">Sales <span class="subArrow"></span></a>
+          <ul>
+            <li class="allSales" onclick="loadAllSales(event)">
+              <a href="#">All</a>
+            </li>
+            <li class="cashSales" onclick="loadCashSales(event)">
+              <a href="#">Cash</a>
+            </li>
+            <li class="creditSales" onclick="loadCreditSales(event)">
+              <a href="#">Credit</a>
+            </li>
+            <li class="onlineSales" onclick="loadOnlineSales(event)">
+              <a href="#">Online</a>
+            </li>
+            <li class="addSales" onclick="loadAddSales(event)">
+              <a href="#">Add Sales</a>
+            </li>
+          </ul>
+        </li>
+        <li class="subMenu2" onclick="dropStock(event)">
+          <a href="#">Stock <span class="subArrow"></span></a>
+          <ul>
+            <li class="allStock" onclick="loadAllStock(event)">
+              <a href="#">All</a>
+            </li>
+            <li class="expiredStock" onclick="loadExpiredStock(event)">
+              <a href="#">Expired</a>
+            </li>
+            <li class="exhaustedStock" onclick="loadExhaustedStock(event)">
+              <a href="#">Exhausted</a>
+            </li>
+            <li class="addStock" onclick="loadAddStock(event)">
+              <a href="#">Add Stock</a>
+            </li>
+          </ul>
+        </li>
+        <li class="subMenu3" onclick="dropStaff(event)">
+          <a href="#">Staff <span class="subArrow"></span></a>
+          <ul>
+            <li class="staffList" onclick="loadStaffList(event)">
+              <a href="#">Staff List</a>
+            </li>
+            <li class="attendance" onclick="loadAttendance(event)">
+              <a href="#">Attendance</a>
+            </li>
+            <li class="addStaff" onclick="loadAddStaff(event)">
+              <a href="#">Add Staff</a>
+            </li>
+          </ul>
+        </li>
+        <li class="subMenu4" onclick="dropInvoice(event)">
+          <a href="#">Invoices <span class="subArrow"></span></a>
+          <ul>
+            <li class="allInvoices" onclick="loadAllInvoices(event)">
+              <a href="#">All</a>
+            </li>
+            <li class="clearedInvoices" onclick="loadClearedInvoices(event)">
+              <a href="#">Cleared</a>
+            </li>
+            <li class="debtInvoices" onclick="loadDebtInvoices(event)">
+              <a href="#">Debt</a>
+            </li>
+          </ul>
+        </li>
+        <li class="expenses" onclick="loadExpenses(event)">
+          <a href="#">Expenses</a>
+        </li>
+        <li class="reports" onclick="loadReports(event)">
+          <a href="#">Reports</a>
+        </li>
+      </ul>
+    </div>
+  </sidebar>
+
+  <!--==================-->
+  <!-- page head -->
+  <!--==================-->
+  <div class="pageHead">
+    <!--==================-->
+    <!--user drop -->
+    <!--==================-->
+    <div class="userDrop hide">
+      jj
+    </div>
+    <!--==================-->
+    <!-- user drop ends -->
+    <!--==================-->
+    <div class="cube" onclick="hideSideBar(event)">
+      <i class="fa fa-bars" aria-hidden="true"></i>
+    </div>
+
+    <div class="headCenter">
+      <div class="shortLinks" onclick="loadAllInvoices(event)">
+        <div class="centerIcon">
+          <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div class="centerText">Invoices</div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="shortLinks">
+        <div class="centerIcon">
+          <i class="fas fa-warehouse"></i>
+        </div>
+        <div class="centerText">Stock</div>
+        <div style="clear:both"></div>
+      </div>
+      <div class="shortLinks" onclick="loadAddSales(event)">
+        <div class="centerIcon">
+          <i class="fas fa-cart-plus"></i>
+        </div>
+        <div class="centerText">Add</div>
+        <div style="clear:both"></div>
+      </div>
+      <div style="clear: both;"></div>
+    </div>
+
+    <!-- =============-->
+    <!-- third head starts-->
+    <!--================-->
+    <div class="thirdHead">
+      <div class="rightIcons">
+        <div class="notCounter">
+          0
+        </div>
+        <img src="../icons/svg/bell.svg" width="100%" height="100%" />
+      </div>
+
+      <div class="rightIcons " onclick="drop(event)">
+        <img src="../icons/svg/student.svg" width="100%" height="100%" />
+      </div>
+      <div style="clear: both"></div>
+    </div>
+
+    <!-- =============-->
+    <!-- third head ends-->
+    <!--================-->
+
+    <div style="clear: both"></div>
+  </div>
+
+  <!--==================-->
+  <!--page head ends -->
+  <!--==================-->
+
+  <!--==================-->
+  <!--main page-->
+  <!--==================-->
+
+  <section class="pageBase">
+    <!--==================-->
+    <!--page plate starts -->
+    <!--==================-->
+    <div class="pagePlate">
+      hk
+    </div>
+    <!--==================-->
+    <!--page plate ends -->
+    <!--==================-->
+  </section>
+
+  <!--==================-->
+  <!--main page ends -->
+  <!--==================-->
+  <div style="clear:both"></div>
+</div>

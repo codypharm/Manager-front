@@ -1205,6 +1205,9 @@ body {
   font-family: "Font Awesome 5 Free";
   color: #00c853;
 }
+.modal-backdrop {
+  background-color: transparent;
+}
 @media only screen and (max-width: 1024px) {
   .pageHead {
     padding-right: 5px;

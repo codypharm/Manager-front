@@ -128,6 +128,9 @@ class salesModel extends Database {
 
     if (match.length > 0) {
       return match;
+    } else {
+      //return empty array
+      return [];
     }
   }
 

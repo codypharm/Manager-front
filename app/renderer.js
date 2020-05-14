@@ -42,8 +42,23 @@ const showDebtForm = message => {
   return true;
 };
 
+const showGenStaticModal = (elem, body, message) => {
+  $(".genStaticModal").modal("show");
+
+  document.getElementById(elem).classList.remove("hide");
+  // $("#" + body).html(message);
+  return true;
+};
+
 const hideDebtModal = () => {
   $(".updateStaticModal").modal("hide");
+  return true;
+};
+
+const hideGenStaticModal = elem => {
+  $(".genStaticModal").modal("hide");
+  document.getElementById(elem).classList.add("hide");
+
   return true;
 };
 
@@ -373,7 +388,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("allSales", loadCurrentSales);
+        pageLoader("expenses", loadCurrentExpenses);
       });
     }
   }
@@ -401,7 +416,7 @@ const processLogin = e => {
   } else if (validate.isNotEmail(email.value.trim())) {
     displayError(errorDiv, "Email invalid");
   } else {
-    //get userss promise
+    //get users promise
     let userPromise = login.getUsers();
     userPromise.then(
       ({ data, headers, status }) => {
@@ -710,10 +725,10 @@ const loadExpenses = e => {
   //remove previous selections
   selectionRemover();
   addClass(expenses, "selected");
-  pageLoader("expenses");
+  pageLoader("expenses", loadCurrentExpenses);
 };
 
-//expenses
+//reports
 const loadReports = e => {
   let reports = document.getElementsByClassName("reports")[0];
   //remove previous selections

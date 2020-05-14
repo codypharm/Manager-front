@@ -50,6 +50,7 @@ class Store {
       fname: user.fname,
       lname: user.lname,
       email: user.email,
+      staffId: user.staffId,
       position: user.position,
       image: user.image,
       access: user.access,

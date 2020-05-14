@@ -221,3 +221,22 @@ const displayDebtMatchInvoices = invoices => {
 
   let container = (document.getElementById("invoicesList").innerHTML = myhtml);
 };
+
+//display matching expenses
+const displayExpenses = expenses => {
+  //assing array to ab object property
+  let newObj = {
+    data: expenses
+  };
+
+  //get template
+  let template = document.getElementById("expensesContainer").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById("expensesList").innerHTML = myhtml);
+};

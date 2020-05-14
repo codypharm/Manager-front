@@ -416,7 +416,7 @@ const processLogin = e => {
   } else if (validate.isNotEmail(email.value.trim())) {
     displayError(errorDiv, "Email invalid");
   } else {
-    //get userss promise
+    //get users promise
     let userPromise = login.getUsers();
     userPromise.then(
       ({ data, headers, status }) => {

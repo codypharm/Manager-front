@@ -1,0 +1,170 @@
+<div class="sectionHead">
+    <div class="sectionHeadIcon">
+      <i class="fas fa-file-invoice"></i>
+    </div>
+    <div class="sectionHeader">
+      <h2>Stock Analysis</h2>
+    </div>
+    <div>
+        
+      <button
+        class="btn btn-sm btn-primary float-right mt-3"
+        onclick="showExpForm()"
+      >
+        Back
+      </button>
+    </div>
+  
+    
+    <div style="clear:both"></div>
+  </div>
+  
+  <!-- main stocking form -->
+  
+  <section class="row   m-auto ">
+    
+     <div class="col">
+        <div class="row border">
+            
+            <div class="col col-lg-4 pb-4">
+                <div class="row pt-3">
+                    <div class="col-md-5 "><strong>Product :</strong></div>
+                    <div class="col-md-7" style="word-break: break-all;">Praziquantel tab 200mg </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-md-5"><strong>Form :</strong></div>
+                    <div class="col-md-7">Bottle</div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-md-5"><strong>Quantity :</strong></div>
+                    <div class="col-md-7">100</div>
+                </div>
+            </div>
+            <div class="col col-lg-4">
+                <div class="row pt-3">
+                    <div class="col-md-5 "><strong>Id :</strong></div>
+                    <div class="col-md-7">766786876786</div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-md-5"><strong>Unit :</strong></div>
+                    <div class="col-md-7">1</div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-md-5"><strong>Price :</strong></div>
+                    <div class="col-md-7">100</div>
+                </div>
+            </div>
+             
+        </div>
+     </div>
+    </div>
+  </section>
+
+
+
+  <!-- main stocking form -->
+  
+  <section class="row pt-4">
+    
+    <div class="card-body">
+        <h3>Batch Breakdown</h3>
+      <div class="table-responsive pt-3">
+        <table class="table ">
+          <thead>
+            <th>Date</th>
+            <th>Expiration</th>
+            <th>Batch ID</th>
+            <th>Quantity</th>
+            <th>Error</th>
+            <th>Activity</th>
+            <th>Action</th>
+          </thead>
+          <tbody id="invoicesList">
+           <!-- <tr>
+              <td colspan="7" class="text-center">
+                <div class="spinner-grow text-success"></div>
+              </td>
+            </tr>-->
+
+            <tr>
+                <td>03-12-2020</td>
+                <td>03-12-2020</td>
+                <td>894848</td>
+                <td>10</td>
+                <td>
+                    <button class="btn btn-sm btn-secondary">
+                        View
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-success" >
+                        Check
+                    </button>
+                </td>
+                <td>
+                     <button class="btn btn-sm btn-primary">
+                        Edit
+                    </button>
+                </td>
+               
+            </tr>
+            <tr>
+                <td>03-12-2020</td>
+                <td>03-12-2020</td>
+                <td>894848</td>
+                <td>10</td>
+                <td>
+                    <button class="btn btn-sm btn-secondary">
+                        View
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-success" >
+                        Check
+                    </button>
+                </td>
+                <td>
+                     <button class="btn btn-sm btn-primary">
+                        Edit
+                    </button>
+                </td>
+               
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+  
+  <script id="invoiceContainer" type="text/xhandlebars-template">
+    {{#each data}}
+    <tr>
+      <div>{{value.invoiceId}}</div>
+      <div>{{value.transType}}</div>
+      <div>{{value.netPrice}}</div>
+      <div>{{value.amtPaid}}</div>
+      <div>{{value.balance}}</div>
+      <div>{{invoiceStatus value.balance}}</div>
+      <div>
+        <button type="button" class="btn btn-sm  btn-success " onclick="viewInvoice(event,'{{value.invoiceId}}','{{value.day}}-{{value.month}}-{{value.year}}','all')">
+          view
+        </button>
+      </div>
+    </tr>
+  
+    {{/each}}
+  </script>
+  
+  <script id="invoiceSalesContainer" type="text/xhandlebars-template">
+    {{#each data}}
+    <tr>
+      <div>{{value.name}}</div>
+      <div>{{value.qty}}</div>
+      <div>{{value.price}}</div>
+    </tr>
+  
+    {{/each}}
+  </script>
+  

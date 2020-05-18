@@ -294,6 +294,30 @@ class stockModel extends Database {
 
     return sortedArray;
   }
+
+  diminishingStock(sortedStock, stockLimit) {
+    let match = sortedStock.filter(item => {
+      return Number(item.value.qty) <= Number(stockLimit);
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getExhaustedStock(stock) {
+    //get sorted stock
+    let sortedStock = this.sortStock(stock);
+    //get stock limit
+    let { detail } = store.getSetupDetail();
+    if (detail != undefined) {
+      let stockLimit = detail[0].value.stockLimit;
+      //get stocks that have reached limit
+      return this.diminishingStock(sortedStock, stockLimit);
+    }
+  }
 }
 
 module.exports = stockModel;

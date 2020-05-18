@@ -396,7 +396,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("allStock", fetchAllStock);
+        pageLoader("exhaustedStock", fetchAllStock);
       });
     }
   }
@@ -622,7 +622,7 @@ const loadExpiredStock = e => {
   selectionRemover();
   addClass(expiredStock, "selected");
   addClass(subMenu2, "selectedDropper");
-  pageLoader("expiredStock");
+  pageLoader("expiredStock", fetchAllStock);
 };
 
 //stock exhausted
@@ -633,7 +633,7 @@ const loadExhaustedStock = e => {
   selectionRemover();
   addClass(exhaustedStock, "selected");
   addClass(subMenu2, "selectedDropper");
-  pageLoader("exhaustedStock");
+  pageLoader("exhaustedStock", fetchAllStock);
 };
 
 //stock list

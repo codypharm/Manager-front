@@ -480,13 +480,22 @@ const fillUp = e => {
 all stocks handler
 ===================*/
 
-//display all stock
+//handle all stock
 const handleAllStockDisplay = () => {
   //sort stock
   let sortedStock = stockModel.sortStock(stock);
 
   //display all stock
   displayAllStock(sortedStock);
+};
+
+//handle exhausted stock
+const handleExhaustedStockDisplay = () => {
+  //sort exhausted stock
+  let exhaustedStock = stockModel.getExhaustedStock(stock);
+
+  //display all stock
+  displayExhaustedStock(exhaustedStock);
 };
 
 // fetch all stock
@@ -497,6 +506,10 @@ const fetchAllStock = stockViewType => {
     switch (stockViewType) {
       case "allStock":
         handleAllStockDisplay();
+        break;
+
+      case "exhaustedStock":
+        handleExhaustedStockDisplay();
         break;
 
       default:

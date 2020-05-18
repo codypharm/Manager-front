@@ -351,7 +351,15 @@ const pageLoader = (page, fxn = false) => {
           case "clearedInvoices":
             fxn("cleared");
             break;
-
+          case "allStock":
+            fxn("allStock");
+            break;
+          case "expiredStock":
+            fxn("expiredStock");
+            break;
+          case "exhaustedStock":
+            fxn("exhaustedStock");
+            break;
           default:
             fxn();
             break;
@@ -388,7 +396,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("stockAnalysis");
+        pageLoader("allStock", fetchAllStock);
       });
     }
   }
@@ -603,7 +611,7 @@ const loadAllStock = e => {
   selectionRemover();
   addClass(allStock, "selected");
   addClass(subMenu2, "selectedDropper");
-  pageLoader("allStock");
+  pageLoader("allStock", fetchAllStock);
 };
 
 //expired stock

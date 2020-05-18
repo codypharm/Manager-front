@@ -254,6 +254,46 @@ class stockModel extends Database {
       recorderEmail: loginDetail.email
     });
   }
+
+  checkSortedArray(sortedArray, product) {
+    let match = sortedArray.filter(item => {
+      return item.value.prodId == product.value.prodId;
+    });
+    if (match.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  sortStock(stock) {
+    let sortedArray = [];
+    //loop through stock
+    stock.forEach(product => {
+      //loop through sorted array
+      if (sortedArray.length > 0) {
+        //check if in array
+        sortedArray.forEach(item => {
+          //if match is found
+          if (item.value.prodId == product.value.prodId) {
+            //add up
+            item.value.qty = Number(item.value.qty) + Number(product.value.qty);
+          } else {
+            //check if object is already in sorted array
+            let condition = this.checkSortedArray(sortedArray, product);
+            //check if not in sorted array
+            if (!condition) {
+              sortedArray.push(product);
+            }
+          }
+        });
+      } else {
+        sortedArray.push(product);
+      }
+    });
+
+    return sortedArray;
+  }
 }
 
 module.exports = stockModel;

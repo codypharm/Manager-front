@@ -12,7 +12,7 @@ var recordedProduct = [];
 var listNumber = 0;
 
 const loadStoreContent = () => {
-  const getStock = stockModel.getStock();
+  let getStock = stockModel.getStock();
   getStock.then(({ data, header, status }) => {
     stock = data.rows;
   });
@@ -474,4 +474,33 @@ const fillUp = e => {
     document.getElementById("form").value = matchFocus.value.form;
     document.getElementById("price").value = matchFocus.value.price;
   }
+};
+
+/*====================
+all stocks handler
+===================*/
+
+//display all stock
+const handleAllStockDisplay = () => {
+  //sort stock
+  let sortedStock = stockModel.sortStock(stock);
+
+  //display all stock
+  displayAllStock(sortedStock);
+};
+
+// fetch all stock
+const fetchAllStock = stockViewType => {
+  let getStock = stockModel.getStock();
+  getStock.then(({ data, header, status }) => {
+    stock = data.rows;
+    switch (stockViewType) {
+      case "allStock":
+        handleAllStockDisplay();
+        break;
+
+      default:
+        break;
+    }
+  });
 };

@@ -509,23 +509,19 @@ const handleExhaustedStockDisplay = () => {
 
 //handle expired stocking
 const handleExpiredStockDisplay = () => {
-  let getStock = stockModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
-    let expiredStock = stockModel.getExpiredStock(stock);
-    //display expired stock
-    if (expiredStock != false) {
-      //display all stock
-      displayExpiredStock(expiredStock);
-    } else {
-      document.getElementById("expiredStockList").innerHTML =
-        " <tr>" +
-        ' <td colspan="4" class="text-center">' +
-        "  <span>No record found</span>" +
-        " </td>" +
-        " </tr>";
-    }
-  });
+  let expiredStock = stockModel.getExpiredStock(stock);
+  //display expired stock
+  if (expiredStock != false) {
+    //display all stock
+    displayExpiredStock(expiredStock);
+  } else {
+    document.getElementById("expiredStockList").innerHTML =
+      " <tr>" +
+      ' <td colspan="8" class="text-center">' +
+      "  <span>No record found</span>" +
+      " </td>" +
+      " </tr>";
+  }
 };
 
 // fetch all stock
@@ -550,4 +546,42 @@ const fetchAllStock = stockViewType => {
         break;
     }
   });
+};
+
+//performing search in expired stock
+const searchExpiryStock = e => {
+  let input = e.target.value.trim();
+  //check input length
+  if (input.length > 0) {
+    //get match
+    let expiredStock = stockModel.getExpiredStock(stock);
+    //filter matching strings
+    searchResult = stockModel.getMatchForSearch(expiredStock, input);
+    //display expired stock
+    if (searchResult != false) {
+      //display all stock
+      displayExpiredStock(searchResult);
+    } else {
+      document.getElementById("expiredStockList").innerHTML =
+        " <tr>" +
+        ' <td colspan="8" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  } else {
+    let expiredStock = stockModel.getExpiredStock(stock);
+    //display expired stock
+    if (expiredStock != false) {
+      //display all stock
+      displayExpiredStock(expiredStock);
+    } else {
+      document.getElementById("expiredStockList").innerHTML =
+        " <tr>" +
+        ' <td colspan="8" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  }
 };

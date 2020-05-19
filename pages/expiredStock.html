@@ -10,7 +10,7 @@
         <form>
           <div class="searchContainer">
             <div class="search">
-              <input type="text" placeholder="search staff..." />
+              <input type="text" placeholder="search product..." oninput="searchExpiryStock(event)" />
             </div>
           </div>
         </form>
@@ -38,7 +38,7 @@
             </thead>
             <tbody id="expiredStockList">
               <tr>
-                <td colspan="7" class="text-center">
+                <td colspan="8" class="text-center">
                   <div class="spinner-grow text-success"></div>
                 </td>
               </tr>

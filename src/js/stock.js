@@ -585,3 +585,43 @@ const searchExpiryStock = e => {
     }
   }
 };
+
+//performing search in all stock
+const searchAllStock = e => {
+  let input = e.target.value.trim();
+
+  //check input length
+  if (input.length > 0) {
+    //sort stock
+    let sortedStock = stockModel.sortStock(stock);
+    //filter matching strings
+    searchResult = stockModel.getMatchForAllStockSearch(sortedStock, input);
+    //display expired stock
+    if (searchResult != false) {
+      //display all stock
+      displayAllStock(searchResult);
+    } else {
+      document.getElementById("allStockList").innerHTML =
+        " <tr>" +
+        ' <td colspan="7" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  } else {
+    //sort stock
+    let sortedStock = stockModel.sortStock(stock);
+    //display expired stock
+    if (sortedStock != false) {
+      //display all stock
+      displayAllStock(sortedStock);
+    } else {
+      document.getElementById("allStockList").innerHTML =
+        " <tr>" +
+        ' <td colspan="7" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  }
+};

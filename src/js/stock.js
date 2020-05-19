@@ -494,8 +494,38 @@ const handleExhaustedStockDisplay = () => {
   //sort exhausted stock
   let exhaustedStock = stockModel.getExhaustedStock(stock);
 
-  //display all stock
-  displayExhaustedStock(exhaustedStock);
+  if (exhaustedStock != false) {
+    //display all stock
+    displayExhaustedStock(exhaustedStock);
+  } else {
+    document.getElementById("exhaustedStockList").innerHTML =
+      " <tr>" +
+      ' <td colspan="4" class="text-center">' +
+      "  <span>No record found</span>" +
+      " </td>" +
+      " </tr>";
+  }
+};
+
+//handle expired stocking
+const handleExpiredStockDisplay = () => {
+  let getStock = stockModel.getStock();
+  getStock.then(({ data, header, status }) => {
+    stock = data.rows;
+    let expiredStock = stockModel.getExpiredStock(stock);
+    //display expired stock
+    if (expiredStock != false) {
+      //display all stock
+      displayExpiredStock(expiredStock);
+    } else {
+      document.getElementById("expiredStockList").innerHTML =
+        " <tr>" +
+        ' <td colspan="4" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  });
 };
 
 // fetch all stock
@@ -510,6 +540,10 @@ const fetchAllStock = stockViewType => {
 
       case "exhaustedStock":
         handleExhaustedStockDisplay();
+        break;
+
+      case "expiredStock":
+        handleExpiredStockDisplay();
         break;
 
       default:

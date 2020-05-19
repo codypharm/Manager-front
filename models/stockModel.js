@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 //import db file
 const Database = require("../src/js/db");
+const moment = require("moment");
 
 class stockModel extends Database {
   constructor() {
@@ -316,6 +317,36 @@ class stockModel extends Database {
       let stockLimit = detail[0].value.stockLimit;
       //get stocks that have reached limit
       return this.diminishingStock(sortedStock, stockLimit);
+    }
+  }
+
+  calcDate(expDate) {
+    let expiration = moment(expDate).format("YYYY-MM-DD");
+    let currentDate = moment().format("YYYY-MM-DD");
+    let days = moment(expiration).diff(currentDate, "days");
+    return days;
+  }
+
+  getExpiredStock(stock) {
+    //get date limit
+
+    let { detail } = store.getSetupDetail();
+    if (detail != undefined) {
+      let dateLimit = detail[0].value.dateLimit;
+      let selectedStock = stock.filter(item => {
+        if (item.value.expDate != "") {
+          return (
+            //get stock with date below date limit and is in stock
+            this.calcDate(item.value.expDate) <= dateLimit && item.value.qty > 0
+          );
+        }
+      });
+
+      if (selectedStock.length > 0) {
+        return selectedStock;
+      } else {
+        return false;
+      }
     }
   }
 }

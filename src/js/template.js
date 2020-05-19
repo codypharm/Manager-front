@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 
+const moment = require("moment");
+
 //view list display
 const displayStaff = data => {
   //get current staff details from store
@@ -278,5 +280,40 @@ const displayExhaustedStock = products => {
   //paste html into DOM
   let container = (document.getElementById(
     "exhaustedStockList"
+  ).innerHTML = myhtml);
+};
+
+//display expired list
+const displayExpiredStock = products => {
+  //assing array to ab object property
+  let newObj = {
+    data: products
+  };
+
+  //calculate days remining
+  Handlebars.registerHelper("daysRemaining", expDate => {
+    let expiration = moment(expDate).format("YYYY-MM-DD");
+    let currentDate = moment().format("YYYY-MM-DD");
+    let days = moment(expiration).diff(currentDate, "days");
+    if (days == 1) {
+      return `${days} day remaining`;
+    } else if (days > 1) {
+      return `${days} days remaining`;
+    } else {
+      return "expired";
+    }
+  });
+
+  //get template
+  let template = document.getElementById("expiredStockContainer").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById(
+    "expiredStockList"
   ).innerHTML = myhtml);
 };

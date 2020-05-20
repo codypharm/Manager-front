@@ -269,9 +269,11 @@ class stockModel extends Database {
 
   sortStock(stock) {
     let sortedArray = [];
+
     //loop through stock
     stock.forEach(product => {
       //loop through sorted array
+
       if (sortedArray.length > 0) {
         //check if in array
         sortedArray.forEach(item => {

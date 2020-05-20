@@ -10,6 +10,7 @@ var stock;
 
 var recordedProduct = [];
 var listNumber = 0;
+var sortedStock;
 
 const loadStoreContent = () => {
   let getStock = stockModel.getStock();
@@ -483,7 +484,7 @@ all stocks handler
 //handle all stock
 const handleAllStockDisplay = () => {
   //sort stock
-  let sortedStock = stockModel.sortStock(stock);
+  sortedStock = stockModel.sortStock(stock);
 
   //display all stock
   displayAllStock(sortedStock);
@@ -592,8 +593,6 @@ const searchAllStock = e => {
 
   //check input length
   if (input.length > 0) {
-    //sort stock
-    let sortedStock = stockModel.sortStock(stock);
     //filter matching strings
     searchResult = stockModel.getMatchForAllStockSearch(sortedStock, input);
     //display expired stock
@@ -609,9 +608,6 @@ const searchAllStock = e => {
         " </tr>";
     }
   } else {
-    //sort stock
-    let sortedStock = stockModel.sortStock(stock);
-    //display expired stock
     if (sortedStock != false) {
       //display all stock
       displayAllStock(sortedStock);

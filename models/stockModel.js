@@ -383,6 +383,22 @@ class stockModel extends Database {
       return false;
     }
   }
+
+  getMatchForExhaustedStockSearch(stock, input) {
+    let searchInput = input.toUpperCase();
+    let match = stock.filter(item => {
+      return (
+        item.value.name.toUpperCase().includes(searchInput) ||
+        item.value.prodId.includes(searchInput)
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
 }
 
 module.exports = stockModel;

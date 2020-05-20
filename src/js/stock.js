@@ -11,6 +11,7 @@ var stock;
 var recordedProduct = [];
 var listNumber = 0;
 var sortedStock;
+var exhaustedStock;
 
 const loadStoreContent = () => {
   let getStock = stockModel.getStock();
@@ -493,7 +494,7 @@ const handleAllStockDisplay = () => {
 //handle exhausted stock
 const handleExhaustedStockDisplay = () => {
   //sort exhausted stock
-  let exhaustedStock = stockModel.getExhaustedStock(stock);
+  exhaustedStock = stockModel.getExhaustedStock(stock);
 
   if (exhaustedStock != false) {
     //display all stock
@@ -590,7 +591,6 @@ const searchExpiryStock = e => {
 //performing search in all stock
 const searchAllStock = e => {
   let input = e.target.value.trim();
-
   //check input length
   if (input.length > 0) {
     //filter matching strings
@@ -615,6 +615,43 @@ const searchAllStock = e => {
       document.getElementById("allStockList").innerHTML =
         " <tr>" +
         ' <td colspan="7" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  }
+};
+
+//searxh exhausted goods
+const searchExhaustedStock = e => {
+  let input = e.target.value.trim();
+  //check input length
+  if (input.length > 0) {
+    //filter matching strings
+    searchResult = stockModel.getMatchForExhaustedStockSearch(
+      exhaustedStock,
+      input
+    );
+    //display expired stock
+    if (searchResult != false) {
+      //display all stock
+      displayExhaustedStock(searchResult);
+    } else {
+      document.getElementById("exhaustedStockList").innerHTML =
+        " <tr>" +
+        ' <td colspan="4" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  } else {
+    if (exhaustedStock != false) {
+      //display all stock
+      displayExhaustedStock(exhaustedStock);
+    } else {
+      document.getElementById("exhaustedStockList").innerHTML =
+        " <tr>" +
+        ' <td colspan="4" class="text-center">' +
         "  <span>No record found</span>" +
         " </td>" +
         " </tr>";

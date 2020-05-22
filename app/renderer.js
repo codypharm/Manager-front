@@ -396,7 +396,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("exhaustedStock", fetchAllStock);
+        pageLoader("allStock", fetchAllStock);
       });
     }
   }
@@ -743,4 +743,14 @@ const loadReports = e => {
   selectionRemover();
   addClass(reports, "selected");
   pageLoader("reports");
+};
+
+///currency formater
+const formatMoney = money => {
+  //ensure two decimal places
+  let amount = Number(money).toFixed(2);
+  //add commas where needed
+  amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  //return amount
+  return amount;
 };

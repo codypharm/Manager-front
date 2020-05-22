@@ -292,15 +292,19 @@ const displayExpiredStock = products => {
 
   //calculate days remining
   Handlebars.registerHelper("daysRemaining", expDate => {
-    let expiration = moment(expDate).format("YYYY-MM-DD");
-    let currentDate = moment().format("YYYY-MM-DD");
-    let days = moment(expiration).diff(currentDate, "days");
-    if (days == 1) {
-      return `${days} day remaining`;
-    } else if (days > 1) {
-      return `${days} days remaining`;
+    if (expDate != "") {
+      let expiration = moment(expDate).format("YYYY-MM-DD");
+      let currentDate = moment().format("YYYY-MM-DD");
+      let days = moment(expiration).diff(currentDate, "days");
+      if (days == 1) {
+        return `${days} day remaining`;
+      } else if (days > 1) {
+        return `${days} days remaining`;
+      } else {
+        return "expired";
+      }
     } else {
-      return "expired";
+      return "N/A";
     }
   });
 
@@ -316,4 +320,55 @@ const displayExpiredStock = products => {
   let container = (document.getElementById(
     "expiredStockList"
   ).innerHTML = myhtml);
+};
+
+//list out all the batches
+const listOutBatches = products => {
+  //assing array to ab object property
+  let newObj = {
+    data: products
+  };
+
+  //calculate days remining
+  Handlebars.registerHelper("daysRemaining", expDate => {
+    //check if exp date is specified
+    if (expDate != "") {
+      let expiration = moment(expDate).format("YYYY-MM-DD");
+      let currentDate = moment().format("YYYY-MM-DD");
+      let days = moment(expiration).diff(currentDate, "days");
+      if (days == 1) {
+        return `${days} day remaining`;
+      } else if (days > 1) {
+        return `${days} days remaining`;
+      } else {
+        return "expired";
+      }
+    } else {
+      return "N/A";
+    }
+  });
+
+  //reverse date
+  Handlebars.registerHelper("reverseDate", expDate => {
+    if (expDate != "") {
+      let val = String(expDate);
+      return val
+        .split("")
+        .reverse()
+        .join("");
+    } else {
+      return "N/A";
+    }
+  });
+
+  //get template
+  let template = document.getElementById("batchListContainer").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById("batchList").innerHTML = myhtml);
 };

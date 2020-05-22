@@ -8,10 +8,17 @@
     <div>
         
       <button
-        class="btn btn-sm btn-primary float-right mt-3"
+        class="btn  btn-primary float-right mt-3"
         onclick="showExpForm()"
       >
         Back
+      </button>
+
+      <button
+        class="btn  btn-success float-right mt-3 mr-1"
+        onclick="showExpForm()"
+      >
+        Edit
       </button>
     </div>
   
@@ -29,29 +36,29 @@
             <div class="col col-lg-4 pb-4">
                 <div class="row pt-3">
                     <div class="col-md-5 "><strong>Product :</strong></div>
-                    <div class="col-md-7" style="word-break: break-all;">Praziquantel tab 200mg </div>
+                    <div class="col-md-7" style="word-break: break-all;" id="analysisStockName"> </div>
                 </div>
                 <div class="row pt-3">
                     <div class="col-md-5"><strong>Form :</strong></div>
-                    <div class="col-md-7">Bottle</div>
+                    <div class="col-md-7" id="analysisStockForm"></div>
                 </div>
                 <div class="row pt-3">
                     <div class="col-md-5"><strong>Quantity :</strong></div>
-                    <div class="col-md-7">100</div>
+                    <div class="col-md-7"id="analysisStockQty"></div>
                 </div>
             </div>
             <div class="col col-lg-4">
                 <div class="row pt-3">
                     <div class="col-md-5 "><strong>Id :</strong></div>
-                    <div class="col-md-7">766786876786</div>
+                    <div class="col-md-7" id="analysisStockId"></div>
                 </div>
                 <div class="row pt-3">
                     <div class="col-md-5"><strong>Unit :</strong></div>
-                    <div class="col-md-7">1</div>
+                    <div class="col-md-7" id="analysisStockUnit"></div>
                 </div>
                 <div class="row pt-3">
                     <div class="col-md-5"><strong>Price :</strong></div>
-                    <div class="col-md-7">100</div>
+                    <div class="col-md-7" id="analysisStockPrice"></div>
                 </div>
             </div>
              
@@ -66,105 +73,78 @@
   
   <section class="row pt-4">
     
-    <div class="card-body">
-        <h3>Batch Breakdown</h3>
+    <div class="card border-top-0 border-right-0 border-left-0 border-bottom-0 w-100">
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <h3>Batch Breakdown</h3>
+          </div>
+          <div class="col text-right">
+            <div class="btn btn-sm btn-secondary">
+              Delete Product
+            </div>
+          </div>
+        </div>
       <div class="table-responsive pt-3">
         <table class="table ">
           <thead>
             <th>Date</th>
             <th>Expiration</th>
             <th>Batch ID</th>
+            <th>Batch Life</th>
             <th>Quantity</th>
             <th>Error</th>
             <th>Activity</th>
-            <th>Action</th>
+            <th colspan="3" class="text-center">Action</th>
           </thead>
-          <tbody id="invoicesList">
-           <!-- <tr>
+          <tbody id="batchList">
+            <tr>
               <td colspan="7" class="text-center">
                 <div class="spinner-grow text-success"></div>
               </td>
-            </tr>-->
-
-            <tr>
-                <td>03-12-2020</td>
-                <td>03-12-2020</td>
-                <td>894848</td>
-                <td>10</td>
-                <td>
-                    <button class="btn btn-sm btn-secondary">
-                        View
-                    </button>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-success" >
-                        Check
-                    </button>
-                </td>
-                <td>
-                     <button class="btn btn-sm btn-primary">
-                        Edit
-                    </button>
-                </td>
-               
-            </tr>
-            <tr>
-                <td>03-12-2020</td>
-                <td>03-12-2020</td>
-                <td>894848</td>
-                <td>10</td>
-                <td>
-                    <button class="btn btn-sm btn-secondary">
-                        View
-                    </button>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-success" >
-                        Check
-                    </button>
-                </td>
-                <td>
-                     <button class="btn btn-sm btn-primary">
-                        Edit
-                    </button>
-                </td>
-               
             </tr>
           </tbody>
         </table>
       </div>
     </div>
+    </div>
   </div>
 </section>
 
   
-  <script id="invoiceContainer" type="text/xhandlebars-template">
+  <script id="batchListContainer" type="text/xhandlebars-template">
     {{#each data}}
     <tr>
-      <div>{{value.invoiceId}}</div>
-      <div>{{value.transType}}</div>
-      <div>{{value.netPrice}}</div>
-      <div>{{value.amtPaid}}</div>
-      <div>{{value.balance}}</div>
-      <div>{{invoiceStatus value.balance}}</div>
-      <div>
-        <button type="button" class="btn btn-sm  btn-success " onclick="viewInvoice(event,'{{value.invoiceId}}','{{value.day}}-{{value.month}}-{{value.year}}','all')">
-          view
+      <td>{{value.day}}-{{value.month}}-{{value.year}}</td>
+      <td>{{reverseDate value.expDate}}</td>
+      <td>{{value.batchId}}</td>
+      <td>{{daysRemaining value.expDate}}</td>
+      <td>{{value.qty}}</td>
+      <td>
+           <button class="btn btn-sm btn-warning" style="color:#FFF">
+            View
+          </button>
+      </td>
+      <td>
+         <button class="btn btn-sm btn-success" >
+            Check
         </button>
-      </div>
-    </tr>
+      </td>
+      <td>
+        <td>
+          <button class="btn btn-sm btn-primary">
+            Edit
+          </button>
+          </td>
+          <td>
+          <button class="btn btn-sm btn-secondary">
+            Delete
+          </button>
+        </td>
+       </td>
   
     {{/each}}
   </script>
   
-  <script id="invoiceSalesContainer" type="text/xhandlebars-template">
-    {{#each data}}
-    <tr>
-      <div>{{value.name}}</div>
-      <div>{{value.qty}}</div>
-      <div>{{value.price}}</div>
-    </tr>
   
-    {{/each}}
-  </script>
   

@@ -658,3 +658,54 @@ const searchExhaustedStock = e => {
     }
   }
 };
+
+//caluclate product qty
+const getProductQty = products => {
+  let qty = 0;
+  products.forEach(product => {
+    qty += Number(product.value.qty);
+  });
+
+  return qty;
+};
+
+var analysisSelected;
+///load stock details page
+const showProduct = (e, productId) => {
+  e.preventDefault();
+  analysisSelected = productId;
+  //load stock analysis page
+  pageLoader("stockAnalysis", analyseStock);
+};
+
+const analyseStock = () => {
+  let productId = analysisSelected;
+  //get selected product
+  let selectedStockList = stockModel.getSelectedStock(stock, productId);
+
+  //get product details
+  let productDetail = selectedStockList[0];
+
+  //calculate Quantity
+  qty = getProductQty(selectedStockList);
+  //insert details to DOM
+  document.getElementById(
+    "analysisStockName"
+  ).textContent = `${productDetail.value.name}`;
+  document.getElementById(
+    "analysisStockForm"
+  ).textContent = `${productDetail.value.form}`;
+  document.getElementById("analysisStockQty").textContent = `${qty}`;
+  document.getElementById(
+    "analysisStockId"
+  ).textContent = `${productDetail.value.prodId}`;
+  document.getElementById(
+    "analysisStockUnit"
+  ).textContent = `${productDetail.value.unit}`;
+  document.getElementById("analysisStockPrice").textContent = ` ₦${formatMoney(
+    productDetail.value.price
+  )}`;
+
+  //display all batch
+  listOutBatches(selectedStockList);
+};

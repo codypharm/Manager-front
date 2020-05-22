@@ -709,3 +709,8 @@ const analyseStock = () => {
   //display all batch
   listOutBatches(selectedStockList);
 };
+
+//show error log
+const showErrorLog = (e, batchId) => {
+  showGenStaticModal("errorLogContent");
+};

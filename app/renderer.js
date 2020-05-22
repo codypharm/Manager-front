@@ -42,7 +42,7 @@ const showDebtForm = message => {
   return true;
 };
 
-const showGenStaticModal = (elem, body, message) => {
+const showGenStaticModal = elem => {
   $(".genStaticModal").modal("show");
 
   document.getElementById(elem).classList.remove("hide");

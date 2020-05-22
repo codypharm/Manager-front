@@ -166,12 +166,31 @@
       class="modal-dialog modal-dialog-centered modal-md mt-7"
       role="document"
     >
+
+      <!--content for error log-->
+      <div class="modal-content hide " id="errorLogContent">
+        <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">
+          <div class="modal-body" id="errorLogForm">
+            <h4>Batch BT88489809</h4>
+            <div class="border"></div>
+            <p class="text-center ">
+              No error recorded
+            </p>
+          </div>
+          <div class="modal-footer border-top-0">
+            
+            <button data-dismiss="modal" class="btn btn-primary">
+              Done
+            </button>
+          </div>
+        
+      </div>
+      <!-- content for expense-->
       <div class="modal-content hide " id="expenseContent">
         <form class="form" id="expFormDetail" onsubmit="submitExpenses(event)">
-        
           <div class="modal-body" id="expForm">
             <div class="alert alert-danger hide" id="expWarning"></div>
-    
+
             <div class="alert alert-success hide" id="expSuccess"></div>
             <div class="form-group">
               <label for="expAmt">Amount:</label>
@@ -207,22 +226,21 @@
                 />
               </div>
             </div>
-          
-        </div>
-        <div class="modal-footer border-top-0">
-          <button
-            type="reset"
-            class="btn btn-secondary "
-            onclick="hideExpForm()"
-          >
-            Cancel
-          </button>
-          <button type="submit" class="btn btn-primary">
-            Done
-          </button>
-        </div>
+          </div>
+          <div class="modal-footer border-top-0">
+            <button
+              type="reset"
+              class="btn btn-secondary "
+              onclick="hideExpForm()"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Done
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
     </div>
   </div>
   <!-- static modal ends -->

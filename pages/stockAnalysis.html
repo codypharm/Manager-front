@@ -121,7 +121,7 @@
       <td>{{daysRemaining value.expDate}}</td>
       <td>{{value.qty}}</td>
       <td>
-           <button class="btn btn-sm btn-warning" style="color:#FFF">
+           <button class="btn btn-sm btn-warning" onclick="showErrorLog(event, '{{value.batchId}}')" style="color:#FFF">
             View
           </button>
       </td>

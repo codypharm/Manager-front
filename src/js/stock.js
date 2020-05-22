@@ -727,3 +727,26 @@ const showErrorLog = (e, batchId) => {
     document.getElementById("errorContent").textContent = detail.error;
   }
 };
+
+const hideErrorForm = () => {
+  hideGenStaticModal("errorLogContent");
+};
+
+const hideEditForm = () => {
+  hideGenStaticModal("batchEditContent");
+};
+
+//edit batch
+const editBatch = (e, id) => {
+  //show modal
+  showGenStaticModal("batchEditContent");
+
+  //get batch
+  let batch = stockModel.getBatch(stock, id);
+  let detail = batch[0].value;
+  //add to DOM
+  document.getElementById("editBatchId").textContent = detail.batchId;
+
+  document.getElementById("editQty").value = detail.qty;
+  document.getElementById("editExpDate").value = detail.expDate;
+};

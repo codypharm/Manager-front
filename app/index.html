@@ -167,6 +167,51 @@
       role="document"
     >
 
+      <!--content for editing batch-->
+      <div class="modal-content hide " id="batchEditContent">
+        <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">
+          <div class="modal-body" >
+           <form  class="form">
+            <h4>Batch <span id="editBatchId"></span></h4>
+            <div class="border mb-3"></div>
+            
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <label for="editQty">Quantity</label>
+                  <input type="number" id="editQty" placeholder="enter quantity" class="form-control">
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-group">
+                  <label for="editExpDate">Expiration Date</label>
+                  <input type="date" id="editExpDate" class="form-control">
+                </div>
+              </div>
+            </div>
+            
+            
+            <div class="border"></div>
+          </div>
+          <div class="modal-footer border-top-0">
+           
+            <button
+              type="reset"
+              class="btn btn-secondary "
+              onclick="hideEditForm()"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Done
+            </button>
+          </div>
+           </form>
+        
+      </div>
+
+
+
       <!--content for error log-->
       <div class="modal-content hide " id="errorLogContent">
         <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">
@@ -182,7 +227,7 @@
           </div>
           <div class="modal-footer border-top-0">
            
-            <button data-dismiss="modal" class="btn btn-primary">
+            <button onclick="hideErrorForm()" class="btn btn-primary">
               Done
             </button>
           </div>

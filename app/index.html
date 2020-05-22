@@ -171,14 +171,17 @@
       <div class="modal-content hide " id="errorLogContent">
         <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">
           <div class="modal-body" id="errorLogForm">
-            <h4>Batch BT88489809</h4>
+            <h4>Batch <span id="errorBatchId"></span></h4>
             <div class="border"></div>
-            <p class="text-center ">
-              No error recorded
-            </p>
+            
+            <div class="pt-1 pb-5"  id="errorContent">
+              
+            </div>
+            
+            <div class="border"></div>
           </div>
           <div class="modal-footer border-top-0">
-            
+           
             <button data-dismiss="modal" class="btn btn-primary">
               Done
             </button>

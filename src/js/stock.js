@@ -712,5 +712,18 @@ const analyseStock = () => {
 
 //show error log
 const showErrorLog = (e, batchId) => {
+  let id = batchId;
+  //show modal
   showGenStaticModal("errorLogContent");
+
+  //get batch
+  let batch = stockModel.getBatch(stock, id);
+  let detail = batch[0].value;
+  //add to DOM
+  document.getElementById("errorBatchId").textContent = detail.batchId;
+  if (detail.error == "") {
+    document.getElementById("errorContent").textContent = "No error recorded";
+  } else {
+    document.getElementById("errorContent").textContent = detail.error;
+  }
 };

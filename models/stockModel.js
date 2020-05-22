@@ -411,6 +411,18 @@ class stockModel extends Database {
       return false;
     }
   }
+
+  getBatch(stock, id) {
+    let match = stock.filter(product => {
+      return product.value.batchId == id;
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
 }
 
 module.exports = stockModel;

@@ -16,7 +16,7 @@
 
       <button
         class="btn  btn-success float-right mt-3 mr-1"
-        onclick="showExpForm()"
+        onclick="showAnalysisEditForm(event)"
       >
         Edit
       </button>
@@ -126,13 +126,13 @@
           </button>
       </td>
       <td>
-         <button class="btn btn-sm btn-success" >
+         <button class="btn btn-sm btn-primary" >
             Check
         </button>
       </td>
       <td>
         <td>
-          <button class="btn btn-sm btn-primary" onclick="editBatch(event, '{{value.batchId}}')">
+          <button class="btn btn-sm btn-success" onclick="editBatch(event, '{{value.batchId}}')">
             Edit
           </button>
           </td>

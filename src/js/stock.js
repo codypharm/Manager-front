@@ -866,3 +866,10 @@ const submitBatchEdit = e => {
     });
   }
 };
+
+//show form for general product editing
+const showAnalysisEditForm = e => {
+  //show form
+  showGenStaticModal("productEditContent");
+  console.log(analysisSelected);
+};

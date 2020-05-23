@@ -13,6 +13,10 @@ var listNumber = 0;
 var sortedStock;
 var exhaustedStock;
 
+var analysisSelected;
+var oldEditQty = 0;
+var oldEditExpDate = "";
+
 const loadStoreContent = () => {
   let getStock = stockModel.getStock();
   getStock.then(({ data, header, status }) => {
@@ -669,7 +673,6 @@ const getProductQty = products => {
   return qty;
 };
 
-var analysisSelected;
 ///load stock details page
 const showProduct = (e, productId) => {
   e.preventDefault();
@@ -678,11 +681,7 @@ const showProduct = (e, productId) => {
   pageLoader("stockAnalysis", analyseStock);
 };
 
-const analyseStock = () => {
-  let productId = analysisSelected;
-  //get selected product
-  let selectedStockList = stockModel.getSelectedStock(stock, productId);
-
+const analyseTop = selectedStockList => {
   //get product details
   let productDetail = selectedStockList[0];
 
@@ -705,9 +704,22 @@ const analyseStock = () => {
   document.getElementById("analysisStockPrice").textContent = ` ₦${formatMoney(
     productDetail.value.price
   )}`;
+};
 
-  //display all batch
-  listOutBatches(selectedStockList);
+const analyseStock = () => {
+  let getStock = stockModel.getStock();
+  getStock.then(({ data, header, status }) => {
+    stock = data.rows;
+    let productId = analysisSelected;
+    //get selected product
+    let selectedStockList = stockModel.getSelectedStock(stock, productId);
+
+    //handle top section
+    analyseTop(selectedStockList);
+
+    //display all batch
+    listOutBatches(selectedStockList);
+  });
 };
 
 //show error log
@@ -744,9 +756,113 @@ const editBatch = (e, id) => {
   //get batch
   let batch = stockModel.getBatch(stock, id);
   let detail = batch[0].value;
+  oldEditExpDate = detail.expDate;
+  oldEditQty = detail.qty;
   //add to DOM
-  document.getElementById("editBatchId").textContent = detail.batchId;
-
+  document.getElementById("editBatchId").textContent = id;
+  document.getElementById("hiddenBatchId").value = id;
   document.getElementById("editQty").value = detail.qty;
   document.getElementById("editExpDate").value = detail.expDate;
+};
+
+//submit batch edit form
+const submitBatchEdit = e => {
+  e.preventDefault();
+  let btn = document.getElementById("btnSpinner");
+  btn.classList.add("spinner-border");
+  btn.classList.add("spinner-border-sm");
+  //get values
+  let editQty = document.getElementById("editQty").value;
+  if (editQty == "") {
+    editQty = 0;
+  }
+  let editExpDate = document.getElementById("editExpDate").value;
+  let batchEdited = document.getElementById("hiddenBatchId").value;
+  let edit;
+  let editClass;
+  //check if any detail was changed
+  if (editQty != oldEditQty || editExpDate != oldEditExpDate) {
+    //check for what was edited
+    if (editQty != oldEditQty && editExpDate != oldEditExpDate) {
+      editClass = "Quantity and Expiration change";
+      edit = `Quantity was changed from ${oldEditQty} to ${editQty} and Expiry date was changed from ${oldEditExpDate} to ${editExpDate}`;
+    } else if (editQty != oldEditQty) {
+      editClass = "Quantity change";
+      edit = `Quantity was changed from ${oldEditQty} to ${editQty}`;
+    } else if (
+      editExpDate != oldEditExpDate &&
+      editExpDate != "" &&
+      oldEditExpDate != ""
+    ) {
+      editClass = "Expiration change";
+      edit = `Expiry date was changed from ${oldEditExpDate} to ${editExpDate}`;
+    } else if (
+      editExpDate != oldEditExpDate &&
+      oldEditExpDate != "" &&
+      editExpDate == ""
+    ) {
+      editClass = "Expiration change";
+      edit = `Expiry date was removed `;
+    } else if (
+      editExpDate != oldEditExpDate &&
+      oldEditExpDate == "" &&
+      editExpDate != ""
+    ) {
+      editClass = "Expiration change";
+      edit = `Expiry date is set to ${editExpDate}`;
+    }
+    //get batch
+    let batch = stockModel.getBatch(stock, batchEdited);
+    let updateId = batch[0].id;
+    let detail = batch[0].value;
+
+    //record activity
+    let idGen = stockModel.generateId();
+    idGen.then(ids => {
+      let newId = ids[0];
+      let stockUpdateInsert = stockModel.insertUpdate(
+        newId,
+        editClass,
+        edit,
+        detail.batchId
+      );
+      stockUpdateInsert.then(({ data, headers, status }) => {
+        if (status == 201) {
+          //update stockingForm
+          let editUpdate = stockModel.editUpdateStock(
+            detail,
+            editQty,
+            editExpDate,
+            updateId
+          );
+
+          editUpdate.then(({ data, headers, status }) => {
+            if (status == 201) {
+              //remove spinner
+              btn.classList.remove("spinner-border");
+              btn.classList.remove("spinner-border-sm");
+              if (hideGenStaticModal("batchEditContent")) {
+                //get stock
+                let getStock = stockModel.getStock();
+                getStock.then(({ data, header, status }) => {
+                  stock = data.rows;
+
+                  //get selected product
+                  let selectedStockList = stockModel.getSelectedStock(
+                    stock,
+                    detail.prodId
+                  );
+                  //handle top section
+                  analyseTop(selectedStockList);
+
+                  //display all batch
+                  listOutBatches(selectedStockList);
+                });
+              }
+            }
+          });
+        }
+      });
+    });
+  }
 };

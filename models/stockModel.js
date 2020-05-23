@@ -423,6 +423,44 @@ class stockModel extends Database {
       return false;
     }
   }
+
+  insertUpdate(id, editClass, edit, batchId) {
+    let date = new Date();
+    let loginDetail = store.getLoginDetail();
+    return this.couch.insert("all_activities", {
+      id: id,
+      day: date.getDate(),
+      month: date.getMonth() + 1,
+      year: date.getFullYear(),
+      activity: editClass,
+      detail: edit,
+      editedId: batchId,
+      staffName: loginDetail.fname + " " + loginDetail.lname,
+      staffId: loginDetail.staffId
+    });
+  }
+  editUpdateStock(detail, editQty, editExpDate, id) {
+    return this.couch.update("stock", {
+      _id: id,
+      _rev: detail.rev,
+      batchId: detail.batchId,
+      productId: detail.prodId,
+      brand: detail.brand,
+      name: detail.name,
+      qty: editQty,
+      form: detail.form,
+      unit: detail.unit,
+      price: detail.price,
+      totalCost: detail.totalCost,
+      expDate: editExpDate,
+      error: detail.error,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year,
+      recorder: detail.recName,
+      recorderEmail: detail.recEmail
+    });
+  }
 }
 
 module.exports = stockModel;

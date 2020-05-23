@@ -352,10 +352,8 @@ const listOutBatches = products => {
   Handlebars.registerHelper("reverseDate", expDate => {
     if (expDate != "") {
       let val = String(expDate);
-      return val
-        .split("")
-        .reverse()
-        .join("");
+      let newDate = val.split("-");
+      return `${newDate[2]}-${newDate[1]}-${newDate[0]}`;
     } else {
       return "N/A";
     }

@@ -16,6 +16,49 @@ var exhaustedStock;
 var analysisSelected;
 var oldEditQty = 0;
 var oldEditExpDate = "";
+var oldName = "";
+var oldForm = "";
+var oldPrice = "";
+var oldUnit = "";
+var oldBrand = "";
+
+//alert
+
+//handle show warning for expenses
+const showStockEditError = message => {
+  let errorBox = document.getElementById("stockEditWarning");
+  if (errorBox.classList.contains("hide")) {
+    errorBox.classList.remove("hide");
+    document.getElementById("stockEditWarning").textContent = message;
+  }
+};
+
+//handle hide warning
+const hideStockEditError = () => {
+  let errorBox = document.getElementById("stockEditWarning");
+  if (!errorBox.classList.contains("hide")) {
+    errorBox.classList.add("hide");
+    document.getElementById("stockEditWarning").textContent = "";
+  }
+};
+
+//handle show success for expenses
+const showStockEditSuccess = message => {
+  let sucBox = document.getElementById("stockEditSuccess");
+  if (sucBox.classList.contains("hide")) {
+    sucBox.classList.remove("hide");
+    document.getElementById("stockEditSuccess").textContent = message;
+  }
+};
+
+//handle hide success
+const hideStockEditSuccess = () => {
+  let sucBox = document.getElementById("stockEditSuccess");
+  if (!sucBox.classList.contains("hide")) {
+    sucBox.classList.add("hide");
+    document.getElementById("stockEditSuccess").textContent = "";
+  }
+};
 
 const loadStoreContent = () => {
   let getStock = stockModel.getStock();
@@ -748,6 +791,9 @@ const hideEditForm = () => {
   hideGenStaticModal("batchEditContent");
 };
 
+const hideProductEditForm = () => {
+  hideGenStaticModal("productEditContent");
+};
 //edit batch
 const editBatch = (e, id) => {
   //show modal
@@ -869,7 +915,163 @@ const submitBatchEdit = e => {
 
 //show form for general product editing
 const showAnalysisEditForm = e => {
+  //hide error messages
+  hideStockEditSuccess();
+  hideStockEditError();
   //show form
   showGenStaticModal("productEditContent");
-  console.log(analysisSelected);
+  let id = analysisSelected;
+
+  //get stock
+  let getStock = stockModel.getStock();
+  getStock.then(({ data, header, status }) => {
+    stock = data.rows;
+
+    //get selected stock
+    let selectedStock = stockModel.getSelectedStock(stock, id);
+    if (selectedStock != false) {
+      let detail = selectedStock[0].value;
+
+      //insert to DOM
+      document.getElementById("editAnalysisName").value = detail.name;
+      document.getElementById("editAnalysisForm").value = detail.form;
+      document.getElementById("editAnalysisUnit").value = detail.unit;
+      document.getElementById("editAnalysisPrice").value = detail.price;
+      document.getElementById("editAnalysisBrand").value = detail.brand;
+
+      //get values
+      oldForm = detail.form;
+      oldUnit = detail.unit;
+      oldPrice = detail.price;
+      oldName = detail.name;
+      oldBrand = detail.brand;
+    }
+  });
+};
+
+//submit product edit
+const submitProductEdit = e => {
+  e.preventDefault();
+  let btn = document.getElementById("btnProductEditSpinner");
+  btn.classList.add("spinner-border");
+  btn.classList.add("spinner-border-sm");
+  let id = analysisSelected;
+
+  //hide error messages
+  hideStockEditSuccess();
+  hideStockEditError();
+  let edit = [];
+  //get values
+  let name = document.getElementById("editAnalysisName");
+  let form = document.getElementById("editAnalysisForm");
+  let unit = document.getElementById("editAnalysisUnit");
+  let price = document.getElementById("editAnalysisPrice");
+  let brand = document.getElementById("editAnalysisBrand");
+  let editClass = [];
+
+  let inputs = [name, form, unit, price, brand];
+
+  if (stockModel.isEmpty(inputs)) {
+    showStockEditError("please fill all fields");
+    btn.classList.remove("spinner-border");
+    btn.classList.remove("spinner-border-sm");
+  } else if (unit.value < 0 || unit.value == 0) {
+    showStockEditError("enter a valid unit");
+    btn.classList.remove("spinner-border");
+    btn.classList.remove("spinner-border-sm");
+  } else if (price.value < 0 || price.value == 0) {
+    showStockEditError("enter a valid price");
+    btn.classList.remove("spinner-border");
+    btn.classList.remove("spinner-border-sm");
+  } else if (stockModel.noNameEditMatch(stock, id, name)) {
+    showStockEditError("the name entered belongs to another product");
+    btn.classList.remove("spinner-border");
+    btn.classList.remove("spinner-border-sm");
+  } else {
+    //record the changes made
+    if (oldName.toUpperCase() != name.value.trim().toUpperCase()) {
+      editClass.push("Name change");
+      edit.push(`product name was changed from ${oldName} to ${name.value}`);
+    }
+    if (oldForm.toUpperCase() != form.value.trim().toUpperCase()) {
+      editClass.push("Form change");
+      edit.push(`product form was changed from ${oldForm} to ${form.value}`);
+    }
+
+    if (oldPrice != price.value.trim()) {
+      editClass.push("Price change");
+      edit.push(`product price was changed from ${oldPrice} to ${price.value}`);
+    }
+
+    if (oldUnit != unit.value.trim()) {
+      editClass.push("Unit change");
+      edit.push(`product unit was changed from ${oldUnit} to ${unit.value}`);
+    }
+
+    if (oldBrand != brand.value.trim()) {
+      editClass.push("Brand change");
+      edit.push(`product brand was changed from ${oldBrand} to ${brand.value}`);
+    }
+
+    //get all stock with this id
+
+    let allMatch = stockModel.getMatch(stock, id);
+
+    //check if any editing was done
+    if (edit.length > 0) {
+      //get ids
+      let genId = stockModel.generateMultipleId(allMatch.length);
+      genId.then(ids => {
+        let genIds = ids;
+        //insert into activities for all matching stock
+
+        stockModel.insertAllProductEdit(allMatch, edit, editClass, genIds).then(
+          //update details
+          () => {
+            stockModel
+              .updateAllProduct(
+                allMatch,
+                name.value.trim(),
+                form.value.trim(),
+                price.value,
+                unit.value,
+                brand.value
+              )
+              .then(() => {
+                //hide loading sign
+                btn.classList.remove("spinner-border");
+                btn.classList.remove("spinner-border-sm");
+                // remove modal
+                if (hideGenStaticModal("productEditContent")) {
+                  //get stock
+                  let getStock = stockModel.getStock();
+                  getStock.then(({ data, header, status }) => {
+                    stock = data.rows;
+
+                    //get selected product
+                    let selectedStockList = stockModel.getSelectedStock(
+                      stock,
+                      id
+                    );
+                    //handle top section
+                    analyseTop(selectedStockList);
+
+                    //display all batch
+                    listOutBatches(selectedStockList);
+
+                    edit = [];
+                    editClass = [];
+                  });
+                }
+              });
+          }
+        );
+      });
+    } else {
+      //hide loading sign
+      btn.classList.remove("spinner-border");
+      btn.classList.remove("spinner-border-sm");
+      hideGenStaticModal("productEditContent");
+    }
+  }
 };

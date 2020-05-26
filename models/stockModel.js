@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 //import db file
 const Database = require("../src/js/db");
+const moment = require("moment");
 
 class stockModel extends Database {
   constructor() {
@@ -48,6 +49,18 @@ class stockModel extends Database {
     }
   }
 
+  noNameEditMatch(stock, id, name) {
+    let match = stock.filter(product => {
+      return (
+        product.value.prodId != id &&
+        product.value.name.toUpperCase() == name.value.trim().toUpperCase()
+      );
+    });
+
+    if (match.length > 0) {
+      return true;
+    }
+  }
   nameError(stock, id, name) {
     let match = stock.filter(product => {
       return (
@@ -220,6 +233,10 @@ class stockModel extends Database {
     return this.couch.uniqid();
   }
 
+  generateMultipleId(n) {
+    return this.couch.uniqid(n);
+  }
+
   uploadList(product, id) {
     let batchId = "BT";
     batchId += Math.floor(Math.random() * 10000000);
@@ -253,6 +270,289 @@ class stockModel extends Database {
       recorder: loginDetail.fname + " " + loginDetail.lname,
       recorderEmail: loginDetail.email
     });
+  }
+
+  checkSortedArray(sortedArray, product) {
+    let match = sortedArray.filter(item => {
+      return item.value.prodId == product.value.prodId;
+    });
+    if (match.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  sortStock(stock) {
+    let sortedArray = [];
+
+    //loop through stock
+    stock.forEach(product => {
+      //loop through sorted array
+
+      if (sortedArray.length > 0) {
+        //check if in array
+        sortedArray.forEach(item => {
+          //if match is found
+          if (item.value.prodId == product.value.prodId) {
+            //add up
+            item.value.qty = Number(item.value.qty) + Number(product.value.qty);
+          } else {
+            //check if object is already in sorted array
+            let condition = this.checkSortedArray(sortedArray, product);
+            //check if not in sorted array
+            if (!condition) {
+              sortedArray.push(product);
+            }
+          }
+        });
+      } else {
+        sortedArray.push(product);
+      }
+    });
+
+    return sortedArray;
+  }
+
+  diminishingStock(sortedStock, stockLimit) {
+    let match = sortedStock.filter(item => {
+      return Number(item.value.qty) <= Number(stockLimit);
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getExhaustedStock(stock) {
+    //get sorted stock
+    let sortedStock = this.sortStock(stock);
+    //get stock limit
+    let { detail } = store.getSetupDetail();
+    if (detail != undefined) {
+      let stockLimit = detail[0].value.stockLimit;
+      //get stocks that have reached limit
+      return this.diminishingStock(sortedStock, stockLimit);
+    }
+  }
+
+  calcDate(expDate) {
+    let expiration = moment(expDate).format("YYYY-MM-DD");
+    let currentDate = moment().format("YYYY-MM-DD");
+    let days = moment(expiration).diff(currentDate, "days");
+    return days;
+  }
+
+  getExpiredStock(stock) {
+    //get date limit
+
+    let { detail } = store.getSetupDetail();
+    if (detail != undefined) {
+      let dateLimit = detail[0].value.dateLimit;
+      let selectedStock = stock.filter(item => {
+        if (item.value.expDate != "") {
+          return (
+            //get stock with date below date limit and is in stock
+            this.calcDate(item.value.expDate) <= dateLimit && item.value.qty > 0
+          );
+        }
+      });
+
+      if (selectedStock.length > 0) {
+        return selectedStock;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  getMatchForSearch(stock, input) {
+    let searchInput = input.toUpperCase();
+    let match = stock.filter(item => {
+      return (
+        item.value.name.toUpperCase().includes(searchInput) ||
+        item.value.prodId.includes(searchInput)
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getMatchForAllStockSearch(stock, input) {
+    let searchInput = input.toUpperCase();
+    let match = stock.filter(item => {
+      return (
+        item.value.name.toUpperCase().includes(searchInput) ||
+        item.value.prodId.includes(searchInput)
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getMatchForExhaustedStockSearch(stock, input) {
+    let searchInput = input.toUpperCase();
+    let match = stock.filter(item => {
+      return (
+        item.value.name.toUpperCase().includes(searchInput) ||
+        item.value.prodId.includes(searchInput)
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getSelectedStock(stock, id) {
+    let match = stock.filter(product => {
+      return product.value.prodId == id;
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getBatch(stock, id) {
+    let match = stock.filter(product => {
+      return product.value.batchId == id;
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  insertUpdate(id, editClass, edit, batchId) {
+    let date = new Date();
+    let loginDetail = store.getLoginDetail();
+    return this.couch.insert("all_activities", {
+      id: id,
+      day: date.getDate(),
+      month: date.getMonth() + 1,
+      year: date.getFullYear(),
+      activity: editClass,
+      detail: edit,
+      editedId: batchId,
+      staffName: loginDetail.fname + " " + loginDetail.lname,
+      staffId: loginDetail.staffId
+    });
+  }
+  editUpdateStock(detail, editQty, editExpDate, id) {
+    return this.couch.update("stock", {
+      _id: id,
+      _rev: detail.rev,
+      batchId: detail.batchId,
+      productId: detail.prodId,
+      brand: detail.brand,
+      name: detail.name,
+      qty: editQty,
+      form: detail.form,
+      unit: detail.unit,
+      price: detail.price,
+      totalCost: detail.totalCost,
+      expDate: editExpDate,
+      error: detail.error,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year,
+      recorder: detail.recName,
+      recorderEmail: detail.recEmail
+    });
+  }
+
+  //update current match
+  updateMatch(detail, id, name, form, price, unit, brand) {
+    return this.couch.update("stock", {
+      _id: id,
+      _rev: detail.rev,
+      batchId: detail.batchId,
+      productId: detail.prodId,
+      brand: brand[0].toUpperCase() + brand.slice(1),
+      name: name[0].toUpperCase() + name.slice(1),
+      qty: detail.qty,
+      form: form[0].toUpperCase() + form.slice(1),
+      unit: unit,
+      price: price,
+      totalCost: detail.totalCost,
+      expDate: detail.expDate,
+      error: detail.error,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year,
+      recorder: detail.recName,
+      recorderEmail: detail.recEmail
+    });
+  }
+
+  async updateAllProduct(allMatch, name, form, price, unit, brand) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.updateMatch(
+        allMatch[i].value,
+        allMatch[i].id,
+        name,
+        form,
+        price,
+        unit,
+        brand
+      );
+    }
+  }
+
+  insertProductUpdate(editClass, edit, batchId, id) {
+    let date = new Date();
+    let loginDetail = store.getLoginDetail();
+
+    return this.couch.insert("all_activities", {
+      id: id,
+      day: date.getDate(),
+      month: date.getMonth() + 1,
+      year: date.getFullYear(),
+      activity: editClass.join(","),
+      detail: edit.join(","),
+      editedId: batchId,
+      staffName: loginDetail.fname + " " + loginDetail.lname,
+      staffId: loginDetail.staffId
+    });
+  }
+
+  async insertAllProductEdit(allMatch, edit, editClass, genIds) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for insertion to happen
+      await this.insertProductUpdate(
+        editClass,
+        edit,
+        allMatch[i].value.batchId,
+        genIds[i]
+      );
+    }
   }
 }
 

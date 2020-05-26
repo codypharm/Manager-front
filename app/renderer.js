@@ -42,7 +42,7 @@ const showDebtForm = message => {
   return true;
 };
 
-const showGenStaticModal = (elem, body, message) => {
+const showGenStaticModal = elem => {
   $(".genStaticModal").modal("show");
 
   document.getElementById(elem).classList.remove("hide");
@@ -351,7 +351,15 @@ const pageLoader = (page, fxn = false) => {
           case "clearedInvoices":
             fxn("cleared");
             break;
-
+          case "allStock":
+            fxn("allStock");
+            break;
+          case "expiredStock":
+            fxn("expiredStock");
+            break;
+          case "exhaustedStock":
+            fxn("exhaustedStock");
+            break;
           default:
             fxn();
             break;
@@ -388,7 +396,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("expenses", loadCurrentExpenses);
+        pageLoader("allStock", fetchAllStock);
       });
     }
   }
@@ -603,7 +611,7 @@ const loadAllStock = e => {
   selectionRemover();
   addClass(allStock, "selected");
   addClass(subMenu2, "selectedDropper");
-  pageLoader("allStock");
+  pageLoader("allStock", fetchAllStock);
 };
 
 //expired stock
@@ -614,7 +622,7 @@ const loadExpiredStock = e => {
   selectionRemover();
   addClass(expiredStock, "selected");
   addClass(subMenu2, "selectedDropper");
-  pageLoader("expiredStock");
+  pageLoader("expiredStock", fetchAllStock);
 };
 
 //stock exhausted
@@ -625,7 +633,7 @@ const loadExhaustedStock = e => {
   selectionRemover();
   addClass(exhaustedStock, "selected");
   addClass(subMenu2, "selectedDropper");
-  pageLoader("exhaustedStock");
+  pageLoader("exhaustedStock", fetchAllStock);
 };
 
 //stock list
@@ -735,4 +743,14 @@ const loadReports = e => {
   selectionRemover();
   addClass(reports, "selected");
   pageLoader("reports");
+};
+
+///currency formater
+const formatMoney = money => {
+  //ensure two decimal places
+  let amount = Number(money).toFixed(2);
+  //add commas where needed
+  amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  //return amount
+  return amount;
 };

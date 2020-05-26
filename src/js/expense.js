@@ -200,6 +200,9 @@ const hideExpForm = () => {
 
 //show expense form
 const showExpForm = () => {
+  //hide alert boxes
+  hideExpError();
+  hideExpSuccess();
   showGenStaticModal("expenseContent", "expForm", "message");
   //focus
   document.getElementById("expAmt").focus();

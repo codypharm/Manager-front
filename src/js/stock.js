@@ -1041,28 +1041,27 @@ const submitProductEdit = e => {
                 //hide loading sign
                 btn.classList.remove("spinner-border");
                 btn.classList.remove("spinner-border-sm");
-                // remove modal
-                if (hideGenStaticModal("productEditContent")) {
-                  //get stock
-                  let getStock = stockModel.getStock();
-                  getStock.then(({ data, header, status }) => {
-                    stock = data.rows;
+                //get stock
+                let getStock = stockModel.getStock();
+                getStock.then(({ data, header, status }) => {
+                  stock = data.rows;
 
-                    //get selected product
-                    let selectedStockList = stockModel.getSelectedStock(
-                      stock,
-                      id
-                    );
-                    //handle top section
-                    analyseTop(selectedStockList);
+                  //get selected product
+                  let selectedStockList = stockModel.getSelectedStock(
+                    stock,
+                    id
+                  );
+                  //handle top section
+                  analyseTop(selectedStockList);
 
-                    //display all batch
-                    listOutBatches(selectedStockList);
+                  //display all batch
+                  listOutBatches(selectedStockList);
 
-                    edit = [];
-                    editClass = [];
-                  });
-                }
+                  edit = [];
+                  editClass = [];
+                  // remove modal
+                  hideGenStaticModal("productEditContent");
+                });
               });
           }
         );
@@ -1074,4 +1073,36 @@ const submitProductEdit = e => {
       hideGenStaticModal("productEditContent");
     }
   }
+};
+
+//stock checking with id
+const checkStock = () => {
+  //add batch id
+  document.getElementById("stockCheckId").textContent = analysisSelected;
+  //get activities
+  let activitiesGetter = stockModel.getActivities();
+  activitiesGetter.then(({ data, headers, status }) => {
+    let activities = data.rows;
+
+    //filter out matches
+    let list = stockModel.getActivityMatch(activities, analysisSelected);
+    if (list != false) {
+      //list changes
+      displayStockChanges(list);
+    } else {
+      document.getElementById("stockChangesList").innerHTML =
+        " <tr>" +
+        ' <td colspan="5" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  });
+};
+
+//check batch analysis
+const checkBatch = (event, batchId) => {
+  analysisSelected = batchId;
+  //load stock analysis page
+  pageLoader("allActivities", checkStock);
 };

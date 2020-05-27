@@ -14,6 +14,11 @@ class stockModel extends Database {
     return this.couch.get("stock", viewUrl);
   }
 
+  getActivities() {
+    let viewUrl = this.viewUrl.activities;
+    return this.couch.get("all_activities", viewUrl);
+  }
+
   isEmpty(inputs) {
     //filter input
     let emptyInputs = inputs.filter(element => {
@@ -552,6 +557,17 @@ class stockModel extends Database {
         allMatch[i].value.batchId,
         genIds[i]
       );
+    }
+  }
+
+  getActivityMatch(activities, batchId) {
+    let match = activities.filter(activity => {
+      return activity.value.editedId == batchId;
+    });
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
     }
   }
 }

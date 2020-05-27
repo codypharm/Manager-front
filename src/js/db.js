@@ -16,7 +16,8 @@ class Database {
       sales: "_design/sales/_view/sales",
       invoices: "_design/invoices/_view/invoices",
       allClearance: "_design/allClearance/_view/allClearance",
-      expenses: "_design/expenses/_view/expenses"
+      expenses: "_design/expenses/_view/expenses",
+      activities: "_design/activities/_view/activities"
     };
   }
 

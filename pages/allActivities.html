@@ -32,7 +32,7 @@
   
               <th>Name</th>
               <th>Staff Id </th>
-              <th>Activity</th>
+              <th class="text-center">Activity</th>
               
              
               <th>Action</th>
@@ -59,9 +59,9 @@
       <td>{{value.staffName}}</td>
       <td>{{value.staffId}}</td>
       
-      <td>{{value.activity}}</td>
+      <td class="text-center">{{value.activity}}</td>
       <td>
-          <button class="btn btn-sm btn-secondary">
+          <button class="btn btn-sm btn-secondary" onclick="viewChanges(event,'{{value.rev}}')">
               Detail
           </button>
       </td>

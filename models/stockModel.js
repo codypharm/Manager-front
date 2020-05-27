@@ -536,8 +536,8 @@ class stockModel extends Database {
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear(),
-      activity: editClass.join(","),
-      detail: edit.join(","),
+      activity: editClass.join(", "),
+      detail: edit.join(", "),
       editedId: batchId,
       staffName: loginDetail.fname + " " + loginDetail.lname,
       staffId: loginDetail.staffId
@@ -568,6 +568,15 @@ class stockModel extends Database {
       return match;
     } else {
       return false;
+    }
+  }
+
+  getAct(activities, rev) {
+    let match = activities.filter(act => {
+      return act.value.rev == rev;
+    });
+    if (match.length > 0) {
+      return match;
     }
   }
 }

@@ -787,6 +787,9 @@ const hideErrorForm = () => {
   hideGenStaticModal("errorLogContent");
 };
 
+const hideChangesDetail = () => {
+  hideGenStaticModal("changesContent");
+};
 const hideEditForm = () => {
   hideGenStaticModal("batchEditContent");
 };
@@ -1105,4 +1108,22 @@ const checkBatch = (event, batchId) => {
   analysisSelected = batchId;
   //load stock analysis page
   pageLoader("allActivities", checkStock);
+};
+
+//view Changes
+const viewChanges = (e, rev) => {
+  //get activities
+  let activitiesGetter = stockModel.getActivities();
+  activitiesGetter.then(({ data, headers, status }) => {
+    let activities = data.rows;
+
+    //get a particular activity
+    let act = stockModel.getAct(activities, rev)[0];
+
+    //show modal
+    showGenStaticModal("changesContent");
+    //add to DOM
+    document.getElementById("changesBatchId").textContent = act.value.editedId;
+    document.getElementById("changesText").textContent = act.value.detail;
+  });
 };

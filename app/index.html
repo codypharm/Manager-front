@@ -301,6 +301,28 @@
 
 
 
+         <!--content for changes -->
+      <div class="modal-content hide " id="changesContent">
+        <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">
+          <div class="modal-body" id="errorLogForm">
+            <h4>Batch <span id="changesBatchId"></span></h4>
+            <div class="border"></div>
+            
+            <div class="pt-1 pb-5"  id="changesText">
+              
+            </div>
+            
+            <div class="border"></div>
+          </div>
+          <div class="modal-footer border-top-0">
+           
+            <button onclick="hideChangesDetail()" class="btn btn-primary">
+              Done
+            </button>
+          </div>
+        
+      </div>
+
       <!--content for error log-->
       <div class="modal-content hide " id="errorLogContent">
         <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">

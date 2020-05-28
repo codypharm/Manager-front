@@ -14,6 +14,7 @@ var sortedStock;
 var exhaustedStock;
 
 var analysisSelected;
+var batchSelected;
 var oldEditQty = 0;
 var oldEditExpDate = "";
 var oldName = "";
@@ -717,11 +718,18 @@ const getProductQty = products => {
 };
 
 ///load stock details page
-const showProduct = (e, productId) => {
-  e.preventDefault();
+const showProduct = productId => {
   analysisSelected = productId;
   //load stock analysis page
   pageLoader("stockAnalysis", analyseStock);
+};
+
+//return to analysis
+const returnToAnalysis = e => {
+  //get data set of back button
+  let productId = e.target.dataset.productId;
+  //return fxn
+  showProduct(productId);
 };
 
 const analyseTop = selectedStockList => {
@@ -754,6 +762,7 @@ const analyseStock = () => {
   getStock.then(({ data, header, status }) => {
     stock = data.rows;
     let productId = analysisSelected;
+
     //get selected product
     let selectedStockList = stockModel.getSelectedStock(stock, productId);
 
@@ -1080,15 +1089,16 @@ const submitProductEdit = e => {
 
 //stock checking with id
 const checkStock = () => {
+  document.getElementById("idBackBtn").dataset.productId = analysisSelected;
   //add batch id
-  document.getElementById("stockCheckId").textContent = analysisSelected;
+  document.getElementById("stockCheckId").textContent = batchSelected;
   //get activities
   let activitiesGetter = stockModel.getActivities();
   activitiesGetter.then(({ data, headers, status }) => {
     let activities = data.rows;
 
     //filter out matches
-    let list = stockModel.getActivityMatch(activities, analysisSelected);
+    let list = stockModel.getActivityMatch(activities, batchSelected);
     if (list != false) {
       //list changes
       displayStockChanges(list);
@@ -1104,8 +1114,9 @@ const checkStock = () => {
 };
 
 //check batch analysis
-const checkBatch = (event, batchId) => {
-  analysisSelected = batchId;
+const checkBatch = batchId => {
+  batchSelected = batchId;
+
   //load stock analysis page
   pageLoader("allActivities", checkStock);
 };

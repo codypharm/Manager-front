@@ -896,27 +896,29 @@ const submitBatchEdit = e => {
 
           editUpdate.then(({ data, headers, status }) => {
             if (status == 201) {
-              //remove spinner
-              btn.classList.remove("spinner-border");
-              btn.classList.remove("spinner-border-sm");
-              if (hideGenStaticModal("batchEditContent")) {
-                //get stock
-                let getStock = stockModel.getStock();
-                getStock.then(({ data, header, status }) => {
-                  stock = data.rows;
+              //get stock
+              let getStock = stockModel.getStock();
+              getStock.then(({ data, header, status }) => {
+                stock = data.rows;
 
-                  //get selected product
-                  let selectedStockList = stockModel.getSelectedStock(
-                    stock,
-                    detail.prodId
-                  );
-                  //handle top section
-                  analyseTop(selectedStockList);
+                //get selected product
+                let selectedStockList = stockModel.getSelectedStock(
+                  stock,
+                  detail.prodId
+                );
+                //handle top section
+                analyseTop(selectedStockList);
 
-                  //display all batch
-                  listOutBatches(selectedStockList);
-                });
-              }
+                //display all batch
+                listOutBatches(selectedStockList);
+
+                //remove spinner
+                btn.classList.remove("spinner-border");
+                btn.classList.remove("spinner-border-sm");
+
+                //hide modal
+                hideGenStaticModal("batchEditContent");
+              });
             }
           });
         }
@@ -1136,5 +1138,85 @@ const viewChanges = (e, rev) => {
     //add to DOM
     document.getElementById("changesBatchId").textContent = act.value.editedId;
     document.getElementById("changesText").textContent = act.value.detail;
+  });
+};
+
+//delete batch from activities
+const deleteFromActivities = (batchId, btn) => {
+  //add spinner
+  btn.innerHTML = '<span id="deleteBatchSpinner"></span> Delete';
+  //get activities
+  let actGetter = stockModel.getActivities();
+  actGetter.then(({ data, headers, status }) => {
+    let acts = data.rows;
+
+    //get matching actvities
+    let selectedActs = stockModel.getActivityMatch(acts, batchId);
+    //delete
+    let deleted = stockModel.deleteActs(selectedActs);
+
+    deleted.then(() => {
+      //get stock
+      let getStock = stockModel.getStock();
+      getStock.then(({ data, header, status }) => {
+        stock = data.rows;
+        //check if stock remains
+        let remainingStock = stockModel.getMatch(stock, analysisSelected);
+        if (remainingStock != false) {
+          //get selected product
+          let selectedStockList = stockModel.getSelectedStock(
+            stock,
+            analysisSelected
+          );
+
+          //handle top section
+          analyseTop(selectedStockList);
+
+          //display all batch
+          listOutBatches(selectedStockList);
+        } else {
+          // go back
+          loadAllStock();
+        }
+      });
+    });
+  });
+};
+
+//delete batch
+const deleteBatch = (e, batchId) => {
+  batchSelected = batchId;
+  let btn = e.target;
+
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Ok to delete this batch and anything related to it"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      //get stock
+      let getStock = stockModel.getStock();
+      getStock.then(({ data, header, status }) => {
+        stock = data.rows;
+
+        //get the particular stock
+        let batch = stockModel.getBatch(stock, batchId)[0];
+        let id = batch.id;
+        let details = batch.value;
+        //delete stock
+        let stockDeleter = stockModel.deleteStock(id, details.rev);
+        stockDeleter.then(({ data, headers, status }) => {
+          //delete batch from activities
+          deleteFromActivities(batchId, btn);
+        });
+      });
+    }
   });
 };

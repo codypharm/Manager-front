@@ -604,7 +604,7 @@ const loadAddSales = e => {
 };
 
 //stock list
-const loadAllStock = e => {
+const loadAllStock = () => {
   let subMenu2 = document.getElementsByClassName("subMenu2")[0];
   let allStock = document.getElementsByClassName("allStock")[0];
   //remove previous selections

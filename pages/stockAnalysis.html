@@ -9,7 +9,7 @@
         
       <button
         class="btn  btn-primary float-right mt-3"
-        onclick="loadAllStock(event)"
+        onclick="loadAllStock()"
       >
         Back
       </button>
@@ -137,7 +137,7 @@
           </button>
           </td>
           <td>
-          <button class="btn btn-sm btn-secondary">
+          <button class="btn btn-sm btn-secondary" onclick="deleteBatch(event,'{{value.batchId}}')">
             Delete
           </button>
         </td>

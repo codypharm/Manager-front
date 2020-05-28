@@ -206,6 +206,8 @@ class stockModel extends Database {
 
     if (match.length > 0) {
       return match;
+    } else {
+      return false;
     }
   }
 
@@ -578,6 +580,25 @@ class stockModel extends Database {
     if (match.length > 0) {
       return match;
     }
+  }
+
+  deleteStock(id, rev) {
+    return this.couch.del("stock", id, rev);
+  }
+
+  deleteActivity(id, rev) {
+    return this.couch.del("all_activities", id, rev);
+  }
+
+  async deleteActs(allMatch) {
+    const matchLength = allMatch.length;
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for insertion to happen
+      await this.deleteActivity(allMatch[i].id, allMatch[i].value.rev);
+    }
+
+    return true;
   }
 }
 

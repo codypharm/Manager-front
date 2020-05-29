@@ -1144,7 +1144,8 @@ const viewChanges = (e, rev) => {
 //delete batch from activities
 const deleteFromActivities = (batchId, btn) => {
   //add spinner
-  btn.innerHTML = '<span id="deleteBatchSpinner"></span> Delete';
+  btn.innerHTML =
+    '<span class="spinner-border spinner-border-sm"></span> Delete';
   //get activities
   let actGetter = stockModel.getActivities();
   actGetter.then(({ data, headers, status }) => {
@@ -1217,6 +1218,72 @@ const deleteBatch = (e, batchId) => {
           deleteFromActivities(batchId, btn);
         });
       });
+    }
+  });
+};
+
+//delete activities for the stock
+const deleteProductActs = async (btn, batches) => {
+  //get activities
+  let activitiesGetter = stockModel.getActivities();
+  activitiesGetter.then(({ data, headers, status }) => {
+    let activities = data.rows;
+    //loop through products
+    for (const batch of batches) {
+      let acts = stockModel.getActivitiesForBatch(
+        activities,
+        batch.value.batchId
+      );
+      if (acts.length > 0) {
+        let actsDeleter = stockModel.deleteActs(acts);
+      }
+    }
+
+    //remove spinner
+    btn.innerHTML = "Delete Product";
+    //go back
+    pageLoader("allStock", fetchAllStock);
+  });
+};
+
+//continue stock delete
+const proceedStockDelete = e => {
+  let btn = e.target;
+
+  let id = analysisSelected;
+  //show spinner
+  btn.innerHTML =
+    '<span class="spinner-border spinner-border-sm"></span> Delete Product';
+
+  //get stock
+  let getStock = stockModel.getStock();
+  getStock.then(({ data, header, status }) => {
+    stock = data.rows;
+    let thisStock = stockModel.getMatch(stock, id);
+    let deleteStock = stockModel.deleteThisProduct(thisStock);
+    deleteStock.then(() => {
+      //delete activities
+      deleteProductActs(btn, thisStock);
+    });
+  });
+};
+
+//delete product
+const deleteProduct = e => {
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Ok to delete this product and all attachments to it"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      proceedStockDelete(e);
     }
   });
 };

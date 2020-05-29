@@ -582,6 +582,15 @@ class stockModel extends Database {
     }
   }
 
+  getActivitiesForBatch(activities,batchId){
+    let match = activities.filter(act => {
+      return act.value.editedId == batchId;
+    });
+    if (match.length > 0) {
+      return match;
+    }
+  }
+
   deleteStock(id, rev) {
     return this.couch.del("stock", id, rev);
   }
@@ -596,6 +605,17 @@ class stockModel extends Database {
     for (let i = 0; i < matchLength; i++) {
       //wait for insertion to happen
       await this.deleteActivity(allMatch[i].id, allMatch[i].value.rev);
+    }
+
+    return true;
+  }
+
+  async deleteThisProduct(allMatch) {
+    const matchLength = allMatch.length;
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for insertion to happen
+      await this.deleteStock(allMatch[i].id, allMatch[i].value.rev);
     }
 
     return true;

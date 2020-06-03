@@ -6,6 +6,7 @@
 //global variable definition
 var oldDetails;
 var allUsers;
+var editDetail;
 let users = staffModel.getUsers();
 users.then(({ data, headers, status }) => {
   allUsers = data.rows;
@@ -454,7 +455,7 @@ const appendDetails = details => {
   document.getElementsByClassName("viewPosition")[0].textContent =
     details.value.position;
   document.getElementsByClassName("staffImage")[0].src = details.value.image;
-  document.getElementsByClassName("id")[0].textContent = details.id;
+  document.getElementsByClassName("id")[0].textContent = details.value.staffId;
 
   document.getElementsByClassName("gender")[0].textContent =
     details.value.gender;
@@ -541,6 +542,7 @@ const showStaffValues = selectedEmail => {
     //filter
     [staffDetails] = staffModel.filterStaffDetails(data.rows, selectedEmail);
     appendValues(staffDetails);
+    editDetail = staffDetails;
   });
 };
 
@@ -612,4 +614,23 @@ const updateStatus = (e, staffEmail) => {
       });
     });
   }
+};
+
+//view click
+const viewStaff = e => {
+  viewEmail = e.target.dataset.staffemail;
+  //get users and filter with email provided
+
+  pageLoader("staffView", showStaffDetails);
+};
+
+//view click
+const editStaff = e => {
+  editEmail = e.target.dataset.staffemail;
+  pageLoader("staffEdit", showStaffValues);
+};
+
+const uploadImage = () => {
+  document.getElementById("upload_image").click();
+  store.setEditDetail(editDetail);
 };

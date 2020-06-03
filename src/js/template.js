@@ -20,6 +20,7 @@ const displayStaff = data => {
   //display current user details first
   $(".currentStaffName").append(fname + " " + lname);
   $(".currentStaffPosition").append(position);
+  $(".currentStaffImg").attr("src", image);
   $("#currentStaffView").attr("data-staffEmail", email);
   $("#currentStaffEdit").attr("data-staffEmail", email);
 

@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.4.1",
+    "croppie": "^2.6.4",
     "electron-fetch": "^1.4.0",
     "electron-handlebars": "^2.0.0",
     "electron-less": "^1.1.0",

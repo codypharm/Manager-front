@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-
+//global variables
+var viewEmail;
+var editEmail;
 //get setup details
 var setUpDetails;
 let viewUrl = db.viewUrl.setup;
@@ -360,6 +362,12 @@ const pageLoader = (page, fxn = false) => {
           case "exhaustedStock":
             fxn("exhaustedStock");
             break;
+          case "staffView":
+            fxn(viewEmail);
+            break;
+          case "staffEdit":
+            fxn(editEmail);
+            break;
           default:
             fxn();
             break;
@@ -396,7 +404,7 @@ db.listDb().then(dbs => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         //load dashboard
         //load work page
-        pageLoader("allStock", fetchAllStock);
+        pageLoader("staffList", showList);
       });
     }
   }
@@ -656,20 +664,6 @@ const loadStaffList = e => {
   addClass(staffList, "selected");
   addClass(subMenu3, "selectedDropper");
   pageLoader("staffList", showList);
-};
-
-//view click
-const viewStaff = e => {
-  let selectedEmail = e.target.dataset.staffemail;
-  //get users and filter with email provided
-
-  pageLoader("staffView", showStaffDetails(selectedEmail));
-};
-
-//view click
-const editStaff = e => {
-  let selectedEmail = e.target.dataset.staffemail;
-  pageLoader("staffEdit", showStaffValues(selectedEmail));
 };
 
 //attendance

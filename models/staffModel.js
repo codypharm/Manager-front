@@ -53,6 +53,7 @@ class staffModel extends Database {
       email: details.email,
       number: details.number,
       position: details.position,
+      staffId: details.staffId,
       gender: details.gender,
       address: {
         street: details.street,
@@ -74,6 +75,41 @@ class staffModel extends Database {
       editorEmail: loginDetail.email
     });
   }
+
+  updateUserImage(id, details, imageName) {
+    let date = new Date();
+    let loginDetail = store.getLoginDetail();
+    return this.couch.update("users", {
+      _id: id,
+      _rev: details.rev,
+      firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
+      lastname: details.lname[0].toUpperCase() + details.lname.slice(1),
+      email: details.email,
+      number: details.number,
+      position: details.position,
+      staffId: details.staffId,
+      gender: details.gender,
+      address: {
+        street: details.street,
+        town: details.town,
+        state: details.state
+      },
+      //pwd: details.pwd,
+      permission: details.permission,
+      access: details.access,
+      image: imageName,
+      pwd: details.pwd,
+      regDay: details.regDay,
+      regMonth: details.regMonth,
+      regYear: details.regYear,
+      updateDay: date.getDate(),
+      updateMonth: date.getMonth() + 1,
+      updateYear: date.getFullYear(),
+      editedBy: loginDetail.fname + " " + loginDetail.lname,
+      editorEmail: loginDetail.email
+    });
+  }
+
   //update status
   updateStatus(id, rev, details) {
     return this.couch.update("users", {

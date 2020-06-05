@@ -370,13 +370,12 @@ const loadInvoiceStaticSection = (
   document.getElementById("transTypeStatic").textContent =
     transType.toUpperCase() + " TRANSACTION";
   document.getElementById("invoiceId").textContent = invoiceId;
-  document.getElementById("total").textContent = formatMoney(totalPrice);
+  document.getElementById("total").textContent = "₦ " + formatMoney(totalPrice);
   document.getElementById("disccountStatic").textContent = disccount + "%";
-  document.getElementById("netPriceStatic").textContent = netPrice;
-  document.getElementById("amtPaid").textContent = formatMoney(
-    amtPaid.split(",").join("")
-  );
-  document.getElementById("balance").textContent = formatMoney(balance);
+  document.getElementById("netPriceStatic").textContent = "₦ " + netPrice;
+  document.getElementById("amtPaid").textContent =
+    "₦ " + formatMoney(amtPaid.split(",").join(""));
+  document.getElementById("balance").textContent = "₦ " + formatMoney(balance);
   document.getElementById("date").textContent =
     date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
 };

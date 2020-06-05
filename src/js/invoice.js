@@ -512,18 +512,14 @@ const processDebtPayment = e => {
                 document.getElementById("debtCompanyNumber").textContent =
                   detail[0].value.companyNumber;
                 document.getElementById("clearedFor").textContent = invoiceId;
-                document.getElementById(
-                  "clearedTotal"
-                ).textContent = formatMoney(currentInvoice.value.netPrice);
-                document.getElementById(
-                  "clearedPaid"
-                ).textContent = formatMoney(amtEntered);
-                document.getElementById(
-                  "clearedTotalPaid"
-                ).textContent = formatMoney(newAmtPaid);
-                document.getElementById("clearedBal").textContent = formatMoney(
-                  newBalance
-                );
+                document.getElementById("clearedTotal").textContent =
+                  "₦ " + formatMoney(currentInvoice.value.netPrice);
+                document.getElementById("clearedPaid").textContent =
+                  "₦ " + formatMoney(amtEntered);
+                document.getElementById("clearedTotalPaid").textContent =
+                  "₦ " + formatMoney(newAmtPaid);
+                document.getElementById("clearedBal").textContent =
+                  "₦ " + formatMoney(newBalance);
                 document.getElementById("debtClearanceDate").textContent =
                   clearanceDay + "-" + clearanceMonth + "-" + clearanceYear;
                 //display success

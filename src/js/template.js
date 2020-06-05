@@ -3,6 +3,16 @@
 
 const moment = require("moment");
 
+///currency formater
+const formatMoneyTemp = money => {
+  //ensure two decimal places
+  let amount = Number(money).toFixed(2);
+  //add commas where needed
+  amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  //return amount
+  return amount;
+};
+
 //view list display
 const displayStaff = data => {
   //get current staff details from store
@@ -131,6 +141,10 @@ const displayMatchSales = sales => {
     data: sales
   };
 
+  Handlebars.registerHelper("price", price => {
+    return formatMoneyTemp(price);
+  });
+
   let template = document.getElementById("salesContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
 
@@ -143,6 +157,10 @@ const displayMatchCashSales = sales => {
   let newObj = {
     data: sales
   };
+
+  Handlebars.registerHelper("price", price => {
+    return formatMoneyTemp(price);
+  });
 
   let template = document.getElementById("cashSalesContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
@@ -157,6 +175,10 @@ const displayMatchOnlineSales = sales => {
     data: sales
   };
 
+  Handlebars.registerHelper("price", price => {
+    return formatMoneyTemp(price);
+  });
+
   let template = document.getElementById("onlineSalesContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
 
@@ -169,6 +191,10 @@ const displayMatchCreditSales = sales => {
   let newObj = {
     data: sales
   };
+
+  Handlebars.registerHelper("price", price => {
+    return formatMoneyTemp(price);
+  });
 
   let template = document.getElementById("creditSalesContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
@@ -191,6 +217,18 @@ const displayMatchInvoices = invoices => {
     }
   });
 
+  Handlebars.registerHelper("netPrice", price => {
+    return formatMoneyTemp(price);
+  });
+
+  Handlebars.registerHelper("invoiceBalance", balance => {
+    return formatMoneyTemp(balance);
+  });
+
+  Handlebars.registerHelper("paid", amt => {
+    return formatMoneyTemp(amt);
+  });
+
   let template = document.getElementById("invoiceContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
 
@@ -203,6 +241,10 @@ const displayClearedMatchInvoices = invoices => {
   let newObj = {
     data: invoices
   };
+
+  Handlebars.registerHelper("netPrice", price => {
+    return formatMoneyTemp(price);
+  });
 
   let template = document.getElementById("clearedInvoiceContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
@@ -217,6 +259,17 @@ const displayDebtMatchInvoices = invoices => {
     data: invoices
   };
 
+  Handlebars.registerHelper("netPrice", price => {
+    return formatMoneyTemp(price);
+  });
+
+  Handlebars.registerHelper("invoiceBalance", balance => {
+    return formatMoneyTemp(balance);
+  });
+
+  Handlebars.registerHelper("paid", amt => {
+    return formatMoneyTemp(amt);
+  });
   let template = document.getElementById("debtInvoiceContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
 
@@ -231,6 +284,10 @@ const displayExpenses = expenses => {
   let newObj = {
     data: expenses
   };
+
+  Handlebars.registerHelper("amt", amt => {
+    return formatMoneyTemp(amt);
+  });
 
   //get template
   let template = document.getElementById("expensesContainer").innerHTML;

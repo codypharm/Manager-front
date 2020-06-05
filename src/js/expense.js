@@ -247,7 +247,9 @@ const submitExpenses = e => {
           showExpSuccess("expense recorded");
 
           //reset form
-          document.getElementById("expFormDetail").reset();
+          document.getElementById("expAmt").value = "";
+          document.getElementById("expDescription").value = "";
+          document.getElementById("expName").value = "";
           setTimeout(() => {
             //hide the pop up
             if (hideGenStaticModal("expenseContent")) {

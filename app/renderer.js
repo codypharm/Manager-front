@@ -38,7 +38,28 @@ const showStaticModal = message => {
   return true;
 };
 
-const showDebtForm = message => {
+const showDebtForm = (message, type) => {
+  if (type == "form") {
+    //change form buttons
+    let clearBtns = document.getElementById("clearanceFormBtn");
+    if (clearBtns.classList.contains("hide")) {
+      clearBtns.classList.remove("hide");
+    }
+    let invoBtns = document.getElementById("debtInvoiceFooter");
+    if (!invoBtns.classList.contains("hide")) {
+      invoBtns.classList.add("hide");
+    }
+  } else {
+    //change form buttons
+    let invoBtns = document.getElementById("debtInvoiceFooter");
+    if (invoBtns.classList.contains("hide")) {
+      invoBtns.classList.remove("hide");
+    }
+    let clearBtns = document.getElementById("clearanceFormBtn");
+    if (!clearBtns.classList.contains("hide")) {
+      clearBtns.classList.add("hide");
+    }
+  }
   $(".updateStaticModal").modal("show");
   $("#updateStaticBody").html(message);
   return true;

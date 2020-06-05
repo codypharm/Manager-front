@@ -97,9 +97,11 @@ const calculateNetPrice = () => {
   //calculate
   if (disccount > 0) {
     let value = Number(totalPrice - (disccount / 100) * totalPrice);
-    document.getElementById("netPrice").textContent = Math.ceil(value);
+    document.getElementById("netPrice").textContent = formatMoney(
+      Math.ceil(value)
+    );
   } else {
-    document.getElementById("netPrice").textContent = totalPrice;
+    document.getElementById("netPrice").textContent = formatMoney(totalPrice);
   }
 };
 
@@ -368,11 +370,13 @@ const loadInvoiceStaticSection = (
   document.getElementById("transTypeStatic").textContent =
     transType.toUpperCase() + " TRANSACTION";
   document.getElementById("invoiceId").textContent = invoiceId;
-  document.getElementById("total").textContent = totalPrice;
+  document.getElementById("total").textContent = formatMoney(totalPrice);
   document.getElementById("disccountStatic").textContent = disccount + "%";
   document.getElementById("netPriceStatic").textContent = netPrice;
-  document.getElementById("amtPaid").textContent = amtPaid;
-  document.getElementById("balance").textContent = balance;
+  document.getElementById("amtPaid").textContent = formatMoney(
+    amtPaid.split(",").join("")
+  );
+  document.getElementById("balance").textContent = formatMoney(balance);
   document.getElementById("date").textContent =
     date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
 };
@@ -453,7 +457,7 @@ const execInvoice = (
 const insertSale = cart => {
   //get some neccesary details
   let amtPaid;
-  let balance;
+  let balance = 0;
   let customerName = document.getElementById("customerName").value;
   let customerAddress = document.getElementById("customerAddress").value;
   let customerNumber = document.getElementById("customerNumber").value;
@@ -462,13 +466,13 @@ const insertSale = cart => {
   let disccount = document.getElementById("disccount").value;
   let netPrice = document.getElementById("netPrice").textContent;
   let totalPrice = document.getElementById("totalPrice").textContent;
-
+  netPrice = netPrice.split(",").join("");
   if ((deposit == 0 || deposit == "") && transType != "credit") {
     amtPaid = netPrice;
     balance = 0;
   } else {
     amtPaid = deposit;
-    balance = Number(netPrice) - Number(deposit);
+    balance = Number(netPrice.split(",").join("")) - Number(deposit);
   }
 
   //get invoice details
@@ -636,13 +640,13 @@ const cancelAllSales = e => {
 //add up total
 const addUpDispSalesMoney = match => {
   let total = salesModel.getTotalSales(match);
-  document.getElementById("totalSales").textContent = total;
+  document.getElementById("totalSales").textContent = formatMoney(total);
 };
 
 //get total sales on display
 const addUpOtherDispSalesMoney = (match, saleType) => {
   let total = salesModel.getOtherTotalSales(match, saleType);
-  document.getElementById("totalSales").textContent = total;
+  document.getElementById("totalSales").textContent = formatMoney(total);
 };
 
 //get total cash sales on display.
@@ -657,7 +661,7 @@ const addUpDispCashSales = match => {
     cashSales.forEach(sale => {
       total += Number(sale.value.price);
     });
-    document.getElementById("totalCashSales").textContent = total;
+    document.getElementById("totalCashSales").textContent = formatMoney(total);
   }
 };
 
@@ -673,7 +677,9 @@ const addUpDispCreditSales = match => {
     creditSales.forEach(sale => {
       total += Number(sale.value.price);
     });
-    document.getElementById("totalCreditSales").textContent = total;
+    document.getElementById("totalCreditSales").textContent = formatMoney(
+      total
+    );
   }
 };
 
@@ -689,7 +695,9 @@ const addUpDispOnlineSales = match => {
     onlineSales.forEach(sale => {
       total += Number(sale.value.price);
     });
-    document.getElementById("totalOnlineSales").textContent = total;
+    document.getElementById("totalOnlineSales").textContent = formatMoney(
+      total
+    );
   }
 };
 
@@ -711,7 +719,7 @@ const getBalance = match => {
   let total = salesModel.getTotalSales(match);
   let avgDis = salesModel.getAvgDisccount(match);
   let balance = total - (avgDis * total) / 100;
-  document.getElementById("balance").textContent = balance;
+  document.getElementById("balance").textContent = formatMoney(balance);
 };
 
 //get other balance
@@ -719,7 +727,7 @@ const getOtherBalance = (match, saleType) => {
   let total = salesModel.getOtherTotalSales(match, saleType);
   let avgDis = salesModel.getOtherAvgDisccount(match, saleType);
   let balance = total - (avgDis * total) / 100;
-  document.getElementById("balance").textContent = balance;
+  document.getElementById("balance").textContent = formatMoney(balance);
 };
 
 //mark all empty summary box

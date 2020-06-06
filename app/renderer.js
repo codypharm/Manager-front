@@ -14,6 +14,16 @@ info.then(({ data, headers, status }) => {
   store.setSetupDetail(setUpDetails);
 });
 
+const appendUserDetails = () => {
+  let user = store.getLoginDetail();
+  console.log(user);
+  document.getElementById("containerImg").src = user.image;
+  document.getElementById(
+    "nameBox"
+  ).textContent = `${user.fname} ${user.lname}`;
+  document.getElementById("position").textContent = user.position;
+};
+
 //details store
 let details = {
   package: "",
@@ -423,6 +433,7 @@ db.listDb().then(dbs => {
           console.log(err);
         }
         document.getElementsByTagName("main")[0].innerHTML = data;
+        appendUserDetails();
         //load dashboard
         //load work page
         pageLoader("staffList", showList);
@@ -483,6 +494,7 @@ const processLogin = e => {
                 document
                   .getElementsByTagName("body")[0]
                   .classList.remove("setupBack");
+                appendUserDetails();
               });
             }
           } else {

@@ -848,13 +848,13 @@ body {
   margin-bottom: 20px;
 }
 .viewContainer .viewLeft .viewImage {
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   border-radius: 300px;
   margin: auto;
 }
 .viewContainer .viewLeft .viewImage img {
-  border-radius: 300px;
+  border-radius: 200px;
 }
 .viewContainer .viewLeft .viewName {
   width: 100%;

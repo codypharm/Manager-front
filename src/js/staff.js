@@ -438,13 +438,65 @@ const register = e => {
   }
 };
 
+const displayCurrentStaff = () => {
+  //get current staff details from store
+  let {
+    loginStatus,
+    fname,
+    lname,
+    email,
+    position,
+    image,
+    access,
+    docId
+  } = store.getLoginDetail();
+
+  //display current user details first
+  $(".currentStaffName").append(fname + " " + lname);
+  $(".currentStaffPosition").append(position);
+  $(".currentStaffImg").attr("src", image);
+  $("#currentStaffView").attr("data-staffEmail", email);
+  $("#currentStaffEdit").attr("data-staffEmail", email);
+};
+
 const showList = () => {
   let users = staffModel.getUsers();
   users.then(({ data, headers, status }) => {
     //show staff template
-
+    allUsers = data.rows;
+    displayCurrentStaff();
     displayStaff(data.rows);
   });
+};
+
+//search staff
+const searchStaff = e => {
+  let warn = document.getElementById("staffWarn");
+  if (!warn.classList.contains("hide")) {
+    warn.classList.add("hide");
+  }
+
+  let val = e.target.value.trim();
+
+  if (val.length < 1) {
+    displayStaff(allUsers);
+    if (!warn.classList.contains("hide")) {
+      warn.classList.add("hide");
+    }
+  } else {
+    searchResult = staffModel.extractUsers(allUsers, val);
+
+    if (searchResult != false) {
+      displayStaff(searchResult);
+      if (!warn.classList.contains("hide")) {
+        warn.classList.add("hide");
+      }
+    } else {
+      if (warn.classList.contains("hide")) {
+        warn.classList.remove("hide");
+      }
+    }
+  }
 };
 
 //append details to view

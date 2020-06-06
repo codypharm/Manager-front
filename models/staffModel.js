@@ -182,6 +182,27 @@ class staffModel extends Database {
       return match;
     }
   }
+
+  extractUsers(allUsers, val) {
+    let email = store.getLoginDetail().email;
+    let match = allUsers.filter(user => {
+      let nameArray = [user.value.fname, user.value.lname];
+      let concatName = nameArray.join(" ");
+
+      return (
+        (user.value.fname.toUpperCase().includes(val.toUpperCase()) ||
+          user.value.lname.toUpperCase().includes(val.toUpperCase()) ||
+          concatName.toUpperCase().includes(val.toUpperCase())) &&
+        user.value.email != email
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
 }
 
 module.exports = staffModel;

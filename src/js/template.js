@@ -26,14 +26,6 @@ const displayStaff = data => {
     access,
     docId
   } = store.getLoginDetail();
-
-  //display current user details first
-  $(".currentStaffName").append(fname + " " + lname);
-  $(".currentStaffPosition").append(position);
-  $(".currentStaffImg").attr("src", image);
-  $("#currentStaffView").attr("data-staffEmail", email);
-  $("#currentStaffEdit").attr("data-staffEmail", email);
-
   //filter current user out
   let otherUsers = staffModel.filterOutUser(data, email);
   let newObj = {

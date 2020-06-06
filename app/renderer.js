@@ -16,7 +16,7 @@ info.then(({ data, headers, status }) => {
 
 const appendUserDetails = () => {
   let user = store.getLoginDetail();
-  console.log(user);
+
   document.getElementById("containerImg").src = user.image;
   document.getElementById(
     "nameBox"

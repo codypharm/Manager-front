@@ -40,22 +40,26 @@ const createWindow = () => {
   store.forceLogout();
 
   //handle dblist the promise
-  db.listDb().then(dbs => {
-    displayPage(dbs);
+  db.listDb().then(() => {
+    displayPage();
   });
 
-  const displayPage = dbs => {
-    if (dbs.includes("vemon_setup")) {
-      // and load the setup.html of the app.
+  const displayPage = () => {
+    db.getSetup().then(({ data }) => {
+      let setUp = data.rows;
 
-      mainWindow.loadURL(`file://${__dirname}/index.html`);
-      mainWindow.maximize();
-      //get current page
-    } else {
-      // and load the index.html of the app.
-      mainWindow.loadURL(`file://${__dirname}/setup.html`);
-      mainWindow.maximize();
-    }
+      if (setUp.length > 0) {
+        // and load the setup.html of the app.
+
+        mainWindow.loadURL(`file://${__dirname}/index.html`);
+        mainWindow.maximize();
+        //get current page
+      } else {
+        // and load the index.html of the app.
+        mainWindow.loadURL(`file://${__dirname}/setup.html`);
+        mainWindow.maximize();
+      }
+    });
   };
 
   // Open the DevTools.

@@ -3,6 +3,7 @@
 //global variables
 var viewEmail;
 var editEmail;
+
 //get setup details
 var setUpDetails;
 let viewUrl = db.viewUrl.setup;
@@ -25,7 +26,7 @@ const appendUserDetails = () => {
 };
 
 //details store
-let details = {
+var details = {
   package: "",
   companyName: "",
   address: "",
@@ -173,7 +174,8 @@ const processStandard = errorDiv => {
   } else {
     //asign values to details object
     let package = "standard";
-    details = { package, companyName, stdAddress };
+    let address = stdAddress;
+    details = { package, companyName, address };
     //alter form
     changeForm(setupForm, managerForm);
   }
@@ -206,7 +208,8 @@ const processPremium = errorDiv => {
     displayError(errorDiv, "Please you need to accept our terms");
   } else {
     let package = "premium";
-    details = { package, companyName, premiumAddress, companyId, branchId };
+    let address = premiumAddress;
+    details = { package, companyName, address, companyId, branchId };
     //alter form
     changeForm(setupForm, managerForm);
   }
@@ -290,13 +293,10 @@ const enterDetails = e => {
 
     //user creation
     const createUser = userId => {
-      //create vemon_setup
-      let usersDb = validate.createDb("users");
-      usersDb.then(() => {
-        let userDetailInsertion = validate.insertUser(details, userId);
-        userDetailInsertion.then(({ data, headers, status }) => {
-          remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
-        });
+      let userDetailInsertion = validate.insertUser(details, userId);
+      userDetailInsertion.then(({ data, headers, status }) => {
+        //reload
+        remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
       });
     };
 
@@ -305,25 +305,17 @@ const enterDetails = e => {
     let idGen = validate.generateId();
     idGen.then(ids => {
       const id = ids[0];
-      //create vemon_setup
-      let vemonDb = validate.createDb("vemon_setup");
-      vemonDb.then(
-        () => {
-          //insert details
-          let detailInsertion = validate.insertDetails(details, id);
-          detailInsertion.then(
-            ({ data, headers, status }) => {
-              //generate id
-              let userIdGen = validate.generateId();
-              userIdGen.then(ids => {
-                const userId = ids[0];
-                createUser(userId);
-              });
-            },
-            err => {
-              console.warn(err);
-            }
-          );
+
+      //insert details
+      let detailInsertion = validate.insertDetails(details, id);
+      detailInsertion.then(
+        ({ data, headers, status }) => {
+          //generate id
+          let userIdGen = validate.generateId();
+          userIdGen.then(ids => {
+            const userId = ids[0];
+            createUser(userId);
+          });
         },
         err => {
           console.warn(err);
@@ -408,10 +400,10 @@ const pageLoader = (page, fxn = false) => {
   });
 };
 
-//handle the promise from get database list
-db.listDb().then(dbs => {
+//handle setup checking
+db.getSetup().then(({ data }) => {
   //check if we have set up
-  if (dbs.includes("vemon_setup")) {
+  if (data.rows.length > 0) {
     //check if user is logged in
     let { loginStatus } = store.getLoginDetail();
 
@@ -470,6 +462,7 @@ const processLogin = e => {
       ({ data, headers, status }) => {
         //get users
         let users = data.rows;
+
         //filter users for a match
         let match = login.filterUsers(users, email, pwd);
         if (match) {

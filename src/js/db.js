@@ -24,6 +24,11 @@ class Database {
   listDb() {
     return this.couch.listDatabases();
   }
+
+  getSetup() {
+    let viewUrl = this.viewUrl.setup;
+    return this.couch.get("vemon_setup", viewUrl);
+  }
 }
 
 module.exports = Database;

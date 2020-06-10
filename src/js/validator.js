@@ -40,10 +40,13 @@ class Validator extends Database {
   }
 
   insertUser(details, id) {
+    let staffId = "STF";
+    staffId += Math.floor(Math.random() * 1000);
     let date = new Date();
     return this.couch.insert("users", {
       id: id,
       image: "../images/profile.png",
+      staffId: staffId,
       firstname:
         details.manager_firstname[0].toUpperCase() +
         details.manager_firstname.slice(1),
@@ -52,7 +55,15 @@ class Validator extends Database {
         details.manager_lastname.slice(1),
       password: details.manager_password,
       email: details.manager_email,
+      address: {
+        street: "",
+        town: "",
+        state: ""
+      },
+      number: "",
+      gender: "",
       position: "manager",
+      permission: "admin",
       access: "open",
       regDay: date.getDate(),
       regMonth: date.getMonth(),

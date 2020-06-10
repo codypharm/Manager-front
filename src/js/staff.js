@@ -190,14 +190,40 @@ const emailExists = (errorDiv, email, btn, details) => {
 const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
   let id = oldDetails.id;
   let rev = oldDetails.value.rev;
+  console.log();
 
-  let update = staffModel.updateUser(id, rev, newDetails);
+  let update = staffModel.updateUser(id, rev, newDetails, oldDetails);
   update.then(
     ({ data, headers, status }) => {
       if (status != 201) {
         // eslint-disable-next-line no-undef
         displayError(errorDiv, "update not successfull, please try again");
       } else {
+        //check loged in is same with edited
+        if (store.getLoginDetail().staffId == oldDetails.value.staffId) {
+          //set login details
+          store.setUserData({
+            loginStatus: true,
+            fname: newDetails.fname,
+            lname: newDetails.lname,
+            email: newDetails.email,
+            staffId: oldDetails.staffI,
+            position: newDetails.position,
+            image: oldDetails.value.image,
+            access: newDetails.access,
+            docId: oldDetails.id
+          });
+
+          //update logged in user details
+          document.getElementById(
+            "nameBox"
+          ).textContent = `${newDetails.fname[0].toUpperCase() +
+            newDetails.fname.slice(1)} ${newDetails.lname[0].toUpperCase() +
+            newDetails.lname.slice(1)}`;
+          document.getElementById(
+            "position"
+          ).textContent = `${newDetails.position}`;
+        }
         displaySuccess("staff data updated successfully");
         resetSaveBtn(btn);
         setTimeout(() => {
@@ -231,7 +257,7 @@ const saveDetails = e => {
   let email = document.getElementById("email");
   let number = document.getElementById("number");
   let street = document.getElementById("street");
-  let position = document.getElementById("position");
+  let position = document.getElementById("pon");
 
   let town = document.getElementById("town");
   let state = document.getElementById("state");
@@ -251,7 +277,7 @@ const saveDetails = e => {
     town: town.value.trim(),
     gender: gender.value,
     permission: permission.value,
-    position: position.value.trim(),
+    position: pon.value.trim(),
     access: oldDetails.value.access,
     image: image,
     pwd: pwd.value.trim(),
@@ -543,7 +569,8 @@ const appendDetails = details => {
 //append values to form
 const appendValues = details => {
   oldDetails = details;
-
+  console.log(details);
+  console.log(details.value.position);
   document.getElementById("fname").value = details.value.fname;
   document.getElementById("lname").value = details.value.lname;
   document.getElementById("email").value = details.value.email;
@@ -552,7 +579,7 @@ const appendValues = details => {
   document.getElementById("street").value = details.value.address.street;
   document.getElementById("town").value = details.value.address.town;
   document.getElementById("state").value = details.value.address.state;
-  document.getElementById("position").value = details.value.position;
+  document.getElementById("pon").value = details.value.position;
   document.getElementById("pwd").value = details.value.pwd;
   document.getElementById("pwd2").value = details.value.pwd;
   let gender = details.value.gender;
@@ -592,7 +619,10 @@ const showStaffValues = selectedEmail => {
   let users = staffModel.getUsers();
   users.then(({ data, headers, status }) => {
     //filter
-    [staffDetails] = staffModel.filterStaffDetails(data.rows, selectedEmail);
+    let [staffDetails] = staffModel.filterStaffDetails(
+      data.rows,
+      selectedEmail
+    );
     appendValues(staffDetails);
     editDetail = staffDetails;
   });

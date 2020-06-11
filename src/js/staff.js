@@ -190,7 +190,6 @@ const emailExists = (errorDiv, email, btn, details) => {
 const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
   let id = oldDetails.id;
   let rev = oldDetails.value.rev;
-  console.log();
 
   let update = staffModel.updateUser(id, rev, newDetails, oldDetails);
   update.then(
@@ -381,7 +380,7 @@ const register = e => {
   let gender = document.getElementById("gender");
   let pwd = document.getElementById("pwd");
   let pwd2 = document.getElementById("pwd2");
-  let position = document.getElementById("position");
+  let position = document.getElementById("pon");
   let permissionLevel;
   if (adminPermission.checked == true) {
     permissionLevel = "admin";
@@ -569,8 +568,7 @@ const appendDetails = details => {
 //append values to form
 const appendValues = details => {
   oldDetails = details;
-  console.log(details);
-  console.log(details.value.position);
+
   document.getElementById("fname").value = details.value.fname;
   document.getElementById("lname").value = details.value.lname;
   document.getElementById("email").value = details.value.email;

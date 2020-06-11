@@ -269,6 +269,7 @@ class stockModel extends Database {
       unit: product.unit,
       form: product.form[0].toUpperCase() + product.form.slice(1),
       price: product.price,
+      pricePerMinUnit: Number(product.totalCost) / Number(product.qty),
       error: error,
       batchId: batchId,
       day: date.getDate(),
@@ -473,6 +474,7 @@ class stockModel extends Database {
       qty: editQty,
       form: detail.form,
       unit: detail.unit,
+      pricePerMinUnit: Number(detail.totalCost) / Number(editQty),
       price: detail.price,
       totalCost: detail.totalCost,
       expDate: editExpDate,
@@ -487,6 +489,7 @@ class stockModel extends Database {
 
   //update current match
   updateMatch(detail, id, name, form, price, unit, brand) {
+    console.log(detail);
     return this.couch.update("stock", {
       _id: id,
       _rev: detail.rev,
@@ -500,6 +503,7 @@ class stockModel extends Database {
       price: price,
       totalCost: detail.totalCost,
       expDate: detail.expDate,
+      pricePerMinUnit: detail.ppmu,
       error: detail.error,
       day: detail.day,
       month: detail.month,
@@ -582,7 +586,7 @@ class stockModel extends Database {
     }
   }
 
-  getActivitiesForBatch(activities,batchId){
+  getActivitiesForBatch(activities, batchId) {
     let match = activities.filter(act => {
       return act.value.editedId == batchId;
     });

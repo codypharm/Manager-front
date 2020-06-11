@@ -534,16 +534,16 @@ all stocks handler
 const handleAllStockDisplay = () => {
   //sort stock
   sortedStock = stockModel.sortStock(stock);
-  if(sortedStock.length > 0){
-  //display all stock
-  displayAllStock(sortedStock);
-  }else{
-      document.getElementById("allStockList").innerHTML =
-        " <tr>" +
-        ' <td colspan="7" class="text-center">' +
-        "  <span>No record found</span>" +
-        " </td>" +
-        " </tr>";
+  if (sortedStock.length > 0) {
+    //display all stock
+    displayAllStock(sortedStock);
+  } else {
+    document.getElementById("allStockList").innerHTML =
+      " <tr>" +
+      ' <td colspan="7" class="text-center">' +
+      "  <span>No record found</span>" +
+      " </td>" +
+      " </tr>";
   }
 };
 
@@ -973,6 +973,7 @@ const showAnalysisEditForm = e => {
 
 //submit product edit
 const submitProductEdit = e => {
+  console.log(stock);
   e.preventDefault();
   let btn = document.getElementById("btnProductEditSpinner");
   btn.classList.add("spinner-border");

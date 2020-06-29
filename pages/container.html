@@ -91,8 +91,17 @@
         <li class="expenses" onclick="loadExpenses(event)">
           <a href="#">Expenses</a>
         </li>
-        <li class="reports" onclick="loadReports(event)">
-          <a href="#">Reports</a>
+
+        <li class="subMenu5" onclick="dropReport(event)">
+          <a href="#">Reports <span class="subArrow"></span></a>
+          <ul>
+            <li class="accountReport" onclick="loadAccountReports(event)">
+              <a href="#">Account</a>
+            </li>
+            <li class="productReport" onclick="loadProductReports(event)">
+              <a href="#">Product</a>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>

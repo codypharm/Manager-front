@@ -428,7 +428,7 @@ db.getSetup().then(({ data }) => {
         appendUserDetails();
         //load dashboard
         //load work page
-        pageLoader("staffList", showList);
+        pageLoader("productReport");
       });
     }
   }
@@ -543,6 +543,11 @@ const dropStaff = e => {
 
 const dropInvoice = e => {
   let sub = document.getElementsByClassName("subMenu4")[0];
+  sub.classList.toggle("tap");
+};
+
+const dropReport = e => {
+  let sub = document.getElementsByClassName("subMenu5")[0];
   sub.classList.toggle("tap");
 };
 
@@ -763,6 +768,22 @@ const loadReports = e => {
   selectionRemover();
   addClass(reports, "selected");
   pageLoader("reports");
+};
+
+const loadAccountReports = e => {
+  let accountReport = document.getElementsByClassName("accountReport")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(accountReport, "selected");
+  pageLoader("accountReport");
+};
+
+const loadProductReports = e => {
+  let productReport = document.getElementsByClassName("productReport")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(productReport, "selected");
+  pageLoader("productReport" /*, listProductReport*/);
 };
 
 ///currency formater

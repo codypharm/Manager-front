@@ -973,7 +973,6 @@ const showAnalysisEditForm = e => {
 
 //submit product edit
 const submitProductEdit = e => {
-  console.log(stock);
   e.preventDefault();
   let btn = document.getElementById("btnProductEditSpinner");
   btn.classList.add("spinner-border");

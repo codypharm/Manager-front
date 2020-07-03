@@ -161,6 +161,29 @@ const listProductReport = () => {
 
       // proceed to list
       proceedToGetSales(month, year);
+      //display date
+      document.getElementById("dispDate").textContent = `${month}-${year}`;
+
+      //enable button
+      document.getElementById("processBtn").disabled = false;
     });
   });
+};
+
+//load list for entered date
+const loadProductReportList = e => {
+  e.preventDefault();
+
+  document.getElementById("productList").innerHTML =
+    "<tr>" +
+    '<td colspan="5" class="text-center" >' +
+    '<div class="spinner-grow text-success"></div>' +
+    "</td>" +
+    "</tr>";
+
+  let month = document.getElementById("prodReportMonth").value;
+  let year = document.getElementById("prodReportYear").value;
+
+  //get all product report for selected date
+  proceedToGetSales(month, year);
 };

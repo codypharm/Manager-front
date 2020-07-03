@@ -51,7 +51,7 @@
             class="btn btn-primary btn-sm mt-1"
             id="processBtn"
             disabled
-            onclick="loadInvoices(event)"
+            onclick="loadProductReportList(event)"
           >
             Process
           </button>
@@ -105,8 +105,8 @@
     <td>{{id}}</td>
     <td>{{name}}</td>
     <td>{{saleVolume}}</td>
-    <td>{{percentVolume}}</td>
-    <td>{{percentProfit}}</td>
+    <td>{{percentVolume}} %</td>
+    <td>{{percentProfit}} %</td>
   </tr>
 
   {{/each}}

@@ -444,7 +444,6 @@ const displayStockChanges = list => {
 
 //display all product sales report
 const displayProductReportList = list => {
-  console.log("ok");
   //assing array to ab object property
   let newObj = {
     data: list

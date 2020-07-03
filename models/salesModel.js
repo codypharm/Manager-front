@@ -211,6 +211,7 @@ class salesModel extends Database {
       unit: product.value.unit,
       price: product.value.price,
       totalCost: product.value.totalCost,
+      pricePerMinUnit: product.value.ppmu,
       expDate: product.value.expDate,
       error: product.value.error,
       day: product.value.day,

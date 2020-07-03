@@ -195,6 +195,9 @@ const removeRecord = id => {
 };
 
 const addProduct = e => {
+ if(recordedProduct == undefined){
+  var recordedProduct = []
+ }
   //add to list number
   listNumber += 1;
 
@@ -302,7 +305,7 @@ const addProduct = e => {
     //push to recorded product id
     recordedProduct.push(detail);
 
-    //// store i electron
+    //// store in electron
     store.setRecordStore(recordedProduct);
     //get last input
     let currentProduct = stockModel.getLastProduct(recordedProduct);

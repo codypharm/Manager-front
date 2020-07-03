@@ -428,7 +428,7 @@ db.getSetup().then(({ data }) => {
         appendUserDetails();
         //load dashboard
         //load work page
-        pageLoader("productReport");
+        pageLoader("productReport", listProductReport);
       });
     }
   }
@@ -783,7 +783,7 @@ const loadProductReports = e => {
   //remove previous selections
   selectionRemover();
   addClass(productReport, "selected");
-  pageLoader("productReport" /*, listProductReport*/);
+  pageLoader("productReport", listProductReport);
 };
 
 ///currency formater

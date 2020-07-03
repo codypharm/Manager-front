@@ -3,7 +3,8 @@
 // global variables
 var sales;
 var stock;
-
+var reportArray = [];
+var searchArray = [];
 //get sales with this product id
 const getProductSales = (prodId, matchedSales) => {
   let match = matchedSales.filter(sale => {
@@ -76,8 +77,6 @@ const proceedToSortStockSales = matchedSales => {
   let totalSalesVolume = getTotalSalesVolume(matchedSales);
   let totalGain = getTotalProfit(matchedSales);
 
-  let reportArray = [];
-
   //loop through sortedStock
   sortedStock.forEach(product => {
     //extract sales with this product id
@@ -119,6 +118,7 @@ const proceedToSortStockSales = matchedSales => {
     }
   });
 
+  searchArray = reportArray;
   return reportArray;
 };
 
@@ -133,10 +133,13 @@ const proceedToGetSales = (month, year) => {
       "  <span>No record found</span>" +
       " </td>" +
       " </tr>";
+    searchArray = [];
   } else {
     //proceed to sort stock sales
     let reportList = proceedToSortStockSales(matchedSales);
     displayProductReportList(reportList);
+    //empty list
+    reportArray = [];
   }
 };
 
@@ -183,7 +186,34 @@ const loadProductReportList = e => {
 
   let month = document.getElementById("prodReportMonth").value;
   let year = document.getElementById("prodReportYear").value;
+  //display date
+  document.getElementById("dispDate").textContent = `${month}-${year}`;
 
   //get all product report for selected date
   proceedToGetSales(month, year);
+};
+
+//search product report
+const searchProductReport = event => {
+  let value = event.target.value;
+
+  document.getElementById("productList").innerHTML =
+    "<tr>" +
+    '<td colspan="5" class="text-center" >' +
+    '<div class="spinner-grow text-success"></div>' +
+    "</td>" +
+    "</tr>";
+
+  //search this in our array
+  let result = reportModel.searchProductReportList(value, searchArray);
+  if (result != false) {
+    displayProductReportList(result);
+  } else {
+    document.getElementById("productList").innerHTML =
+      " <tr>" +
+      ' <td colspan="5" class="text-center">' +
+      "  <span>No record found</span>" +
+      " </td>" +
+      " </tr>";
+  }
 };

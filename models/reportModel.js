@@ -76,6 +76,21 @@ class reportModel extends Database {
 
     return sortedArray;
   }
+
+  searchProductReportList(value, list) {
+    let match = list.filter(item => {
+      return (
+        item.id.includes(value) ||
+        item.name.toUpperCase().includes(value.toUpperCase())
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
 }
 
 module.exports = reportModel;

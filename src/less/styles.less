@@ -1397,6 +1397,72 @@ body {
   background-color: transparent;
 }
 
+.showBox {
+  height: 120px;
+  width: 100%;
+  -webkit-box-shadow: 0px 0px 5px 3px rgba(240, 240, 240, 1);
+  -moz-box-shadow: 0px 0px 5px 3px rgba(240, 240, 240, 1);
+  box-shadow: 0px 0px 5px 3px rgba(240, 240, 240, 1);
+
+  .showChild {
+    height: 50%;
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 10px;
+    overflow: hidden;
+  }
+
+  .showTop {
+    line-height: 60px;
+    span {
+      font-size: 1.5rem;
+      font-weight: 600;
+
+      padding-left: 10px;
+    }
+
+    #span1 {
+      color: #9b59b6;
+    }
+
+    #span2 {
+      color: red;
+    }
+
+    #span3 {
+      color: #2980b9;
+    }
+
+    #span4 {
+      color: @primary-color;
+    }
+    #saleVol {
+      font-size: 1.5rem;
+      color: #9b59b6;
+    }
+
+    #expVol {
+      font-size: 1.5rem;
+      color: red;
+    }
+
+    #expenVol {
+      font-size: 1.5rem;
+      color: #2980b9;
+    }
+
+    #incVol {
+      font-size: 1.5rem;
+      color: @primary-color;
+    }
+  }
+
+  .showDown {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
 //sizes below standard desktop size
 @media only screen and (max-width: 1024px) {
   .pageHead {

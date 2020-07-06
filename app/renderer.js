@@ -428,7 +428,7 @@ db.getSetup().then(({ data }) => {
         appendUserDetails();
         //load dashboard
         //load work page
-        pageLoader("productReport", listProductReport);
+        pageLoader("accountReport");
       });
     }
   }

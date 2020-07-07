@@ -428,7 +428,7 @@ db.getSetup().then(({ data }) => {
         appendUserDetails();
         //load dashboard
         //load work page
-        pageLoader("accountReport");
+        pageLoader("accountReport", listAccountReport);
       });
     }
   }
@@ -775,7 +775,7 @@ const loadAccountReports = e => {
   //remove previous selections
   selectionRemover();
   addClass(accountReport, "selected");
-  pageLoader("accountReport");
+  pageLoader("accountReport", listAccountReport);
 };
 
 const loadProductReports = e => {

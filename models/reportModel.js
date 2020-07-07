@@ -18,9 +18,31 @@ class reportModel extends Database {
     return this.couch.get("stock", viewUrl);
   }
 
+  getExpenses() {
+    let viewUrl = this.viewUrl.expenses;
+    return this.couch.get("expenses", viewUrl);
+  }
+
+  getAllInvoices() {
+    let viewUrl = this.viewUrl.invoices;
+    return this.couch.get("invoice", viewUrl);
+  }
+
   getSales() {
     let viewUrl = this.viewUrl.sales;
     return this.couch.get("sales", viewUrl);
+  }
+
+  getMatchingExp(month, year, allExp) {
+    let match = allExp.filter(expense => {
+      return expense.value.month == month && expense.value.year == year;
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
   }
 
   getMatchingSales(sales, month, year) {
@@ -82,6 +104,35 @@ class reportModel extends Database {
       return (
         item.id.includes(value) ||
         item.name.toUpperCase().includes(value.toUpperCase())
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getMonthExpiredStock(stock, month, year) {
+    let expProducts = [];
+    stock.forEach(product => {
+      if (product.value.expDate.length > 0) {
+        let expDateArray = product.value.expDate.split("-");
+        if (expDateArray[0] == year && expDateArray[1] <= month) {
+          expProducts.push(product);
+        }
+      }
+    });
+
+    return expProducts;
+  }
+
+  getMatchInvoices(invoices, month, year) {
+    let match = invoices.filter(invoice => {
+      return (
+        invoice.value.month == Number(month) &&
+        invoice.value.year == Number(year)
       );
     });
 

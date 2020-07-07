@@ -71,6 +71,51 @@ const getTotalProfit = matchedSales => {
   return totalGain;
 };
 
+//add up expired stock
+const getExpVolume = expStock => {
+  let expVolume = 0;
+  if (expStock.length > 0) {
+    expStock.forEach(stock => {
+      expVolume += Number(stock.value.qty);
+    });
+  }
+  return expVolume;
+};
+
+//add up expenses
+const getTotalExpense = allExp => {
+  let exp = 0;
+  allExp.forEach(expense => {
+    exp += Number(expense.value.amt);
+  });
+  return exp;
+};
+
+//add up income made
+const getTotalIncome = invoices => {
+  let totalIncome = 0;
+  if (invoices.length > 0) {
+    invoices.forEach(invoice => {
+      totalIncome += Number(invoice.value.netPrice);
+    });
+  }
+  return totalIncome;
+};
+
+//proceed to sort account list
+const proceedToSortAccountList = (
+  matchedSales,
+  mainExp,
+  expStock,
+  actualInvoices
+) => {
+  let totalSalesVolume = getTotalSalesVolume(matchedSales);
+  let expiredVolume = getExpVolume(expStock);
+  let expenseAmount = getTotalExpense(mainExp);
+  let totalIncome = getTotalIncome(actualInvoices);
+  console.log(totalIncome);
+};
+
 //proceed to sort stock sales
 const proceedToSortStockSales = matchedSales => {
   let sortedStock = reportModel.sortStock(stock);
@@ -123,21 +168,61 @@ const proceedToSortStockSales = matchedSales => {
 };
 
 // proceed to list
-const proceedToGetSales = (month, year) => {
+const proceedToGetSales = (month, year, reportType) => {
   //check if theres sales for this date
   let matchedSales = reportModel.getMatchingSales(sales, month, year);
   if (matchedSales == false) {
-    document.getElementById("productList").innerHTML =
-      " <tr>" +
-      ' <td colspan="5" class="text-center">' +
-      "  <span>No record found</span>" +
-      " </td>" +
-      " </tr>";
+    if (reportType == "product") {
+      document.getElementById("productList").innerHTML =
+        " <tr>" +
+        ' <td colspan="5" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    } else {
+      document.getElementById("accountList").innerHTML =
+        " <tr>" +
+        ' <td colspan="8" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
     searchArray = [];
   } else {
-    //proceed to sort stock sales
-    let reportList = proceedToSortStockSales(matchedSales);
-    displayProductReportList(reportList);
+    if (reportType == "product") {
+      //proceed to sort stock sales
+      let reportList = proceedToSortStockSales(matchedSales);
+      displayProductReportList(reportList);
+    } else {
+      //get expenses for this month
+      let expenses = reportModel.getExpenses();
+      expenses.then(({ data }) => {
+        let allExp = data.rows;
+        //get expenses for this month
+        let mainExp = reportModel.getMatchingExp(month, year, allExp);
+        //get expired stock for this month
+        let expStock = reportModel.getMonthExpiredStock(stock, month, year);
+
+        let allInvoices = reportModel.getAllInvoices();
+        allInvoices.then(({ data }) => {
+          let invoices = data.rows;
+
+          let actualInvoices = reportModel.getMatchInvoices(
+            invoices,
+            month,
+            year
+          );
+
+          //get for account
+          let reportList = proceedToSortAccountList(
+            matchedSales,
+            mainExp,
+            expStock,
+            actualInvoices
+          );
+        });
+      });
+    }
     //empty list
     reportArray = [];
   }
@@ -163,7 +248,7 @@ const listProductReport = () => {
       sales = data.rows;
 
       // proceed to list
-      proceedToGetSales(month, year);
+      proceedToGetSales(month, year, "product");
       //display date
       document.getElementById("dispDate").textContent = `${month}-${year}`;
 
@@ -216,4 +301,34 @@ const searchProductReport = event => {
       " </td>" +
       " </tr>";
   }
+};
+
+//account report start
+const listAccountReport = () => {
+  let date = new Date();
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+
+  //add date to input
+  document.getElementById("acctReportYear").value = year;
+  document.getElementById("acctReportMonth").value = month;
+
+  let getStock = reportModel.getStock();
+  getStock.then(({ data, header, status }) => {
+    stock = data.rows;
+
+    let getSales = reportModel.getSales();
+    getSales.then(({ data, headers, status }) => {
+      sales = data.rows;
+
+      // proceed to list
+      proceedToGetSales(month, year, "account");
+      //display date
+      document.getElementById("dispDate").textContent = `${month}-${year}`;
+
+      //enable button
+      document.getElementById("processBtn").disabled = false;
+    });
+  });
 };

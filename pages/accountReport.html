@@ -28,7 +28,7 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="saleVol"></i>
-        <span id="span1">1435</span>
+        <span id="span1">+1435</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
@@ -41,7 +41,7 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="expVol"></i>
-        <span id="span2">1000</span>
+        <span id="span2">-1000</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
@@ -55,7 +55,7 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="expenVol"></i>
-        <span id="span3">1,000,000</span>
+        <span id="span3">-1,000,000</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
@@ -69,11 +69,11 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="incVol"></i>
-        <span id="span4">1,000,000</span>
+        <span id="span4">+1,000,000</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
-          Income
+          Total Income
         </div>
       </div>
     </div>
@@ -91,7 +91,7 @@
             type="text"
             class="form-control text-center"
             placeholder="MM"
-            id="prodReportMonth"
+            id="acctReportMonth"
           />
         </div>
 
@@ -100,7 +100,7 @@
             type="text"
             class="form-control text-center"
             placeholder="YYYY"
-            id="prodReportYear"
+            id="acctReportYear"
           />
         </div>
         <div class="col text-center">
@@ -142,12 +142,13 @@
             <th>Amount Paid</th>
             <th>To Pay</th>
             <th>Expenses</th>
+            <th>Balance</th>
             <th>Outcome</th>
             <th>Action</th>
           </thead>
-          <tbody id="productList">
+          <tbody id="accountList">
             <!--<tr>
-              <td colspan="7" class="text-center">
+              <td colspan="8" class="text-center">
                 <div class="spinner-grow text-success"></div>
               </td>
             </tr>-->
@@ -156,6 +157,7 @@
               <td>2022-09-02</td>
               <td>120,000</td>
               <td>110,000</td>
+              <td>90000</td>
               <td>90000</td>
               <td>1000</td>
               <td>3% +</td>
@@ -176,6 +178,7 @@
               <td>110,000</td>
               <td>90000</td>
               <td>1000</td>
+              <td>90000</td>
               <td>10% -</td>
               <td>
                 <button

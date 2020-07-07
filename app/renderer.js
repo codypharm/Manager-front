@@ -1,5 +1,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
+//global variables
+var viewEmail;
+var editEmail;
 
 //get setup details
 var setUpDetails;
@@ -12,8 +15,18 @@ info.then(({ data, headers, status }) => {
   store.setSetupDetail(setUpDetails);
 });
 
+const appendUserDetails = () => {
+  let user = store.getLoginDetail();
+
+  document.getElementById("containerImg").src = user.image;
+  document.getElementById(
+    "nameBox"
+  ).textContent = `${user.fname} ${user.lname}`;
+  document.getElementById("position").textContent = user.position;
+};
+
 //details store
-let details = {
+var details = {
   package: "",
   companyName: "",
   address: "",
@@ -36,7 +49,28 @@ const showStaticModal = message => {
   return true;
 };
 
-const showDebtForm = message => {
+const showDebtForm = (message, type) => {
+  if (type == "form") {
+    //change form buttons
+    let clearBtns = document.getElementById("clearanceFormBtn");
+    if (clearBtns.classList.contains("hide")) {
+      clearBtns.classList.remove("hide");
+    }
+    let invoBtns = document.getElementById("debtInvoiceFooter");
+    if (!invoBtns.classList.contains("hide")) {
+      invoBtns.classList.add("hide");
+    }
+  } else {
+    //change form buttons
+    let invoBtns = document.getElementById("debtInvoiceFooter");
+    if (invoBtns.classList.contains("hide")) {
+      invoBtns.classList.remove("hide");
+    }
+    let clearBtns = document.getElementById("clearanceFormBtn");
+    if (!clearBtns.classList.contains("hide")) {
+      clearBtns.classList.add("hide");
+    }
+  }
   $(".updateStaticModal").modal("show");
   $("#updateStaticBody").html(message);
   return true;
@@ -140,7 +174,8 @@ const processStandard = errorDiv => {
   } else {
     //asign values to details object
     let package = "standard";
-    details = { package, companyName, stdAddress };
+    let address = stdAddress;
+    details = { package, companyName, address };
     //alter form
     changeForm(setupForm, managerForm);
   }
@@ -173,7 +208,8 @@ const processPremium = errorDiv => {
     displayError(errorDiv, "Please you need to accept our terms");
   } else {
     let package = "premium";
-    details = { package, companyName, premiumAddress, companyId, branchId };
+    let address = premiumAddress;
+    details = { package, companyName, address, companyId, branchId };
     //alter form
     changeForm(setupForm, managerForm);
   }
@@ -257,13 +293,10 @@ const enterDetails = e => {
 
     //user creation
     const createUser = userId => {
-      //create vemon_setup
-      let usersDb = validate.createDb("users");
-      usersDb.then(() => {
-        let userDetailInsertion = validate.insertUser(details, userId);
-        userDetailInsertion.then(({ data, headers, status }) => {
-          remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
-        });
+      let userDetailInsertion = validate.insertUser(details, userId);
+      userDetailInsertion.then(({ data, headers, status }) => {
+        //reload
+        remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
       });
     };
 
@@ -272,25 +305,17 @@ const enterDetails = e => {
     let idGen = validate.generateId();
     idGen.then(ids => {
       const id = ids[0];
-      //create vemon_setup
-      let vemonDb = validate.createDb("vemon_setup");
-      vemonDb.then(
-        () => {
-          //insert details
-          let detailInsertion = validate.insertDetails(details, id);
-          detailInsertion.then(
-            ({ data, headers, status }) => {
-              //generate id
-              let userIdGen = validate.generateId();
-              userIdGen.then(ids => {
-                const userId = ids[0];
-                createUser(userId);
-              });
-            },
-            err => {
-              console.warn(err);
-            }
-          );
+
+      //insert details
+      let detailInsertion = validate.insertDetails(details, id);
+      detailInsertion.then(
+        ({ data, headers, status }) => {
+          //generate id
+          let userIdGen = validate.generateId();
+          userIdGen.then(ids => {
+            const userId = ids[0];
+            createUser(userId);
+          });
         },
         err => {
           console.warn(err);
@@ -360,6 +385,12 @@ const pageLoader = (page, fxn = false) => {
           case "exhaustedStock":
             fxn("exhaustedStock");
             break;
+          case "staffView":
+            fxn(viewEmail);
+            break;
+          case "staffEdit":
+            fxn(editEmail);
+            break;
           default:
             fxn();
             break;
@@ -369,10 +400,10 @@ const pageLoader = (page, fxn = false) => {
   });
 };
 
-//handle the promise from get database list
-db.listDb().then(dbs => {
+//handle setup checking
+db.getSetup().then(({ data }) => {
   //check if we have set up
-  if (dbs.includes("vemon_setup")) {
+  if (data.rows.length > 0) {
     //check if user is logged in
     let { loginStatus } = store.getLoginDetail();
 
@@ -394,9 +425,10 @@ db.listDb().then(dbs => {
           console.log(err);
         }
         document.getElementsByTagName("main")[0].innerHTML = data;
+        appendUserDetails();
         //load dashboard
         //load work page
-        pageLoader("allStock", fetchAllStock);
+        pageLoader("accountReport");
       });
     }
   }
@@ -430,6 +462,7 @@ const processLogin = e => {
       ({ data, headers, status }) => {
         //get users
         let users = data.rows;
+
         //filter users for a match
         let match = login.filterUsers(users, email, pwd);
         if (match) {
@@ -454,6 +487,7 @@ const processLogin = e => {
                 document
                   .getElementsByTagName("body")[0]
                   .classList.remove("setupBack");
+                appendUserDetails();
               });
             }
           } else {
@@ -509,6 +543,11 @@ const dropStaff = e => {
 
 const dropInvoice = e => {
   let sub = document.getElementsByClassName("subMenu4")[0];
+  sub.classList.toggle("tap");
+};
+
+const dropReport = e => {
+  let sub = document.getElementsByClassName("subMenu5")[0];
   sub.classList.toggle("tap");
 };
 
@@ -604,7 +643,7 @@ const loadAddSales = e => {
 };
 
 //stock list
-const loadAllStock = e => {
+const loadAllStock = () => {
   let subMenu2 = document.getElementsByClassName("subMenu2")[0];
   let allStock = document.getElementsByClassName("allStock")[0];
   //remove previous selections
@@ -656,20 +695,6 @@ const loadStaffList = e => {
   addClass(staffList, "selected");
   addClass(subMenu3, "selectedDropper");
   pageLoader("staffList", showList);
-};
-
-//view click
-const viewStaff = e => {
-  let selectedEmail = e.target.dataset.staffemail;
-  //get users and filter with email provided
-
-  pageLoader("staffView", showStaffDetails(selectedEmail));
-};
-
-//view click
-const editStaff = e => {
-  let selectedEmail = e.target.dataset.staffemail;
-  pageLoader("staffEdit", showStaffValues(selectedEmail));
 };
 
 //attendance
@@ -743,6 +768,22 @@ const loadReports = e => {
   selectionRemover();
   addClass(reports, "selected");
   pageLoader("reports");
+};
+
+const loadAccountReports = e => {
+  let accountReport = document.getElementsByClassName("accountReport")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(accountReport, "selected");
+  pageLoader("accountReport");
+};
+
+const loadProductReports = e => {
+  let productReport = document.getElementsByClassName("productReport")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(productReport, "selected");
+  pageLoader("productReport", listProductReport);
 };
 
 ///currency formater

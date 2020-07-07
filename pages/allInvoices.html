@@ -115,9 +115,9 @@
   <tr>
     <td>{{value.invoiceId}}</td>
     <td>{{value.transType}}</td>
-    <td>{{value.netPrice}}</td>
-    <td>{{value.amtPaid}}</td>
-    <td>{{value.balance}}</td>
+    <td>{{netPrice value.netPrice}}</td>
+    <td>{{paid value.amtPaid}}</td>
+    <td>{{invoiceBalance value.balance}}</td>
     <td>{{invoiceStatus value.balance}}</td>
     <td>
       <button type="button" class="btn btn-sm  btn-success " onclick="viewInvoice(event,'{{value.invoiceId}}','{{value.day}}-{{value.month}}-{{value.year}}','all')">

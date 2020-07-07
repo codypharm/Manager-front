@@ -14,6 +14,11 @@ class stockModel extends Database {
     return this.couch.get("stock", viewUrl);
   }
 
+  getActivities() {
+    let viewUrl = this.viewUrl.activities;
+    return this.couch.get("all_activities", viewUrl);
+  }
+
   isEmpty(inputs) {
     //filter input
     let emptyInputs = inputs.filter(element => {
@@ -201,6 +206,8 @@ class stockModel extends Database {
 
     if (match.length > 0) {
       return match;
+    } else {
+      return false;
     }
   }
 
@@ -262,6 +269,7 @@ class stockModel extends Database {
       unit: product.unit,
       form: product.form[0].toUpperCase() + product.form.slice(1),
       price: product.price,
+      pricePerMinUnit: Number(product.totalCost) / Number(product.qty),
       error: error,
       batchId: batchId,
       day: date.getDate(),
@@ -466,6 +474,7 @@ class stockModel extends Database {
       qty: editQty,
       form: detail.form,
       unit: detail.unit,
+      pricePerMinUnit: Number(detail.totalCost) / Number(editQty),
       price: detail.price,
       totalCost: detail.totalCost,
       expDate: editExpDate,
@@ -480,6 +489,7 @@ class stockModel extends Database {
 
   //update current match
   updateMatch(detail, id, name, form, price, unit, brand) {
+    console.log(detail);
     return this.couch.update("stock", {
       _id: id,
       _rev: detail.rev,
@@ -493,6 +503,7 @@ class stockModel extends Database {
       price: price,
       totalCost: detail.totalCost,
       expDate: detail.expDate,
+      pricePerMinUnit: detail.ppmu,
       error: detail.error,
       day: detail.day,
       month: detail.month,
@@ -531,8 +542,8 @@ class stockModel extends Database {
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear(),
-      activity: editClass.join(","),
-      detail: edit.join(","),
+      activity: editClass.join(", "),
+      detail: edit.join(", "),
       editedId: batchId,
       staffName: loginDetail.fname + " " + loginDetail.lname,
       staffId: loginDetail.staffId
@@ -553,6 +564,65 @@ class stockModel extends Database {
         genIds[i]
       );
     }
+  }
+
+  getActivityMatch(activities, batchId) {
+    let match = activities.filter(activity => {
+      return activity.value.editedId == batchId;
+    });
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getAct(activities, rev) {
+    let match = activities.filter(act => {
+      return act.value.rev == rev;
+    });
+    if (match.length > 0) {
+      return match;
+    }
+  }
+
+  getActivitiesForBatch(activities, batchId) {
+    let match = activities.filter(act => {
+      return act.value.editedId == batchId;
+    });
+    if (match.length > 0) {
+      return match;
+    }
+  }
+
+  deleteStock(id, rev) {
+    return this.couch.del("stock", id, rev);
+  }
+
+  deleteActivity(id, rev) {
+    return this.couch.del("all_activities", id, rev);
+  }
+
+  async deleteActs(allMatch) {
+    const matchLength = allMatch.length;
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for insertion to happen
+      await this.deleteActivity(allMatch[i].id, allMatch[i].value.rev);
+    }
+
+    return true;
+  }
+
+  async deleteThisProduct(allMatch) {
+    const matchLength = allMatch.length;
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for insertion to happen
+      await this.deleteStock(allMatch[i].id, allMatch[i].value.rev);
+    }
+
+    return true;
   }
 }
 

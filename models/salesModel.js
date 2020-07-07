@@ -211,6 +211,7 @@ class salesModel extends Database {
       unit: product.value.unit,
       price: product.value.price,
       totalCost: product.value.totalCost,
+      pricePerMinUnit: product.value.ppmu,
       expDate: product.value.expDate,
       error: product.value.error,
       day: product.value.day,
@@ -394,8 +395,8 @@ class salesModel extends Database {
           sale.value.day == day &&
           sale.value.month == month &&
           sale.value.year == year &&
-          (sale.value.name.toUpperCase() == searchValue.toUpperCase() ||
-            sale.value.productId == searchValue)
+          (sale.value.name.toUpperCase().includes(searchValue.toUpperCase()) ||
+            sale.value.productId.includes(searchValue))
         );
       } else {
         return (
@@ -403,8 +404,8 @@ class salesModel extends Database {
           sale.value.month == month &&
           sale.value.year == year &&
           sale.value.transType == salesType &&
-          (sale.value.name.toUpperCase() == searchValue.toUpperCase() ||
-            sale.value.productId == searchValue)
+          (sale.value.name.toUpperCase().includes(searchValue.toUpperCase()) ||
+            sale.value.productId.includes(searchValue))
         );
       }
     });

@@ -18,6 +18,8 @@ class staffModel extends Database {
   }
 
   insertDetails(details, id) {
+    let staffId = "STF";
+    staffId += Math.floor(Math.random() * 1000);
     let date = new Date();
     return this.couch.insert("users", {
       id: id,
@@ -28,12 +30,13 @@ class staffModel extends Database {
       position: details.position,
       gender: details.gender,
       image: "../images/profile.png",
+      staffId: staffId,
       address: {
         street: details.street,
         town: details.town,
         state: details.state
       },
-      pwd: details.pwd,
+      password: details.pwd,
       permission: details.permission,
       access: "open",
       regDay: date.getDate(),
@@ -42,7 +45,7 @@ class staffModel extends Database {
     });
   }
 
-  updateUser(id, rev, details) {
+  updateUser(id, rev, details, oldDetails) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
     return this.couch.update("users", {
@@ -53,6 +56,7 @@ class staffModel extends Database {
       email: details.email,
       number: details.number,
       position: details.position,
+      staffId: oldDetails.value.staffId,
       gender: details.gender,
       address: {
         street: details.street,
@@ -63,7 +67,7 @@ class staffModel extends Database {
       permission: details.permission,
       access: details.access,
       image: details.image,
-      pwd: details.pwd,
+      password: details.pwd,
       regDay: details.regDay,
       regMonth: details.regMonth,
       regYear: details.regYear,
@@ -74,6 +78,41 @@ class staffModel extends Database {
       editorEmail: loginDetail.email
     });
   }
+
+  updateUserImage(id, details, imageName) {
+    let date = new Date();
+    let loginDetail = store.getLoginDetail();
+    return this.couch.update("users", {
+      _id: id,
+      _rev: details.rev,
+      firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
+      lastname: details.lname[0].toUpperCase() + details.lname.slice(1),
+      email: details.email,
+      number: details.number,
+      position: details.position,
+      staffId: details.staffId,
+      gender: details.gender,
+      address: {
+        street: details.address.street,
+        town: details.address.town,
+        state: details.address.state
+      },
+      //pwd: details.pwd,
+      permission: details.permission,
+      access: details.access,
+      image: imageName,
+      password: details.pwd,
+      regDay: details.regDay,
+      regMonth: details.regMonth,
+      regYear: details.regYear,
+      updateDay: date.getDate(),
+      updateMonth: date.getMonth() + 1,
+      updateYear: date.getFullYear(),
+      editedBy: loginDetail.fname + " " + loginDetail.lname,
+      editorEmail: loginDetail.email
+    });
+  }
+
   //update status
   updateStatus(id, rev, details) {
     return this.couch.update("users", {
@@ -85,6 +124,7 @@ class staffModel extends Database {
       number: details.number,
       position: details.position,
       gender: details.gender,
+      staffId: details.staffId,
       address: {
         street: details.street,
         town: details.town,
@@ -93,7 +133,7 @@ class staffModel extends Database {
       permission: details.permission,
       access: details.access,
       image: details.image,
-      pwd: details.pwd,
+      password: details.pwd,
       regDay: details.regDay,
       regMonth: details.regMonth,
       regYear: details.regYear,
@@ -144,6 +184,32 @@ class staffModel extends Database {
 
     if (match.length > 0) {
       return match;
+    }
+  }
+
+  extractUsers(allUsers, val) {
+    let email = store.getLoginDetail().email;
+    let fname = store.getLoginDetail().fname;
+    let lname = store.getLoginDetail().lname;
+    let userName = fname.toUpperCase() + " " + lname.toUpperCase();
+    let match = allUsers.filter(user => {
+      let nameArray = [user.value.fname, user.value.lname];
+      let concatName = nameArray.join(" ");
+
+      return (
+        (user.value.fname.toUpperCase().includes(val.toUpperCase()) ||
+          user.value.lname.toUpperCase().includes(val.toUpperCase()) ||
+          concatName.toUpperCase().includes(val.toUpperCase())) &&
+        user.value.email != email
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      if (!userName.includes(val.toUpperCase())) {
+        return false;
+      }
     }
   }
 }

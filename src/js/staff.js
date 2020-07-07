@@ -6,6 +6,7 @@
 //global variable definition
 var oldDetails;
 var allUsers;
+var editDetail;
 let users = staffModel.getUsers();
 users.then(({ data, headers, status }) => {
   allUsers = data.rows;
@@ -190,13 +191,38 @@ const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
   let id = oldDetails.id;
   let rev = oldDetails.value.rev;
 
-  let update = staffModel.updateUser(id, rev, newDetails);
+  let update = staffModel.updateUser(id, rev, newDetails, oldDetails);
   update.then(
     ({ data, headers, status }) => {
       if (status != 201) {
         // eslint-disable-next-line no-undef
         displayError(errorDiv, "update not successfull, please try again");
       } else {
+        //check loged in is same with edited
+        if (store.getLoginDetail().staffId == oldDetails.value.staffId) {
+          //set login details
+          store.setUserData({
+            loginStatus: true,
+            fname: newDetails.fname,
+            lname: newDetails.lname,
+            email: newDetails.email,
+            staffId: oldDetails.staffI,
+            position: newDetails.position,
+            image: oldDetails.value.image,
+            access: newDetails.access,
+            docId: oldDetails.id
+          });
+
+          //update logged in user details
+          document.getElementById(
+            "nameBox"
+          ).textContent = `${newDetails.fname[0].toUpperCase() +
+            newDetails.fname.slice(1)} ${newDetails.lname[0].toUpperCase() +
+            newDetails.lname.slice(1)}`;
+          document.getElementById(
+            "position"
+          ).textContent = `${newDetails.position}`;
+        }
         displaySuccess("staff data updated successfully");
         resetSaveBtn(btn);
         setTimeout(() => {
@@ -230,7 +256,7 @@ const saveDetails = e => {
   let email = document.getElementById("email");
   let number = document.getElementById("number");
   let street = document.getElementById("street");
-  let position = document.getElementById("position");
+  let position = document.getElementById("pon");
 
   let town = document.getElementById("town");
   let state = document.getElementById("state");
@@ -250,7 +276,7 @@ const saveDetails = e => {
     town: town.value.trim(),
     gender: gender.value,
     permission: permission.value,
-    position: position.value.trim(),
+    position: pon.value.trim(),
     access: oldDetails.value.access,
     image: image,
     pwd: pwd.value.trim(),
@@ -354,7 +380,7 @@ const register = e => {
   let gender = document.getElementById("gender");
   let pwd = document.getElementById("pwd");
   let pwd2 = document.getElementById("pwd2");
-  let position = document.getElementById("position");
+  let position = document.getElementById("pon");
   let permissionLevel;
   if (adminPermission.checked == true) {
     permissionLevel = "admin";
@@ -437,13 +463,65 @@ const register = e => {
   }
 };
 
+const displayCurrentStaff = () => {
+  //get current staff details from store
+  let {
+    loginStatus,
+    fname,
+    lname,
+    email,
+    position,
+    image,
+    access,
+    docId
+  } = store.getLoginDetail();
+
+  //display current user details first
+  $(".currentStaffName").append(fname + " " + lname);
+  $(".currentStaffPosition").append(position);
+  $(".currentStaffImg").attr("src", image);
+  $("#currentStaffView").attr("data-staffEmail", email);
+  $("#currentStaffEdit").attr("data-staffEmail", email);
+};
+
 const showList = () => {
   let users = staffModel.getUsers();
   users.then(({ data, headers, status }) => {
     //show staff template
-
+    allUsers = data.rows;
+    displayCurrentStaff();
     displayStaff(data.rows);
   });
+};
+
+//search staff
+const searchStaff = e => {
+  let warn = document.getElementById("staffWarn");
+  if (!warn.classList.contains("hide")) {
+    warn.classList.add("hide");
+  }
+
+  let val = e.target.value.trim();
+
+  if (val.length < 1) {
+    displayStaff(allUsers);
+    if (!warn.classList.contains("hide")) {
+      warn.classList.add("hide");
+    }
+  } else {
+    searchResult = staffModel.extractUsers(allUsers, val);
+
+    if (searchResult != false) {
+      displayStaff(searchResult);
+      if (!warn.classList.contains("hide")) {
+        warn.classList.add("hide");
+      }
+    } else {
+      if (warn.classList.contains("hide")) {
+        warn.classList.remove("hide");
+      }
+    }
+  }
 };
 
 //append details to view
@@ -454,7 +532,7 @@ const appendDetails = details => {
   document.getElementsByClassName("viewPosition")[0].textContent =
     details.value.position;
   document.getElementsByClassName("staffImage")[0].src = details.value.image;
-  document.getElementsByClassName("id")[0].textContent = details.id;
+  document.getElementsByClassName("id")[0].textContent = details.value.staffId;
 
   document.getElementsByClassName("gender")[0].textContent =
     details.value.gender;
@@ -499,7 +577,7 @@ const appendValues = details => {
   document.getElementById("street").value = details.value.address.street;
   document.getElementById("town").value = details.value.address.town;
   document.getElementById("state").value = details.value.address.state;
-  document.getElementById("position").value = details.value.position;
+  document.getElementById("pon").value = details.value.position;
   document.getElementById("pwd").value = details.value.pwd;
   document.getElementById("pwd2").value = details.value.pwd;
   let gender = details.value.gender;
@@ -539,8 +617,12 @@ const showStaffValues = selectedEmail => {
   let users = staffModel.getUsers();
   users.then(({ data, headers, status }) => {
     //filter
-    [staffDetails] = staffModel.filterStaffDetails(data.rows, selectedEmail);
+    let [staffDetails] = staffModel.filterStaffDetails(
+      data.rows,
+      selectedEmail
+    );
     appendValues(staffDetails);
+    editDetail = staffDetails;
   });
 };
 
@@ -612,4 +694,23 @@ const updateStatus = (e, staffEmail) => {
       });
     });
   }
+};
+
+//view click
+const viewStaff = e => {
+  viewEmail = e.target.dataset.staffemail;
+  //get users and filter with email provided
+
+  pageLoader("staffView", showStaffDetails);
+};
+
+//view click
+const editStaff = e => {
+  editEmail = e.target.dataset.staffemail;
+  pageLoader("staffEdit", showStaffValues);
+};
+
+const uploadImage = () => {
+  document.getElementById("upload_image").click();
+  store.setEditDetail(editDetail);
 };

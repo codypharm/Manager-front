@@ -3,6 +3,16 @@
 
 const moment = require("moment");
 
+///currency formater
+const formatMoneyTemp = money => {
+  //ensure two decimal places
+  let amount = Number(money).toFixed(2);
+  //add commas where needed
+  amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  //return amount
+  return amount;
+};
+
 //view list display
 const displayStaff = data => {
   //get current staff details from store
@@ -16,13 +26,6 @@ const displayStaff = data => {
     access,
     docId
   } = store.getLoginDetail();
-
-  //display current user details first
-  $(".currentStaffName").append(fname + " " + lname);
-  $(".currentStaffPosition").append(position);
-  $("#currentStaffView").attr("data-staffEmail", email);
-  $("#currentStaffEdit").attr("data-staffEmail", email);
-
   //filter current user out
   let otherUsers = staffModel.filterOutUser(data, email);
   let newObj = {
@@ -130,6 +133,10 @@ const displayMatchSales = sales => {
     data: sales
   };
 
+  Handlebars.registerHelper("price", price => {
+    return formatMoneyTemp(price);
+  });
+
   let template = document.getElementById("salesContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
 
@@ -142,6 +149,10 @@ const displayMatchCashSales = sales => {
   let newObj = {
     data: sales
   };
+
+  Handlebars.registerHelper("price", price => {
+    return formatMoneyTemp(price);
+  });
 
   let template = document.getElementById("cashSalesContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
@@ -156,6 +167,10 @@ const displayMatchOnlineSales = sales => {
     data: sales
   };
 
+  Handlebars.registerHelper("price", price => {
+    return formatMoneyTemp(price);
+  });
+
   let template = document.getElementById("onlineSalesContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
 
@@ -168,6 +183,10 @@ const displayMatchCreditSales = sales => {
   let newObj = {
     data: sales
   };
+
+  Handlebars.registerHelper("price", price => {
+    return formatMoneyTemp(price);
+  });
 
   let template = document.getElementById("creditSalesContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
@@ -190,6 +209,18 @@ const displayMatchInvoices = invoices => {
     }
   });
 
+  Handlebars.registerHelper("netPrice", price => {
+    return formatMoneyTemp(price);
+  });
+
+  Handlebars.registerHelper("invoiceBalance", balance => {
+    return formatMoneyTemp(balance);
+  });
+
+  Handlebars.registerHelper("paid", amt => {
+    return formatMoneyTemp(amt);
+  });
+
   let template = document.getElementById("invoiceContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
 
@@ -202,6 +233,10 @@ const displayClearedMatchInvoices = invoices => {
   let newObj = {
     data: invoices
   };
+
+  Handlebars.registerHelper("netPrice", price => {
+    return formatMoneyTemp(price);
+  });
 
   let template = document.getElementById("clearedInvoiceContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
@@ -216,6 +251,17 @@ const displayDebtMatchInvoices = invoices => {
     data: invoices
   };
 
+  Handlebars.registerHelper("netPrice", price => {
+    return formatMoneyTemp(price);
+  });
+
+  Handlebars.registerHelper("invoiceBalance", balance => {
+    return formatMoneyTemp(balance);
+  });
+
+  Handlebars.registerHelper("paid", amt => {
+    return formatMoneyTemp(amt);
+  });
   let template = document.getElementById("debtInvoiceContainer").innerHTML;
   let compiledData = Handlebars.compile(template);
 
@@ -230,6 +276,10 @@ const displayExpenses = expenses => {
   let newObj = {
     data: expenses
   };
+
+  Handlebars.registerHelper("amt", amt => {
+    return formatMoneyTemp(amt);
+  });
 
   //get template
   let template = document.getElementById("expensesContainer").innerHTML;
@@ -369,4 +419,44 @@ const listOutBatches = products => {
 
   //paste html into DOM
   let container = (document.getElementById("batchList").innerHTML = myhtml);
+};
+
+//display all stock changes
+const displayStockChanges = list => {
+  //assing array to ab object property
+  let newObj = {
+    data: list
+  };
+
+  //get template
+  let template = document.getElementById("stockCheckContainer").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById(
+    "stockChangesList"
+  ).innerHTML = myhtml);
+};
+
+//display all product sales report
+const displayProductReportList = list => {
+  //assing array to ab object property
+  let newObj = {
+    data: list
+  };
+
+  //get template
+  let template = document.getElementById("productReportList").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById("productList").innerHTML = myhtml);
 };

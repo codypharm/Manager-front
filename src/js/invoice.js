@@ -388,16 +388,20 @@ const viewInvoice = (e, invoiceId, saleDate, invoiceType) => {
         "CREDIT TRANSACTION";
       document.getElementById("date").textContent = saleDate;
       document.getElementById("invoiceId").textContent = invoiceId;
-      document.getElementById("invoiceTotal").textContent =
-        selectedInvoice.value.totalPrice;
+      document.getElementById("invoiceTotal").textContent = formatMoney(
+        selectedInvoice.value.totalPrice
+      );
       document.getElementById("disccountStatic").textContent =
         selectedInvoice.value.disccount + " %";
-      document.getElementById("netPriceStatic").textContent =
-        selectedInvoice.value.netPrice;
-      document.getElementById("invoiceAmtPaid").textContent =
-        selectedInvoice.value.amtPaid;
-      document.getElementById("invoiceBalance").textContent =
-        selectedInvoice.value.balance;
+      document.getElementById("netPriceStatic").textContent = formatMoney(
+        selectedInvoice.value.netPrice
+      );
+      document.getElementById("invoiceAmtPaid").textContent = formatMoney(
+        selectedInvoice.value.amtPaid
+      );
+      document.getElementById("invoiceBalance").textContent = formatMoney(
+        selectedInvoice.value.balance
+      );
     }
   });
 };
@@ -405,9 +409,9 @@ const viewInvoice = (e, invoiceId, saleDate, invoiceType) => {
 //click clear button
 const clearInvoice = (e, id) => {
   //show modal
-  let debtModal = showDebtForm(debtForm);
+  let debtModal = showDebtForm(debtForm, "form");
   if (debtModal) {
-    //get detils for the invoice
+    //get details for the invoice
     let invoiceDetail = invoiceModel.getSelectedInvoice(invoices, id);
     let detail = invoiceDetail[0];
     document.getElementById("amt").value = detail.value.netPrice;
@@ -483,15 +487,7 @@ const processDebtPayment = e => {
           insertClearance.then(({ data, headers, status }) => {
             if (status == 201) {
               //show Debt invoice
-              if (showDebtForm(debtClearanceInvoice)) {
-                //change form buttons
-                document
-                  .getElementById("clearanceFormBtn")
-                  .classList.toggle("hide");
-                document
-                  .getElementById("debtInvoiceFooter")
-                  .classList.toggle("hide");
-
+              if (showDebtForm(debtClearanceInvoice, "invoice")) {
                 //get company detials
                 let { detail } = store.getSetupDetail();
 
@@ -517,12 +513,13 @@ const processDebtPayment = e => {
                   detail[0].value.companyNumber;
                 document.getElementById("clearedFor").textContent = invoiceId;
                 document.getElementById("clearedTotal").textContent =
-                  currentInvoice.value.netPrice;
-                document.getElementById("clearedPaid").textContent = amtEntered;
-                document.getElementById(
-                  "clearedTotalPaid"
-                ).textContent = newAmtPaid;
-                document.getElementById("clearedBal").textContent = newBalance;
+                  "₦ " + formatMoney(currentInvoice.value.netPrice);
+                document.getElementById("clearedPaid").textContent =
+                  "₦ " + formatMoney(amtEntered);
+                document.getElementById("clearedTotalPaid").textContent =
+                  "₦ " + formatMoney(newAmtPaid);
+                document.getElementById("clearedBal").textContent =
+                  "₦ " + formatMoney(newBalance);
                 document.getElementById("debtClearanceDate").textContent =
                   clearanceDay + "-" + clearanceMonth + "-" + clearanceYear;
                 //display success

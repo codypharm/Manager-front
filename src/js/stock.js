@@ -14,6 +14,7 @@ var sortedStock;
 var exhaustedStock;
 
 var analysisSelected;
+var batchSelected;
 var oldEditQty = 0;
 var oldEditExpDate = "";
 var oldName = "";
@@ -194,6 +195,9 @@ const removeRecord = id => {
 };
 
 const addProduct = e => {
+ if(recordedProduct == undefined){
+  var recordedProduct = []
+ }
   //add to list number
   listNumber += 1;
 
@@ -301,7 +305,7 @@ const addProduct = e => {
     //push to recorded product id
     recordedProduct.push(detail);
 
-    //// store i electron
+    //// store in electron
     store.setRecordStore(recordedProduct);
     //get last input
     let currentProduct = stockModel.getLastProduct(recordedProduct);
@@ -533,9 +537,17 @@ all stocks handler
 const handleAllStockDisplay = () => {
   //sort stock
   sortedStock = stockModel.sortStock(stock);
-
-  //display all stock
-  displayAllStock(sortedStock);
+  if (sortedStock.length > 0) {
+    //display all stock
+    displayAllStock(sortedStock);
+  } else {
+    document.getElementById("allStockList").innerHTML =
+      " <tr>" +
+      ' <td colspan="7" class="text-center">' +
+      "  <span>No record found</span>" +
+      " </td>" +
+      " </tr>";
+  }
 };
 
 //handle exhausted stock
@@ -717,11 +729,18 @@ const getProductQty = products => {
 };
 
 ///load stock details page
-const showProduct = (e, productId) => {
-  e.preventDefault();
+const showProduct = productId => {
   analysisSelected = productId;
   //load stock analysis page
   pageLoader("stockAnalysis", analyseStock);
+};
+
+//return to analysis
+const returnToAnalysis = e => {
+  //get data set of back button
+  let productId = e.target.dataset.productId;
+  //return fxn
+  showProduct(productId);
 };
 
 const analyseTop = selectedStockList => {
@@ -754,6 +773,7 @@ const analyseStock = () => {
   getStock.then(({ data, header, status }) => {
     stock = data.rows;
     let productId = analysisSelected;
+
     //get selected product
     let selectedStockList = stockModel.getSelectedStock(stock, productId);
 
@@ -787,6 +807,9 @@ const hideErrorForm = () => {
   hideGenStaticModal("errorLogContent");
 };
 
+const hideChangesDetail = () => {
+  hideGenStaticModal("changesContent");
+};
 const hideEditForm = () => {
   hideGenStaticModal("batchEditContent");
 };
@@ -884,27 +907,29 @@ const submitBatchEdit = e => {
 
           editUpdate.then(({ data, headers, status }) => {
             if (status == 201) {
-              //remove spinner
-              btn.classList.remove("spinner-border");
-              btn.classList.remove("spinner-border-sm");
-              if (hideGenStaticModal("batchEditContent")) {
-                //get stock
-                let getStock = stockModel.getStock();
-                getStock.then(({ data, header, status }) => {
-                  stock = data.rows;
+              //get stock
+              let getStock = stockModel.getStock();
+              getStock.then(({ data, header, status }) => {
+                stock = data.rows;
 
-                  //get selected product
-                  let selectedStockList = stockModel.getSelectedStock(
-                    stock,
-                    detail.prodId
-                  );
-                  //handle top section
-                  analyseTop(selectedStockList);
+                //get selected product
+                let selectedStockList = stockModel.getSelectedStock(
+                  stock,
+                  detail.prodId
+                );
+                //handle top section
+                analyseTop(selectedStockList);
 
-                  //display all batch
-                  listOutBatches(selectedStockList);
-                });
-              }
+                //display all batch
+                listOutBatches(selectedStockList);
+
+                //remove spinner
+                btn.classList.remove("spinner-border");
+                btn.classList.remove("spinner-border-sm");
+
+                //hide modal
+                hideGenStaticModal("batchEditContent");
+              });
             }
           });
         }
@@ -1041,28 +1066,27 @@ const submitProductEdit = e => {
                 //hide loading sign
                 btn.classList.remove("spinner-border");
                 btn.classList.remove("spinner-border-sm");
-                // remove modal
-                if (hideGenStaticModal("productEditContent")) {
-                  //get stock
-                  let getStock = stockModel.getStock();
-                  getStock.then(({ data, header, status }) => {
-                    stock = data.rows;
+                //get stock
+                let getStock = stockModel.getStock();
+                getStock.then(({ data, header, status }) => {
+                  stock = data.rows;
 
-                    //get selected product
-                    let selectedStockList = stockModel.getSelectedStock(
-                      stock,
-                      id
-                    );
-                    //handle top section
-                    analyseTop(selectedStockList);
+                  //get selected product
+                  let selectedStockList = stockModel.getSelectedStock(
+                    stock,
+                    id
+                  );
+                  //handle top section
+                  analyseTop(selectedStockList);
 
-                    //display all batch
-                    listOutBatches(selectedStockList);
+                  //display all batch
+                  listOutBatches(selectedStockList);
 
-                    edit = [];
-                    editClass = [];
-                  });
-                }
+                  edit = [];
+                  editClass = [];
+                  // remove modal
+                  hideGenStaticModal("productEditContent");
+                });
               });
           }
         );
@@ -1074,4 +1098,203 @@ const submitProductEdit = e => {
       hideGenStaticModal("productEditContent");
     }
   }
+};
+
+//stock checking with id
+const checkStock = () => {
+  document.getElementById("idBackBtn").dataset.productId = analysisSelected;
+  //add batch id
+  document.getElementById("stockCheckId").textContent = batchSelected;
+  //get activities
+  let activitiesGetter = stockModel.getActivities();
+  activitiesGetter.then(({ data, headers, status }) => {
+    let activities = data.rows;
+
+    //filter out matches
+    let list = stockModel.getActivityMatch(activities, batchSelected);
+    if (list != false) {
+      //list changes
+      displayStockChanges(list);
+    } else {
+      document.getElementById("stockChangesList").innerHTML =
+        " <tr>" +
+        ' <td colspan="5" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  });
+};
+
+//check batch analysis
+const checkBatch = batchId => {
+  batchSelected = batchId;
+
+  //load stock analysis page
+  pageLoader("allActivities", checkStock);
+};
+
+//view Changes
+const viewChanges = (e, rev) => {
+  //get activities
+  let activitiesGetter = stockModel.getActivities();
+  activitiesGetter.then(({ data, headers, status }) => {
+    let activities = data.rows;
+
+    //get a particular activity
+    let act = stockModel.getAct(activities, rev)[0];
+
+    //show modal
+    showGenStaticModal("changesContent");
+    //add to DOM
+    document.getElementById("changesBatchId").textContent = act.value.editedId;
+    document.getElementById("changesText").textContent = act.value.detail;
+  });
+};
+
+//delete batch from activities
+const deleteFromActivities = (batchId, btn) => {
+  //add spinner
+  btn.innerHTML =
+    '<span class="spinner-border spinner-border-sm"></span> Delete';
+  //get activities
+  let actGetter = stockModel.getActivities();
+  actGetter.then(({ data, headers, status }) => {
+    let acts = data.rows;
+
+    //get matching actvities
+    let selectedActs = stockModel.getActivityMatch(acts, batchId);
+    //delete
+    let deleted = stockModel.deleteActs(selectedActs);
+
+    deleted.then(() => {
+      //get stock
+      let getStock = stockModel.getStock();
+      getStock.then(({ data, header, status }) => {
+        stock = data.rows;
+        //check if stock remains
+        let remainingStock = stockModel.getMatch(stock, analysisSelected);
+        if (remainingStock != false) {
+          //get selected product
+          let selectedStockList = stockModel.getSelectedStock(
+            stock,
+            analysisSelected
+          );
+
+          //handle top section
+          analyseTop(selectedStockList);
+
+          //display all batch
+          listOutBatches(selectedStockList);
+        } else {
+          // go back
+          loadAllStock();
+        }
+      });
+    });
+  });
+};
+
+//delete batch
+const deleteBatch = (e, batchId) => {
+  batchSelected = batchId;
+  let btn = e.target;
+
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Ok to delete this batch and anything related to it"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      //get stock
+      let getStock = stockModel.getStock();
+      getStock.then(({ data, header, status }) => {
+        stock = data.rows;
+
+        //get the particular stock
+        let batch = stockModel.getBatch(stock, batchId)[0];
+        let id = batch.id;
+        let details = batch.value;
+        //delete stock
+        let stockDeleter = stockModel.deleteStock(id, details.rev);
+        stockDeleter.then(({ data, headers, status }) => {
+          //delete batch from activities
+          deleteFromActivities(batchId, btn);
+        });
+      });
+    }
+  });
+};
+
+//delete activities for the stock
+const deleteProductActs = async (btn, batches) => {
+  //get activities
+  let activitiesGetter = stockModel.getActivities();
+  activitiesGetter.then(({ data, headers, status }) => {
+    let activities = data.rows;
+    //loop through products
+    for (const batch of batches) {
+      let acts = stockModel.getActivitiesForBatch(
+        activities,
+        batch.value.batchId
+      );
+      if (acts.length > 0) {
+        let actsDeleter = stockModel.deleteActs(acts);
+      }
+    }
+
+    //remove spinner
+    btn.innerHTML = "Delete Product";
+    //go back
+    pageLoader("allStock", fetchAllStock);
+  });
+};
+
+//continue stock delete
+const proceedStockDelete = e => {
+  let btn = e.target;
+
+  let id = analysisSelected;
+  //show spinner
+  btn.innerHTML =
+    '<span class="spinner-border spinner-border-sm"></span> Delete Product';
+
+  //get stock
+  let getStock = stockModel.getStock();
+  getStock.then(({ data, header, status }) => {
+    stock = data.rows;
+    let thisStock = stockModel.getMatch(stock, id);
+    let deleteStock = stockModel.deleteThisProduct(thisStock);
+    deleteStock.then(() => {
+      //delete activities
+      deleteProductActs(btn, thisStock);
+    });
+  });
+};
+
+//delete product
+const deleteProduct = e => {
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Ok to delete this product and all attachments to it"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      proceedStockDelete(e);
+    }
+  });
 };

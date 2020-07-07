@@ -44,6 +44,16 @@ class Store {
     return this.store.get("records");
   }
 
+  getEditDetail() {
+    return this.store.get("editDetail");
+  }
+
+  setEditDetail(editDetail) {
+    this.store.set("editDetail", {
+      detail: editDetail
+    });
+  }
+
   setUserData(user) {
     this.store.set("loginDetails", {
       loginStatus: true,

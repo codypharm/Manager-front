@@ -14,12 +14,18 @@
       rel="stylesheet"
       href="../node_modules/bootstrap/dist/css/bootstrap.min.css"
     />
+
+    <link
+      rel="stylesheet"
+      href="../node_modules/croppie/croppie.css"
+    />
     <link rel="stylesheet" href="../src/css/styles.css" />
     <script>
       window.jQuery = window.$ = require("jquery");
     </script>
   </head>
   <body class=" setupBack">
+  
     <main></main>
   </body>
 
@@ -48,7 +54,7 @@
         </div>
 
         <div class="modal-body" id="updateStaticBody"></div>
-        <div class="modal-footer border-top-0" id="clearanceFormBtn">
+        <div class="modal-footer border-top-0 " id="clearanceFormBtn">
           <button
             type="button"
             class="btn btn-secondary btn-sm "
@@ -301,6 +307,28 @@
 
 
 
+         <!--content for changes -->
+      <div class="modal-content hide " id="changesContent">
+        <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">
+          <div class="modal-body" id="errorLogForm">
+            <h4>Batch <span id="changesBatchId"></span></h4>
+            <div class="border"></div>
+            
+            <div class="pt-1 pb-5"  id="changesText">
+              
+            </div>
+            
+            <div class="border"></div>
+          </div>
+          <div class="modal-footer border-top-0">
+           
+            <button onclick="hideChangesDetail()" class="btn btn-primary">
+              Done
+            </button>
+          </div>
+        
+      </div>
+
       <!--content for error log-->
       <div class="modal-content hide " id="errorLogContent">
         <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">
@@ -383,18 +411,53 @@
   <!-- static modal ends -->
 
   <!-- general purpose static modal ends-->
-</html>
 
+  <!-- crop image modal-->
+  <div id="uploadImageModal" class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Crop and Upload Image</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-8 text-center">
+              <div id="image_demo" style="width: 350px; margin-top:30px"></div>
+            </div>
+            <div class="col-md-4 text-center" style="padding-top: 30px">
+              <br>
+              <br>
+              <br>
+              <button class="btn btn-success crop_image">Done</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn  btn-default " data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--image upload button-->
+  <input type="file" name="upload_image" id="upload_image" class="hide" />
+</html>
+<script src="../node_modules/croppie/croppie.js"></script>
 <script src="../src/js/files.js"></script>
 <!-- boostrap js -->
 <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
 <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
 <script src="../lib/handlebar.js"></script>
 <script src="../src/js/template.js"></script>
+
+<script src="../src/jquery/custom.js"></script>
+
 <script src="./renderer.js"></script>
 <script src="../src/js/staff.js"></script>
 <script src="../src/js/stock.js"></script>
 <script src="../src/js/sales.js"></script>
 <script src="../src/js/invoice.js"></script>
 <script src="../src/js/expense.js"></script>
-<script src="../src/jquery/custom.js"></script>
+<script src="../src/js/report.js"></script>

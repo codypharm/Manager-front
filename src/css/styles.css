@@ -848,13 +848,13 @@ body {
   margin-bottom: 20px;
 }
 .viewContainer .viewLeft .viewImage {
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   border-radius: 300px;
   margin: auto;
 }
 .viewContainer .viewLeft .viewImage img {
-  border-radius: 300px;
+  border-radius: 200px;
 }
 .viewContainer .viewLeft .viewName {
   width: 100%;
@@ -1207,6 +1207,60 @@ body {
 }
 .modal-backdrop {
   background-color: transparent;
+}
+.showBox {
+  height: 120px;
+  width: 100%;
+  -webkit-box-shadow: 0px 0px 5px 3px #f0f0f0;
+  -moz-box-shadow: 0px 0px 5px 3px #f0f0f0;
+  box-shadow: 0px 0px 5px 3px #f0f0f0;
+}
+.showBox .showChild {
+  height: 50%;
+  width: 100%;
+  padding-left: 15px;
+  padding-right: 10px;
+  overflow: hidden;
+}
+.showBox .showTop {
+  line-height: 60px;
+}
+.showBox .showTop span {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding-left: 10px;
+}
+.showBox .showTop #span1 {
+  color: #9b59b6;
+}
+.showBox .showTop #span2 {
+  color: red;
+}
+.showBox .showTop #span3 {
+  color: #2980b9;
+}
+.showBox .showTop #span4 {
+  color: #00c853;
+}
+.showBox .showTop #saleVol {
+  font-size: 1.5rem;
+  color: #9b59b6;
+}
+.showBox .showTop #expVol {
+  font-size: 1.5rem;
+  color: red;
+}
+.showBox .showTop #expenVol {
+  font-size: 1.5rem;
+  color: #2980b9;
+}
+.showBox .showTop #incVol {
+  font-size: 1.5rem;
+  color: #00c853;
+}
+.showBox .showDown {
+  font-size: 1rem;
+  font-weight: 600;
 }
 @media only screen and (max-width: 1024px) {
   .pageHead {

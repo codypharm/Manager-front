@@ -9,7 +9,7 @@
         
       <button
         class="btn  btn-primary float-right mt-3"
-        onclick="showExpForm()"
+        onclick="loadAllStock()"
       >
         Back
       </button>
@@ -80,7 +80,7 @@
             <h3>Batch Breakdown</h3>
           </div>
           <div class="col text-right">
-            <div class="btn btn-sm btn-secondary">
+            <div class="btn btn-sm btn-secondary" onclick="deleteProduct(event)">
               Delete Product
             </div>
           </div>
@@ -126,7 +126,7 @@
           </button>
       </td>
       <td>
-         <button class="btn btn-sm btn-primary" >
+         <button class="btn btn-sm btn-primary" onclick="checkBatch('{{value.batchId}}')" >
             Check
         </button>
       </td>
@@ -137,7 +137,7 @@
           </button>
           </td>
           <td>
-          <button class="btn btn-sm btn-secondary">
+          <button class="btn btn-sm btn-secondary" onclick="deleteBatch(event,'{{value.batchId}}')">
             Delete
           </button>
         </td>

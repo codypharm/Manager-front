@@ -90,27 +90,30 @@ class Invoice extends Database {
       if (invoiceType == "debt") {
         //return balance > 0
         return (
-          (invoice.value.invoiceId == searchValue ||
-            invoice.value.customerName.toUpperCase() ==
-              searchValue.toUpperCase()) &&
+          (invoice.value.invoiceId.includes(searchValue) ||
+            invoice.value.customerName
+              .toUpperCase()
+              .includes(searchValue.toUpperCase())) &&
           invoice.value.transType == "credit" &&
           invoice.value.balance > 0
         );
       } else if (invoiceType == "cleared") {
         //return balance = 0
         return (
-          (invoice.value.invoiceId == searchValue ||
-            invoice.value.customerName.toUpperCase() ==
-              searchValue.toUpperCase()) &&
+          (invoice.value.invoiceId.includes(searchValue) ||
+            invoice.value.customerName
+              .toUpperCase()
+              .includes(searchValue.toUpperCase())) &&
           invoice.value.transType == "credit" &&
           invoice.value.balance == 0
         );
       } else {
         //return all credit
         return (
-          (invoice.value.invoiceId == searchValue ||
-            invoice.value.customerName.toUpperCase() ==
-              searchValue.toUpperCase()) &&
+          (invoice.value.invoiceId.includes(searchValue) ||
+            invoice.value.customerName
+              .toUpperCase()
+              .includes(searchValue.toUpperCase())) &&
           invoice.value.transType == "credit"
         );
       }

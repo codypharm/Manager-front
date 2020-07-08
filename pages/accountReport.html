@@ -152,44 +152,6 @@
                 <div class="spinner-grow text-success"></div>
               </td>
             </tr>-->
-
-            <tr>
-              <td>2022-09-02</td>
-              <td>120,000</td>
-              <td>110,000</td>
-              <td>90000</td>
-              <td>90000</td>
-              <td>1000</td>
-              <td>3% +</td>
-              <td>
-                <button
-                  type="button"
-                  class="btn btn-sm  btn-primary "
-                  onclick="viewInvoice(event,'{{value.invoiceId}}','{{value.day}}-{{value.month}}-{{value.year}}','all')"
-                >
-                  Detail
-                </button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>2022-09-02</td>
-              <td>120,000</td>
-              <td>110,000</td>
-              <td>90000</td>
-              <td>1000</td>
-              <td>90000</td>
-              <td>10% -</td>
-              <td>
-                <button
-                  type="button"
-                  class="btn btn-sm  btn-primary "
-                  onclick="viewInvoice(event,'{{value.invoiceId}}','{{value.day}}-{{value.month}}-{{value.year}}','all')"
-                >
-                  Detail
-                </button>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -197,14 +159,28 @@
   </div>
 </section>
 
-<script id="productReportList" type="text/xhandlebars-template">
+<script id="accountReportList" type="text/xhandlebars-template">
   {{#each data}}
   <tr>
-    <td>{{id}}</td>
-    <td>{{name}}</td>
-    <td>{{saleVolume}}</td>
-    <td>{{percentVolume}} %</td>
-    <td>{{percentProfit}} %</td>
+    <td>2020-09-08</td>
+    <td>{{totalNet}}</td>
+    <td>{{amtPaid}}</td>
+    <td>{{toPay}}</td>
+    <td>{{totalExp}}</td>
+    <td>{{displayBalance}}</td>
+    <td>+3%</td>
+    <td>
+      <button
+        type="button"
+        class="btn btn-sm  btn-primary "
+        data-gain="{{dailyGain}}"
+        data-gain="{{dailyCp}}"
+        data-gain="{{dailySp}}"
+        onclick=""
+      >
+        Detail
+      </button>
+    </td>
   </tr>
 
   {{/each}}

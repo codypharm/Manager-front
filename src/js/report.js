@@ -102,6 +102,124 @@ const getTotalIncome = invoices => {
   return totalIncome;
 };
 
+//sort days
+const sortDays = days => {
+  let sorted = days.sort(function(a, b) {
+    return a - b;
+  });
+  return sorted;
+};
+
+//extract sales days
+const getSalesDays = invoices => {
+  let days = [];
+  days.push(invoices[0].value.day);
+
+  invoices.forEach(invoice => {
+    let day = invoice.value.day;
+    //check if such
+    let match = days.filter(aDay => {
+      return aDay == day;
+    });
+    if (match.length == 0) {
+      days.push(day);
+    }
+  });
+
+  //sort sales days
+  return sortDays(days);
+};
+
+//vet all invoices
+const getDayInvoices = (invoices, saleDay) => {
+  let match = invoices.filter(invoice => {
+    return invoice.value.day == saleDay;
+  });
+
+  return match;
+};
+
+//get expenses for a day
+const getDayExpenses = (mainExp, day) => {
+  let match = mainExp.filter(exp => {
+    return exp.value.day == day;
+  });
+
+  return match;
+};
+
+//add up net price
+const addUpFields = invoices => {
+  let net = 0;
+  let amtPaid = 0;
+  let toPay = 0;
+  invoices.forEach(invoice => {
+    net += Number(invoice.value.netPrice);
+    amtPaid += Number(invoice.value.amtPaid);
+    toPay += Number(invoice.value.balance);
+  });
+
+  return [net, amtPaid, toPay];
+};
+
+//add up expenses for a day
+const addUpExp = dayExpenses => {
+  let totalExp = 0;
+  if (dayExpenses.length > 0) {
+    dayExpenses.forEach(expense => {
+      totalExp += Number(expense.value.amt);
+    });
+  }
+
+  return totalExp;
+};
+
+//get sales fror current day
+const getCurrentDaySales = (matchedSales, saleDay) => {
+  let match = matchedSales.filter(sale => {
+    return sale.value.day == saleDay;
+  });
+
+  return match;
+};
+
+//get matching stock values
+const getProducDetail = id => {
+  let unit;
+  stock.forEach(prod => {
+    if (prod.value.prodId == id) {
+      unit = prod.value.unit;
+    }
+  });
+
+  return [unit];
+};
+//analyse sales
+const getAccountAnalysis = sales => {
+  let dailyGain = 0;
+  let dailyCp = 0;
+  let dailySp = 0;
+  //loop through sales for a particular day
+  sales.forEach(product => {
+    let [unit] = getProducDetail(product.value.productId);
+    //get actuall unit sold
+    let unitSold = Number(product.value.qty / unit);
+    //get selling price
+    let sellingPrice = unitSold * product.value.price;
+    dailySp += sellingPrice;
+    //get average ppmu (pricePerMinUnit)
+    let averagePpmu = getAveragePpmu(product.value.productId);
+    //get cost price
+    let costPrice = averagePpmu * unitSold;
+    dailyCp += costPrice;
+    //get gain
+    let gain = sellingPrice - costPrice;
+    dailyGain += gain;
+  });
+
+  return [dailyCp, dailySp, dailyGain];
+};
+
 //proceed to sort account list
 const proceedToSortAccountList = (
   matchedSales,
@@ -113,7 +231,39 @@ const proceedToSortAccountList = (
   let expiredVolume = getExpVolume(expStock);
   let expenseAmount = getTotalExpense(mainExp);
   let totalIncome = getTotalIncome(actualInvoices);
-  console.log(totalIncome);
+
+  //extract all invoice day from invoice list
+  let salesDays = getSalesDays(actualInvoices);
+
+  //loop through array of days
+  salesDays.forEach(saleDay => {
+    //get all invoice for this day
+    let dayInvoices = getDayInvoices(actualInvoices, saleDay);
+    //get expenses for the day
+    let dayExpenses = getDayExpenses(mainExp, saleDay);
+
+    //get sales for the day
+    let currentDaySales = getCurrentDaySales(matchedSales, saleDay);
+
+    let totalExp = addUpExp(dayExpenses);
+    let [net, amtPaid, toPay] = addUpFields(dayInvoices);
+    let dispBalance = amtPaid - totalExp;
+    let [dailyCp, dailySp, dailyGain] = getAccountAnalysis(currentDaySales);
+
+    reportArray.push({
+      totalNet: net,
+      amtPaid: amtPaid,
+      toPay: toPay,
+      totalExp: totalExp,
+      displayBalance: dispBalance,
+      percPerf: dailyGain,
+      dailyGain: dailyGain,
+      dailyCp: dailyCp,
+      dailySp: dailySp
+    });
+  });
+
+  return reportArray;
 };
 
 //proceed to sort stock sales
@@ -220,6 +370,8 @@ const proceedToGetSales = (month, year, reportType) => {
             expStock,
             actualInvoices
           );
+
+          displayAccountReportList(reportList);
         });
       });
     }

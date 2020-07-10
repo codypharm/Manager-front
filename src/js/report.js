@@ -111,9 +111,9 @@ const sortDays = days => {
 };
 
 //extract sales days
-const getSalesDays = invoices => {
+const getSalesDays = (month, year) => {
   let days = [];
-  days.push(invoices[0].value.day);
+  /*days.push(invoices[0].value.day);
 
   invoices.forEach(invoice => {
     let day = invoice.value.day;
@@ -127,7 +127,13 @@ const getSalesDays = invoices => {
   });
 
   //sort sales days
-  return sortDays(days);
+  return sortDays(days);*/
+  let dayNum = new Date(year, month, 0).getDate();
+  for (i = 1; i <= dayNum; i++) {
+    days.push(i);
+  }
+
+  return days;
 };
 
 //vet all invoices
@@ -220,12 +226,24 @@ const getAccountAnalysis = sales => {
   return [dailyCp, dailySp, dailyGain];
 };
 
+//extract sales for last day of previous month
+const getSalesForLastDay = (day, month, sales) => {
+  let match = sales.filter(sale => {
+    return sale.value.day == day && sale.value.month == month;
+  });
+
+  return match;
+};
+
 //proceed to sort account list
 const proceedToSortAccountList = (
   matchedSales,
   mainExp,
   expStock,
-  actualInvoices
+  actualInvoices,
+  allInvoices,
+  month,
+  year
 ) => {
   let totalSalesVolume = getTotalSalesVolume(matchedSales);
   let expiredVolume = getExpVolume(expStock);
@@ -233,10 +251,42 @@ const proceedToSortAccountList = (
   let totalIncome = getTotalIncome(actualInvoices);
 
   //extract all invoice day from invoice list
-  let salesDays = getSalesDays(actualInvoices);
+  let salesDays = getSalesDays(month, year);
+
+  //declare value for daily gain difference calculation
+  let todayGain = 0;
+  let yesterdayGain = 0;
+  let percDiff = 0;
+  let percOutCome;
 
   //loop through array of days
   salesDays.forEach(saleDay => {
+    if (saleDay == 1) {
+      //get previous month
+
+      let myCurrentDate = `${month}  ${saleDay} ${year}`;
+      let makeDate = new Date(myCurrentDate);
+      makeDate.setMonth(makeDate.getMonth() - 1);
+      let lastMonth = makeDate.getMonth();
+      let yearForMonth = makeDate.getFullYear();
+      let lastDay = new Date(yearForMonth, lastMonth + 1, 0);
+
+      //get sales for last day
+      let salesForLastDay = getSalesForLastDay(
+        lastDay.getDate(),
+        lastMonth + 1,
+        sales
+      );
+
+      //get analysis for last day of last month
+      let [lastDailyCp, lastDailySp, lastDailyGain] = getAccountAnalysis(
+        salesForLastDay
+      );
+
+      //assing this as yesterdays gain
+      yesterdayGain = lastDailyGain;
+      console.log(yesterdayGain);
+    }
     //get all invoice for this day
     let dayInvoices = getDayInvoices(actualInvoices, saleDay);
     //get expenses for the day
@@ -249,8 +299,29 @@ const proceedToSortAccountList = (
     let [net, amtPaid, toPay] = addUpFields(dayInvoices);
     let dispBalance = amtPaid - totalExp;
     let [dailyCp, dailySp, dailyGain] = getAccountAnalysis(currentDaySales);
+    todayGain = dailyGain;
+    gainDiff = todayGain - yesterdayGain;
+    percDiff = Number((gainDiff / yesterdayGain) * 100).toFixed(1);
+    if (isFinite(percDiff)) {
+      if (percDiff >= 0) {
+        percOutCome = "+" + percDiff;
+      } else {
+        percOutCome = percDiff;
+      }
+    } else {
+      if (gainDiff >= 0) {
+        percOutCome = "+" + gainDiff;
+      } else {
+        percOutCome = "---";
+      }
+    }
 
+    console.log(saleDay, dailyGain, gainDiff, percOutCome);
+    yesterdayGain = todayGain;
     reportArray.push({
+      day: saleDay,
+      month: month,
+      year: year,
       totalNet: net,
       amtPaid: amtPaid,
       toPay: toPay,
@@ -259,6 +330,7 @@ const proceedToSortAccountList = (
       percPerf: dailyGain,
       dailyGain: dailyGain,
       dailyCp: dailyCp,
+      percOutCome: percOutCome,
       dailySp: dailySp
     });
   });
@@ -368,7 +440,10 @@ const proceedToGetSales = (month, year, reportType) => {
             matchedSales,
             mainExp,
             expStock,
-            actualInvoices
+            actualInvoices,
+            invoices,
+            month,
+            year
           );
 
           displayAccountReportList(reportList);

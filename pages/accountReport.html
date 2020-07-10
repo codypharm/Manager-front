@@ -162,13 +162,13 @@
 <script id="accountReportList" type="text/xhandlebars-template">
   {{#each data}}
   <tr>
-    <td>2020-09-08</td>
+    <td>{{day}}-{{month}}-{{year}}</td>
     <td>{{totalNet}}</td>
     <td>{{amtPaid}}</td>
     <td>{{toPay}}</td>
     <td>{{totalExp}}</td>
     <td>{{displayBalance}}</td>
-    <td>+3%</td>
+    <td>{{percOutCome}} %</td>
     <td>
       <button
         type="button"

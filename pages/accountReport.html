@@ -7,7 +7,7 @@
   </div>
 
   <div class="sectionActions">
-    <form>
+    <!-- <form>
       <div class="otherSearchContainer ">
         <div class="search">
           <input
@@ -17,7 +17,7 @@
           />
         </div>
       </div>
-    </form>
+    </form>-->
   </div>
 
   <div style="clear:both"></div>
@@ -28,7 +28,7 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="saleVol"></i>
-        <span id="span1">+1435</span>
+        <span id="span1">0</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
@@ -41,7 +41,7 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="expVol"></i>
-        <span id="span2">-1000</span>
+        <span id="span2">0</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
@@ -55,7 +55,7 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="expenVol"></i>
-        <span id="span3">-1,000,000</span>
+        <span id="span3">0</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
@@ -69,7 +69,7 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="incVol"></i>
-        <span id="span4">+1,000,000</span>
+        <span id="span4">0</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
@@ -108,7 +108,7 @@
             class="btn btn-primary btn-sm mt-1"
             id="processBtn"
             disabled
-            onclick="loadProductReportList(event)"
+            onclick="loadAccountReportList(event)"
           >
             Process
           </button>
@@ -124,14 +124,14 @@
       <div class="float-left pt-1">
         Account Report For <strong><span id="dispDate"></span></strong>
       </div>
-      <div class="float-right cardHeadSearchBox">
-        <input
+      <!--<div class="float-right cardHeadSearchBox">
+         <input
           class=" cardHeadSearch"
           type="text"
           placeholder="search invoices..."
           oninput="searchProductReport(event)"
         />
-      </div>
+      </div>-->
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -147,11 +147,11 @@
             <th>Action</th>
           </thead>
           <tbody id="accountList">
-            <!--<tr>
+            <tr>
               <td colspan="8" class="text-center">
                 <div class="spinner-grow text-success"></div>
               </td>
-            </tr>-->
+            </tr>
           </tbody>
         </table>
       </div>
@@ -168,15 +168,27 @@
     <td>{{toPay}}</td>
     <td>{{totalExp}}</td>
     <td>{{displayBalance}}</td>
-    <td>{{percOutCome}} %</td>
+    <td style="color:{{color}}">{{percOutCome}} %</td>
     <td>
       <button
         type="button"
         class="btn btn-sm  btn-primary "
         data-gain="{{dailyGain}}"
-        data-gain="{{dailyCp}}"
-        data-gain="{{dailySp}}"
-        onclick=""
+        data-cp="{{dailyCp}}"
+        data-sp="{{dailySp}}"
+        data-presp="{{previousDaySp}}"
+        data-precp="{{previousDayCp}}"
+        data-pregain="{{previousDayGain}}"
+        data-yesterday="{{previousDay}}"
+        data-lastMonth ="{{previousMonth}}"
+        data-lastYear ="{{previousYear}}"
+        data-day="{{day}}"
+        data-month="{{month}}"
+        data-percResult="{{percOutCome}}"
+        data-year="{{year}}"
+        data-color="{{color}}"
+
+        onclick="loadGainAnalysis(event)"
       >
         Detail
       </button>

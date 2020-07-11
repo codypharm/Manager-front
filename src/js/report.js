@@ -250,6 +250,15 @@ const proceedToSortAccountList = (
   let expenseAmount = getTotalExpense(mainExp);
   let totalIncome = getTotalIncome(actualInvoices);
 
+  //append to DOM
+  document.getElementById("span1").textContent =
+    "+" + formatMoney(totalSalesVolume);
+  document.getElementById("span2").textContent =
+    "+" + formatMoney(expiredVolume);
+  document.getElementById("span3").textContent =
+    "+" + formatMoney(expenseAmount);
+  document.getElementById("span4").textContent = "+" + formatMoney(totalIncome);
+
   //extract all invoice day from invoice list
   let salesDays = getSalesDays(month, year);
 
@@ -257,7 +266,14 @@ const proceedToSortAccountList = (
   let todayGain = 0;
   let yesterdayGain = 0;
   let percDiff = 0;
-  let percOutCome;
+  let color;
+  let previousDayCp;
+  let previousDaySp = 0;
+  let previousDayGain = 0;
+  let percOutCome = 0;
+  let previousDay;
+  let previousMonth;
+  let previousYear;
 
   //loop through array of days
   salesDays.forEach(saleDay => {
@@ -285,7 +301,13 @@ const proceedToSortAccountList = (
 
       //assing this as yesterdays gain
       yesterdayGain = lastDailyGain;
-      console.log(yesterdayGain);
+      previousDayGain = lastDailyGain;
+      previousDaySp = lastDailySp;
+      previousDayCp = lastDailyCp;
+      previousDay = lastDay.getDate();
+      previousMonth = lastMonth + 1;
+      previousYear = yearForMonth;
+      //console.log(yesterdayGain);
     }
     //get all invoice for this day
     let dayInvoices = getDayInvoices(actualInvoices, saleDay);
@@ -305,23 +327,33 @@ const proceedToSortAccountList = (
     if (isFinite(percDiff)) {
       if (percDiff >= 0) {
         percOutCome = "+" + percDiff;
+        color = "green";
       } else {
         percOutCome = percDiff;
+        color = "red";
       }
     } else {
       if (gainDiff >= 0) {
         percOutCome = "+" + gainDiff;
+        color = "green";
       } else {
         percOutCome = "---";
       }
     }
 
-    console.log(saleDay, dailyGain, gainDiff, percOutCome);
+    //console.log(saleDay, dailyGain, gainDiff, percOutCome);
+
     yesterdayGain = todayGain;
     reportArray.push({
       day: saleDay,
       month: month,
       year: year,
+      previousDay: previousDay,
+      previousMonth: previousMonth,
+      previousYear: previousYear,
+      previousDayCp: previousDayCp,
+      previousDaySp: previousDaySp,
+      previousDayGain: previousDayGain,
       totalNet: net,
       amtPaid: amtPaid,
       toPay: toPay,
@@ -331,8 +363,17 @@ const proceedToSortAccountList = (
       dailyGain: dailyGain,
       dailyCp: dailyCp,
       percOutCome: percOutCome,
-      dailySp: dailySp
+      dailySp: dailySp,
+      color: color
     });
+
+    //assign todays detail as previous day before looping
+    previousDayCp = dailyCp;
+    previousDaySp = dailySp;
+    previousDayGain = dailyGain;
+    previousDay = saleDay;
+    previousMonth = month;
+    previousYear = year;
   });
 
   return reportArray;
@@ -341,6 +382,7 @@ const proceedToSortAccountList = (
 //proceed to sort stock sales
 const proceedToSortStockSales = matchedSales => {
   let sortedStock = reportModel.sortStock(stock);
+
   let totalSalesVolume = getTotalSalesVolume(matchedSales);
   let totalGain = getTotalProfit(matchedSales);
 
@@ -408,6 +450,12 @@ const proceedToGetSales = (month, year, reportType) => {
         "  <span>No record found</span>" +
         " </td>" +
         " </tr>";
+
+      //append to DOM
+      document.getElementById("span1").textContent = "+" + formatMoney(0);
+      document.getElementById("span2").textContent = "+" + formatMoney(0);
+      document.getElementById("span3").textContent = "+" + formatMoney(0);
+      document.getElementById("span4").textContent = "+" + formatMoney(0);
     }
     searchArray = [];
   } else {
@@ -415,6 +463,9 @@ const proceedToGetSales = (month, year, reportType) => {
       //proceed to sort stock sales
       let reportList = proceedToSortStockSales(matchedSales);
       displayProductReportList(reportList);
+
+      //empty list
+      reportArray = [];
     } else {
       //get expenses for this month
       let expenses = reportModel.getExpenses();
@@ -447,11 +498,12 @@ const proceedToGetSales = (month, year, reportType) => {
           );
 
           displayAccountReportList(reportList);
+
+          //empty list
+          reportArray = [];
         });
       });
     }
-    //empty list
-    reportArray = [];
   }
 };
 
@@ -502,7 +554,28 @@ const loadProductReportList = e => {
   document.getElementById("dispDate").textContent = `${month}-${year}`;
 
   //get all product report for selected date
-  proceedToGetSales(month, year);
+  proceedToGetSales(month, year, "product");
+};
+
+//load account list for entered date
+
+const loadAccountReportList = e => {
+  e.preventDefault();
+
+  document.getElementById("accountList").innerHTML =
+    "<tr>" +
+    '<td colspan="8" class="text-center" >' +
+    '<div class="spinner-grow text-success"></div>' +
+    "</td>" +
+    "</tr>";
+
+  let month = document.getElementById("acctReportMonth").value;
+  let year = document.getElementById("acctReportYear").value;
+  //display date
+  document.getElementById("dispDate").textContent = `${month}-${year}`;
+
+  //get all product report for selected date
+  proceedToGetSales(month, year, "account");
 };
 
 //search product report
@@ -558,4 +631,52 @@ const listAccountReport = () => {
       document.getElementById("processBtn").disabled = false;
     });
   });
+};
+
+///button to load each gain analysis
+const loadGainAnalysis = e => {
+  if (showGenStaticModal("gainAnalysisContent")) {
+    let btn = e.target.dataset;
+    //extract details
+    let dailyGain = btn.gain;
+    let dailyCp = btn.cp;
+    let dailySp = btn.sp;
+    let preSp = btn.presp;
+    let preCp = btn.precp;
+    let preGain = btn.pregain;
+    let yesterday = btn.yesterday;
+    let lastMonth = btn.lastmonth;
+    let lastYear = btn.lastyear;
+    let day = btn.day;
+    let month = btn.month;
+    let year = btn.year;
+    let perc = btn.percresult;
+    let color = btn.color;
+
+    let result =
+      ` <tr> <td>${yesterday}-${lastMonth}-${lastYear}</td>` +
+      `<td>${preCp}</td>` +
+      `<td>${preSp}</td>` +
+      `<td>${preGain}</td>` +
+      `</tr>` +
+      `<tr>` +
+      `<td>${day}-${month}-${year}</td>` +
+      `<td>${dailyCp}</td>` +
+      `<td>${dailySp}</td>` +
+      `<td>${dailyGain}</td>` +
+      `</tr>`;
+
+    //append to DOM
+    document.getElementById(
+      "currentDate"
+    ).textContent = `${day}-${month}-${year}`;
+    document.getElementById("gainContent").innerHTML = result;
+    document.getElementById("percOutCome").textContent = perc + " %";
+    document.getElementById("percOutCome").style.color = color;
+  }
+};
+
+//hide gain gainAnalysisContent
+const hideGainAnalysis = () => {
+  hideGenStaticModal("gainAnalysisContent");
 };

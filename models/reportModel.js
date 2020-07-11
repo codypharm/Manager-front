@@ -116,10 +116,15 @@ class reportModel extends Database {
 
   getMonthExpiredStock(stock, month, year) {
     let expProducts = [];
+
     stock.forEach(product => {
       if (product.value.expDate.length > 0) {
         let expDateArray = product.value.expDate.split("-");
-        if (expDateArray[0] == year && expDateArray[1] <= month) {
+
+        if (
+          Number(expDateArray[0]) == Number(year) &&
+          Number(expDateArray[1]) == Number(month)
+        ) {
           expProducts.push(product);
         }
       }

@@ -211,7 +211,8 @@ const getAccountAnalysis = sales => {
     //get actuall unit sold
     let unitSold = Number(product.value.qty / unit);
     //get selling price
-    let sellingPrice = unitSold * product.value.price;
+    //let sellingPrice = unitSold * product.value.price;
+    let sellingPrice = product.value.price;
     dailySp += sellingPrice;
     //get average ppmu (pricePerMinUnit)
     let averagePpmu = getAveragePpmu(product.value.productId);
@@ -399,6 +400,7 @@ const proceedToSortStockSales = matchedSales => {
       let unitSold = Number(saleVolume / product.value.unit);
       //selling price for this unit sold
       let sellingPrice = unitSold * product.value.price;
+
       //get average ppmu (pricePerMinUnit)
       let averagePpmu = getAveragePpmu(product.value.prodId);
       //cost price for sold unit
@@ -655,15 +657,15 @@ const loadGainAnalysis = e => {
 
     let result =
       ` <tr> <td>${yesterday}-${lastMonth}-${lastYear}</td>` +
-      `<td>${preCp}</td>` +
-      `<td>${preSp}</td>` +
-      `<td>${preGain}</td>` +
+      `<td>${formatMoney(preCp)}</td>` +
+      `<td>${formatMoney(preSp)}</td>` +
+      `<td>${formatMoney(preGain)}</td>` +
       `</tr>` +
       `<tr>` +
       `<td>${day}-${month}-${year}</td>` +
-      `<td>${dailyCp}</td>` +
-      `<td>${dailySp}</td>` +
-      `<td>${dailyGain}</td>` +
+      `<td>${formatMoney(dailyCp)}</td>` +
+      `<td>${formatMoney(dailySp)}</td>` +
+      `<td>${formatMoney(dailyGain)}</td>` +
       `</tr>`;
 
     //append to DOM

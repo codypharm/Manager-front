@@ -428,7 +428,7 @@ db.getSetup().then(({ data }) => {
         appendUserDetails();
         //load dashboard
         //load work page
-        pageLoader("attendance");
+        pageLoader("attendance", listAttendance);
       });
     }
   }
@@ -705,7 +705,7 @@ const loadAttendance = e => {
   selectionRemover();
   addClass(attendance, "selected");
   addClass(subMenu3, "selectedDropper");
-  pageLoader("attendance");
+  pageLoader("attendance", listAttendance);
 };
 
 //staff add

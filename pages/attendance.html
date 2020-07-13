@@ -3,21 +3,19 @@
     <i class="fas fa-users"></i>
   </div>
   <div class="sectionHeader">
-    <h2>Staff Register</h2>
+    <h2>Record</h2>
   </div>
 
-  <div>
-    <!--<button
-      class="btn btn-sm btn-warning float-right mt-3 ml-3"
-      style="color:#fff"
-      onclick=""
-    >
-      Exit
-    </button>-->
-    <button class="btn btn-sm btn-success float-right mt-3" onclick="">
-      Record
-    </button>
+  <div class="sectionActions">
+    <form>
+      <div class="searchContainer">
+        <div class="search">
+          <input type="text" placeholder="search Staff..." oninput="searchAllAttendance(event)" />
+        </div>
+      </div>
+    </form>
   </div>
+</div>
 
   <div style="clear:both"></div>
 </div>
@@ -32,8 +30,17 @@
           <input
             type="text"
             class="form-control text-center"
+            placeholder="DD"
+            id="attendanceDay"
+          />
+        </div>
+
+        <div class="col">
+          <input
+            type="text"
+            class="form-control text-center"
             placeholder="MM"
-            id="acctReportMonth"
+            id="attendanceMonth"
           />
         </div>
 
@@ -42,7 +49,7 @@
             type="text"
             class="form-control text-center"
             placeholder="YYYY"
-            id="acctReportYear"
+            id="attendanceYear"
           />
         </div>
         <div class="col text-center">
@@ -50,7 +57,7 @@
             class="btn btn-primary btn-sm mt-1"
             id="processBtn"
             disabled
-            onclick="loadAccountReportList(event)"
+            onclick="processAttendanceList(event)"
           >
             Process
           </button>
@@ -59,6 +66,17 @@
     </form>
   </div>
 </section>
+
+<div class="text-center mt-3">
+  <button
+    href="#"
+    class="btn btn-sm btn-success "
+    style="width: 150px"
+    onclick="recordAttendance(event)"
+  >
+    Record
+  </button>
+</div>
 
 <section class="row  m-auto pt-4">
   <div class="card card-default w-100">
@@ -84,31 +102,11 @@
             <th>Arrival Time</th>
             <th>Exit Time</th>
           </thead>
-          <tbody id="accountList">
-            <!--<tr>
+          <tbody id="attendanceDispList">
+            <tr>
               <td colspan="4" class="text-center">
                 <div class="spinner-grow text-success"></div>
               </td>
-            </tr>-->
-            <tr>
-              <td>STF101</td>
-              <td>Ikeji Chukwunonso</td>
-              <td>13:30</td>
-              <td>12:00</td>
-            </tr>
-
-            <tr>
-              <td>STF101</td>
-              <td>Ikeji Chukwunonso</td>
-              <td>13:30</td>
-              <td>12:00</td>
-            </tr>
-
-            <tr>
-              <td>STF101</td>
-              <td>Ikeji Chukwunonso</td>
-              <td>13:30</td>
-              <td>12:00</td>
             </tr>
           </tbody>
         </table>
@@ -117,41 +115,17 @@
   </div>
 </section>
 
-<script id="accountReportList" type="text/xhandlebars-template">
+<script id="attendanceList" type="text/xhandlebars-template">
   {{#each data}}
   <tr>
-    <td>{{day}}-{{month}}-{{year}}</td>
-    <td>{{totalNet}}</td>
-    <td>{{amtPaid}}</td>
-    <td>{{toPay}}</td>
-    <td>{{totalExp}}</td>
-    <td>{{displayBalance}}</td>
-    <td style="color:{{color}}">{{percOutCome}} %</td>
-    <td>
-      <button
-        type="button"
-        class="btn btn-sm  btn-primary "
-        data-gain="{{dailyGain}}"
-        data-cp="{{dailyCp}}"
-        data-sp="{{dailySp}}"
-        data-presp="{{previousDaySp}}"
-        data-precp="{{previousDayCp}}"
-        data-pregain="{{previousDayGain}}"
-        data-yesterday="{{previousDay}}"
-        data-lastMonth ="{{previousMonth}}"
-        data-lastYear ="{{previousYear}}"
-        data-day="{{day}}"
-        data-month="{{month}}"
-        data-percResult="{{percOutCome}}"
-        data-year="{{year}}"
-        data-color="{{color}}"
 
-        onclick="loadGainAnalysis(event)"
-      >
-        Detail
-      </button>
+    <td>{{value.staffId}}</td>
+    <td>{{value.staffName}}</td>
+    <td>{{value.arrivalTime}}</td>
+    <td>
+  <button class="btn btn-sm btn-danger" style="width:80px">Exit</button>
     </td>
-  </tr>
+
 
   {{/each}}
 </script>

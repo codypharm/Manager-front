@@ -335,7 +335,9 @@
             <div class="modal-body" id="attendanceForm">
               <h4>Attendance for <span id="attendanceDate"></span></h4>
               <div class="border"></div>
-              
+
+              <div class="alert alert-danger mt-2" id="attendanceAlert"></div>
+              <div class="alert alert-success mt-2" id="attendanceSuc">Attendance recorded</div>
               <div class="pt-1 pb-5"  id="">
                 <div class="form-group">
                   <label for="attendanceId"></label>
@@ -346,8 +348,12 @@
               <div class="border"></div>
             </div>
             <div class="modal-footer border-top-0">
-             
-              <button onclick="hideChangesDetail()" class="btn btn-primary">
+              <button onclick="hideAttendance(event)" class="btn btn-secondary">
+                
+                Cancel
+              </button>
+              <button onclick="submitAttendance(event)" class="btn btn-primary">
+                <span id="subAttandanceLoader"></span>
                 Done
               </button>
             </div>

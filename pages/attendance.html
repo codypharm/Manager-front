@@ -122,8 +122,10 @@
     <td>{{value.staffId}}</td>
     <td>{{value.staffName}}</td>
     <td>{{value.arrivalTime}}</td>
-    <td>
-  <button class="btn btn-sm btn-danger" style="width:80px">Exit</button>
+    <td data-id="{{value.staffId}}">
+     
+    <button class="btn btn-sm btn-danger  {{exitButton value.exitTime}}"  data-id="{{value.staffId}}" style="width:80px" onclick="exitStaff(event)">Exit</button>
+    <span class="{{exitDisplay value.exitTime}}">{{value.exitTime}}</span>
     </td>
 
 

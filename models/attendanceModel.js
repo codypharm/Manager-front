@@ -81,6 +81,23 @@ class attendanceModel extends Database {
     }
   }
 
+  getThisAttendance(attendanceRecord, day, month, year, id) {
+    let match = attendanceRecord.filter(record => {
+      return (
+        record.value.day == day &&
+        record.value.month == month &&
+        record.value.year == year &&
+        record.value.staffId.toUpperCase() == id.toUpperCase()
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
   getThisUser(staffData, valueId) {
     let match = staffData.filter(data => {
       return data.value.staffId.toUpperCase() == valueId.toUpperCase();
@@ -97,12 +114,35 @@ class attendanceModel extends Database {
       staffId: detail.value.staffId.toUpperCase(),
       staffName: detail.value.fname + " " + detail.value.lname,
       arrivalTime: date.getHours() + ":" + date.getMinutes(),
-      exitTime: "No Exit yet",
+      exitTime: "",
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear(),
-      recorder: loginDetail.fname + " " + loginDetail.lname,
-      recorderEmail: loginDetail.email
+      arrivalRecorder: loginDetail.fname + " " + loginDetail.lname,
+      arrivalRecorderEmail: loginDetail.email,
+      exitRecorder: "",
+      exitRecorderEmail: ""
+    });
+  }
+
+  //update attendance
+  updateAttendance(data) {
+    let date = new Date();
+    let loginDetail = store.getLoginDetail();
+    return this.couch.update("attendance", {
+      _id: data.id,
+      _rev: data.value.rev,
+      staffId: data.value.staffId,
+      staffName: data.value.staffName,
+      arrivalTime: data.value.arrivalTime,
+      exitTime: date.getHours() + ":" + date.getMinutes(),
+      day: data.value.day,
+      month: data.value.month,
+      year: data.value.year,
+      arrivalRecorder: data.value.arrivalRecorder,
+      arrivalRecorderEmail: data.value.arrivalRecorderEmail,
+      exitRecorder: loginDetail.fname + " " + loginDetail.lname,
+      exitRecorderEmail: loginDetail.email
     });
   }
 }

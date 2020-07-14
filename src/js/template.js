@@ -487,6 +487,21 @@ const displayAttendanceList = list => {
     data: list
   };
 
+  //reverse date
+  Handlebars.registerHelper("exitButton", exitTime => {
+    if (exitTime != "") {
+      //hide button
+      return "hide";
+    }
+  });
+
+  Handlebars.registerHelper("exitDisplay", exitTime => {
+    if (exitTime == "") {
+      //hide span
+      return "hide";
+    }
+  });
+
   //get template
   let template = document.getElementById("attendanceList").innerHTML;
   //compile template with handlebar

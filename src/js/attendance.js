@@ -200,3 +200,58 @@ const hideAttendance = e => {
   //HIDE modal
   hideGenStaticModal("attendanceContent");
 };
+
+//exit staff
+const exitStaff = e => {
+  let id = e.target.dataset.id;
+
+  //get date
+  let day = document.getElementById("attendanceDay").value;
+  let month = document.getElementById("attendanceMonth").value;
+  let year = document.getElementById("attendanceYear").value;
+
+  let date = new Date();
+
+  let currDay = date.getDate();
+  let currMonth = date.getMonth() + 1;
+
+  let currYear = date.getFullYear();
+
+  //check if we are in the current day
+  if (currDay == day && currMonth == month && currYear == year) {
+    let data = attendanceModel.getThisAttendance(
+      attendanceRecord,
+      day,
+      month,
+      year,
+      id
+    )[0];
+
+    //get window object
+    const window = BrowserWindow.getFocusedWindow();
+    //show dialog
+    let resp = dialog.showMessageBox(window, {
+      title: "Vemon",
+      buttons: ["Yes", "Cancel"],
+      type: "info",
+      message: "Click Okay to exit"
+    });
+
+    //check if response is yes
+    resp.then((response, checkboxChecked) => {
+      if (response.response == 0) {
+        //update attendance
+        let attendanceUpdater = attendanceModel.updateAttendance(data);
+        attendanceUpdater.then(({ data, status }) => {
+          if (status == 201) {
+            //go back and show list
+            listAttendance();
+          }
+        });
+      }
+    });
+  } else {
+    //show error message
+    showModal("You can no longer exit from this date");
+  }
+};

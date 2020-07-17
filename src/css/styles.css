@@ -1260,9 +1260,47 @@ body {
   font-size: 1.5rem;
   color: #00c853;
 }
+.showBox .showTop #span5 {
+  color: #2980b9;
+}
+.showBox .showTop #stockVol {
+  font-size: 1.5rem;
+  color: #2980b9;
+}
+.showBox .showTop #span6 {
+  color: #0e6251;
+}
+.showBox .showTop #invVol {
+  font-size: 1.5rem;
+  color: #0e6251;
+}
+.showBox .showTop #span7 {
+  color: #cc6633;
+}
+.showBox .showTop #staffVol {
+  font-size: 1.5rem;
+  color: #cc6633;
+}
+.showBox .showTop #span8 {
+  color: #cc0033;
+}
+.showBox .showTop #cusVol {
+  font-size: 1.5rem;
+  color: #cc0033;
+}
 .showBox .showDown {
   font-size: 1rem;
   font-weight: 600;
+}
+.verticalTable {
+  max-height: 300px;
+  overflow: auto;
+  display: inline-block;
+}
+.boardBearer {
+  -webkit-box-shadow: 0px 0px 5px 3px #f0f0f0;
+  -moz-box-shadow: 0px 0px 5px 3px #f0f0f0;
+  box-shadow: 0px 0px 5px 3px #f0f0f0;
 }
 @media only screen and (max-width: 1024px) {
   .pageHead {

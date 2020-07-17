@@ -428,7 +428,7 @@ db.getSetup().then(({ data }) => {
         appendUserDetails();
         //load dashboard
         //load work page
-        pageLoader("attendance", listAttendance);
+        pageLoader("dashboard", loadUpdashboard);
       });
     }
   }
@@ -483,7 +483,7 @@ const processLogin = e => {
                   console.log(err);
                 }
                 document.getElementsByTagName("main")[0].innerHTML = data;
-                pageLoader("dashboard");
+                pageLoader("dashboard", loadUpdashboard);
                 document
                   .getElementsByTagName("body")[0]
                   .classList.remove("setupBack");
@@ -584,7 +584,7 @@ const loadDashboard = e => {
   selectionRemover();
   addClass(dashboard, "selected");
 
-  pageLoader("dashboard");
+  pageLoader("dashboard", loadUpdashboard);
 };
 
 //all sales

@@ -3,6 +3,7 @@
 
 // validate comes from renderer process
 //require files
+const DashboardModel = require("../models/dashboardModel");
 const AttendanceModel = require("../models/attendanceModel");
 const ReportModel = require("../models/reportModel");
 const ExpenseModel = require("../models/expenseModel");
@@ -33,3 +34,4 @@ const invoiceModel = new InvoiceModel();
 const expenseModel = new ExpenseModel();
 const reportModel = new ReportModel();
 const attendanceModel = new AttendanceModel();
+const dashboardModel = new DashboardModel();

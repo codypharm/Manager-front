@@ -7,7 +7,6 @@ const moment = require("moment");
 class dashboardModel extends Database {
   constructor() {
     super();
-    console.log("helko");
   }
 
   generateId() {
@@ -42,6 +41,74 @@ class dashboardModel extends Database {
   getAllInvoices() {
     let viewUrl = this.viewUrl.invoices;
     return this.couch.get("invoice", viewUrl);
+  }
+
+  checkSortedArray(sortedArray, product) {
+    let match = sortedArray.filter(item => {
+      return item.value.prodId == product.value.prodId;
+    });
+    if (match.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  sortStock(stock) {
+    let sortedArray = [];
+
+    //loop through stock
+    stock.forEach(product => {
+      //loop through sorted array
+
+      if (sortedArray.length > 0) {
+        //check if in array
+        sortedArray.forEach(item => {
+          //if match is found
+          if (item.value.prodId == product.value.prodId) {
+            //add up
+            item.value.qty = Number(item.value.qty) + Number(product.value.qty);
+          } else {
+            //check if object is already in sorted array
+            let condition = this.checkSortedArray(sortedArray, product);
+            //check if not in sorted array
+            if (!condition) {
+              sortedArray.push(product);
+            }
+          }
+        });
+      } else {
+        sortedArray.push(product);
+      }
+    });
+
+    return sortedArray;
+  }
+
+  diminishingStock(sortedStock, stockLimit) {
+    let match = sortedStock.filter(item => {
+      return Number(item.value.qty) <= Number(stockLimit);
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  //works with exhausting stock based on stock limit
+  getExhaustedStock(stock) {
+    //get sorted stock
+    let sortedStock = this.sortStock(stock);
+    //get stock limit
+    let { detail } = store.getSetupDetail();
+    if (detail != undefined) {
+      let stockLimit = 10; // detail[0].value.stockLimit;
+
+      //get stocks that have reached limit
+      return this.diminishingStock(sortedStock, stockLimit);
+    }
   }
 
   /*

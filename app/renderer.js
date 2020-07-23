@@ -525,6 +525,16 @@ const drop = e => {
     .classList.toggle("hide");
 };
 
+//hide menu if document is clicked
+document.addEventListener("click", e => {
+  let menu = document.getElementsByClassName("userDrop")[0];
+  if (e.target.className != "rightMenu" && e.target.className != "rightIcons") {
+    if (!menu.classList.contains("hide")) {
+      menu.classList.add("hide");
+    }
+  }
+});
+
 //menu drop settings
 const dropSales = e => {
   let sub = document.getElementsByClassName("subMenu1")[0];

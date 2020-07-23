@@ -309,10 +309,22 @@ body {
   right: 20px;
   top: 60px;
   width: 150px;
-  height: 100px;
+  height: auto;
   z-index: 10000;
   border-radius: 5px;
   background-color: #fff;
+  -webkit-box-shadow: 0px 0px 5px 3px #f0f0f0;
+  -moz-box-shadow: 0px 0px 5px 3px #f0f0f0;
+  box-shadow: 0px 0px 5px 3px #f0f0f0;
+}
+.userDrop ul li:hover {
+  background-color: #00c853;
+}
+.userDrop ul li:hover a {
+  color: #fff;
+}
+.userDrop ul li a {
+  color: #00c853;
 }
 .userDrop::after {
   content: "";
@@ -1301,6 +1313,9 @@ body {
   -webkit-box-shadow: 0px 0px 5px 3px #f0f0f0;
   -moz-box-shadow: 0px 0px 5px 3px #f0f0f0;
   box-shadow: 0px 0px 5px 3px #f0f0f0;
+}
+.paddpu {
+  padding: 20px 20px 20px 20px;
 }
 @media only screen and (max-width: 1024px) {
   .pageHead {

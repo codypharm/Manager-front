@@ -515,3 +515,41 @@ const displayAttendanceList = list => {
     "attendanceDispList"
   ).innerHTML = myhtml);
 };
+
+//display all low stock
+const displayLowStock = list => {
+  //assing array to ab object property
+  let newObj = {
+    data: list
+  };
+
+  //get template
+  let template = document.getElementById("lowStockBox").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById("lowStockList").innerHTML = myhtml);
+};
+
+//display all debt list on dashboard
+const displayDashDebts = list => {
+  //assing array to ab object property
+  let newObj = {
+    data: list
+  };
+
+  //get template
+  let template = document.getElementById("dashDebtBox").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById("dashDebtList").innerHTML = myhtml);
+};

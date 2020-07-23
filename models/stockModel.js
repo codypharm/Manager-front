@@ -334,6 +334,7 @@ class stockModel extends Database {
     }
   }
 
+  //works with exhausting stock based on stock limit
   getExhaustedStock(stock) {
     //get sorted stock
     let sortedStock = this.sortStock(stock);
@@ -359,6 +360,7 @@ class stockModel extends Database {
     let { detail } = store.getSetupDetail();
     if (detail != undefined) {
       let dateLimit = detail[0].value.dateLimit;
+      console.log(dateLimit);
       let selectedStock = stock.filter(item => {
         if (item.value.expDate != "") {
           return (

@@ -359,13 +359,30 @@ body {
 
 .userDrop {
   position: absolute;
+
   right: 20px;
   top: 60px;
   width: 150px;
-  height: 100px;
+  height: auto;
   z-index: 10000;
   border-radius: 5px;
   background-color: #fff;
+  -webkit-box-shadow: 0px 0px 5px 3px rgba(240, 240, 240, 1);
+  -moz-box-shadow: 0px 0px 5px 3px rgba(240, 240, 240, 1);
+  box-shadow: 0px 0px 5px 3px rgba(240, 240, 240, 1);
+  ul {
+    li {
+      &:hover {
+        background-color: @primary-color;
+        a {
+          color: #fff;
+        }
+      }
+      a {
+        color: @primary-color;
+      }
+    }
+  }
 }
 
 .userDrop::after {
@@ -1512,6 +1529,10 @@ body {
   -webkit-box-shadow: 0px 0px 5px 3px rgba(240, 240, 240, 1);
   -moz-box-shadow: 0px 0px 5px 3px rgba(240, 240, 240, 1);
   box-shadow: 0px 0px 5px 3px rgba(240, 240, 240, 1);
+}
+
+.paddpu {
+  padding: 20px 20px 20px 20px;
 }
 
 //sizes below standard desktop size

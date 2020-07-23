@@ -162,7 +162,7 @@ const displayDoughtnut = (onlineTrans, cashTrans, creditTrans) => {
     }
   });
 };
-const displayChart = () => {
+const displayChart = amounts => {
   var ctx = document.getElementById("myChart").getContext("2d");
   var myChart = new Chart(ctx, {
     type: "line",
@@ -196,7 +196,7 @@ const displayChart = () => {
           pointBackgroundColor: "#fff",
           pointBorderWidth: 1,
           pointHitRadius: 5,
-          data: [12, 19, 3, 5, 2, 3, 10, 9, 8, 9, 11, 13]
+          data: amounts
         }
       ]
     },
@@ -231,12 +231,36 @@ const getTransNumbers = invoices => {
   });
   return [onlineTrans, cashTrans, creditTrans];
 };
+
+//get total money for each month
+const checkMoneyThisMonth = (thisMonth, invoices) => {
+  let total = 0;
+  invoices.forEach(invoice => {
+    if (invoice.value.year == year && invoice.value.month == thisMonth) {
+      total += Number(invoice.value.netPrice);
+    }
+  });
+
+  return total;
+};
+
+//get money made through the year
+const getAmountPerMonth = invoices => {
+  let amountArray = [];
+  //loop 12 times meaning yearly
+  for (let i = 1; i < 13; i++) {
+    amountArray.push(checkMoneyThisMonth(i, invoices));
+  }
+  return amountArray;
+};
+
 //handle dashInvoices
 const handleInvoices = () => {
   dashboardModel.getAllInvoices().then(({ data }) => {
-    displayChart();
-
     dashInvoices = data.rows;
+
+    //get money made for each month
+    let amountArray = getAmountPerMonth(dashInvoices);
 
     //get current dashInvoices
     let currentInvoices = getCurrentInvoices(dashInvoices);
@@ -248,6 +272,10 @@ const handleInvoices = () => {
 
     //display doughnut
     displayDoughtnut(onlineTrans, cashTrans, creditTrans);
+
+    //display chart
+    displayChart(amountArray);
+
     //get debt invoices
     let debtInvoices = getCurrentDebts(currentInvoices);
 

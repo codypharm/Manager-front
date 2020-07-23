@@ -542,6 +542,10 @@ const displayDashDebts = list => {
     data: list
   };
 
+  Handlebars.registerHelper("formatMoney", money => {
+    return formatMoneyTemp(money);
+  });
+
   //get template
   let template = document.getElementById("dashDebtBox").innerHTML;
   //compile template with handlebar

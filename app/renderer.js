@@ -400,6 +400,24 @@ const pageLoader = (page, fxn = false) => {
   });
 };
 
+//load right menu
+const loadRightMenu = () => {
+  //add details to right menu
+  let {
+    loginStatus,
+    fname,
+    lname,
+    email,
+    position,
+    image,
+    access,
+    docId
+  } = store.getLoginDetail();
+
+  //document.getElementById("staffAccount").dataset.staffEmail = email;
+  $("#staffAccount").attr("data-staffEmail", email);
+};
+
 //handle setup checking
 db.getSetup().then(({ data }) => {
   //check if we have set up
@@ -426,6 +444,9 @@ db.getSetup().then(({ data }) => {
         }
         document.getElementsByTagName("main")[0].innerHTML = data;
         appendUserDetails();
+
+        //load right menu attributes
+        loadRightMenu();
         //load dashboard
         //load work page
         pageLoader("dashboard", loadUpdashboard);

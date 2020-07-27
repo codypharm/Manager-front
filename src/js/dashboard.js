@@ -269,10 +269,13 @@ const handleInvoices = () => {
     );
 
     let [amount, totalPaid, totalDebt] = getInvoiceBreakDown(currentInvoices);
-
-    //display doughnut
-    displayDoughtnut(onlineTrans, cashTrans, creditTrans);
-
+    if (onlineTrans == 0 && cashTrans == 0 && creditTrans == 0) {
+      document.getElementById("doughnutBox").textContent =
+        "No transactions yet";
+    } else {
+      //display doughnut
+      displayDoughtnut(onlineTrans, cashTrans, creditTrans);
+    }
     //display chart
     displayChart(amountArray);
 

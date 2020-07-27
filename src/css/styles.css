@@ -1317,6 +1317,10 @@ body {
 .paddpu {
   padding: 20px 20px 20px 20px;
 }
+.settingSpan {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
 @media only screen and (max-width: 1024px) {
   .pageHead {
     padding-right: 5px;

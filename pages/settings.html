@@ -1,0 +1,192 @@
+<div class="sectionHead">
+  <div class="sectionHeadIcon">
+    <i class="fas fa-users"></i>
+  </div>
+  <div class="sectionHeader">
+    <h2>Settings</h2>
+  </div>
+  <div class="sectionActions">
+    <!--  <form>
+        <div class="searchContainer">
+          <div class="search">
+            <input
+              type="text"
+              placeholder="search staff..."
+              oninput="searchStaff(event)"
+            />
+          </div>
+        </div>
+      </form>-->
+  </div>
+  <div style="clear:both"></div>
+</div>
+
+<div class="row  mb-4">
+  <div class="col-lg-6  pr-4 pl-4 mb-4">
+    <div class="boardBearer p-3">
+      <div class="border border-top-0 border-right-0 border-left-0">
+        <h5>Stock settings</h5>
+      </div>
+
+      <form action="" class="form mt-3">
+        <div class="form-field mb-3">
+          <label for="stockPerc">Stock Limit <strong>( % )</strong></label>
+          <input
+            type="text"
+            id="stockPerc"
+            class="form-control"
+            placeholder="stock limit"
+          />
+          <span class="settingSpan"
+            >This is maximum percentage stock volume required to triger stock
+            exhaustion alert</span
+          >
+        </div>
+
+        <div class="form-field">
+          <label for="stockExp"
+            >Expiration Limit <strong>( days )</strong></label
+          >
+          <input
+            type="text"
+            id="stockExp"
+            class="form-control"
+            placeholder="expiration limit"
+          />
+          <span class="settingSpan"
+            >This is maximum number of days required to triger stock expiration
+            alert</span
+          >
+        </div>
+
+        <div
+          class="border border-right-0 border-left-0 border-bottom-0 mt-3 text-right"
+        >
+          <a href="#" class="btn btn-sm btn-primary mt-2">Save</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-6 pr-4 pl-4">
+    <div class="boardBearer p-3">
+      <div class="border border-top-0 border-right-0 border-left-0">
+        <h5>App Settings</h5>
+      </div>
+
+      <form action="" class="form mt-3">
+        <div class="form-field mb-3">
+          <label for="appTime">Logout Time</label>
+          <select id="appTime" class="form-control">
+            <option value="">Select</option>
+            <option value="30sec">30secs</option>
+            <option value="1hr">1hr</option>
+            <option value="2hr">2hr</option>
+            <option value="">4hr</option>
+          </select>
+          <span class="settingSpan"
+            >This is time for automatic user logout if userm if inactive</span
+          >
+        </div>
+
+        <div class="form-field">
+          <label for="updateIn">Update Interval </label>
+          <select id="updateIn" class="form-control">
+            <option value="">Select</option>
+            <option value="30mins">30mins</option>
+            <option value="1hr">1hr</option>
+            <option value="8hr">8hr</option>
+            <option value="16hr">16hr</option>
+          </select>
+          <span class="settingSpan"
+            >This is time for synchronizing local account with online account.
+            Available for premium account alone.
+          </span>
+        </div>
+
+        <div
+          class="border border-right-0 border-left-0 border-bottom-0 mt-3 text-right"
+        >
+          <a href="#" class="btn btn-sm btn-primary mt-2">Save</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row  mb-4">
+  <div class="col-lg-6  pr-4 pl-4 mb-4">
+    <div class="boardBearer p-3">
+      <div class="border border-top-0 border-right-0 border-left-0">
+        <h5>Account settings</h5>
+      </div>
+
+      <form action="" class="form mt-3">
+        <div class="form-field mb-3">
+          <label for="compName">Company Name</label>
+          <input
+            type="text"
+            id="compName"
+            class="form-control"
+            placeholder="Company name"
+          />
+        </div>
+
+        <div class="form-field mb-3">
+          <label for="address">Address</label>
+          <input
+            type="text"
+            id="address"
+            class="form-control"
+            placeholder="Company Address"
+          />
+        </div>
+
+        <div class="form-field mb-3">
+          <label for="compId">Company Id</label>
+          <input
+            type="text"
+            id="compId"
+            class="form-control"
+            placeholder="Company Id"
+          />
+        </div>
+
+        <div class="form-field mb-3">
+          <label for="branchId">Branch Id</label>
+          <input
+            type="text"
+            id="branchId"
+            class="form-control"
+            placeholder="Branch Id"
+          />
+        </div>
+
+        <div class="form-field mb-3">
+          <label for="phone">Phone</label>
+          <input
+            type="text"
+            id="phone"
+            class="form-control"
+            placeholder="Phone Number"
+          />
+        </div>
+
+        <div class="form-field mb-3">
+          <label for="email">Email</label>
+          <input
+            type="text"
+            id="email"
+            class="form-control"
+            placeholder="Email"
+          />
+        </div>
+
+        <div
+          class="border border-right-0 border-left-0 border-bottom-0 mt-3 text-right"
+        >
+          <a href="#" class="btn btn-sm btn-primary mt-2">Save</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

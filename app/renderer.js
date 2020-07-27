@@ -449,7 +449,7 @@ db.getSetup().then(({ data }) => {
         loadRightMenu();
         //load dashboard
         //load work page
-        pageLoader("dashboard", loadUpdashboard);
+        pageLoader("settings");
       });
     }
   }
@@ -815,6 +815,14 @@ const loadProductReports = e => {
   selectionRemover();
   addClass(productReport, "selected");
   pageLoader("productReport", listProductReport);
+};
+
+const loadSettings = e => {
+  //let productReport = document.getElementsByClassName("productReport")[0];
+  //remove previous selections
+  selectionRemover();
+  //addClass(productReport, "selected");
+  pageLoader("settings");
 };
 
 ///currency formater

@@ -32,8 +32,9 @@
         <div class="form-field mb-3">
           <label for="stockPerc">Stock Limit <strong>( % )</strong></label>
           <input
-            type="text"
+            type="number"
             id="stockPerc"
+            min="1"
             class="form-control"
             placeholder="stock limit"
           />
@@ -48,8 +49,9 @@
             >Expiration Limit <strong>( days )</strong></label
           >
           <input
-            type="text"
+            type="number"
             id="stockExp"
+            min="1"
             class="form-control"
             placeholder="expiration limit"
           />
@@ -75,10 +77,10 @@
 
       <form action="" class="form mt-3">
         <div class="form-field mb-3">
-          <label for="appTime">Logout Time</label>
-          <select id="appTime" class="form-control">
+          <label for="logoutTime">Logout Time</label>
+          <select id="logoutTime" class="form-control">
             <option value="">Select</option>
-            <option value="30sec">30secs</option>
+            <option value="30mins">30mins</option>
             <option value="1hr">1hr</option>
             <option value="2hr">2hr</option>
             <option value="">4hr</option>
@@ -94,8 +96,9 @@
             <option value="">Select</option>
             <option value="30mins">30mins</option>
             <option value="1hr">1hr</option>
-            <option value="8hr">8hr</option>
-            <option value="16hr">16hr</option>
+            <option value="3hr">3hr</option>
+            <option value="6hr">6hr</option>
+            <option value="12hr">12hr</option>
           </select>
           <span class="settingSpan"
             >This is time for synchronizing local account with online account.
@@ -121,6 +124,14 @@
       </div>
 
       <form action="" class="form mt-3">
+        <div class="form-field mb-3">
+          <label for="compName">Account Type</label>
+          <select id="acctType" class="form-control">
+            <option value="">Select</option>
+            <option value="premium">Premium</option>
+            <option value="standard">Standard</option>
+          </select>
+        </div>
         <div class="form-field mb-3">
           <label for="compName">Company Name</label>
           <input

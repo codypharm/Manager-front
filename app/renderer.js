@@ -96,6 +96,15 @@ const hideGenStaticModal = elem => {
   return true;
 };
 
+//loader sign
+const showLoading = () => {
+  $(".loadingModal").modal("show");
+};
+
+const hideLoading = () => {
+  $(".loadingModal").modal("hide");
+};
+
 // eslint-disable-next-line no-unused-vars
 const showInputs = e => {
   let target = e.target;
@@ -400,6 +409,16 @@ const pageLoader = (page, fxn = false) => {
   });
 };
 
+//hide menu if document is clicked
+document.addEventListener("click", e => {
+  let menu = document.getElementsByClassName("userDrop")[0];
+  if (e.target.className != "rightMenu" && e.target.className != "rightIcons") {
+    if (!menu.classList.contains("hide")) {
+      menu.classList.add("hide");
+    }
+  }
+});
+
 //load right menu
 const loadRightMenu = () => {
   //add details to right menu
@@ -449,7 +468,7 @@ db.getSetup().then(({ data }) => {
         loadRightMenu();
         //load dashboard
         //load work page
-        pageLoader("settings");
+        pageLoader("settings", loadSettingsSections);
       });
     }
   }
@@ -545,16 +564,6 @@ const drop = e => {
     .getElementsByClassName("userDrop")[0]
     .classList.toggle("hide");
 };
-
-//hide menu if document is clicked
-document.addEventListener("click", e => {
-  let menu = document.getElementsByClassName("userDrop")[0];
-  if (e.target.className != "rightMenu" && e.target.className != "rightIcons") {
-    if (!menu.classList.contains("hide")) {
-      menu.classList.add("hide");
-    }
-  }
-});
 
 //menu drop settings
 const dropSales = e => {
@@ -822,7 +831,7 @@ const loadSettings = e => {
   //remove previous selections
   selectionRemover();
   //addClass(productReport, "selected");
-  pageLoader("settings");
+  pageLoader("settings", loadSettingsSections);
 };
 
 ///currency formater

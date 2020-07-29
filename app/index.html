@@ -23,11 +23,46 @@
     <script>
       window.jQuery = window.$ = require("jquery");
     </script>
+   
   </head>
   <body class=" setupBack">
   
     <main></main>
   </body>
+
+
+<!-- //loading sign -->
+  
+  <!--static modal -->
+  <!-- Modal -->
+  <div
+    class="modal  loadingModal "
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content " style="margin-top: 200px; background-color: transparent; border: none">
+        
+        
+<div>
+  <div class="sk-folding-cube">
+    <div class="sk-cube1 sk-cube"></div>
+    <div class="sk-cube2 sk-cube"></div>
+    <div class="sk-cube4 sk-cube"></div>
+    <div class="sk-cube3 sk-cube"></div>
+  </div>
+  <span class="loadingWait">Please wait...</span>
+</div>
+      </div>
+    </div>
+  </div>
+  <!-- static modal ends -->
+
+<!-- loading sign end -->
 
   <!-- modal for form update-->
   <div
@@ -509,7 +544,7 @@
       </div>
     </div>
   </div>
-
+  
   <!--image upload button-->
   <input type="file" name="upload_image" id="upload_image" class="hide" />
 </html>
@@ -535,3 +570,4 @@
 <script src="../src/js/report.js"></script>
 <script src="../src/js/attendance.js"></script>
 <script src="../src/js/dashboard.js"></script>
+<script src="../src/js/settings.js"></script>

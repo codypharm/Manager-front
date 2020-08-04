@@ -96,6 +96,15 @@ const hideGenStaticModal = elem => {
   return true;
 };
 
+//loader sign
+const showLoading = () => {
+  $(".loadingModal").modal("show");
+};
+
+const hideLoading = () => {
+  $(".loadingModal").modal("hide");
+};
+
 // eslint-disable-next-line no-unused-vars
 const showInputs = e => {
   let target = e.target;
@@ -400,6 +409,34 @@ const pageLoader = (page, fxn = false) => {
   });
 };
 
+//hide menu if document is clicked
+document.addEventListener("click", e => {
+  let menu = document.getElementsByClassName("userDrop")[0];
+  if (e.target.className != "rightMenu" && e.target.className != "rightIcons") {
+    if (!menu.classList.contains("hide")) {
+      menu.classList.add("hide");
+    }
+  }
+});
+
+//load right menu
+const loadRightMenu = () => {
+  //add details to right menu
+  let {
+    loginStatus,
+    fname,
+    lname,
+    email,
+    position,
+    image,
+    access,
+    docId
+  } = store.getLoginDetail();
+
+  //document.getElementById("staffAccount").dataset.staffEmail = email;
+  $("#staffAccount").attr("data-staffEmail", email);
+};
+
 //handle setup checking
 db.getSetup().then(({ data }) => {
   //check if we have set up
@@ -426,9 +463,12 @@ db.getSetup().then(({ data }) => {
         }
         document.getElementsByTagName("main")[0].innerHTML = data;
         appendUserDetails();
+
+        //load right menu attributes
+        loadRightMenu();
         //load dashboard
         //load work page
-        pageLoader("accountReport");
+        pageLoader("settings", loadSettingsSections);
       });
     }
   }
@@ -483,7 +523,7 @@ const processLogin = e => {
                   console.log(err);
                 }
                 document.getElementsByTagName("main")[0].innerHTML = data;
-                pageLoader("dashboard");
+                pageLoader("dashboard", loadUpdashboard);
                 document
                   .getElementsByTagName("body")[0]
                   .classList.remove("setupBack");
@@ -584,7 +624,7 @@ const loadDashboard = e => {
   selectionRemover();
   addClass(dashboard, "selected");
 
-  pageLoader("dashboard");
+  pageLoader("dashboard", loadUpdashboard);
 };
 
 //all sales
@@ -705,7 +745,7 @@ const loadAttendance = e => {
   selectionRemover();
   addClass(attendance, "selected");
   addClass(subMenu3, "selectedDropper");
-  pageLoader("attendance");
+  pageLoader("attendance", listAttendance);
 };
 
 //staff add
@@ -775,7 +815,7 @@ const loadAccountReports = e => {
   //remove previous selections
   selectionRemover();
   addClass(accountReport, "selected");
-  pageLoader("accountReport");
+  pageLoader("accountReport", listAccountReport);
 };
 
 const loadProductReports = e => {
@@ -784,6 +824,14 @@ const loadProductReports = e => {
   selectionRemover();
   addClass(productReport, "selected");
   pageLoader("productReport", listProductReport);
+};
+
+const loadSettings = e => {
+  //let productReport = document.getElementsByClassName("productReport")[0];
+  //remove previous selections
+  selectionRemover();
+  //addClass(productReport, "selected");
+  pageLoader("settings", loadSettingsSections);
 };
 
 ///currency formater

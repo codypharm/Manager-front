@@ -4,13 +4,18 @@
 const Database = require("../src/js/db");
 const moment = require("moment");
 
-class reportModel extends Database {
+class settingsModel extends Database {
   constructor() {
     super();
   }
 
   generateId() {
     return this.couch.uniqid();
+  }
+
+  getSetup() {
+    let viewUrl = this.viewUrl.setup;
+    return this.couch.get("vemon_setup", viewUrl);
   }
 
   getStock() {
@@ -44,7 +49,7 @@ class reportModel extends Database {
       return false;
     }
   }
-
+  /*
   getMatchingSales(sales, month, year) {
     let match = sales.filter(sale => {
       return sale.value.month == month && sale.value.year == year;
@@ -146,7 +151,7 @@ class reportModel extends Database {
     } else {
       return false;
     }
-  }
+  }*/
 }
 
-module.exports = reportModel;
+module.exports = settingsModel;

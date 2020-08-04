@@ -7,7 +7,7 @@
   </div>
 
   <div class="sectionActions">
-    <form>
+    <!-- <form>
       <div class="otherSearchContainer ">
         <div class="search">
           <input
@@ -17,7 +17,7 @@
           />
         </div>
       </div>
-    </form>
+    </form>-->
   </div>
 
   <div style="clear:both"></div>
@@ -28,7 +28,7 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="saleVol"></i>
-        <span id="span1">1435</span>
+        <span id="span1">0</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
@@ -41,7 +41,7 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="expVol"></i>
-        <span id="span2">1000</span>
+        <span id="span2">0</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
@@ -55,7 +55,7 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="expenVol"></i>
-        <span id="span3">1,000,000</span>
+        <span id="span3">0</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
@@ -69,11 +69,11 @@
     <div class="showBox">
       <div class=" showChild showTop ">
         <i class="fas fa-file-invoice" id="incVol"></i>
-        <span id="span4">1,000,000</span>
+        <span id="span4">0</span>
       </div>
       <div class="showChild ">
         <div class="showDown">
-          Income
+          Total Income
         </div>
       </div>
     </div>
@@ -91,7 +91,7 @@
             type="text"
             class="form-control text-center"
             placeholder="MM"
-            id="prodReportMonth"
+            id="acctReportMonth"
           />
         </div>
 
@@ -100,7 +100,7 @@
             type="text"
             class="form-control text-center"
             placeholder="YYYY"
-            id="prodReportYear"
+            id="acctReportYear"
           />
         </div>
         <div class="col text-center">
@@ -108,7 +108,7 @@
             class="btn btn-primary btn-sm mt-1"
             id="processBtn"
             disabled
-            onclick="loadProductReportList(event)"
+            onclick="loadAccountReportList(event)"
           >
             Process
           </button>
@@ -124,14 +124,14 @@
       <div class="float-left pt-1">
         Account Report For <strong><span id="dispDate"></span></strong>
       </div>
-      <div class="float-right cardHeadSearchBox">
-        <input
+      <!--<div class="float-right cardHeadSearchBox">
+         <input
           class=" cardHeadSearch"
           type="text"
           placeholder="search invoices..."
           oninput="searchProductReport(event)"
         />
-      </div>
+      </div>-->
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -142,49 +142,14 @@
             <th>Amount Paid</th>
             <th>To Pay</th>
             <th>Expenses</th>
+            <th>Balance</th>
             <th>Outcome</th>
             <th>Action</th>
           </thead>
-          <tbody id="productList">
-            <!--<tr>
-              <td colspan="7" class="text-center">
+          <tbody id="accountList">
+            <tr>
+              <td colspan="8" class="text-center">
                 <div class="spinner-grow text-success"></div>
-              </td>
-            </tr>-->
-
-            <tr>
-              <td>2022-09-02</td>
-              <td>120,000</td>
-              <td>110,000</td>
-              <td>90000</td>
-              <td>1000</td>
-              <td>3% +</td>
-              <td>
-                <button
-                  type="button"
-                  class="btn btn-sm  btn-primary "
-                  onclick="viewInvoice(event,'{{value.invoiceId}}','{{value.day}}-{{value.month}}-{{value.year}}','all')"
-                >
-                  Detail
-                </button>
-              </td>
-            </tr>
-
-            <tr>
-              <td>2022-09-02</td>
-              <td>120,000</td>
-              <td>110,000</td>
-              <td>90000</td>
-              <td>1000</td>
-              <td>10% -</td>
-              <td>
-                <button
-                  type="button"
-                  class="btn btn-sm  btn-primary "
-                  onclick="viewInvoice(event,'{{value.invoiceId}}','{{value.day}}-{{value.month}}-{{value.year}}','all')"
-                >
-                  Detail
-                </button>
               </td>
             </tr>
           </tbody>
@@ -194,14 +159,40 @@
   </div>
 </section>
 
-<script id="productReportList" type="text/xhandlebars-template">
+<script id="accountReportList" type="text/xhandlebars-template">
   {{#each data}}
   <tr>
-    <td>{{id}}</td>
-    <td>{{name}}</td>
-    <td>{{saleVolume}}</td>
-    <td>{{percentVolume}} %</td>
-    <td>{{percentProfit}} %</td>
+    <td>{{day}}-{{month}}-{{year}}</td>
+    <td>{{totalNet}}</td>
+    <td>{{amtPaid}}</td>
+    <td>{{toPay}}</td>
+    <td>{{totalExp}}</td>
+    <td>{{displayBalance}}</td>
+    <td style="color:{{color}}">{{percOutCome}} %</td>
+    <td>
+      <button
+        type="button"
+        class="btn btn-sm  btn-primary "
+        data-gain="{{dailyGain}}"
+        data-cp="{{dailyCp}}"
+        data-sp="{{dailySp}}"
+        data-presp="{{previousDaySp}}"
+        data-precp="{{previousDayCp}}"
+        data-pregain="{{previousDayGain}}"
+        data-yesterday="{{previousDay}}"
+        data-lastMonth ="{{previousMonth}}"
+        data-lastYear ="{{previousYear}}"
+        data-day="{{day}}"
+        data-month="{{month}}"
+        data-percResult="{{percOutCome}}"
+        data-year="{{year}}"
+        data-color="{{color}}"
+
+        onclick="loadGainAnalysis(event)"
+      >
+        Detail
+      </button>
+    </td>
   </tr>
 
   {{/each}}

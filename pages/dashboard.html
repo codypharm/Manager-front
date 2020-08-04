@@ -1,3 +1,230 @@
-<div>
-  ₦
+<div class="sectionHead">
+  <div class="sectionHeadIcon">
+    <i class="fas fa-file-invoice"></i>
+  </div>
+  <div class="sectionHeader">
+    <h2>Dashboard</h2>
+  </div>
+
+  <div class="sectionActions" style="padding-top: 20px">
+    <!-- <form>
+      <div class="otherSearchContainer ">
+        <div class="search">
+          <input
+            type="text"
+            placeholder="search invoices..."
+            oninput="searchProductReport(event)"
+          />
+        </div>
+      </div>
+    </form>-->
+    <strong>BranchID: <span id="brId"></span></strong>
+  </div>
+
+  <div style="clear:both"></div>
 </div>
+
+<div class="row  mb-2 p-3">
+  <div class="col-lg-3 mb-4  pl-3 pr-3 ">
+    <div class="showBox">
+      <div class=" showChild showTop ">
+        <i class="fas fa-calculator" id="saleVol"></i>
+        <span id="span1">0</span>
+      </div>
+      <div class="showChild ">
+        <div class="showDown">
+          Sales Volume
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3 mb-4  pl-3 pr-3">
+    <div class="showBox">
+      <div class=" showChild showTop ">
+        <i class="fas fa-cash-register" id="incVol"></i>
+        <span id="span4">0</span>
+      </div>
+      <div class="showChild ">
+        <div class="showDown">
+          Amount
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3 mb-4  pl-3 pr-3">
+    <div class="showBox">
+      <div class=" showChild showTop ">
+        <i class=" fas fa-credit-card" id="expenVol"></i>
+        <span id="span3">0</span>
+      </div>
+      <div class="showChild ">
+        <div class="showDown">
+          Paid
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 mb-4  pl-3 pr-3">
+    <div class="showBox">
+      <div class=" showChild showTop ">
+        <i class="fas fa-clipboard" id="expVol"></i>
+        <span id="span2">0</span>
+      </div>
+      <div class="showChild ">
+        <div class="showDown">
+          Debt
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row  mb-2 pr-3 pl-3">
+  <div class="col-lg-3 mb-4  pl-3 pr-3 ">
+    <div class="showBox">
+      <div class=" showChild showTop ">
+        <i class="fas fa-file-invoice" id="stockVol"></i>
+        <span id="span5">0</span>
+      </div>
+      <div class="showChild ">
+        <div class="showDown">
+          Stock
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 mb-4  pl-3 pr-3">
+    <div class="showBox">
+      <div class=" showChild showTop ">
+        <i class="fas fa-file-invoice" id="invVol"></i>
+        <span id="span6">0</span>
+      </div>
+      <div class="showChild ">
+        <div class="showDown">
+          Invoices
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3 mb-4  pl-3 pr-3">
+    <div class="showBox">
+      <div class=" showChild showTop ">
+        <i class="fas fa-user" id="staffVol"></i>
+        <span id="span7">0</span>
+      </div>
+      <div class="showChild ">
+        <div class="showDown">
+          Staff
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3 mb-4  pl-3 pr-3">
+    <div class="showBox">
+      <div class=" showChild showTop ">
+        <i class="fas fa-users" id="cusVol"></i>
+        <span id="span8">0</span>
+      </div>
+      <div class="showChild ">
+        <div class="showDown">
+          Customers
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- chart containers -->
+
+<section class="row  m-auto pt-4 pb-4 ">
+  <div class="col-lg-4 mb-3  pb-3 pt-3">
+    <div class="boardBearer paddpu">
+      <h5>Daily Transactions</h5>
+      <div id="doughnutBox" style="width:100%; max-width: 250px; margin: auto;">
+        <canvas id="doChart" width="10" height="10"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8 mb-3 pt-3  ">
+    <div class="boardBearer paddpu">
+      <h5>Income this year</h5>
+      <div style="width: 100%;">
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- chart conatainers ended-->
+
+<!-- table container-->
+<section class="row  m-auto pt-5">
+  <div class="col-lg-6  mb-4 ">
+    <div class="boardBearer p-3">
+      <h5>Low stock</h5>
+      <div class="table-responsive verticalTable">
+        <table class="table table-striped table-sm">
+          <thead>
+            <th>Product</th>
+            <th>ID</th>
+            <th>In Stock</th>
+          </thead>
+          <tbody id="lowStockList">
+            <tr>
+              <td colspan="3" class="text-center">
+                <div class="spinner-grow text-success"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 ">
+    <div class="boardBearer p-3">
+      <h5>Debts</h5>
+      <div class="table-responsive verticalTable">
+        <table class="table table-striped table-sm">
+          <thead>
+            <th>Name</th>
+            <th>Amount</th>
+          </thead>
+          <tbody id="dashDebtList">
+            <!--<tr>
+            <td colspan="2" class="text-center">
+              <div class="spinner-grow text-success"></div>
+            </td>
+          </tr>-->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- table container ends-->
+
+<script id="lowStockBox" type="text/xhandlebars-template">
+  {{#each data}}
+  <tr>
+    <td>{{value.name}}</td>
+    <td>{{value.prodId}}</td>
+    <td>{{value.qty}}</td>
+  </tr>
+
+  {{/each}}
+</script>
+
+<script id="dashDebtBox" type="text/xhandlebars-template">
+  {{#each data}}
+  <tr>
+    <td>{{value.customerName}}</td>
+    <td>{{formatMoney value.balance}}</td>
+
+  </tr>
+
+  {{/each}}
+</script>

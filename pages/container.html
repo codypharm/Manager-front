@@ -115,7 +115,28 @@
     <!--user drop -->
     <!--==================-->
     <div class="userDrop hide">
-      jj
+      <nav class="nav-bar sm-light">
+        <ul class="navbar-nav">
+          <li class="nav-item ">
+            <a
+              href="#"
+              id="staffAccount"
+              class="nav-link pl-3"
+              data-staffEmail=""
+              onclick="viewStaff(event)"
+              >Account</a
+            >
+          </li>
+          <li class="nav-item ">
+            <a href="#" class="nav-link pl-3" onclick="loadSettings(event)"
+              >Setting</a
+            >
+          </li>
+          <li class="nav-item ">
+            <a href="#" class="nav-link pl-3">Logout</a>
+          </li>
+        </ul>
+      </nav>
     </div>
     <!--==================-->
     <!-- user drop ends -->
@@ -157,11 +178,21 @@
         <div class="notCounter">
           0
         </div>
-        <img src="../icons/svg/bell.svg" width="100%" height="100%" />
+        <img
+          src="../icons/svg/bell.svg"
+          alt="profile image"
+          width="100%"
+          height="100%"
+        />
       </div>
 
       <div class="rightIcons " onclick="drop(event)">
-        <img src="../icons/svg/student.svg" width="100%" height="100%" />
+        <img
+          src="../icons/svg/student.svg"
+          class="rightMenu"
+          width="100%"
+          height="100%"
+        />
       </div>
       <div style="clear: both"></div>
     </div>

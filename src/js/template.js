@@ -460,3 +460,100 @@ const displayProductReportList = list => {
   //paste html into DOM
   let container = (document.getElementById("productList").innerHTML = myhtml);
 };
+
+//display all product sales report
+const displayAccountReportList = list => {
+  //assing array to ab object property
+  let newObj = {
+    data: list
+  };
+
+  //get template
+  let template = document.getElementById("accountReportList").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById("accountList").innerHTML = myhtml);
+};
+
+//display attendance list
+const displayAttendanceList = list => {
+  //assing array to ab object property
+  let newObj = {
+    data: list
+  };
+
+  //reverse date
+  Handlebars.registerHelper("exitButton", exitTime => {
+    if (exitTime != "") {
+      //hide button
+      return "hide";
+    }
+  });
+
+  Handlebars.registerHelper("exitDisplay", exitTime => {
+    if (exitTime == "") {
+      //hide span
+      return "hide";
+    }
+  });
+
+  //get template
+  let template = document.getElementById("attendanceList").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById(
+    "attendanceDispList"
+  ).innerHTML = myhtml);
+};
+
+//display all low stock
+const displayLowStock = list => {
+  //assing array to ab object property
+  let newObj = {
+    data: list
+  };
+
+  //get template
+  let template = document.getElementById("lowStockBox").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById("lowStockList").innerHTML = myhtml);
+};
+
+//display all debt list on dashboard
+const displayDashDebts = list => {
+  //assing array to ab object property
+  let newObj = {
+    data: list
+  };
+
+  Handlebars.registerHelper("formatMoney", money => {
+    return formatMoneyTemp(money);
+  });
+
+  //get template
+  let template = document.getElementById("dashDebtBox").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById("dashDebtList").innerHTML = myhtml);
+};

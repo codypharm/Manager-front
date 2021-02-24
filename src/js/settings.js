@@ -70,6 +70,9 @@ const loadSettingsSections = () => {
     setupInfo = data.rows[0].value;
     setupId = data.rows[0].id;
 
+    //set setup details
+    store.setSetupDetail(data.rows);
+
     //append values to DOM
     appendSettingsValues();
   });
@@ -229,6 +232,7 @@ const submitAccountSettings = e => {
           .then(({ data, header, status }) => {
             if (status == 201) {
               //reload sections
+
               loadSettingsSections();
             }
           });

@@ -140,6 +140,8 @@ const resetSaveBtn = btn => {
 
 //email exists function
 const emailExists = (errorDiv, email, btn, details) => {
+  console.log(details);
+
   //check if email already exists
   let allUsers = staffModel.getUsers();
   //handle promise
@@ -399,7 +401,8 @@ const register = e => {
     pwd: pwd.value.trim(),
     gender: gender.value,
     permission: permissionLevel,
-    position: position.value.trim()
+    position: position.value.trim(),
+    remote: false
   };
 
   let inputs = [

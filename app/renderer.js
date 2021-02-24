@@ -410,14 +410,14 @@ const pageLoader = (page, fxn = false) => {
 };
 
 //hide menu if document is clicked
-document.addEventListener("click", e => {
+const handleBodyClick = e => {
   let menu = document.getElementsByClassName("userDrop")[0];
   if (e.target.className != "rightMenu" && e.target.className != "rightIcons") {
     if (!menu.classList.contains("hide")) {
       menu.classList.add("hide");
     }
   }
-});
+};
 
 //load right menu
 const loadRightMenu = () => {
@@ -513,21 +513,44 @@ const processLogin = e => {
             //get user details and store
             let userObj = login.getUserData(users, email);
             let user = userObj.value;
+
             //store them in electron store
             if (store.setUserData(user)) {
-              //display app container
-              let url = "./pages/container.html";
+              //record attendance
+              //get user details
 
-              fs.readFile(url, "utf-8", (err, data) => {
-                if (err) {
-                  console.log(err);
-                }
-                document.getElementsByTagName("main")[0].innerHTML = data;
-                pageLoader("dashboard", loadUpdashboard);
-                document
-                  .getElementsByTagName("body")[0]
-                  .classList.remove("setupBack");
-                appendUserDetails();
+              let thisUser = attendanceModel.getThisUser(users, user.staffId);
+
+              //generate unique id
+              let genId = attendanceModel.generateId();
+              genId.then(ids => {
+                let id = ids[0];
+                //insert into attendance database
+                let dataRecord = attendanceModel.recordAttendance(
+                  id,
+                  thisUser[0]
+                );
+
+                dataRecord.then(({ data, status }) => {
+                  if (status == 201) {
+                    //display app container
+                    let url = "./pages/container.html";
+
+                    fs.readFile(url, "utf-8", (err, data) => {
+                      if (err) {
+                        console.log(err);
+                      }
+                      //append main page
+                      document.getElementsByTagName("main")[0].innerHTML = data;
+                      //load dashboard
+                      pageLoader("dashboard", loadUpdashboard);
+                      document
+                        .getElementsByTagName("body")[0]
+                        .classList.remove("setupBack");
+                      appendUserDetails();
+                    });
+                  }
+                });
               });
             }
           } else {
@@ -842,4 +865,71 @@ const formatMoney = money => {
   amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   //return amount
   return amount;
+};
+
+//logout code
+const logMeOut = e => {
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Okay to logout"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      //show loading
+      showLoading();
+
+      let attendance = attendanceModel.getAttendance();
+      attendance.then(({ data }) => {
+        let attendanceRecord = data.rows;
+        let date = new Date();
+
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        let id = store.getLoginDetail().staffId;
+        let myData = attendanceModel.getThisAttendance(
+          attendanceRecord,
+          day,
+          month,
+          year,
+          id
+        )[0];
+        //update attendance
+        let attendanceUpdater = attendanceModel.updateAttendance(myData);
+        attendanceUpdater.then(({ data, status }) => {
+          if (status == 201) {
+            //logout
+            store.forceLogout();
+            //go to login page
+
+            let url = "./pages/login.html";
+            fs.readFile(url, "utf-8", (err, data) => {
+              if (err) {
+                console.log(err);
+              }
+              //hide loading
+              hideLoading();
+              document.getElementsByTagName("main")[0].innerHTML = data;
+            });
+          }
+        });
+      });
+
+      //update attendance
+      /*let attendanceUpdater = attendanceModel.updateAttendance(data);
+      attendanceUpdater.then(({ data, status }) => {
+        if (status == 201) {
+          //go back and show list
+          listAttendance();
+        }
+      });*/
+    }
+  });
 };

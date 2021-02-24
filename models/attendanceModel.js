@@ -121,7 +121,8 @@ class attendanceModel extends Database {
       arrivalRecorder: loginDetail.fname + " " + loginDetail.lname,
       arrivalRecorderEmail: loginDetail.email,
       exitRecorder: "",
-      exitRecorderEmail: ""
+      exitRecorderEmail: "",
+      remote: false
     });
   }
 
@@ -142,7 +143,8 @@ class attendanceModel extends Database {
       arrivalRecorder: data.value.arrivalRecorder,
       arrivalRecorderEmail: data.value.arrivalRecorderEmail,
       exitRecorder: loginDetail.fname + " " + loginDetail.lname,
-      exitRecorderEmail: loginDetail.email
+      exitRecorderEmail: loginDetail.email,
+      remote: data.value.remote
     });
   }
 }

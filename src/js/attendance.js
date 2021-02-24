@@ -163,7 +163,7 @@ const submitAttendance = e => {
     btnSpinner.classList.remove("spinner-border");
     btnSpinner.classList.remove("spinner-border-sm");
   } else {
-    //get user detaails
+    //get user details
     let thisUser = attendanceModel.getThisUser(staffData, valueId);
 
     //generate unique id
@@ -226,30 +226,6 @@ const exitStaff = e => {
       year,
       id
     )[0];
-
-    //get window object
-    const window = BrowserWindow.getFocusedWindow();
-    //show dialog
-    let resp = dialog.showMessageBox(window, {
-      title: "Vemon",
-      buttons: ["Yes", "Cancel"],
-      type: "info",
-      message: "Click Okay to exit"
-    });
-
-    //check if response is yes
-    resp.then((response, checkboxChecked) => {
-      if (response.response == 0) {
-        //update attendance
-        let attendanceUpdater = attendanceModel.updateAttendance(data);
-        attendanceUpdater.then(({ data, status }) => {
-          if (status == 201) {
-            //go back and show list
-            listAttendance();
-          }
-        });
-      }
-    });
   } else {
     //show error message
     showModal("You can no longer exit from this date");

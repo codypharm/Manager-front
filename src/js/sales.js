@@ -580,7 +580,7 @@ const processCart = e => {
       transType == "credit" &&
       salesModel.isNotAlpha(name.value.trim())
     ) {
-      showModal("Please neter a valid name.");
+      showModal("Please enter a valid name.");
     } else if (
       transType == "credit" &&
       salesModel.isNotPhoneNumber(number.value.trim())

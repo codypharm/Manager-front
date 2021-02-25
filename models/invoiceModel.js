@@ -140,6 +140,7 @@ class Invoice extends Database {
       totalPrice: detail.value.totalPrice,
       amtPaid: newAmtPaid,
       balance: newBalance,
+      remote: detail.value.remote,
       day: detail.value.day,
       month: detail.value.month,
       year: detail.value.year
@@ -152,6 +153,7 @@ class Invoice extends Database {
       id: id,
       paymentFor: invoiceId,
       currentAmtPaid: amtEntered,
+      remote: false,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear()

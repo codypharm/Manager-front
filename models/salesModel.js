@@ -234,6 +234,7 @@ class salesModel extends Database {
       invoiceId: invoiceId,
       transactionType: transType,
       disccount: disccount,
+      remote: false,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear()
@@ -267,6 +268,7 @@ class salesModel extends Database {
       netPrice: netPrice,
       totalPrice: totalPrice,
       amtPaid: amtPaid,
+      remote: false,
       balance: balance,
       day: date.getDate(),
       month: date.getMonth() + 1,

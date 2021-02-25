@@ -500,7 +500,7 @@ const uploadList = e => {
             //reload list
             removeRecord(product.productId);
 
-            //rest form
+            //reset form
             document.getElementsByClassName("stockingForm")[0].reset();
           } else {
             console.log("error");

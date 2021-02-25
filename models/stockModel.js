@@ -272,6 +272,7 @@ class stockModel extends Database {
       pricePerMinUnit: Number(product.totalCost) / Number(product.qty),
       error: error,
       batchId: batchId,
+      remote: false,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear(),
@@ -461,6 +462,7 @@ class stockModel extends Database {
       activity: editClass,
       detail: edit,
       editedId: batchId,
+      remote: false,
       staffName: loginDetail.fname + " " + loginDetail.lname,
       staffId: loginDetail.staffId
     });
@@ -481,6 +483,7 @@ class stockModel extends Database {
       totalCost: detail.totalCost,
       expDate: editExpDate,
       error: detail.error,
+      remote: detail.remote,
       day: detail.day,
       month: detail.month,
       year: detail.year,
@@ -491,7 +494,6 @@ class stockModel extends Database {
 
   //update current match
   updateMatch(detail, id, name, form, price, unit, brand) {
-    console.log(detail);
     return this.couch.update("stock", {
       _id: id,
       _rev: detail.rev,
@@ -507,6 +509,7 @@ class stockModel extends Database {
       expDate: detail.expDate,
       pricePerMinUnit: detail.ppmu,
       error: detail.error,
+      remote: detail.remote,
       day: detail.day,
       month: detail.month,
       year: detail.year,
@@ -546,6 +549,7 @@ class stockModel extends Database {
       year: date.getFullYear(),
       activity: editClass.join(", "),
       detail: edit.join(", "),
+      remote: false,
       editedId: batchId,
       staffName: loginDetail.fname + " " + loginDetail.lname,
       staffId: loginDetail.staffId

@@ -35,7 +35,8 @@ class Validator extends Database {
         details.manager_lastname[0].toUpperCase() +
         details.manager_lastname.slice(1),
       manager_password: details.manager_password,
-      manager_email: details.manager_email
+      manager_email: details.manager_email,
+      remote: false
     });
   }
 
@@ -65,6 +66,7 @@ class Validator extends Database {
       position: "manager",
       permission: "admin",
       access: "open",
+      remote: false,
       regDay: date.getDate(),
       regMonth: date.getMonth(),
       regYear: date.getFullYear()

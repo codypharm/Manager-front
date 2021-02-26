@@ -27,8 +27,13 @@ const handleExpenses = (day, month, year) => {
 
 //proceed delete ll
 const proceedDeleteAll = () => {
-  expenses.forEach(expense => {
-    expenseDeleter = expenseModel.deleteExpense(expense.id, expense.value.rev);
+  expenses.forEach(async expense => {
+    expenseDeleter = await expenseModel.deleteExpense(
+      expense.id,
+      expense.value.rev,
+      expense.value.amt,
+      expense.value.description
+    );
   });
 
   return true;
@@ -66,8 +71,8 @@ const deleteAllExpense = () => {
 };
 
 //proceed delete
-const proceedDelete = (id, rev) => {
-  expenseDeleter = expenseModel.deleteExpense(id, rev);
+const proceedDelete = (id, rev, amt, description) => {
+  let expenseDeleter = expenseModel.deleteExpense(id, rev, amt, description);
   expenseDeleter.then(({ data, headers, status }) => {
     if (status == 200) {
       //filter expenses
@@ -85,7 +90,7 @@ const proceedDelete = (id, rev) => {
 };
 
 //delete expense
-const deleteExpense = (e, id, rev) => {
+const deleteExpense = (e, id, rev, amt, description) => {
   //get window object
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
@@ -99,7 +104,7 @@ const deleteExpense = (e, id, rev) => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
-      proceedDelete(id, rev);
+      proceedDelete(id, rev, amt, description);
     }
   });
 };

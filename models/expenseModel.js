@@ -56,6 +56,7 @@ class Expense extends Database {
       name: name[0].toUpperCase() + name.slice(1),
       amt: amt,
       description: description[0].toUpperCase() + description.slice(1),
+      remote: false,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear()
@@ -78,13 +79,42 @@ class Expense extends Database {
     }
   }
 
-  deleteExpense(id, rev) {
+  insertExpAct(id, edit, editClass) {
+    let date = new Date();
+    let loginDetail = store.getLoginDetail();
+    return this.couch.insert("all_activities", {
+      id: id,
+      day: date.getDate(),
+      month: date.getMonth() + 1,
+      year: date.getFullYear(),
+      activity: editClass,
+      detail: edit,
+      remote: false,
+      staffName: loginDetail.fname + " " + loginDetail.lname,
+      staffId: loginDetail.staffId
+    });
+  }
+
+  async deleteExpense(id, rev, amt, description) {
+    //insert into activities
+    let idGen = this.generateId();
+    idGen.then(ids => {
+      let newId = ids[0];
+      let editClass = "Expense delete";
+      let edit = `Expense of amount ${amt} was deleted`;
+      let activityInsert = this.insertExpAct(newId, edit, editClass);
+      /*activityInsert.then(({data,headers,status}) => {
+        if(status == 201){
+
+        }
+      })*/
+    });
     //delete from db
     return this.couch.del("expenses", id, rev);
   }
 
   removeExpense(expenses, id) {
-    //filter out expeses
+    //filter out expenses
     let match = expenses.filter(expense => {
       return expense.id != id;
     });

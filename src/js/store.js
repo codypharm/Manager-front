@@ -16,6 +16,9 @@ class Store {
 
       setupDetail: {
         type: "object"
+      },
+      tokens: {
+        type: "object"
       }
     };
     //instantiate store
@@ -46,6 +49,10 @@ class Store {
 
   getEditDetail() {
     return this.store.get("editDetail");
+  }
+
+  getTokens() {
+    return this.store.get("tokens");
   }
 
   setEditDetail(editDetail) {
@@ -86,6 +93,13 @@ class Store {
     this.store.set("records", {
       record: record
     });
+  }
+  setTokens(access, refresh) {
+    this.store.set("tokens"),
+      {
+        access,
+        refresh
+      };
   }
 }
 

@@ -143,7 +143,41 @@ class staffModel extends Database {
       updateMonth: details.updateMonth,
       updateYear: details.updateYear,
       editedBy: details.editedBy,
-      editorEmail: details.editorEmail
+      editorEmail: details.editorEmail,
+      remote: details.remote
+    });
+  }
+
+  //update remote status
+  async updateAfterRemoteUpload(id, rev, details) {
+    return this.couch.update("users", {
+      _id: id,
+      _rev: rev,
+      firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
+      lastname: details.lname[0].toUpperCase() + details.lname.slice(1),
+      email: details.email,
+      number: details.number,
+      position: details.position,
+      gender: details.gender,
+      staffId: details.staffId,
+      address: {
+        street: details.street,
+        town: details.town,
+        state: details.state
+      },
+      permission: details.permission,
+      access: details.access,
+      image: details.image,
+      password: details.pwd,
+      regDay: details.regDay,
+      regMonth: details.regMonth,
+      regYear: details.regYear,
+      updateDay: details.updateDay,
+      updateMonth: details.updateMonth,
+      updateYear: details.updateYear,
+      editedBy: details.editedBy,
+      editorEmail: details.editorEmail,
+      remote: true
     });
   }
 

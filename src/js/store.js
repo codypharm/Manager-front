@@ -71,7 +71,8 @@ class Store {
       position: user.position,
       image: user.image,
       access: user.access,
-      docId: user.id
+      docId: user.id,
+      pwd: user.pwd
     });
 
     return true;
@@ -95,11 +96,10 @@ class Store {
     });
   }
   setTokens(access, refresh) {
-    this.store.set("tokens"),
-      {
-        access,
-        refresh
-      };
+    this.store.set("tokens", {
+      access,
+      refresh
+    });
   }
 }
 

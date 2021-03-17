@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //global variables
+const api = require("../api");
 var viewEmail;
 var editEmail;
 
@@ -510,7 +511,7 @@ const processLogin = e => {
           let access = login.checkAccess(users, email);
 
           if (access) {
-            //get user details and store
+            //get user details and store it
             let userObj = login.getUserData(users, email);
             let user = userObj.value;
 

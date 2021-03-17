@@ -672,7 +672,8 @@ const updateStatus = (e, staffEmail) => {
         updateMonth: selectedUser.value.updateMonth,
         updateYear: selectedUser.value.updateYear,
         editedBy: selectedUser.value.editedBy,
-        editorEmail: selectedUser.value.editorEmail
+        editorEmail: selectedUser.value.editorEmail,
+        remote: selectedUser.value.remote
       };
       //update details
       let updator = staffModel.updateStatus(id, rev, details);

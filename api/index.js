@@ -1,4 +1,5 @@
 const usersClass = require("./users");
+const stockClass = require("./stock");
 const ourStore = require("../src/js/store");
 
 //instantiate classes
@@ -6,10 +7,15 @@ const ourStore = require("../src/js/store");
 const store = new ourStore();
 
 const users = new usersClass();
+const stock = new stockClass();
+
+const proceedTo = () => {
+  console.log("m=next");
+};
 
 //proceed to uploading
-const proceedToStock = () => {
-  console.log("landed");
+const proceedToStock = proceedTo => {
+  stock.handleStock();
 };
 
 //proceed after login

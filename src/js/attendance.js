@@ -164,6 +164,7 @@ const submitAttendance = e => {
     btnSpinner.classList.remove("spinner-border-sm");
   } else {
     //get user details
+    console.log(staffData);
     let thisUser = attendanceModel.getThisUser(staffData, valueId);
 
     //generate unique id

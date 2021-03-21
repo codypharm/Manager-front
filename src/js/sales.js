@@ -320,7 +320,7 @@ const handleTransType = e => {
 };
 
 const sub = (obj, qty) => {
-  //if stock if more than purchase quantity
+  //if stock is more than purchase quantity
   if (Number(obj.value.qty) > Number(qty)) {
     //subtract purchase
     obj.value.qty = Number(obj.value.qty) - Number(qty);
@@ -328,9 +328,9 @@ const sub = (obj, qty) => {
     qty = 0;
     //return new values
     return [obj, qty];
-    //if purcahse is more than stock
+    //if purchase is more than stock
   } else if (Number(obj.value.qty) < Number(qty)) {
-    //subtract purcahse from stock
+    //subtract purchase from stock
     qty = Number(qty) - Number(obj.value.qty);
     //stock = 0
     obj.value.qty = 0;
@@ -339,7 +339,7 @@ const sub = (obj, qty) => {
     return [obj, qty];
     //if stock == purchase
   } else {
-    //purchse = 0
+    //purchase = 0
     obj.value.qty = 0;
     //stock == 0
     qty = 0;
@@ -521,7 +521,7 @@ const insertSale = cart => {
 const execute = (match, qty) => {
   //reverse the array
   match = match.reverse();
-  //loop throughnthe match
+  //loop through the match
   match.forEach(obj => {
     //get new values of each obj or product and qty remaining from purchase qty
     let [newProd, newQty] = sub(obj, qty);

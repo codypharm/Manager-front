@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   config => {
-    const tokens = store.getTokens().access;
+    const token = store.getTokens().access;
     if (token) {
       config.headers["Authorization"] = "JWT " + token;
     }
@@ -27,13 +27,14 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   function(error) {
+    console.log(error);
     const originalRequest = error.config;
     //check if refresh token was bounced
     if (
       error.response.status === 401 &&
       originalRequest.url === "api/token/refresh/"
     ) {
-      router.push("/login");
+      //router.push("/login");
       return Promise.reject(error);
     }
     if (error.response.status === 401 && !originalRequest._retry) {

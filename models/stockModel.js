@@ -538,6 +538,44 @@ class stockModel extends Database {
     }
   }
 
+  //update current match
+  remoteUpdateMatch(detail, id) {
+    return this.couch.update("stock", {
+      _id: id,
+      _rev: detail.rev,
+      batchId: detail.batchId,
+      productId: detail.prodId,
+      brand: detail.brand[0].toUpperCase() + detail.brand.slice(1),
+      name: detail.name[0].toUpperCase() + detail.name.slice(1),
+      qty: detail.qty,
+      form: detail.form[0].toUpperCase() + detail.form.slice(1),
+      unit: detail.unit,
+      price: detail.price,
+      totalCost: detail.totalCost,
+      expDate: detail.expDate,
+      pricePerMinUnit: detail.ppmu,
+      error: detail.error,
+      remote: true,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year,
+      recorder: detail.recName,
+      recorderEmail: detail.recEmail
+    });
+  }
+
+  async remoteUpdateAllProduct(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
+  }
+
   insertProductUpdate(editClass, edit, batchId, id) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();

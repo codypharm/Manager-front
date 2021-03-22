@@ -9,13 +9,13 @@ const store = new ourStore();
 const users = new usersClass();
 const stock = new stockClass();
 
-const proceedTo = () => {
+const proceedToActivities = () => {
   console.log("m=next");
 };
 
 //proceed to uploading
-const proceedToStock = proceedTo => {
-  stock.handleStock();
+const proceedToStock = () => {
+  stock.handleStock(proceedToActivities);
 };
 
 //proceed after login

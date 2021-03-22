@@ -13,7 +13,7 @@ class Stock {
   }
 
   //upload
-  uploadStockToRemote(stock, proceedTo) {
+  uploadStockToRemote(stock, proceedToActivities) {
     //filter out stocks with remote =  false
     let filteredStock = modules.filterStock(stock);
     //upload these stocks
@@ -21,15 +21,15 @@ class Stock {
       let upload = modules.upload(filteredStock);
     }
     //move on while the task runs asynchronously
-    //proceedToStock();
+    proceedToActivities();
   }
 
   //handle stocks
-  handleStock(proceedTo) {
+  handleStock(proceedToActivities) {
     //get staff list
     const allStock = stockModel.getStock();
     allStock.then(({ data, headers, status }) => {
-      this.uploadStockToRemote(data.rows, proceedTo);
+      this.uploadStockToRemote(data.rows, proceedToActivities);
     });
   }
 }

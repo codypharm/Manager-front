@@ -27,7 +27,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   function(error) {
-    console.log(error);
+    console.log(error.response);
     const originalRequest = error.config;
     //check if refresh token was bounced
     if (

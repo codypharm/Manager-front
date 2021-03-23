@@ -576,6 +576,35 @@ class stockModel extends Database {
     }
   }
 
+  //update current match
+  remoteActivityUpdateMatch(detail, id) {
+    return this.couch.update("all_activities", {
+      _id: id,
+      _rev: detail.rev,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year,
+      activity: detail.activity,
+      detail: detail.detail,
+      remote: true,
+      editedId: detail.editedId,
+      staffName: detail.staffName,
+      staffId: detail.staffId
+    });
+  }
+
+  async remoteUpdateAllActivities(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteActivityUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
+  }
+
   insertProductUpdate(editClass, edit, batchId, id) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();

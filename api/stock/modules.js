@@ -37,7 +37,6 @@ const upload = async stock => {
 
   Promise.all(promises).then(async () => {
     await stockModel.remoteUpdateAllProduct(stock);
-    console.log("we go");
   });
 };
 

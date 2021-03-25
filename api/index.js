@@ -1,6 +1,7 @@
 const usersClass = require("./users");
 const stockClass = require("./stock");
 const activityClass = require("./activities");
+const expenseClass = require("./expenses");
 const ourStore = require("../src/js/store");
 
 //instantiate classes
@@ -10,9 +11,14 @@ const store = new ourStore();
 const users = new usersClass();
 const stock = new stockClass();
 const activities = new activityClass();
+const expenses = new expenseClass();
+
+const proceedToAttendance = () => {
+  console.log("gone");
+};
 
 const proceedToExpenses = () => {
-  console.log("pro");
+  expenses.handleExpenses(proceedToAttendance);
 };
 //handle activities
 const proceedToActivities = () => {

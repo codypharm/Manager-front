@@ -125,6 +125,32 @@ class Expense extends Database {
       return [];
     }
   }
+
+  //update current match
+  remoteExpenseUpdateMatch(detail, id) {
+    return this.couch.update("expenses", {
+      _id: id,
+      _rev: detail.rev,
+      amt: detail.amt,
+      day: detail.day,
+      description: detail.description,
+      month: detail.month,
+      name: detail.name,
+      remote: true,
+      year: detail.year
+    });
+  }
+
+  async remoteUpdateAllExpenses(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteExpenseUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
+  }
 }
 
 module.exports = Expense;

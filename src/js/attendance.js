@@ -124,7 +124,7 @@ const searchAllAttendance = e => {
   }
 };
 
-//submit attandance
+//submit attendance
 const submitAttendance = e => {
   e.preventDefault();
   let valueId = document.getElementById("attendanceId").value;
@@ -164,7 +164,7 @@ const submitAttendance = e => {
     btnSpinner.classList.remove("spinner-border-sm");
   } else {
     //get user details
-    console.log(staffData);
+
     let thisUser = attendanceModel.getThisUser(staffData, valueId);
 
     //generate unique id
@@ -227,6 +227,32 @@ const exitStaff = e => {
       year,
       id
     )[0];
+    let updater = attendanceModel.updateAttendance(data);
+    updater.then(({ data, headers, status }) => {
+      if (status == 201) {
+        //get attendance again
+        let attendance = attendanceModel.getAttendance();
+        attendance.then(({ data }) => {
+          attendanceRecord = data.rows;
+
+          let day = document.getElementById("attendanceDay").value;
+          let month = document.getElementById("attendanceMonth").value;
+          let year = document.getElementById("attendanceYear").value;
+
+          //get list
+          getList(day, month, year);
+          //enable button
+          document.getElementById("processBtn").disabled = false;
+          //add values to DOM
+          document.getElementById("attendanceDay").value = day;
+          document.getElementById("attendanceMonth").value = month;
+          document.getElementById("attendanceYear").value = year;
+          document.getElementById(
+            "dispDate"
+          ).textContent = `${day}-${month}-${year}`;
+        });
+      }
+    });
   } else {
     //show error message
     showModal("You can no longer exit from this date");

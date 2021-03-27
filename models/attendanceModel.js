@@ -144,8 +144,39 @@ class attendanceModel extends Database {
       arrivalRecorderEmail: data.value.arrivalRecorderEmail,
       exitRecorder: loginDetail.fname + " " + loginDetail.lname,
       exitRecorderEmail: loginDetail.email,
-      remote: data.value.remote
+      remote: false
     });
+  }
+
+  //update current match
+  remoteAttendanceUpdateMatch(detail, id) {
+    return this.couch.update("attendance", {
+      _id: id,
+      _rev: detail.rev,
+      staffId: detail.staffId,
+      staffName: detail.staffName,
+      arrivalTime: detail.arrivalTime,
+      exitTime: detail.exitTime,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year,
+      arrivalRecorder: detail.arrivalRecorder,
+      arrivalRecorderEmail: detail.arrivalRecorderEmail,
+      exitRecorder: detail.exitRecorder,
+      exitRecorderEmail: detail.exitRecorderEmail,
+      remote: true
+    });
+  }
+
+  async remoteUpdateAllAttendance(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteAttendanceUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
   }
 }
 

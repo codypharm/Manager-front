@@ -418,6 +418,37 @@ class salesModel extends Database {
       return false;
     }
   }
+
+  //update current match
+  remoteSalesUpdateMatch(detail, id) {
+    return this.couch.update("sales", {
+      _id: id,
+      _rev: detail.rev,
+      qty: detail.qty,
+      name: detail.name,
+      price: detail.price,
+      productId: detail.productId,
+      brand: detail.brand,
+      invoiceId: detail.invoiceId,
+      transactionType: detail.transType,
+      disccount: detail.disccount,
+      remote: true,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year
+    });
+  }
+
+  async remoteUpdateSales(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteSalesUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
+  }
 }
 
 module.exports = salesModel;

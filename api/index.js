@@ -3,6 +3,7 @@ const stockClass = require("./stock");
 const activityClass = require("./activities");
 const expenseClass = require("./expenses");
 const attendanceClass = require("./attendance");
+const salesClass = require("./sales");
 const ourStore = require("../src/js/store");
 
 //instantiate classes
@@ -14,12 +15,17 @@ const stock = new stockClass();
 const activities = new activityClass();
 const expenses = new expenseClass();
 const attendance = new attendanceClass();
+const sales = new salesClass();
 
-const proceedToNext = () => {
-  console.log("gone");
+const proceedToInvoices = () => {
+  console.log("invoice");
+};
+
+const proceedToSales = () => {
+  sales.handleSales(proceedToInvoices);
 };
 const proceedToAttendance = () => {
-  attendance.handleAttendance(proceedToNext);
+  attendance.handleAttendance(proceedToSales);
 };
 
 const proceedToExpenses = () => {

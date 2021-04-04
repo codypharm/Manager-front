@@ -140,7 +140,7 @@ class Invoice extends Database {
       totalPrice: detail.value.totalPrice,
       amtPaid: newAmtPaid,
       balance: newBalance,
-      remote: detail.value.remote,
+      remote: false,
       day: detail.value.day,
       month: detail.value.month,
       year: detail.value.year
@@ -158,6 +158,39 @@ class Invoice extends Database {
       month: date.getMonth() + 1,
       year: date.getFullYear()
     });
+  }
+
+  //update current match
+  remoteInvoicesUpdateMatch(detail, id) {
+    return this.couch.update("invoice", {
+      _id: id,
+      _rev: detail.rev,
+      invoiceId: detail.invoiceId,
+      customerAddress: detail.customerAddress,
+      customerName: detail.customerName,
+      customerNumber: detail.customerNumber,
+      transType: detail.transType,
+      disccount: detail.disccount,
+      netPrice: detail.netPrice,
+      totalPrice: detail.totalPrice,
+      amtPaid: detail.amtPaid,
+      remote: true,
+      balance: detail.balance,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year
+    });
+  }
+
+  async remoteUpdateInvoices(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteInvoicesUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
   }
 }
 

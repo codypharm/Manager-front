@@ -5,6 +5,7 @@ const expenseClass = require("./expenses");
 const attendanceClass = require("./attendance");
 const salesClass = require("./sales");
 const invoicesClass = require("./invoices");
+const clearanceClass = require("./clearance");
 const ourStore = require("../src/js/store");
 
 //instantiate classes
@@ -18,12 +19,17 @@ const expenses = new expenseClass();
 const attendance = new attendanceClass();
 const sales = new salesClass();
 const invoices = new invoicesClass();
+const clearance = new clearanceClass();
 
 const proceedToNext = () => {
   console.log("next");
 };
+
+const proceedToClearance = () => {
+  clearance.handleClearance(proceedToNext);
+};
 const proceedToInvoices = () => {
-  invoices.handleInvoices(proceedToNext);
+  invoices.handleInvoices(proceedToClearance);
 };
 
 const proceedToSales = () => {

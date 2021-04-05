@@ -248,6 +248,7 @@ const proceedToSortAccountList = (
 ) => {
   let totalSalesVolume = getTotalSalesVolume(matchedSales);
   let expiredVolume = getExpVolume(expStock);
+
   let expenseAmount = getTotalExpense(mainExp);
   let totalIncome = getTotalIncome(actualInvoices);
 
@@ -418,7 +419,7 @@ const proceedToSortStockSales = matchedSales => {
         percentProfit: percentageGain
       });
     } else {
-      //everyting should be zero
+      //everything should be zero
       reportArray.push({
         id: product.value.prodId,
         name: product.value.name,
@@ -473,6 +474,7 @@ const proceedToGetSales = (month, year, reportType) => {
       let expenses = reportModel.getExpenses();
       expenses.then(({ data }) => {
         let allExp = data.rows;
+
         //get expenses for this month
         let mainExp = reportModel.getMatchingExp(month, year, allExp);
         //get expired stock for this month

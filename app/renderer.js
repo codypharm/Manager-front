@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //global variables
-const api = require("../api");
+//const api = require("../api");
 var viewEmail;
 var editEmail;
 

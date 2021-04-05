@@ -192,6 +192,31 @@ class Invoice extends Database {
       await this.remoteInvoicesUpdateMatch(allMatch[i].value, allMatch[i].id);
     }
   }
+
+  //update current match
+  remoteClearanceUpdateMatch(detail, id) {
+    return this.couch.update("debt_clearance", {
+      _id: id,
+      _rev: detail.rev,
+      paymentFor: detail.paymentFor,
+      currentAmtPaid: detail.currentAmtPaid,
+      remote: true,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year
+    });
+  }
+
+  async remoteUpdateClearance(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteClearanceUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
+  }
 }
 
 module.exports = Invoice;

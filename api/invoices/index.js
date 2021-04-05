@@ -13,7 +13,7 @@ class Invoices {
   }
 
   //upload
-  uploadInvoicesToRemote(invoices, proceedToNext) {
+  uploadInvoicesToRemote(invoices, proceedToClearance) {
     //filter out Invoices with remote =  false
     let filteredInvoices = modules.filterInvoices(invoices);
 
@@ -22,15 +22,15 @@ class Invoices {
       let upload = modules.upload(filteredInvoices);
     }
     //move on while the task runs asynchronously
-    proceedToNext();
+    proceedToClearance();
   }
 
   //handle Invoices
-  handleInvoices(proceedToNext) {
+  handleInvoices(proceedToClearance) {
     //get staff list
     const allInvoices = invoiceModel.getAllInvoices();
     allInvoices.then(({ data, headers, status }) => {
-      this.uploadInvoicesToRemote(data.rows, proceedToNext);
+      this.uploadInvoicesToRemote(data.rows, proceedToClearance);
     });
   }
 }

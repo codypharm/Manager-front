@@ -16,7 +16,6 @@ const upload = async invoices => {
   let branch = "batch730";
   let promises = [];
   for (let i = 0; i < invoices.length; i++) {
-    console.log(invoices[i]);
     promises.push(
       axiosInstance.post("invoices/", {
         date: `${invoices[i].value.year}-${invoices[i].value.month}-${invoices[i].value.day}`,

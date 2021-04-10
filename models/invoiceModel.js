@@ -135,6 +135,7 @@ class Invoice extends Database {
       customerName: detail.value.customerName,
       customerNumber: detail.value.customerNumber,
       transType: "credit",
+      attender: detail.value.attender,
       disccount: detail.value.disccount,
       netPrice: detail.value.netPrice,
       totalPrice: detail.value.totalPrice,
@@ -149,11 +150,13 @@ class Invoice extends Database {
 
   insertClearanceDetails(id, amtEntered, invoiceId) {
     let date = new Date();
+    let loginDetail = store.getLoginDetail();
     return this.couch.insert("debt_clearance", {
       id: id,
       paymentFor: invoiceId,
       currentAmtPaid: amtEntered,
       remote: false,
+      attender: loginDetail.fname + " " + loginDetail.lname,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear()
@@ -171,6 +174,7 @@ class Invoice extends Database {
       customerNumber: detail.customerNumber,
       transType: detail.transType,
       disccount: detail.disccount,
+      attender: detail.attender,
       netPrice: detail.netPrice,
       totalPrice: detail.totalPrice,
       amtPaid: detail.amtPaid,
@@ -200,6 +204,7 @@ class Invoice extends Database {
       _rev: detail.rev,
       paymentFor: detail.paymentFor,
       currentAmtPaid: detail.currentAmtPaid,
+      attender: detail.attender,
       remote: true,
       day: detail.day,
       month: detail.month,

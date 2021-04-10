@@ -257,6 +257,7 @@ class salesModel extends Database {
     balance
   ) {
     let date = new Date();
+    let loginDetail = store.getLoginDetail();
     return this.couch.insert("invoice", {
       id: id,
       invoiceId: invoiceId,
@@ -271,6 +272,7 @@ class salesModel extends Database {
       amtPaid: amtPaid,
       remote: false,
       balance: balance,
+      attender: loginDetail.fname + " " + loginDetail.lname,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear()

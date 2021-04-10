@@ -13,7 +13,7 @@ const filterInvoices = invoices => {
 const upload = async invoices => {
   // add company and branch ID manually
   let company = "Compy2u";
-  let branch = "batch730";
+  let branch = "BR2334";
   let promises = [];
   for (let i = 0; i < invoices.length; i++) {
     promises.push(
@@ -26,6 +26,7 @@ const upload = async invoices => {
         net_price: invoices[i].value.netPrice,
         paid: invoices[i].value.amtPaid,
         balance: invoices[i].value.balance,
+        attender: invoices[i].value.attender,
         customer_name: invoices[i].value.customerName,
         customer_number: invoices[i].value.customerNumber,
         customer_address: invoices[i].value.customerAddress,

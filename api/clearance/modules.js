@@ -13,7 +13,7 @@ const filterClearance = clearance => {
 const upload = async clearance => {
   // add company and branch ID manually
   let company = "Compy2u";
-  let branch = "batch730";
+  let branch = "BR2334";
   let promises = [];
   for (let i = 0; i < clearance.length; i++) {
     promises.push(
@@ -22,6 +22,7 @@ const upload = async clearance => {
         transactionType: clearance[i].value.transType,
         invoiceId: clearance[i].value.paymentFor,
         paid: clearance[i].value.currentAmtPaid,
+        attender: clearance[i].value.attender,
         companyId: company,
         branchId: branch
       })

@@ -10,10 +10,10 @@ const filterActivities = activities => {
   return match;
 };
 
-const upload = async activities => {
+const upload = async (activities, setup) => {
   // add company and branch ID manually
-  let company = "Compy2u";
-  let branch = "batch730";
+  let company = setup.value.companyId;
+  let branch = setup.value.branchId;
   let promises = [];
   for (let i = 0; i < activities.length; i++) {
     promises.push(

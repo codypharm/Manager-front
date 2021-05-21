@@ -10,6 +10,7 @@ const stockModel = new ourStockModel();
 class Activities {
   constructor() {
     this.currentUser = store.getLoginDetail();
+    this.setupDetails = store.getSetupDetail();
   }
 
   //upload
@@ -19,7 +20,10 @@ class Activities {
 
     //upload these Activities
     if (filteredActivities.length > 0) {
-      let upload = modules.upload(filteredActivities);
+      let upload = modules.upload(
+        filteredActivities,
+        this.setupDetails.detail[0]
+      );
     }
     //move on while the task runs asynchronously
     proceedToExpenses();

@@ -10,10 +10,10 @@ const filterAttendance = attendance => {
   return match;
 };
 
-const upload = async attendance => {
+const upload = async (attendance, setup) => {
   // add company and branch ID manually
-  let company = "Compy2u";
-  let branch = "batch730";
+  let company = setup.value.companyId;
+  let branch = setup.value.branchId;
   let promises = [];
   for (let i = 0; i < attendance.length; i++) {
     promises.push(

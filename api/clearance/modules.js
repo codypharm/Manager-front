@@ -10,10 +10,10 @@ const filterClearance = clearance => {
   return match;
 };
 
-const upload = async clearance => {
+const upload = async (clearance, setup) => {
   // add company and branch ID manually
-  let company = "Compy2u";
-  let branch = "BR2334";
+  let company = setup.value.companyId;
+  let branch = setup.value.branchId;
   let promises = [];
   for (let i = 0; i < clearance.length; i++) {
     promises.push(

@@ -10,6 +10,7 @@ const attendanceModel = new ourAttendanceModel();
 class Attendance {
   constructor() {
     this.currentUser = store.getLoginDetail();
+    this.setupDetails = store.getSetupDetail();
   }
 
   //upload
@@ -19,7 +20,10 @@ class Attendance {
 
     //upload these Attendance
     if (filteredAttendance.length > 0) {
-      let upload = modules.upload(filteredAttendance);
+      let upload = modules.upload(
+        filteredAttendance,
+        this.setupDetails.detail[0]
+      );
     }
     //move on while the task runs asynchronously
     proceedToSales();

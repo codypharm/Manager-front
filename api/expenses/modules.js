@@ -10,10 +10,10 @@ const filterExpenses = expenses => {
   return match;
 };
 
-const upload = async expenses => {
+const upload = async (expenses, setup) => {
   // add company and branch ID manually
-  let company = "Compy2u";
-  let branch = "batch730";
+  let company = setup.value.companyId;
+  let branch = setup.value.branchId;
   let promises = [];
   for (let i = 0; i < expenses.length; i++) {
     promises.push(

@@ -10,6 +10,7 @@ const invoiceModel = new ourInvoicesModel();
 class Invoices {
   constructor() {
     this.currentUser = store.getLoginDetail();
+    this.setupDetails = store.getSetupDetail();
   }
 
   //upload
@@ -19,7 +20,10 @@ class Invoices {
 
     //upload these Invoices
     if (filteredInvoices.length > 0) {
-      let upload = modules.upload(filteredInvoices);
+      let upload = modules.upload(
+        filteredInvoices,
+        this.setupDetails.detail[0]
+      );
     }
     //move on while the task runs asynchronously
     proceedToClearance();

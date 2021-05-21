@@ -10,10 +10,10 @@ const filterInvoices = invoices => {
   return match;
 };
 
-const upload = async invoices => {
+const upload = async (invoices, setup) => {
   // add company and branch ID manually
-  let company = "Compy2u";
-  let branch = "BR2334";
+  let company = setup.value.companyId;
+  let branch = setup.value.branchId;
   let promises = [];
   for (let i = 0; i < invoices.length; i++) {
     promises.push(

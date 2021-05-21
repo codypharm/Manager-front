@@ -10,6 +10,7 @@ const salesModel = new ourSalesModel();
 class Sales {
   constructor() {
     this.currentUser = store.getLoginDetail();
+    this.setupDetails = store.getSetupDetail();
   }
 
   //upload
@@ -19,7 +20,7 @@ class Sales {
 
     //upload these Sales
     if (filteredSales.length > 0) {
-      let upload = modules.upload(filteredSales);
+      let upload = modules.upload(filteredSales, this.setupDetails.detail[0]);
     }
     //move on while the task runs asynchronously
     proceedToInvoices();

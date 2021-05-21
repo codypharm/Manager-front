@@ -10,6 +10,7 @@ const expenseModel = new ourExpenseModel();
 class Expenses {
   constructor() {
     this.currentUser = store.getLoginDetail();
+    this.setupDetails = store.getSetupDetail();
   }
 
   //upload
@@ -19,7 +20,10 @@ class Expenses {
 
     //upload these Expenses
     if (filteredExpenses.length > 0) {
-      let upload = modules.upload(filteredExpenses);
+      let upload = modules.upload(
+        filteredExpenses,
+        this.setupDetails.detail[0]
+      );
     }
     //move on while the task runs asynchronously
     proceedToAttendance();

@@ -22,6 +22,7 @@ const upload = async (sales, setup) => {
         transactionType: sales[i].value.transType,
         staffId: sales[i].value.staffId,
         invoiceId: sales[i].value.invoiceId,
+        discount: sales[i].value.disccount,
         price: sales[i].value.price,
         quantity: sales[i].value.qty,
         productName: sales[i].value.name,

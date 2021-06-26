@@ -378,7 +378,7 @@ class salesModel extends Database {
       totalDisccount += Number(sale.value.disccount);
     });
     let averageDisccount = totalDisccount / match.length;
-    return Math.ceil(averageDisccount);
+    return averageDisccount;
   }
 
   getOtherAvgDisccount(match, saleType) {

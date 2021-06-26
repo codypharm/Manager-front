@@ -18,6 +18,22 @@
     <div class="position" id="position">
       Manager
     </div>
+
+    <div class="row pb-0 pt-0 mt-2">
+      <div class="col-12 text-center">
+        <button
+          class="btn  btn-outline-success btn-sm"
+          onclick="synchronize(event)"
+        >
+          Synchronize
+          <span
+            class="spinner-border spinner-border-sm"
+            style="display: none"
+            id="sync"
+          ></span>
+        </button>
+      </div>
+    </div>
     <div class="menuBox">
       <ul class="main-nav-ul">
         <li class="dashboard selected" onclick="loadDashboard(event)">

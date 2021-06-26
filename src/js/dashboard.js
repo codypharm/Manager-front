@@ -344,3 +344,9 @@ const loadUpdashboard = () => {
 
   document.getElementById("brId").textContent = setup.value.branchId;
 };
+
+//synchronize with remote
+const synchronize = e => {
+  document.getElementById("sync").style.display = "";
+  api();
+};

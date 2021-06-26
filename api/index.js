@@ -21,8 +21,10 @@ const sales = new salesClass();
 const invoices = new invoicesClass();
 const clearance = new clearanceClass();
 
+const toastify = require("toastify-js");
+
 const proceedToNext = () => {
-  console.log("next");
+  document.getElementById("sync").style.display = "none";
 };
 
 const proceedToClearance = () => {
@@ -56,5 +58,9 @@ const proceedToStock = () => {
 const proceed = () => {
   users.handleUsers(proceedToStock);
 };
-//login current user to server
-const login = users.loginRemote(proceed);
+const startSynchronization = () => {
+  //login current user to server
+  const login = users.loginRemote(proceed);
+};
+
+module.exports = startSynchronization;

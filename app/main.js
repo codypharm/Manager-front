@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
 "use strict";
 
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, Notification } = require("electron");
 const Database = require("../src/js/db");
 const Store = require("../src/js/store");
+//const { CATCH_ON_MAIN } = require("../utils/constants");
 
 //const path = require("path");
 // eslint-disable-next-line
@@ -73,6 +74,13 @@ const createWindow = () => {
     mainWindow = null;
   });
 };
+
+/*ipcMain.on(CATCH_ON_MAIN, (event, arg) => {
+  let n = new Notification({
+    title: "Synchronization Report",
+    body: arg
+  }).show();
+});*/
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

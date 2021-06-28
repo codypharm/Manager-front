@@ -20,10 +20,20 @@ const attendance = new attendanceClass();
 const sales = new salesClass();
 const invoices = new invoicesClass();
 const clearance = new clearanceClass();
-
-const toastify = require("toastify-js");
+const { ipcRenderer } = require("electron");
+const { CATCH_ON_MAIN } = require("../utils/constants");
+const { Notyf } = require("notyf");
 
 const proceedToNext = () => {
+  //notification for synchronization completion
+  //ipcRenderer.send(CATCH_ON_MAIN, "synchronization done");
+  // Create an instance of Notyf
+  const notyf = new Notyf({
+    duration: 3000
+  });
+
+  // Display an error notification
+  notyf.success("Synchronization completed");
   document.getElementById("sync").style.display = "none";
 };
 

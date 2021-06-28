@@ -179,7 +179,7 @@ class salesModel extends Database {
         product.productId == id ||
         product.name.toUpperCase() == id.toUpperCase()
       ) {
-        price = (product.initialPrice * qty) / unit;
+        price = Number(Number(Number(product.initialPrice) * qty) / unit);
 
         product.qty = qty;
         product.price = price;

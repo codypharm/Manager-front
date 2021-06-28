@@ -54,7 +54,7 @@ var invoiceTemplate =
   " <tr>" +
   "   <th>Sub Total</th>" +
   "   <td></td>" +
-  '  <td><stong id="total"></stong></td>' +
+  '  <td><strong id="total"></strong></td>' +
   " </tr>" +
   " <tr>" +
   "  <th>Disccount</th>" +
@@ -215,7 +215,7 @@ const processSale = e => {
 
   //if no quantity is provided
   if (qty < 1) {
-    //get the proguct unit
+    //get the product unit
 
     qty += unit;
   }
@@ -429,6 +429,7 @@ const execInvoice = (
         //display and print invoice
         if (showStaticModal(invoiceTemplate)) {
           //load purchase to invoice
+          //console.log(cart);
           displayPurchase(cart);
           //enter static part of invoice
           loadInvoiceStaticSection(
@@ -594,7 +595,7 @@ const processCart = e => {
         title: "Vemon",
         buttons: ["Yes", "Cancel"],
         type: "info",
-        message: "Are you sure all purchase have been recorded"
+        message: "Are you sure all purchase has been recorded"
       });
 
       //check if response is yes
@@ -703,30 +704,30 @@ const addUpDispOnlineSales = match => {
 //get average disccount
 const getAverageDisccount = match => {
   let averageDisccount = salesModel.getAvgDisccount(match);
-  document.getElementById("avgDisccount").textContent = averageDisccount;
+  //document.getElementById("avgDisccount").textContent = averageDisccount;
 };
 
 //get average disccount for other sale types
 const getOtherAverageDisccount = (match, saleType) => {
   let averageDisccount = salesModel.getOtherAvgDisccount(match, saleType);
 
-  document.getElementById("avgDisccount").textContent = averageDisccount;
+  //document.getElementById("avgDisccount").textContent = averageDisccount;
 };
 
 //get Balance
 const getBalance = match => {
   let total = salesModel.getTotalSales(match);
   let avgDis = salesModel.getAvgDisccount(match);
-  let balance = total - (avgDis * total) / 100;
-  document.getElementById("balance").textContent = formatMoney(balance);
+  //let balance = total; //- (avgDis * total) / 100;
+  //document.getElementById("balance").textContent = formatMoney(balance);
 };
 
 //get other balance
 const getOtherBalance = (match, saleType) => {
   let total = salesModel.getOtherTotalSales(match, saleType);
   let avgDis = salesModel.getOtherAvgDisccount(match, saleType);
-  let balance = total - (avgDis * total) / 100;
-  document.getElementById("balance").textContent = formatMoney(balance);
+  // let balance = total - (avgDis * total) / 100;
+  //document.getElementById("balance").textContent = formatMoney(balance);
 };
 
 //mark all empty summary box
@@ -737,7 +738,7 @@ const allSummaryHandle = saleType => {
     document.getElementById("totalOnlineSales").textContent = "-";
     document.getElementById("totalCreditSales").textContent = "-";
   }
-  document.getElementById("avgDisccount").textContent = "-";
+  //document.getElementById("avgDisccount").textContent = "-";
   document.getElementById("balance").textContent = "-";
 };
 

@@ -448,7 +448,7 @@ const processDebtPayment = e => {
   let invoiceId = document.getElementById("clearProcessBtn").dataset.id;
   let amtEntered = document.getElementById("paying").value;
 
-  //get detils for the invoice
+  //get details for the invoice
   let invoiceDetail = invoiceModel.getSelectedInvoice(invoices, invoiceId);
 
   let myInvoiceDetail = invoiceDetail[0];
@@ -557,7 +557,7 @@ const processDebtPayment = e => {
   //hideDebtModal();
 };
 
-//function for handeling invoice search
+//function for handling invoice search
 const processInvoiceSearch = (e, invoiceType) => {
   let searchValue = e.target.value.trim();
 
@@ -581,6 +581,7 @@ const processInvoiceSearch = (e, invoiceType) => {
         //display debt invoices
         displayDebtMatchInvoices(matchingInvoices);
       } else {
+        //console.log(matchingInvoices);
         displayMatchInvoices(matchingInvoices);
       }
     } else {

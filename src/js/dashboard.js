@@ -348,5 +348,7 @@ const loadUpdashboard = () => {
 //synchronize with remote
 const synchronize = e => {
   document.getElementById("sync").style.display = "";
+  //disable synchronization button
+  e.target.disabled = true;
   api();
 };

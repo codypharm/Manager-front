@@ -572,7 +572,9 @@ const processCart = e => {
     let deposit = document.getElementById("deposit");
 
     let inputs = [name, number, address, deposit];
-
+    let numNet = netPrice.textContent.replace(/[^\d.-]/g, "");
+    numNet = Number(numNet).toFixed(0);
+    console.log(numNet);
     if (transType == "") {
       showModal("Please enter a transaction type.");
     } else if (transType == "credit" && salesModel.isEmpty(inputs)) {
@@ -587,6 +589,12 @@ const processCart = e => {
       salesModel.isNotPhoneNumber(number.value.trim())
     ) {
       showModal("Please enter a valid phone number.");
+    } else if (transType == "credit" && deposit.value == Number(numNet)) {
+      showModal(
+        "Amount deposited matches that of cash sales and not credit sales"
+      );
+    } else if (transType == "credit" && deposit.value > Number(numNet)) {
+      showModal("Amount deposited is more than net price");
     } else {
       //get window object
       const window = BrowserWindow.getFocusedWindow();

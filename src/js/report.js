@@ -18,7 +18,7 @@ const getProductSales = (prodId, matchedSales) => {
   }
 };
 
-//caluculate total sale volume
+//caluclate total sale volume
 const calculateVolume = thisSales => {
   let total = 0;
   //loop through the sales
@@ -190,7 +190,7 @@ const getCurrentDaySales = (matchedSales, saleDay) => {
 };
 
 //get matching stock values
-const getProducDetail = id => {
+const getProductDetail = id => {
   let unit;
   stock.forEach(prod => {
     if (prod.value.prodId == id) {
@@ -201,14 +201,14 @@ const getProducDetail = id => {
   return [unit];
 };
 //analyse sales
-const getAccountAnalysis = sales => {
+const getAccountAnalysis = (sales, day) => {
   let dailyGain = 0;
   let dailyCp = 0;
   let dailySp = 0;
   //loop through sales for a particular day
   sales.forEach(product => {
-    let [unit] = getProducDetail(product.value.productId);
-    //get actuall unit sold
+    let [unit] = getProductDetail(product.value.productId);
+    //get actual unit sold
     let unitSold = Number(product.value.qty / unit);
     //get selling price
     //let sellingPrice = unitSold * product.value.price;
@@ -223,7 +223,7 @@ const getAccountAnalysis = sales => {
     let gain = sellingPrice - costPrice;
     dailyGain += gain;
   });
-
+  console.log(dailyCp, day);
   return [dailyCp, dailySp, dailyGain];
 };
 
@@ -298,10 +298,11 @@ const proceedToSortAccountList = (
 
       //get analysis for last day of last month
       let [lastDailyCp, lastDailySp, lastDailyGain] = getAccountAnalysis(
-        salesForLastDay
+        salesForLastDay,
+        saleDay
       );
 
-      //assing this as yesterdays gain
+      //assign this as yesterdays gain
       yesterdayGain = lastDailyGain;
       previousDayGain = lastDailyGain;
       previousDaySp = lastDailySp;
@@ -322,8 +323,12 @@ const proceedToSortAccountList = (
     let totalExp = addUpExp(dayExpenses);
     let [net, amtPaid, toPay] = addUpFields(dayInvoices);
     let dispBalance = amtPaid - totalExp;
-    let [dailyCp, dailySp, dailyGain] = getAccountAnalysis(currentDaySales);
-    todayGain = dailyGain;
+    let [dailyCp, dailySp, dailyGain] = getAccountAnalysis(
+      currentDaySales,
+      saleDay
+    );
+
+    todayGain = dailyGain.toFixed(2);
     gainDiff = todayGain - yesterdayGain;
     percDiff = Number((gainDiff / yesterdayGain) * 100).toFixed(1);
     if (isFinite(percDiff)) {

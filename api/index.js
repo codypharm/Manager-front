@@ -34,6 +34,8 @@ const proceedToNext = () => {
 
   // Display an error notification
   notyf.success("Synchronization completed");
+  //remove disabled and also loading sign
+  document.querySelector("#syncBtn").disabled = false;
   document.getElementById("sync").style.display = "none";
 };
 
@@ -68,7 +70,7 @@ const proceedToStock = () => {
 const proceed = () => {
   users.handleUsers(proceedToStock);
 };
-const startSynchronization = () => {
+const startSynchronization = async () => {
   //login current user to server
   const login = users.loginRemote(proceed);
 };

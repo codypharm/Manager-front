@@ -130,6 +130,15 @@ const submitAppSettings = e => {
         if (status == 201) {
           //reload sections
           loadSettingsSections();
+          //restore new value
+          let info = db.couch.get("vemon_setup", viewUrl);
+          info.then(({ data, headers, status }) => {
+            let setUpDetails = data.rows;
+            //store data in electron store
+            store.setSetupDetail(setUpDetails);
+            //call sync function on renderer.js
+            autosync();
+          });
         }
       });
   }

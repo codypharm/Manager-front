@@ -6,15 +6,47 @@ var viewEmail;
 var editEmail;
 
 //get setup details
-var setUpDetails;
 let viewUrl = db.viewUrl.setup;
-
+var setUpDetails;
 let info = db.couch.get("vemon_setup", viewUrl);
 info.then(({ data, headers, status }) => {
   setUpDetails = data.rows;
   //store data in electron store
   store.setSetupDetail(setUpDetails);
 });
+
+//auto sync with remote
+const autosync = () => {
+  //get time interval from store
+  let setUpInfo = store.getSetupDetail();
+  let interval = setUpInfo.detail[0].value.update_interval;
+  let package = setUpInfo.detail[0].value.app_package;
+
+  //check if app is premium and return if not premium
+  if (!package == "premium") return;
+
+  let updateTime;
+  //calculate intervals in millisecond
+  if (interval == "30mins") {
+    updateTime = 30 * 60 * 1000;
+  } else if (interval == "1hr") {
+    updateTime = 120 * 60 * 1000;
+  } else if (interval == "3hr") {
+    updateTime = 180 * 60 * 1000;
+  } else if (interval == "6hr") {
+    updateTime = 240 * 60 * 1000;
+  } else if (interval == "12hr") {
+    updateTime = 720 * 60 * 1000;
+  }
+
+  //synchronize with remote
+  setInterval(() => {
+    document.getElementById("sync").style.display = "";
+    //disable synchronization button
+    document.getElementById("syncBtn").disabled = true;
+    api();
+  }, updateTime);
+};
 
 const appendUserDetails = () => {
   let user = store.getLoginDetail();
@@ -517,6 +549,8 @@ const processLogin = e => {
 
             //store them in electron store
             if (store.setUserData(user)) {
+              //start auto sync
+              autosync();
               //record attendance
               //get user details
 

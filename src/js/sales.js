@@ -747,7 +747,7 @@ const allSummaryHandle = saleType => {
     document.getElementById("totalCreditSales").textContent = "-";
   }
   //document.getElementById("avgDisccount").textContent = "-";
-  document.getElementById("balance").textContent = "-";
+  //document.getElementById("balance").textContent = "-";
 };
 
 //get sales matching the date provided
@@ -862,12 +862,15 @@ const loadOtherSales = saleType => {
   let salesGet = salesModel.getSales();
   salesGet.then(({ data, headers, status }) => {
     sales = data.rows;
-    //get sales for the mathching date
+    //get sales for the matching date
     getOtherSales(day, month, year, saleType);
 
     //enable button
     document.getElementById("processBtn").disabled = false;
   });
+
+  //enable button
+  //document.getElementById("processBtn").disabled = false;
 };
 
 //load sales on button click

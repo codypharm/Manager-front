@@ -70,7 +70,7 @@ const proceedToStock = () => {
 const proceed = () => {
   users.handleUsers(proceedToStock);
 };
-const startSynchronization = async () => {
+const startSynchronization = () => {
   //login current user to server
   const login = users.loginRemote(proceed);
 };

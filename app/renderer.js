@@ -214,7 +214,7 @@ const processStandard = errorDiv => {
   } else if (document.getElementById("termCheck").checked == false) {
     displayError(errorDiv, "Please you need to accept our terms");
   } else {
-    //asign values to details object
+    //assign values to details object
     let package = "standard";
     let address = stdAddress;
     details = { package, companyName, address };

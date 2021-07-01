@@ -36,7 +36,12 @@ class Validator extends Database {
         details.manager_lastname.slice(1),
       manager_password: details.manager_password,
       manager_email: details.manager_email,
-      remote: false
+      remote: false,
+      expiration_limit: "90",
+      logout_time: "30mins",
+
+      stock_limit: "30",
+      update_interval: "1hr"
     });
   }
 

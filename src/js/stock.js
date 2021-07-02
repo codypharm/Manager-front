@@ -195,9 +195,9 @@ const removeRecord = id => {
 };
 
 const addProduct = e => {
- if(recordedProduct == undefined){
-  var recordedProduct = []
- }
+  if (recordedProduct == undefined) {
+    var recordedProduct = [];
+  }
   //add to list number
   listNumber += 1;
 
@@ -935,6 +935,14 @@ const submitBatchEdit = e => {
         }
       });
     });
+  } else {
+    //remove spinner
+    //remove spinner
+    btn.classList.remove("spinner-border");
+    btn.classList.remove("spinner-border-sm");
+
+    //hide modal
+    hideGenStaticModal("batchEditContent");
   }
 };
 

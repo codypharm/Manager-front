@@ -1,5 +1,6 @@
 const axiosInstance = require("../axiosInstance");
 const ourModel = require("../../models/invoiceModel");
+const { Notyf } = require("notyf");
 const invoiceModel = new ourModel();
 
 const filterClearance = clearance => {
@@ -32,9 +33,22 @@ const upload = async (clearance, setup) => {
     );
   }
 
-  Promise.all(promises).then(async () => {
-    await invoiceModel.remoteUpdateClearance(clearance);
-  });
+  Promise.all(promises)
+    .then(async () => {
+      await invoiceModel.remoteUpdateClearance(clearance);
+    })
+    .catch(error => {
+      //handle error
+      const notyf = new Notyf({
+        duration: 3000
+      });
+
+      // Display an error notification
+      notyf.error("An Error Occured");
+      //remove disabled and also loading sign
+      document.querySelector("#syncBtn").disabled = false;
+      document.getElementById("sync").style.display = "none";
+    });
 };
 
 module.exports = { filterClearance, upload };

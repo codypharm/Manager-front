@@ -1,5 +1,6 @@
 const axiosInstance = require("../axiosInstance");
 const ourModel = require("../../models/attendanceModel");
+const { Notyf } = require("notyf");
 const attendanceModel = new ourModel();
 
 const filterAttendance = attendance => {
@@ -32,9 +33,22 @@ const upload = async (attendance, setup) => {
     );
   }
 
-  Promise.all(promises).then(async () => {
-    await attendanceModel.remoteUpdateAllAttendance(attendance);
-  });
+  Promise.all(promises)
+    .then(async () => {
+      await attendanceModel.remoteUpdateAllAttendance(attendance);
+    })
+    .catch(error => {
+      //handle error
+      const notyf = new Notyf({
+        duration: 3000
+      });
+
+      // Display an error notification
+      notyf.error("An Error Occured");
+      //remove disabled and also loading sign
+      document.querySelector("#syncBtn").disabled = false;
+      document.getElementById("sync").style.display = "none";
+    });
 };
 
 module.exports = { filterAttendance, upload };

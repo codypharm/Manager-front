@@ -2,6 +2,7 @@ const axios = require("axios");
 const ourStore = require("../../src/js/store");
 const ourStaffModel = require("../../models/staffModel");
 const modules = require("./modules");
+const { Notyf } = require("notyf");
 
 // instantiate classes
 const store = new ourStore();
@@ -24,7 +25,22 @@ class Users {
         proceed();
       })
       .catch(err => {
-        console.log(err);
+        let errorMessage = "An error occurred";
+
+        if (err.resonse) {
+          errorMessage = err.response.data.detail
+            ? "Invalid online credentials or your account has not been activated"
+            : "An error ocurred";
+        }
+        const notyf = new Notyf({
+          duration: 5000
+        });
+
+        // Display an error notification
+        notyf.error(`${errorMessage}`);
+        //remove disabled and also loading sign
+        document.querySelector("#syncBtn").disabled = false;
+        document.getElementById("sync").style.display = "none";
         //reset tokens to empty data
         store.setTokens(false, false);
       });

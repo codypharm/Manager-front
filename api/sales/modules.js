@@ -1,5 +1,6 @@
 const axiosInstance = require("../axiosInstance");
 const ourModel = require("../../models/salesModel");
+const { Notyf } = require("notyf");
 const salesModel = new ourModel();
 
 const filterSales = sales => {
@@ -36,9 +37,22 @@ const upload = async (sales, setup) => {
     );
   }
 
-  Promise.all(promises).then(async () => {
-    await salesModel.remoteUpdateSales(sales);
-  });
+  Promise.all(promises)
+    .then(async () => {
+      await salesModel.remoteUpdateSales(sales);
+    })
+    .catch(error => {
+      //handle error
+      const notyf = new Notyf({
+        duration: 3000
+      });
+
+      // Display an error notification
+      notyf.error("An Error Occured");
+      //remove disabled and also loading sign
+      document.querySelector("#syncBtn").disabled = false;
+      document.getElementById("sync").style.display = "none";
+    });
 };
 
 module.exports = { filterSales, upload };

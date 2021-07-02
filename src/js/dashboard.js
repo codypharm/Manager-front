@@ -321,7 +321,7 @@ const handleDashExpenses = () => {
 
 //load up dashboard
 const loadUpdashboard = () => {
-  //handlle date
+  //handle date
   let date = new Date();
   day = date.getDate();
   month = date.getMonth() + 1;

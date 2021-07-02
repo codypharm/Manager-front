@@ -766,6 +766,8 @@ const analyseTop = selectedStockList => {
   document.getElementById("analysisStockPrice").textContent = ` ₦${formatMoney(
     productDetail.value.price
   )}`;
+  document.getElementById("analysisStockBrand").textContent =
+    productDetail.value.brand;
 };
 
 const analyseStock = () => {

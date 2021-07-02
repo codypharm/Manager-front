@@ -27,7 +27,7 @@ class Users {
       .catch(err => {
         let errorMessage = "An error occurred";
 
-        if (err.resonse) {
+        if (err.response) {
           errorMessage = err.response.data.detail
             ? "Invalid online credentials or your account has not been activated"
             : "An error ocurred";

@@ -630,14 +630,19 @@ const showStaffValues = selectedEmail => {
 };
 
 //update status
-const updateStatus = (e, staffEmail) => {
+const updateStatus = (e, staffEmail, command) => {
   //confirm command
   let confirmation = "Click OK to continue";
   if (confirm(confirmation)) {
     //add waiting
     e.target.textContent = "Please wait...";
     //get command
-    let command = e.target.dataset.acctStatus;
+    let mainCommand = e.target.dataset.acctStatus;
+    //if main command is defined else use the one in function argument
+    if (mainCommand) {
+      command = mainCommand;
+    }
+    console.log(command);
     //declare new access
     let access = command === "block" ? "closed" : "open";
 

@@ -26,7 +26,7 @@
     No match found
   </div>
   <!--===============-->
-  <!--curent user details -->
+  <!--current user details -->
   <!--==================-->
   <div class="listCard currentUser">
     <div class="cardImg">
@@ -82,9 +82,9 @@
       </div>
     <div class="staffName"> {{value.fname}} {{value.lname}}  </div>
     <div class="staffPosition"> {{value.position}}  </div>
-    <div class="statusBox  {{accountStatus value.access}}" data-acctStatus = "{{accountStatus value.access}}" onclick="updateStatus(event, '{{value.email}}')" > {{accountStatus value.access}} </div>
+    <div class="statusBox  {{accountStatus value.access}}" data-acctStatus="{{accountStatus value.access}}" onclick="updateStatus(event, '{{value.email}}','{{accountStatus value.access}}')" > {{accountStatus value.access}} </div>
     <div class="staffAction">
-    <div class="actions" data-staffEmail="{{value.email}}" onclick="viewStaff(event)">  View </div>
+    <div class="actions" data-staffEmail="{{value.email}}" onclick="viewStaff(event)">{{accountStatus value.access}}  View </div>
     <div class="actions" data-staffEmail="{{value.email}}" onclick="editStaff(event)">  Edit </div>
     </div>
     </div>

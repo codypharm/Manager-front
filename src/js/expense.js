@@ -235,6 +235,7 @@ const submitExpenses = e => {
     //check if staff id exist
     showExpError("Invalid name");
   } else {
+    console.log("ok");
     let genId = expenseModel.generateId();
     genId.then(ids => {
       let id = ids[0];
@@ -258,7 +259,7 @@ const submitExpenses = e => {
           setTimeout(() => {
             //hide the pop up
             if (hideGenStaticModal("expenseContent")) {
-              //reload tabel with date
+              //reload table with date
               loadCurrentExpenses();
             }
           }, 900);

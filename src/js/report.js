@@ -47,11 +47,12 @@ const calculatePercentVolume = (saleVolume, totalSalesVolume) => {
 const getAveragePpmu = prodId => {
   let count = 0;
   let totalPpmu = 0;
-  //loop through stock and calculate average ppmu
+  //loop through stock and calculate average ppmu for the batch remaining
   stock.forEach(product => {
     if (product.value.prodId == prodId) {
       count++;
       totalPpmu += Number(product.value.ppmu);
+      //console.log(totalPpmu);
     }
   });
 
@@ -216,14 +217,16 @@ const getAccountAnalysis = (sales, day) => {
     dailySp += sellingPrice;
     //get average ppmu (pricePerMinUnit)
     let averagePpmu = getAveragePpmu(product.value.productId);
+    //console.log(averagePpmu, product);
     //get cost price
     let costPrice = averagePpmu * unitSold;
     dailyCp += costPrice;
+
     //get gain
     let gain = sellingPrice - costPrice;
     dailyGain += gain;
   });
-  console.log(dailyCp, day);
+  //console.log(dailyCp, day);
   return [dailyCp, dailySp, dailyGain];
 };
 

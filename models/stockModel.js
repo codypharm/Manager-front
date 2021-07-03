@@ -269,7 +269,9 @@ class stockModel extends Database {
       unit: product.unit,
       form: product.form[0].toUpperCase() + product.form.slice(1),
       price: product.price,
-      pricePerMinUnit: Number(product.totalCost) / Number(product.qty),
+      pricePerMinUnit:
+        (Number(product.totalCost) * Number(product.unit)) /
+        Number(product.qty),
       error: error,
       batchId: batchId,
       remote: false,
@@ -478,7 +480,8 @@ class stockModel extends Database {
       qty: editQty,
       form: detail.form,
       unit: detail.unit,
-      pricePerMinUnit: Number(detail.totalCost) / Number(editQty),
+      pricePerMinUnit:
+        (Number(detail.totalCost) * Number(detail.unit)) / Number(editQty),
       price: detail.price,
       totalCost: detail.totalCost,
       expDate: editExpDate,
@@ -507,7 +510,8 @@ class stockModel extends Database {
       price: price,
       totalCost: detail.totalCost,
       expDate: detail.expDate,
-      pricePerMinUnit: detail.ppmu,
+      pricePerMinUnit:
+        (Number(detail.totalCost) * Number(unit)) / Number(detail.qty),
       error: detail.error,
       remote: false,
       day: detail.day,

@@ -81,7 +81,9 @@ class Expense extends Database {
 
   insertExpAct(id, edit, editClass) {
     let date = new Date();
+    // eslint-disable-next-line no-undef
     let loginDetail = store.getLoginDetail();
+
     return this.couch.insert("all_activities", {
       id: id,
       day: date.getDate(),

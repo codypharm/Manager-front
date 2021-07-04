@@ -19,6 +19,9 @@ class Store {
       },
       tokens: {
         type: "object"
+      },
+      syncState: {
+        type: "object"
       }
     };
     //instantiate store
@@ -53,6 +56,10 @@ class Store {
 
   getTokens() {
     return this.store.get("tokens");
+  }
+
+  getSyncState() {
+    return this.store.get("syncState");
   }
 
   setEditDetail(editDetail) {
@@ -93,6 +100,12 @@ class Store {
   setSaleStore(record) {
     this.store.set("records", {
       record: record
+    });
+  }
+
+  setSyncState(state) {
+    this.store.set("syncState", {
+      state
     });
   }
   setTokens(access, refresh) {

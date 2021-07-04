@@ -20,8 +20,8 @@ const attendance = new attendanceClass();
 const sales = new salesClass();
 const invoices = new invoicesClass();
 const clearance = new clearanceClass();
-const { ipcRenderer } = require("electron");
-const { CATCH_ON_MAIN } = require("../utils/constants");
+//const { ipcRenderer } = require("electron");
+//const { CATCH_ON_MAIN } = require("../utils/constants");
 const { Notyf } = require("notyf");
 
 const proceedToNext = () => {
@@ -37,6 +37,8 @@ const proceedToNext = () => {
   //remove disabled and also loading sign
   document.querySelector("#syncBtn").disabled = false;
   document.getElementById("sync").style.display = "none";
+  //set sync store
+  store.setSyncState(false);
 };
 
 const proceedToClearance = () => {
@@ -71,7 +73,9 @@ const proceed = () => {
   users.handleUsers(proceedToStock);
 };
 const startSynchronization = () => {
+  store.setSyncState(true);
   //login current user to server
+  // eslint-disable-next-line no-unused-vars
   const login = users.loginRemote(proceed);
 };
 

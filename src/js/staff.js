@@ -642,7 +642,7 @@ const updateStatus = (e, staffEmail, command) => {
     if (mainCommand) {
       command = mainCommand;
     }
-    console.log(command);
+
     //declare new access
     let access = command === "block" ? "closed" : "open";
 
@@ -668,6 +668,7 @@ const updateStatus = (e, staffEmail, command) => {
         state: selectedUser.value.address.state,
         permission: selectedUser.value.permission,
         access: access,
+        staffId: selectedUser.value.staffId,
         image: selectedUser.value.image,
         pwd: selectedUser.value.pwd,
         regDay: selectedUser.value.regDay,

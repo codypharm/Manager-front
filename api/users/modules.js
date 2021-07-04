@@ -41,6 +41,8 @@ const upload = async users => {
         //remove disabled and also loading sign
         document.querySelector("#syncBtn").disabled = false;
         document.getElementById("sync").style.display = "none";
+        //set sync store
+        store.setSyncState(false);
       }
     };
     const callEndPoint = async () => {

@@ -43,6 +43,8 @@ class Users {
         document.getElementById("sync").style.display = "none";
         //reset tokens to empty data
         store.setTokens(false, false);
+        //set sync store
+        store.setSyncState(false);
       });
   }
 

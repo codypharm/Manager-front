@@ -18,7 +18,7 @@ const handleExpenses = (day, month, year) => {
       " </td>" +
       " </tr>";
   } else {
-    //diplay expenses from template
+    //display expenses from template
     displayExpenses(matchedExpenses);
     document.getElementById("dispDate").textContent =
       day + "-" + month + "-" + year;
@@ -35,12 +35,57 @@ const proceedDeleteAll = () => {
       expense.value.description
     );
   });
-
   return true;
 };
 
+//verify all expenses
+const verifyAllExpense = () => {
+  //get all expenses
+  let expenseGetter = expenseModel.getExpenses();
+  expenseGetter.then(({ data, headers, status }) => {
+    //update expenses variable with current state of expenses
+    expenses = data.rows;
+
+    let date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    let match = expenses.filter(expense => {
+      return (
+        expense.value.day != day ||
+        expense.value.month != month ||
+        expense.value.year != year ||
+        expense.value.remote == true
+      );
+    });
+
+    if (match.length > 0) {
+      //break
+      showModal("The expense list can no longer be deleted");
+    } else {
+      //proceed with deletion
+      if (proceedDeleteAll()) {
+        //delete all expense in array
+        expenses = [];
+
+        //get date
+        let day = document.getElementById("expenseDay").value;
+        let month = document.getElementById("expenseMonth").value;
+        let year = document.getElementById("expenseYear").value;
+
+        //load expenses
+        handleExpenses(day, month, year);
+      }
+    }
+  });
+};
 //delete all expense
 const deleteAllExpense = () => {
+  //check if sync is on
+  if (store.getSyncState().state) {
+    showModal("Please try again when synchronization has ended.");
+    return;
+  }
   //get window object
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
@@ -54,18 +99,8 @@ const deleteAllExpense = () => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
-      if (proceedDeleteAll()) {
-        //delete all expense in array
-        expenses = [];
-
-        //get date
-        let day = document.getElementById("expenseDay").value;
-        let month = document.getElementById("expenseMonth").value;
-        let year = document.getElementById("expenseYear").value;
-
-        //load expenses
-        handleExpenses(day, month, year);
-      }
+      //verify all expense
+      verifyAllExpense();
     }
   });
 };
@@ -89,22 +124,60 @@ const proceedDelete = (id, rev, amt, description) => {
   });
 };
 
+//verify expense
+const verifyExpense = expense => {
+  let date = new Date();
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+  if (expense.day != day || expense.month != month || expense.year != year) {
+    return true;
+  }
+};
+
 //delete expense
 const deleteExpense = (e, id, rev, amt, description) => {
-  //get window object
-  const window = BrowserWindow.getFocusedWindow();
-  //show dialog
-  let resp = dialog.showMessageBox(window, {
-    title: "Vemon",
-    buttons: ["Yes", "Cancel"],
-    type: "info",
-    message: "Click Ok to delete expense"
-  });
+  //check if sync is on
+  if (store.getSyncState().state) {
+    showModal("Please try again when synchronization has ended.");
+    return;
+  }
+  //check if expense has been recorded online
+  //get all expenses
+  let expenseGetter = expenseModel.getExpenses();
+  expenseGetter.then(({ data, headers, status }) => {
+    let expenses = data.rows;
+    // get this expense
+    let expense = expenses.filter(expense => {
+      return expense.id == id;
+    })[0].value;
+    //check if the expense if for today and not synchronized
+    let unApprove = verifyExpense(expense);
 
-  //check if response is yes
-  resp.then((response, checkboxChecked) => {
-    if (response.response == 0) {
-      proceedDelete(id, rev, amt, description);
+    if (unApprove) {
+      //show error for date
+      showModal("You can no longer delete expense for this date");
+    } else if (expense.remote) {
+      //show error for already sync
+      showModal("This expense is already online and can no longer be deleted");
+    } else {
+      //proceed to delete
+      //get window object
+      const window = BrowserWindow.getFocusedWindow();
+      //show dialog
+      let resp = dialog.showMessageBox(window, {
+        title: "Vemon",
+        buttons: ["Yes", "Cancel"],
+        type: "info",
+        message: "Click Ok to delete expense"
+      });
+
+      //check if response is yes
+      resp.then((response, checkboxChecked) => {
+        if (response.response == 0) {
+          proceedDelete(id, rev, amt, description);
+        }
+      });
     }
   });
 };

@@ -39,6 +39,7 @@ const upload = async (stock, setup) => {
     .then(async () => {
       await stockModel.remoteUpdateAllProduct(stock);
     })
+    // eslint-disable-next-line no-unused-vars
     .catch(error => {
       //handle error
       const notyf = new Notyf({
@@ -50,6 +51,8 @@ const upload = async (stock, setup) => {
       //remove disabled and also loading sign
       document.querySelector("#syncBtn").disabled = false;
       document.getElementById("sync").style.display = "none";
+      //set sync store
+      store.setSyncState(false);
     });
 };
 

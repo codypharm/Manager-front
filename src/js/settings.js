@@ -1,5 +1,9 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
+//get branches class
+const branchesClass = require("../api/branches");
+
+const branches = new branchesClass();
 
 const {
   verifyPhoneNumber,
@@ -205,6 +209,37 @@ const emailIsValid = email => {
     return true;
   }
 };
+
+const completeUpdate = () => {
+  //update database
+  settingsModel
+    .updateSetUp(setupInfo, setupId)
+    .then(({ data, header, status }) => {
+      if (status == 201) {
+        //reload sections
+        loadSettingsSections();
+      }
+    });
+};
+
+//continue premium processing
+const continuePremium = data => {
+  //if empty show error
+  if (data.length == 0) {
+    showModal(
+      "No record exists for this branch. Please ensure you create a company and branch online and fill in their details here."
+    );
+  } else {
+    //update data online
+    branches.updateBranchOnline(data[0].id, setupInfo, completeUpdate);
+  }
+};
+
+//proceed premium process
+const proceed = () => {
+  branches.fetchMatch(setupInfo.companyId, setupInfo.branchId, continuePremium);
+};
+
 //submit account settings
 const submitAccountSettings = e => {
   //loading
@@ -267,15 +302,7 @@ const submitAccountSettings = e => {
         setupInfo.branchId = branchId;
         setupInfo.phone = phone;
         setupInfo.email = email;
-        //update database
-        settingsModel
-          .updateSetUp(setupInfo, setupId)
-          .then(({ data, header, status }) => {
-            if (status == 201) {
-              //reload sections
-              loadSettingsSections();
-            }
-          });
+        branches.branchProcess(proceed);
       }
     }
   }

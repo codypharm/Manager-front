@@ -12,6 +12,7 @@ const filterActivities = activities => {
 };
 
 const upload = async (activities, setup) => {
+  console.log(activities, setup);
   // add company and branch ID manually
   let company = setup.value.companyId;
   let branch = setup.value.branchId;
@@ -24,7 +25,7 @@ const upload = async (activities, setup) => {
         detail: activities[i].value.detail,
         editor: activities[i].value.staffName,
         editorId: activities[i].value.staffId,
-        batchId: activities[i].value.editedId,
+        //
         companyId: company,
         branchId: branch
       })

@@ -10,15 +10,11 @@ const store = new ourStore();
 const staffModel = new ourStaffModel();
 
 class Users {
-  constructor() {
-    this.currentUser = store.getLoginDetail();
-  }
-
   loginRemote(proceed) {
     axios
       .post("http://127.0.0.1:8000/login/", {
-        email: this.currentUser.email,
-        password: this.currentUser.pwd
+        email: store.getLoginDetail().email,
+        password: store.getLoginDetail().pwd
       })
       .then(res => {
         //store tokens

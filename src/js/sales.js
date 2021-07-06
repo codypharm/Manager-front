@@ -239,13 +239,13 @@ const processSale = e => {
   }
 };
 
-const addUpQty = (e, prodId, unit) => {
-  prodId = prodId.toString();
-
+const addUpQty = (e, unit) => {
+  prodId = e.target.dataset.id;
   let qty = Number(e.target.value);
 
   //adding up quantity of matching products
   let matchQty = addUpMatch(stock, prodId);
+
   if (qty > matchQty) {
     showWarning("Quantity entered is not available or stock is exhausted !!!");
     //set it back to 1 or unit quantity

@@ -124,12 +124,12 @@
     <td>
 
         <td>
-          <button type="button" class="btn btn-sm  btn-info" onclick="viewInvoice(event,'{{value.invoiceId}}','{{value.day}}-{{value.month}}-{{value.year}}','debt')">
+          <button type="button" data-id='{{value.invoiceId}}' class="btn btn-sm  btn-info" onclick="viewInvoice(event,'{{value.day}}-{{value.month}}-{{value.year}}','debt')">
             view
           </button>
         </td>
         <td>
-          <button type="button" class="btn btn-sm  btn-success" onclick="clearInvoice(event,'{{value.invoiceId}}','cleared')">
+          <button type="button" data-id='{{value.invoiceId}}' class="btn btn-sm  btn-success" onclick="clearInvoice(event)">
             clear
           </button>
         </td>

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-//globale variables
+//global variables
 var cart = [];
 
 //global variable

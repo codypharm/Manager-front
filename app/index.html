@@ -76,6 +76,7 @@
     aria-hidden="true"
   >
     <div class="modal-dialog modal-sm" role="document">
+            
       <div class="modal-content">
         <div class="modal-header ">
           <h4 class="modal-title text-success">Vemon</h4>
@@ -90,22 +91,24 @@
         </div>
 
         <div class="modal-body" id="updateStaticBody"></div>
+        
         <div class="modal-footer border-top-0 " id="clearanceFormBtn">
-          <button
-            type="button"
-            class="btn btn-secondary btn-sm "
-            data-dismiss="modal"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary btn-sm"
-            id="clearProcessBtn"
-            onclick="processDebtPayment(event)"
-          >
-            Process
-          </button>
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm "
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm"
+              id="clearProcessBtn"
+              onclick="processDebtPayment(event)"
+            >
+              Process
+            </button>
+          
         </div>
         <div class="modal-footer border-top-0 hide" id="debtInvoiceFooter">
           <button type="button" class="btn btn-success btn-sm ">

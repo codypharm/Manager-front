@@ -350,7 +350,8 @@ const loadOtherEnteredInvoices = (e, invoiceType) => {
 };
 
 //invoice view button
-const viewInvoice = (e, invoiceId, saleDate, invoiceType) => {
+const viewInvoice = (e, saleDate, invoiceType) => {
+  let invoiceId = e.target.dataset.id;
   //get details about this invoice
   let matchingInvoice = invoiceModel.getSelectedInvoice(invoices, invoiceId);
   let selectedInvoice = matchingInvoice[0];
@@ -393,21 +394,22 @@ const viewInvoice = (e, invoiceId, saleDate, invoiceType) => {
       );
       document.getElementById("disccountStatic").textContent =
         selectedInvoice.value.disccount + " %";
-      document.getElementById("netPriceStatic").textContent = formatMoney(
+      document.getElementById("netPriceStatic").textContent = `₦ ${formatMoney(
         selectedInvoice.value.netPrice
-      );
-      document.getElementById("invoiceAmtPaid").textContent = formatMoney(
+      )}`;
+      document.getElementById("invoiceAmtPaid").textContent = `₦ ${formatMoney(
         selectedInvoice.value.amtPaid
-      );
-      document.getElementById("invoiceBalance").textContent = formatMoney(
+      )}`;
+      document.getElementById("invoiceBalance").textContent = `₦ ${formatMoney(
         selectedInvoice.value.balance
-      );
+      )}`;
     }
   });
 };
 
 //click clear button
-const clearInvoice = (e, id) => {
+const clearInvoice = e => {
+  let id = e.target.dataset.id;
   //show modal
   let debtModal = showDebtForm(debtForm, "form");
   if (debtModal) {

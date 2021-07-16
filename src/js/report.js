@@ -63,9 +63,9 @@ const getAveragePpmu = prodId => {
 const getTotalProfit = matchedSales => {
   let totalGain = 0;
   matchedSales.forEach(sale => {
-    let avgPpmu = getAveragePpmu(sale.value.productId);
-    let costPrice = Number(avgPpmu * sale.value.qty);
-    let gain = Number(sale.value.price - costPrice);
+    //let avgPpmu = getAveragePpmu(sale.value.productId);
+    //let costPrice = sale.value.cp
+    let gain = Number(sale.value.sp - sale.value.cp);
     totalGain += gain;
   });
 
@@ -202,24 +202,24 @@ const getProductDetail = id => {
   return [unit];
 };
 //analyse sales
-const getAccountAnalysis = (sales, day) => {
+const getAccountAnalysis = (invoices, day) => {
   let dailyGain = 0;
   let dailyCp = 0;
   let dailySp = 0;
   //loop through sales for a particular day
-  sales.forEach(product => {
-    let [unit] = getProductDetail(product.value.productId);
+  invoices.forEach(invoice => {
+    //let [unit] = getProductDetail(product.value.productId);
     //get actual unit sold
-    let unitSold = Number(product.value.qty / unit);
+    //let unitSold = Number(product.value.qty / unit);
     //get selling price
     //let sellingPrice = unitSold * product.value.price;
-    let sellingPrice = product.value.price;
+    let sellingPrice = invoice.value.sp;
     dailySp += sellingPrice;
     //get average ppmu (pricePerMinUnit)
-    let averagePpmu = getAveragePpmu(product.value.productId);
+    //let averagePpmu = getAveragePpmu(product.value.productId);
     //console.log(averagePpmu, product);
     //get cost price
-    let costPrice = averagePpmu * unitSold;
+    let costPrice = invoice.value.cp; //averagePpmu * unitSold;
     dailyCp += costPrice;
 
     //get gain
@@ -234,6 +234,15 @@ const getAccountAnalysis = (sales, day) => {
 const getSalesForLastDay = (day, month, sales) => {
   let match = sales.filter(sale => {
     return sale.value.day == day && sale.value.month == month;
+  });
+
+  return match;
+};
+
+//extract invoices for last day of previous month
+const getInvoicesForLastDay = (day, month, invoices) => {
+  let match = invoices.filter(invoice => {
+    return invoice.value.day == day && invoice.value.month == month;
   });
 
   return match;
@@ -293,15 +302,24 @@ const proceedToSortAccountList = (
       let lastDay = new Date(yearForMonth, lastMonth + 1, 0);
 
       //get sales for last day
-      let salesForLastDay = getSalesForLastDay(
+      //commented out because we now work with invoices
+      /*let salesForLastDay = getSalesForLastDay(
         lastDay.getDate(),
         lastMonth + 1,
         sales
+      );*/
+
+      //get Invoices for last day
+
+      let invoicesForLastDay = getInvoicesForLastDay(
+        lastDay.getDate(),
+        lastMonth + 1,
+        allInvoices
       );
 
       //get analysis for last day of last month
       let [lastDailyCp, lastDailySp, lastDailyGain] = getAccountAnalysis(
-        salesForLastDay,
+        invoicesForLastDay,
         saleDay
       );
 
@@ -326,8 +344,9 @@ const proceedToSortAccountList = (
     let totalExp = addUpExp(dayExpenses);
     let [net, amtPaid, toPay] = addUpFields(dayInvoices);
     let dispBalance = amtPaid - totalExp;
+    //analysis now with invoice analysis
     let [dailyCp, dailySp, dailyGain] = getAccountAnalysis(
-      currentDaySales,
+      dayInvoices,
       saleDay
     );
 
@@ -389,6 +408,17 @@ const proceedToSortAccountList = (
   return reportArray;
 };
 
+//get total selling price
+const getTotalSpCp = sales => {
+  let sp = 0;
+  let cp = 0;
+  sales.forEach(sale => {
+    sp += sale.value.sp;
+    cp += sale.value.cp;
+  });
+  return [sp, cp];
+};
+
 //proceed to sort stock sales
 const proceedToSortStockSales = matchedSales => {
   let sortedStock = reportModel.sortStock(stock);
@@ -405,17 +435,10 @@ const proceedToSortStockSales = matchedSales => {
       let saleVolume = calculateVolume(productSales);
       //get percent volume
       let percentVol = calculatePercentVolume(saleVolume, totalSalesVolume);
-      //caluculate number of unit sold
+      //calculate number of unit sold
       let unitSold = Number(saleVolume / product.value.unit);
-      //selling price for this unit sold
-      let sellingPrice = unitSold * product.value.price;
-
-      //get average ppmu (pricePerMinUnit)
-      let averagePpmu = getAveragePpmu(product.value.prodId);
-      //cost price for sold unit
-      let costPrice = averagePpmu * unitSold;
-      //calculate gain
-      let profit = sellingPrice - costPrice;
+      let [sp, cp] = getTotalSpCp(productSales);
+      let profit = sp - cp;
       //calculate percentage profit
       let percentageGain = ((profit / totalGain) * 100).toFixed(2);
 

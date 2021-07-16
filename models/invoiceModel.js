@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //import db file
 const Database = require("../src/js/db");
@@ -141,6 +142,8 @@ class Invoice extends Database {
       totalPrice: detail.value.totalPrice,
       amtPaid: newAmtPaid,
       balance: newBalance,
+      cp: detail.value.cp,
+      sp: detail.value.sp,
       remote: false,
       day: detail.value.day,
       month: detail.value.month,
@@ -178,6 +181,8 @@ class Invoice extends Database {
       netPrice: detail.netPrice,
       totalPrice: detail.totalPrice,
       amtPaid: detail.amtPaid,
+      cp: detail.cp,
+      sp: detail.sp,
       remote: true,
       balance: detail.balance,
       day: detail.day,

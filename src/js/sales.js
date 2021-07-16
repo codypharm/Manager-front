@@ -219,7 +219,7 @@ const processSale = e => {
 
     qty += unit;
   }
-  //check if product is in cart and add it
+  //check if product is in cart and add it and return the new qty
   qty = addCart(cart, prodId.value.trim(), qty);
 
   //adding up quantity of matching products
@@ -319,33 +319,47 @@ const handleTransType = e => {
   }
 };
 
-const sub = (obj, qty) => {
+const sub = (obj, qty, cp, sp) => {
   //if stock is more than purchase quantity
   if (Number(obj.value.qty) > Number(qty)) {
+    cp += Number(obj.value.ppmu) * Number(qty);
+    sp += Number(obj.value.price) * Number(qty);
+    //console.log(cp, sp, qty);
     //subtract purchase
     obj.value.qty = Number(obj.value.qty) - Number(qty);
     //purchase  = 0
     qty = 0;
+
     //return new values
-    return [obj, qty];
+    return [obj, qty, cp, sp];
     //if purchase is more than stock
   } else if (Number(obj.value.qty) < Number(qty)) {
-    //subtract purchase from stock
+    //did that batch contribute ?
+    if (Number(obj.value.qty) > 0) {
+      cp += Number(obj.value.ppmu) * Number(obj.value.qty);
+      sp += Number(obj.value.price) * Number(obj.value.qty);
+    }
+    //subtract stock from purchase
     qty = Number(qty) - Number(obj.value.qty);
     //stock = 0
     obj.value.qty = 0;
 
     //return new values
-    return [obj, qty];
+    return [obj, qty, cp, sp];
     //if stock == purchase
   } else {
+    //did that batch contribute ?
+    if (Number(obj.value.qty) > 0) {
+      cp += Number(obj.value.ppmu) * Number(qty);
+      sp += Number(obj.value.price) * Number(qty);
+    }
     //purchase = 0
     obj.value.qty = 0;
     //stock == 0
     qty = 0;
 
     //return new values
-    return [obj, qty];
+    return [obj, qty, cp, sp];
   }
 };
 
@@ -404,7 +418,9 @@ const execInvoice = (
   netPrice,
   totalPrice,
   amtPaid,
-  balance
+  balance,
+  cartCp,
+  cartSp
 ) => {
   let idGen = salesModel.generateId();
   idGen.then(ids => {
@@ -422,7 +438,9 @@ const execInvoice = (
       netPrice,
       totalPrice,
       amtPaid,
-      balance
+      balance,
+      cartCp,
+      cartSp
     );
     detailInsertion.then(({ data, headers, status }) => {
       if (status == 201) {
@@ -454,8 +472,8 @@ const execInvoice = (
 };
 
 //insert sale into db
-const insertSale = cart => {
-  //get some neccesary details
+const insertSale = (cart, cp, sp) => {
+  //get some necessary details
   let amtPaid;
   let balance = 0;
   let customerName = document.getElementById("customerName").value;
@@ -507,7 +525,9 @@ const insertSale = cart => {
     netPrice,
     totalPrice,
     amtPaid,
-    balance
+    balance,
+    cp,
+    sp
   );
 
   //clear cart table
@@ -521,40 +541,64 @@ const insertSale = cart => {
 //subtract qty from stock and update stock table
 const execute = (match, qty) => {
   //reverse the array
-  match = match.reverse();
+  //match = match.reverse();
   //loop through the match
+  let totalProductCp = 0;
+  let totalProductSp = 0;
+
   match.forEach(obj => {
     //get new values of each obj or product and qty remaining from purchase qty
-    let [newProd, newQty] = sub(obj, qty);
-    //assign new qty value to qty
-    qty = newQty;
+    //if qty > 0
+    if (qty > 0) {
+      let [newProd, newQty, cp, sp] = sub(
+        obj,
+        qty,
+        totalProductCp,
+        totalProductSp
+      );
+      totalProductCp = cp;
+      totalProductSp = sp;
+      //console.log(totalProductCp, totalProductSp, qty);
+      //assign new qty value to qty
+      qty = newQty;
 
-    let stockUpdate = salesModel.updateStock(newProd);
-    stockUpdate.then(
-      ({ data, headers, status }) => {},
-      err => {
-        console.log(err);
-      }
-    );
+      let stockUpdate = salesModel.updateStock(newProd);
+      stockUpdate.then(
+        ({ data, headers, status }) => {},
+        err => {
+          console.log(err);
+        }
+      );
+    }
   });
+
+  return [totalProductCp, totalProductSp];
 };
 
 //continue process
 const process = cart => {
   let match;
   let newValue;
+  let cartCp = 0;
+  let cartSp = 0;
   //loop through cart
-  cart.forEach(product => {
+  cart.forEach((product, index) => {
     //get matching product from db
     match = salesModel.getMatch(stock, product.productId);
     //get quantity bought
     let qty = product.qty;
     //handle each match
-    execute(match, qty);
+    let [totalProductCp, totalProductSp] = execute(match, qty);
+    //assign this cp and sp to this product in cart
+    cart[index].cp = totalProductCp;
+    cart[index].sp = totalProductSp;
+    //add up this total cp and sp to total cart cp and sp
+    cartCp += totalProductCp;
+    cartSp += totalProductSp;
   });
 
   //insert into sales
-  insertSale(cart);
+  insertSale(cart, cartCp, cartSp);
 };
 
 //process cart
@@ -574,7 +618,7 @@ const processCart = e => {
     let inputs = [name, number, address, deposit];
     let numNet = netPrice.textContent.replace(/[^\d.-]/g, "");
     numNet = Number(numNet).toFixed(0);
-    console.log(numNet);
+
     if (transType == "") {
       showModal("Please enter a transaction type.");
     } else if (transType == "credit" && salesModel.isEmpty(inputs)) {

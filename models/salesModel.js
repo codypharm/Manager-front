@@ -235,6 +235,8 @@ class salesModel extends Database {
       invoiceId: invoiceId,
       transactionType: transType,
       disccount: disccount,
+      cp: product.cp,
+      sp: product.sp,
       remote: false,
       day: date.getDate(),
       month: date.getMonth() + 1,
@@ -254,7 +256,9 @@ class salesModel extends Database {
     netPrice,
     totalPrice,
     amtPaid,
-    balance
+    balance,
+    cp,
+    sp
   ) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
@@ -264,7 +268,6 @@ class salesModel extends Database {
       customerAddress: customerAddress,
       customerName: customerName,
       customerNumber: customerNumber,
-
       transType: transType,
       disccount: disccount,
       netPrice: netPrice,
@@ -272,6 +275,8 @@ class salesModel extends Database {
       amtPaid: amtPaid,
       remote: false,
       balance: balance,
+      cp,
+      sp,
       attender: loginDetail.fname + " " + loginDetail.lname,
       day: date.getDate(),
       month: date.getMonth() + 1,
@@ -434,6 +439,8 @@ class salesModel extends Database {
       invoiceId: detail.invoiceId,
       transactionType: detail.transType,
       disccount: detail.disccount,
+      cp: detail.cp,
+      sp: detail.sp,
       remote: true,
       day: detail.day,
       month: detail.month,

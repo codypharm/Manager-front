@@ -1,9 +1,5 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-//get branches class
-const branchesClass = require("../api/branches");
-
-const branches = new branchesClass();
 
 const {
   verifyPhoneNumber,
@@ -61,7 +57,7 @@ const appendSettingsValues = () => {
   document.getElementById("compId").value = setupInfo.companyId;
   document.getElementById("branchId").value = setupInfo.branchId;
   document.getElementById("phone").value = setupInfo.phone;
-  document.getElementById("email").value = setupInfo.email;
+  //document.getElementById("email").value = setupInfo.email;
 
   hideLoading();
 };
@@ -251,7 +247,7 @@ const submitAccountSettings = e => {
   let companyId = document.getElementById("compId").value;
   let branchId = document.getElementById("branchId").value;
   let phone = document.getElementById("phone").value;
-  let email = document.getElementById("email").value;
+  //let email = document.getElementById("email").value;
 
   if (package.trim().length == 0) {
     showModal("Please enter an account type");
@@ -261,15 +257,14 @@ const submitAccountSettings = e => {
       //validate standard details
       if (
         validateStandardData(package, companyName, address) &&
-        phoneIsValid(phone) &&
-        emailIsValid(email)
+        phoneIsValid(phone)
       ) {
         //update setup info object
         setupInfo.app_package = package;
         setupInfo.companyName = companyName;
         setupInfo.address = address;
         setupInfo.phone = phone;
-        setupInfo.email = email;
+        //setupInfo.email = email;
         //update database
         settingsModel
           .updateSetUp(setupInfo, setupId)
@@ -291,8 +286,7 @@ const submitAccountSettings = e => {
           address,
           branchId
         ) &&
-        phoneIsValid(phone) &&
-        emailIsValid(email)
+        phoneIsValid(phone)
       ) {
         //update setup info object
         setupInfo.app_package = package;
@@ -301,7 +295,7 @@ const submitAccountSettings = e => {
         setupInfo.companyId = companyId;
         setupInfo.branchId = branchId;
         setupInfo.phone = phone;
-        setupInfo.email = email;
+        // setupInfo.email = email;
         branches.branchProcess(proceed);
       }
     }

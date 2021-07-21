@@ -124,7 +124,7 @@
     <td>{{invoiceBalance value.balance}}</td>
     <td>{{invoiceStatus value.balance}}</td>
     <td>
-      <button type="button" class="btn btn-sm  btn-success " data-id='{{value.invoiceId}}' onclick="viewInvoice(event,'{{value.day}}-{{value.month}}-{{value.year}}','all')">
+      <button type="button" class="btn btn-sm  btn-success " data-id='{{value.invoiceId}}' data-type='{{value.transType}}' onclick="viewInvoice(event,'{{value.day}}-{{value.month}}-{{value.year}}','all')">
         view
       </button>
     </td>

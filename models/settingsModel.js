@@ -59,7 +59,7 @@ class settingsModel extends Database {
       branchId: detail.branchId,
       companyId: detail.companyId,
       companyName: detail.companyName,
-      email: detail.email,
+      //email: detail.email,
       expiration_limit: detail.expiration_limit,
       logout_time: detail.logout_time,
       phone: detail.phone,

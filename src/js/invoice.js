@@ -351,6 +351,13 @@ const loadOtherEnteredInvoices = (e, invoiceType) => {
 
 //invoice view button
 const viewInvoice = (e, saleDate, invoiceType) => {
+  let trans = e.target.dataset.type;
+  let dispTrans =
+    trans.toUpperCase() == "CASH"
+      ? "CASH"
+      : trans.toUpperCase() == "CREDIT"
+      ? "CREDIT"
+      : "ONLINE";
   let invoiceId = e.target.dataset.id;
   //get details about this invoice
   let matchingInvoice = invoiceModel.getSelectedInvoice(invoices, invoiceId);
@@ -385,8 +392,9 @@ const viewInvoice = (e, saleDate, invoiceType) => {
         detail[0].value.branchAddress;
       document.getElementById("companyStaticNumber").textContent =
         detail[0].value.branchPhone;
-      document.getElementById("transTypeStatic").textContent =
-        "CREDIT TRANSACTION";
+      document.getElementById(
+        "transTypeStatic"
+      ).textContent = `${dispTrans} TRANSACTION`;
       document.getElementById("date").textContent = saleDate;
       document.getElementById("invoiceId").textContent = invoiceId;
       document.getElementById("invoiceTotal").textContent = formatMoney(

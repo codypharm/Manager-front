@@ -31,6 +31,8 @@ const upload = async (invoices, setup) => {
         customer_name: invoices[i].value.customerName,
         customer_number: invoices[i].value.customerNumber,
         customer_address: invoices[i].value.customerAddress,
+        cost_price: Number(invoices[i].value.cp),
+        selling_price: Number(invoices[i].value.sp),
         companyId: company,
         branchId: branch
       })

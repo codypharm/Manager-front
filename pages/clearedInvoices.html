@@ -120,7 +120,7 @@
     <td>{{netPrice value.netPrice}}</td>
 
     <td>
-      <button type="button" data-id='{{value.invoiceId}}' class="btn btn-sm  btn-success " onclick="viewInvoice(event,'{{value.day}}-{{value.month}}-{{value.year}}','cleared')">
+      <button type="button" data-id='{{value.invoiceId}}' data-type='{{value.transType}}' class="btn btn-sm  btn-success " onclick="viewInvoice(event,'{{value.day}}-{{value.month}}-{{value.year}}','cleared')">
         view
       </button>
     </td>

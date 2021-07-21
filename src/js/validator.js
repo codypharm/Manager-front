@@ -28,6 +28,7 @@ class Validator extends Database {
       address: details.address,
       companyId: details.companyId,
       branchId: details.branchId,
+      phone: details.phone,
       manager_firstname:
         details.manager_firstname[0].toUpperCase() +
         details.manager_firstname.slice(1),

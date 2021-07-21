@@ -4,6 +4,11 @@
 //const api = require("../api");
 var viewEmail;
 var editEmail;
+const { Notyf } = require("notyf");
+//get branches class
+const branchesClass = require("../api/branches");
+
+const branches = new branchesClass();
 
 //get setup details
 let viewUrl = db.viewUrl.setup;
@@ -68,7 +73,8 @@ var details = {
   manager_firstname: "",
   manager_lastname: "",
   manager_password: "",
-  manager_email: ""
+  manager_email: "",
+  phone: 0
 };
 
 const showModal = message => {
@@ -211,9 +217,9 @@ const processStandard = errorDiv => {
   //check if it is empty
   if (companyName.length === 0 || stdAddress.length === 0) {
     displayError(errorDiv, "Please fill all fields");
-  } else if (document.getElementById("termCheck").checked == false) {
+  } /*else if (document.getElementById("termCheck").checked == false) {
     displayError(errorDiv, "Please you need to accept our terms");
-  } else {
+  }*/ else {
     //assign values to details object
     let package = "standard";
     let address = stdAddress;
@@ -236,22 +242,31 @@ const processPremium = errorDiv => {
   //get branch id
   let branchId = document.getElementById("branchId").value;
 
-  //get branch id
+  //get company id
   let companyId = document.getElementById("companyId").value;
+
+  //get branch phone number
+  let phone = document.getElementById("phone").value;
+
   //check if all values are provided
   if (
     companyName.length === 0 ||
     premiumAddress.length === 0 ||
     branchId.length === 0 ||
-    companyId.length === 0
+    companyId.length === 0 ||
+    phone.length === 0
   ) {
     displayError(errorDiv, "Please fill all fields");
-  } else if (document.getElementById("termCheck").checked == false) {
+  } /* else if (document.getElementById("termCheck").checked == false) {
     displayError(errorDiv, "Please you need to accept our terms");
+  } */ else if (
+    validate.isNotPhoneNumber(phone)
+  ) {
+    displayError(errorDiv, "Please enter a valid Phone number");
   } else {
     let package = "premium";
     let address = premiumAddress;
-    details = { package, companyName, address, companyId, branchId };
+    details = { package, companyName, address, companyId, branchId, phone };
     //alter form
     changeForm(setupForm, managerForm);
   }
@@ -273,9 +288,66 @@ const showManagerDetail = e => {
     // eslint-disable-next-line no-undef
     processPremium(errorDiv);
   } else {
-    let error = "Please sellect a package";
+    let error = "Please select a package";
     displayError(errorDiv, error);
   }
+};
+
+//user creation
+const createUser = userId => {
+  let userDetailInsertion = validate.insertUser(details, userId);
+  userDetailInsertion.then(({ data, headers, status }) => {
+    //reload
+    remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
+  });
+};
+
+//complete setup
+const completeSetup = () => {
+  //create setup  database
+  //generate id
+  let idGen = validate.generateId();
+  idGen.then(ids => {
+    const id = ids[0];
+
+    //insert details
+    let detailInsertion = validate.insertDetails(details, id);
+    detailInsertion.then(
+      ({ data, headers, status }) => {
+        //generate id
+        let userIdGen = validate.generateId();
+        userIdGen.then(ids => {
+          const userId = ids[0];
+          createUser(userId);
+        });
+      },
+      err => {
+        console.warn(err);
+      }
+    );
+  });
+};
+
+//update matching branch online
+const continueSetup = data => {
+  if (data.length == 0) {
+    const notyf = new Notyf({
+      duration: 5000
+    });
+
+    // Display an error notification
+    notyf.error(
+      "No Branch exists with this matching company Id and branch Id, please verify and try again."
+    );
+  } else {
+    //update data online
+    branches.updateBranchOnline(data[0].id, details, completeSetup, true);
+  }
+};
+
+//fetch matching branch
+const proceedSetup = () => {
+  branches.fetchMatch(details.companyId, details.branchId, continueSetup, true);
 };
 
 //process managers details
@@ -333,37 +405,13 @@ const enterDetails = e => {
     details.manager_password = pwd.value.trim();
     details.manager_email = email.value.trim();
 
-    //user creation
-    const createUser = userId => {
-      let userDetailInsertion = validate.insertUser(details, userId);
-      userDetailInsertion.then(({ data, headers, status }) => {
-        //reload
-        remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
-      });
-    };
-
-    //create setup  database
-    //generate id
-    let idGen = validate.generateId();
-    idGen.then(ids => {
-      const id = ids[0];
-
-      //insert details
-      let detailInsertion = validate.insertDetails(details, id);
-      detailInsertion.then(
-        ({ data, headers, status }) => {
-          //generate id
-          let userIdGen = validate.generateId();
-          userIdGen.then(ids => {
-            const userId = ids[0];
-            createUser(userId);
-          });
-        },
-        err => {
-          console.warn(err);
-        }
-      );
-    });
+    //login online
+    branches.branchProcess(
+      proceedSetup,
+      details.manager_email,
+      details.manager_password,
+      (setup = true)
+    );
   }
 };
 

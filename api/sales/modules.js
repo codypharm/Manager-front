@@ -28,6 +28,8 @@ const upload = async (sales, setup) => {
         quantity: sales[i].value.qty,
         productName: sales[i].value.name,
         productId: sales[i].value.productId,
+        cost_price: Number(sales[i].value.cp),
+        selling_price: Number(sales[i].value.sp),
         companyId: company,
         branchId: branch
       })

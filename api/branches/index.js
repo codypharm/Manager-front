@@ -50,6 +50,8 @@ class Branches {
         //hide loading sign
         if (!setup) {
           hideLoading();
+        } else {
+          setup();
         }
       });
   }
@@ -71,6 +73,8 @@ class Branches {
         notyf.error(`An error occurred`);
         if (!setup) {
           hideLoading();
+        } else {
+          setup();
         }
       });
   }
@@ -100,6 +104,8 @@ class Branches {
         notyf.error(`${errorMessage}`);
         if (!setup) {
           hideLoading();
+        } else {
+          setup();
         }
       });
   }

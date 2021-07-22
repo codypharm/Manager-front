@@ -294,6 +294,8 @@ const showManagerDetail = e => {
 };
 
 const backToBranchDetails = e => {
+  document.getElementById("setupNext").disabled = false;
+
   //get forms
   let setupForm = document.getElementsByClassName("setupForm")[0];
   let managerForm = document.getElementsByClassName("managerForm")[0];
@@ -336,9 +338,16 @@ const completeSetup = () => {
   });
 };
 
+const setUp = () => {
+  //enable setup button
+  document.getElementById("setupNext").disabled = false;
+};
+
 //update matching branch online
 const continueSetup = data => {
   if (data.length == 0) {
+    //enable setup button
+    setUp();
     const notyf = new Notyf({
       duration: 5000
     });
@@ -349,13 +358,18 @@ const continueSetup = data => {
     );
   } else {
     //update data online
-    branches.updateBranchOnline(data[0].id, details, completeSetup, true);
+    branches.updateBranchOnline(data[0].id, details, completeSetup, setUp);
   }
 };
 
 //fetch matching branch
 const proceedSetup = () => {
-  branches.fetchMatch(details.companyId, details.branchId, continueSetup, true);
+  branches.fetchMatch(
+    details.companyId,
+    details.branchId,
+    continueSetup,
+    setUp
+  );
 };
 
 //process managers details
@@ -413,13 +427,19 @@ const enterDetails = e => {
     details.manager_password = pwd.value.trim();
     details.manager_email = email.value.trim();
 
-    //login online
-    branches.branchProcess(
-      proceedSetup,
-      details.manager_email,
-      details.manager_password,
-      (setup = true)
-    );
+    if (details.package.toUpperCase() == "PREMIUM") {
+      document.getElementById("setupNext").disabled = true;
+      //set up online
+      branches.branchProcess(
+        proceedSetup,
+        details.manager_email,
+        details.manager_password,
+        setUp
+      );
+    } else {
+      //go straight to local setup
+      completeSetup();
+    }
   }
 };
 

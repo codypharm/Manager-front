@@ -28,9 +28,15 @@
           <br />
           <div class="warning hide"></div>
           <form class="setupForm ">
-            <input type="radio" name="acctType" value="standard" class="radInput
-            class="myInputs"" id="standard" data-box="standardBox"
-            onclick="showInputs(event)" /><label for="standard">Standard</label>
+            <input
+              type="radio"
+              name="acctType"
+              value="standard"
+              class="radInput myInputs"
+              id="standard"
+              data-box="standardBox"
+              onclick="showInputs(event)"
+            /><label for="standard">Standard</label>
             <br />
             <input
               type="radio"
@@ -180,7 +186,7 @@
         <!--- ==============================  -->
         <!-- manager's form starts -->
         <!--- ==============================  -->
-        <form class="managerForm hide">
+        <form class="managerForm hide" onsubmit="enterDetails(event)">
           <div class="formFields">
             <label for="fname">
               First name:
@@ -253,7 +259,15 @@
           </div>
 
           <div class="formFooter">
-            <button onclick="enterDetails(event)">Next</button>
+            <button
+              class="btn1"
+              type="button"
+              onclick="backToBranchDetails(event)"
+            >
+              Back
+            </button>
+            <button class="btn2" type="submit">Next</button>
+            <div style="clear: both"></div>
           </div>
         </form>
 

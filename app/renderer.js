@@ -293,6 +293,14 @@ const showManagerDetail = e => {
   }
 };
 
+const backToBranchDetails = e => {
+  //get forms
+  let setupForm = document.getElementsByClassName("setupForm")[0];
+  let managerForm = document.getElementsByClassName("managerForm")[0];
+
+  changeForm(managerForm, setupForm);
+};
+
 //user creation
 const createUser = userId => {
   let userDetailInsertion = validate.insertUser(details, userId);

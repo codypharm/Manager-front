@@ -7,7 +7,7 @@ var { dialog, BrowserWindow } = remote.require("electron");
 
 //global variable
 var stock;
-
+var stocking;
 var recordedProduct = [];
 var listNumber = 0;
 var sortedStock;
@@ -62,9 +62,14 @@ const hideStockEditSuccess = () => {
 };
 
 const loadStoreContent = () => {
+  let getStocking = stockModel.getStocking();
   let getStock = stockModel.getStock();
   getStock.then(({ data, header, status }) => {
     stock = data.rows;
+  });
+
+  getStocking.then(({ data, header, status }) => {
+    stocking = data.rows;
   });
   //ensure btn is active
   document.getElementById("addBtn").disabled = false;
@@ -484,6 +489,66 @@ const cancelAllRecord = e => {
   });
 };
 
+const getTotal = match => {
+  let total = 0;
+  match.forEach(product => {
+    total += Number(product.value.qty);
+  });
+
+  return total;
+};
+
+//stoking settlement
+const settleStocking = product => {
+  let qty = 0;
+  let stockMatch = stockModel.getStockMatch(stock, product.productId);
+  let stockingMatch = stockModel.getStockingMatch(stocking, product.productId);
+  if (stockMatch.length > 0) {
+    //get total
+    qty = Number(getTotal(stockMatch)) + Number(product.qty);
+  } else {
+    qty = Number(product.qty);
+  }
+
+  //insert or update
+  if (stockingMatch.length > 0) {
+    //update
+    let updateInsertion = stockModel.updateStocking(stockingMatch[0], qty);
+    updateInsertion.then(
+      ({ data, headers, status }) => {
+        if (status == 201) {
+          //
+        } else {
+          console.log("error");
+        }
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  } else {
+    //insert
+    let idGen = stockModel.generateId();
+    idGen.then(ids => {
+      let id = ids[0];
+      //upload
+      let detailInsertion = stockModel.insertStocking(product, id, qty);
+      detailInsertion.then(
+        ({ data, headers, status }) => {
+          if (status == 201) {
+            //
+          } else {
+            console.log("error");
+          }
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    });
+  }
+};
+
 //upload listNumber
 const uploadList = e => {
   recordedProduct.forEach(product => {
@@ -497,6 +562,7 @@ const uploadList = e => {
       detailInsertion.then(
         ({ data, headers, status }) => {
           if (status == 201) {
+            settleStocking(product);
             //reload list
             removeRecord(product.productId);
 

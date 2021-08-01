@@ -14,6 +14,11 @@ class stockModel extends Database {
     return this.couch.get("stock", viewUrl);
   }
 
+  getStocking() {
+    let viewUrl = this.viewUrl.stocking;
+    return this.couch.get("stocking_record", viewUrl);
+  }
+
   getActivities() {
     let viewUrl = this.viewUrl.activities;
     return this.couch.get("all_activities", viewUrl);
@@ -152,6 +157,22 @@ class stockModel extends Database {
     }
   }
 
+  getStockMatch(stock, id) {
+    let match = stock.filter(product => {
+      return product.value.prodId == id.trim();
+    });
+
+    return match;
+  }
+
+  getStockingMatch(stocking, id) {
+    let match = stocking.filter(product => {
+      return product.value.productId == id.trim();
+    });
+
+    return match;
+  }
+
   productInList(recordedProduct, name, productId) {
     let match = recordedProduct.filter(product => {
       return (
@@ -244,6 +265,14 @@ class stockModel extends Database {
     return this.couch.uniqid(n);
   }
 
+  insertStocking(product, id, qty) {
+    return this.couch.insert("stocking_record", {
+      id,
+      productId: product.productId,
+      qty
+    });
+  }
+
   uploadList(product, id) {
     let batchId = "BT";
     batchId += Math.floor(Math.random() * 10000000);
@@ -326,6 +355,7 @@ class stockModel extends Database {
   }
 
   diminishingStock(sortedStock, stockLimit) {
+    console.log(stockLimit);
     let match = sortedStock.filter(item => {
       return Number(item.value.qty) <= Number(stockLimit);
     });
@@ -343,8 +373,9 @@ class stockModel extends Database {
     let sortedStock = this.sortStock(stock);
     //get stock limit
     let { detail } = store.getSetupDetail();
+
     if (detail != undefined) {
-      let stockLimit = detail[0].value.stockLimit;
+      let stockLimit = detail[0].value.stock_limit;
       //get stocks that have reached limit
       return this.diminishingStock(sortedStock, stockLimit);
     }
@@ -363,7 +394,7 @@ class stockModel extends Database {
     let { detail } = store.getSetupDetail();
     if (detail != undefined) {
       let dateLimit = detail[0].value.dateLimit;
-      console.log(dateLimit);
+
       let selectedStock = stock.filter(item => {
         if (item.value.expDate != "") {
           return (
@@ -492,6 +523,15 @@ class stockModel extends Database {
       year: detail.year,
       recorder: detail.recName,
       recorderEmail: detail.recEmail
+    });
+  }
+
+  updateStocking(detail, qty) {
+    return this.couch.update("stocking_record", {
+      _id: detail.id,
+      _rev: detail.value.rev,
+      productId: detail.value.productId,
+      qty: qty
     });
   }
 

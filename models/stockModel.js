@@ -354,10 +354,37 @@ class stockModel extends Database {
     return sortedArray;
   }
 
-  diminishingStock(sortedStock, stockLimit) {
-    console.log(stockLimit);
-    let match = sortedStock.filter(item => {
-      return Number(item.value.qty) <= Number(stockLimit);
+  getStockingQty(id, stocking) {
+    let match = stocking.filter(item => {
+      return item.value.productId == id;
+    });
+
+    return match[0].value.qty;
+  }
+
+  checkIfDiminished(limit, stockingQty, qty) {
+    let value = (Number(limit) / 100) * Number(stockingQty);
+    //if less than required percentage
+    if (Number(qty) <= value) {
+      return true;
+    }
+
+    return false;
+  }
+
+  diminishingStock(sortedStock, stockLimit, stocking) {
+    let match = [];
+    sortedStock.forEach(product => {
+      //get stocking qty
+      let stockingQty = this.getStockingQty(product.value.prodId, stocking);
+      //check if diminished
+      let diminished = this.checkIfDiminished(
+        stockLimit,
+        stockingQty,
+        product.value.qty
+      );
+
+      if (diminished) match = [...match, product];
     });
 
     if (match.length > 0) {
@@ -368,7 +395,7 @@ class stockModel extends Database {
   }
 
   //works with exhausting stock based on stock limit
-  getExhaustedStock(stock) {
+  getExhaustedStock(stock, stocking) {
     //get sorted stock
     let sortedStock = this.sortStock(stock);
     //get stock limit
@@ -377,7 +404,7 @@ class stockModel extends Database {
     if (detail != undefined) {
       let stockLimit = detail[0].value.stock_limit;
       //get stocks that have reached limit
-      return this.diminishingStock(sortedStock, stockLimit);
+      return this.diminishingStock(sortedStock, stockLimit, stocking);
     }
   }
 
@@ -392,9 +419,10 @@ class stockModel extends Database {
     //get date limit
 
     let { detail } = store.getSetupDetail();
-    if (detail != undefined) {
-      let dateLimit = detail[0].value.dateLimit;
 
+    if (detail != undefined) {
+      let dateLimit = detail[0].value.expiration_limit;
+      console.log(detail);
       let selectedStock = stock.filter(item => {
         if (item.value.expDate != "") {
           return (
@@ -708,6 +736,8 @@ class stockModel extends Database {
       return act.value.editedId == batchId;
     });
     if (match.length > 0) {
+      return match;
+    } else {
       return match;
     }
   }

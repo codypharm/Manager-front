@@ -618,20 +618,24 @@ const handleAllStockDisplay = () => {
 
 //handle exhausted stock
 const handleExhaustedStockDisplay = () => {
-  //sort exhausted stock
-  exhaustedStock = stockModel.getExhaustedStock(stock);
+  let stockingGetter = stockModel.getStocking();
+  stockingGetter.then(({ data, header, status }) => {
+    stocking = data.rows;
+    //sort exhausted stock
+    exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
 
-  if (exhaustedStock != false) {
-    //display all stock
-    displayExhaustedStock(exhaustedStock);
-  } else {
-    document.getElementById("exhaustedStockList").innerHTML =
-      " <tr>" +
-      ' <td colspan="4" class="text-center">' +
-      "  <span>No record found</span>" +
-      " </td>" +
-      " </tr>";
-  }
+    if (exhaustedStock != false) {
+      //display all stock
+      displayExhaustedStock(exhaustedStock);
+    } else {
+      document.getElementById("exhaustedStockList").innerHTML =
+        " <tr>" +
+        ' <td colspan="4" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  });
 };
 
 //handle expired stocking
@@ -1315,12 +1319,11 @@ const deleteProductActs = async (btn, batches) => {
   let activitiesGetter = stockModel.getActivities();
   activitiesGetter.then(({ data, headers, status }) => {
     let activities = data.rows;
+    let acts;
     //loop through products
     for (const batch of batches) {
-      let acts = stockModel.getActivitiesForBatch(
-        activities,
-        batch.value.batchId
-      );
+      acts = stockModel.getActivitiesForBatch(activities, batch.value.batchId);
+
       if (acts.length > 0) {
         let actsDeleter = stockModel.deleteActs(acts);
       }
@@ -1334,9 +1337,7 @@ const deleteProductActs = async (btn, batches) => {
 };
 
 //continue stock delete
-const proceedStockDelete = e => {
-  let btn = e.target;
-
+const proceedStockDelete = btn => {
   let id = analysisSelected;
   //show spinner
   btn.innerHTML =
@@ -1357,6 +1358,7 @@ const proceedStockDelete = e => {
 
 //delete product
 const deleteProduct = e => {
+  let btn = e.target;
   //get window object
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
@@ -1370,7 +1372,48 @@ const deleteProduct = e => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
-      proceedStockDelete(e);
+      proceedStockDelete(btn);
+    }
+  });
+};
+
+//delete expired Batch
+
+//delete batch
+const deleteExpiredBatch = (e, batchId) => {
+  batchSelected = batchId;
+  let btn = e.target;
+
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Ok to delete this batch and anything related to it"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      //get stock
+      let getStock = stockModel.getStock();
+      getStock.then(({ data, header, status }) => {
+        stock = data.rows;
+
+        //get the particular stock
+        let batch = stockModel.getBatch(stock, batchId)[0];
+        let id = batch.id;
+        let details = batch.value;
+        //delete stock
+        let stockDeleter = stockModel.deleteStock(id, details.rev);
+        stockDeleter.then(({ data, headers, status }) => {
+          //delete batch from activities
+          //deleteFromActivities(batchId, btn);
+          fetchAllStock("expiredStock");
+        });
+      });
     }
   });
 };

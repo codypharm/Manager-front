@@ -20,6 +20,21 @@ info.then(({ data, headers, status }) => {
   store.setSetupDetail(setUpDetails);
 });
 
+const notification = async () => {
+  let stock;
+  let stocking;
+  //get stock
+  let getStock = stockModel.getStock();
+  getStock.then(({ data, header, status }) => {
+    stock = data.rows;
+    let stockingGetter = stockModel.getStocking();
+    stockingGetter.then(({ data, header, status }) => {
+      stocking = data.rows;
+      console.log(stocking);
+    });
+  });
+};
+
 //auto sync with remote
 const autosync = () => {
   //get time interval from store
@@ -627,6 +642,8 @@ const processLogin = e => {
             if (store.setUserData(user)) {
               //start auto sync
               autosync();
+              //start notification
+              notification();
               //record attendance
               //get user details
 

@@ -30,7 +30,15 @@ const notification = async () => {
     let stockingGetter = stockModel.getStocking();
     stockingGetter.then(({ data, header, status }) => {
       stocking = data.rows;
-      console.log(stocking);
+      //sort exhausted stock
+      let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
+      let expiredStock = stockModel.getExpiredStock(stock);
+      let exhausted = !exhaustedStock ? 0 : exhaustedStock.length;
+      let expired = !expiredStock ? 0 : expiredStock.length;
+      let totalNotifications = exhausted + expired;
+      document.getElementById("notCounter").textContent = totalNotifications;
+      document.getElementById("exhaustedSpan").textContent = exhausted;
+      document.getElementById("expiredSpan").textContent = expired;
     });
   });
 };
@@ -536,9 +544,21 @@ const pageLoader = (page, fxn = false) => {
 //hide menu if document is clicked
 const handleBodyClick = e => {
   let menu = document.getElementsByClassName("userDrop")[0];
-  if (e.target.className != "rightMenu" && e.target.className != "rightIcons") {
-    if (!menu.classList.contains("hide")) {
-      menu.classList.add("hide");
+  let menu2 = document.getElementsByClassName("notificationDrop")[0];
+
+  //check if Dom is loaded
+  if (menu && menu2) {
+    if (
+      e.target.className != "rightMenu" &&
+      e.target.className != "rightIcons"
+    ) {
+      if (!menu.classList.contains("hide")) {
+        menu.classList.add("hide");
+      }
+
+      if (!menu2.classList.contains("hide")) {
+        menu2.classList.add("hide");
+      }
     }
   }
 };
@@ -642,8 +662,7 @@ const processLogin = e => {
             if (store.setUserData(user)) {
               //start auto sync
               autosync();
-              //start notification
-              notification();
+
               //record attendance
               //get user details
 
@@ -668,8 +687,11 @@ const processLogin = e => {
                       if (err) {
                         console.log(err);
                       }
+
                       //append main page
                       document.getElementsByTagName("main")[0].innerHTML = data;
+                      //start notification
+                      notification();
                       //load dashboard
                       pageLoader("dashboard", loadUpdashboard);
                       document
@@ -711,8 +733,26 @@ const hideSideBar = e => {
 
 //setting dropper
 const drop = e => {
+  let notificationDrop = document.getElementsByClassName("notificationDrop")[0];
+
+  if (!notificationDrop.classList.contains("hide")) {
+    notificationDrop.classList.add("hide");
+  }
+
   let element = document
     .getElementsByClassName("userDrop")[0]
+    .classList.toggle("hide");
+};
+
+//notification dropper
+const dropNotification = e => {
+  let userDrop = document.getElementsByClassName("userDrop")[0];
+
+  if (!userDrop.classList.contains("hide")) {
+    userDrop.classList.add("hide");
+  }
+  let element = document
+    .getElementsByClassName("notificationDrop")[0]
     .classList.toggle("hide");
 };
 

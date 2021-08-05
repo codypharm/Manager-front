@@ -422,7 +422,6 @@ class stockModel extends Database {
 
     if (detail != undefined) {
       let dateLimit = detail[0].value.expiration_limit;
-      console.log(detail);
       let selectedStock = stock.filter(item => {
         if (item.value.expDate != "") {
           return (

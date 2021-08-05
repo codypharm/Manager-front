@@ -321,6 +321,8 @@ const handleDashExpenses = () => {
 
 //load up dashboard
 const loadUpdashboard = () => {
+  //adjust notification
+  notification();
   //handle date
   let date = new Date();
   day = date.getDate();

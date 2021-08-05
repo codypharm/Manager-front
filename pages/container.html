@@ -160,6 +160,35 @@
     <!--==================-->
     <!-- user drop ends -->
     <!--==================-->
+
+    <!--==================-->
+    <!--notification drop -->
+    <!--==================-->
+    <div class="notificationDrop hide">
+      <nav class="nav-bar sm-light">
+        <ul class="navbar-nav">
+          <li class="nav-item " onclick="loadExhaustedStock(event)">
+            <a
+              href="#"
+              id="staffAccount"
+              class="nav-link pl-3"
+              data-staffEmail=""
+              >Low Stock</a
+            >
+            <span class="span1" id="exhaustedSpan">0</span>
+            <div style="clear:both"></div>
+          </li>
+          <li class="nav-item " onclick="loadExpiredStock(event)">
+            <a href="#" class="nav-link pl-3">Low Life</a>
+            <span class="span2" id="expiredSpan">0</span>
+            <div style="clear:both"></div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <!--==================-->
+    <!-- notification drop ends -->
+    <!--==================-->
     <div class="cube" onclick="hideSideBar(event)">
       <i class="fa fa-bars" aria-hidden="true"></i>
     </div>
@@ -193,12 +222,13 @@
     <!-- third head starts-->
     <!--================-->
     <div class="thirdHead">
-      <div class="rightIcons">
-        <div class="notCounter">
+      <div class="rightIcons" onclick="dropNotification(event)">
+        <div class="notCounter" id="notCounter">
           0
         </div>
         <img
           src="../icons/svg/bell.svg"
+          class="rightMenu"
           alt="profile image"
           width="100%"
           height="100%"
@@ -236,7 +266,7 @@
     <!--page plate starts -->
     <!--==================-->
     <div class="pagePlate">
-      hk
+      Please wait
     </div>
     <!--==================-->
     <!--page plate ends -->

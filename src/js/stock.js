@@ -517,7 +517,8 @@ const settleStocking = product => {
     updateInsertion.then(
       ({ data, headers, status }) => {
         if (status == 201) {
-          //
+          //adjust notification
+          notification();
         } else {
           console.log("error");
         }
@@ -536,7 +537,8 @@ const settleStocking = product => {
       detailInsertion.then(
         ({ data, headers, status }) => {
           if (status == 201) {
-            //
+            //adjust notification
+            notification();
           } else {
             console.log("error");
           }
@@ -549,7 +551,7 @@ const settleStocking = product => {
   }
 };
 
-//upload listNumber
+//upload list
 const uploadList = e => {
   recordedProduct.forEach(product => {
     //get id for database task
@@ -751,7 +753,7 @@ const searchAllStock = e => {
   }
 };
 
-//searxh exhausted goods
+//search exhausted goods
 const searchExhaustedStock = e => {
   let input = e.target.value.trim();
   //check input length
@@ -998,6 +1000,9 @@ const submitBatchEdit = e => {
                 //remove spinner
                 btn.classList.remove("spinner-border");
                 btn.classList.remove("spinner-border-sm");
+
+                //adjust notification
+                notification();
 
                 //hide modal
                 hideGenStaticModal("batchEditContent");
@@ -1307,6 +1312,9 @@ const deleteBatch = (e, batchId) => {
         stockDeleter.then(({ data, headers, status }) => {
           //delete batch from activities
           deleteFromActivities(batchId, btn);
+
+          //adjust notification
+          notification();
         });
       });
     }
@@ -1352,6 +1360,9 @@ const proceedStockDelete = btn => {
     deleteStock.then(() => {
       //delete activities
       deleteProductActs(btn, thisStock);
+
+      //adjust notification
+      notification();
     });
   });
 };
@@ -1409,7 +1420,8 @@ const deleteExpiredBatch = (e, batchId) => {
         //delete stock
         let stockDeleter = stockModel.deleteStock(id, details.rev);
         stockDeleter.then(({ data, headers, status }) => {
-          //delete batch from activities
+          //adjust notification
+          notification();
           //deleteFromActivities(batchId, btn);
           fetchAllStock("expiredStock");
         });

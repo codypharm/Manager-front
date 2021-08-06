@@ -348,7 +348,7 @@
 
          <!--content for changes -->
       <div class="modal-content hide " id="changesContent">
-        <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">
+        <form class="form" id="errorLogFormDetail" >
           <div class="modal-body" id="errorLogForm">
             <h4>Batch <span id="changesBatchId"></span></h4>
             <div class="border"></div>
@@ -370,7 +370,7 @@
 
          <!--content for attendance -->
          <div class="modal-content hide " id="attendanceContent">
-          <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">
+          <form class="form" id="errorLogFormDetail" onsubmit="submitAttendance(event)">
             <div class="modal-body" id="attendanceForm">
               <h4>Attendance for <span id="attendanceDate"></span></h4>
               <div class="border"></div>
@@ -391,7 +391,7 @@
                 
                 Cancel
               </button>
-              <button onclick="submitAttendance(event)" class="btn btn-primary">
+              <button onclick="submitAttendance(event)"  class="btn btn-primary">
                 <span id="subAttandanceLoader"></span>
                 Done
               </button>
@@ -401,7 +401,7 @@
 
       <!--content for error log-->
       <div class="modal-content hide " id="errorLogContent">
-        <form class="form" id="errorLogFormDetail" onsubmit="submitExpenses(event)">
+        <form class="form" id="errorLogFormDetail" >
           <div class="modal-body" id="errorLogForm">
             <h4>Batch <span id="errorBatchId"></span></h4>
             <div class="border"></div>

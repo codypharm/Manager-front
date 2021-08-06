@@ -32,7 +32,17 @@ class attendanceModel extends Database {
       );
     });
 
-    return match;
+    let sorted = match.sort((a, b) => {
+      if (a.value.staffName.toUpperCase() < b.value.staffName.toUpperCase())
+        return -1;
+
+      if (a.value.staffName.toUpperCase() > b.value.staffName.toUpperCase())
+        return 1;
+
+      return 0;
+    });
+
+    return sorted;
   }
 
   extractAttendance(list, value) {
@@ -70,6 +80,7 @@ class attendanceModel extends Database {
         record.value.day == day &&
         record.value.month == month &&
         record.value.year == year &&
+        !record.value.exitTime &&
         record.value.staffId.toUpperCase() == valueId.toUpperCase()
       );
     });
@@ -87,6 +98,7 @@ class attendanceModel extends Database {
         record.value.day == day &&
         record.value.month == month &&
         record.value.year == year &&
+        !record.value.exitTime &&
         record.value.staffId.toUpperCase() == id.toUpperCase()
       );
     });

@@ -38,8 +38,9 @@ const getList = (day, month, year) => {
   );
 
   if (matchingList.length > 0) {
+    let id = store.getLoginDetail().staffId;
     //display list
-    displayAttendanceList(matchingList);
+    displayAttendanceList(matchingList, id);
   } else {
     document.getElementById("attendanceDispList").innerHTML =
       " <tr>" +
@@ -112,8 +113,9 @@ const searchAllAttendance = e => {
   let searchList = attendanceModel.extractAttendance(matchingList, value);
 
   if (searchList.length > 0) {
+    let id = store.getLoginDetail().staffId;
     //display list
-    displayAttendanceList(searchList);
+    displayAttendanceList(searchList, id);
   } else {
     document.getElementById("attendanceDispList").innerHTML =
       " <tr>" +
@@ -158,7 +160,7 @@ const submitAttendance = e => {
   } else if (
     attendanceModel.marked(attendanceRecord, valueId, day, month, year)
   ) {
-    displayError(errorBox, "Attendance already recorded for this user today");
+    displayError(errorBox, "This user has already been signed in");
     let btnSpinner = document.getElementById("subAttandanceLoader");
     btnSpinner.classList.remove("spinner-border");
     btnSpinner.classList.remove("spinner-border-sm");
@@ -205,7 +207,7 @@ const hideAttendance = e => {
 //exit staff
 const exitStaff = e => {
   let id = e.target.dataset.id;
-
+  console.log(id);
   //get date
   let day = document.getElementById("attendanceDay").value;
   let month = document.getElementById("attendanceMonth").value;

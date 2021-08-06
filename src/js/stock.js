@@ -228,7 +228,7 @@ const addProduct = e => {
     brand: brand.value.trim(),
     expDate: expDate.value.trim(),
     totalCost: totalCost.value.trim(),
-    form: form.value.trim(),
+    form: !form.value.trim() ? "N/A" : form.value.trim(),
     unit: unit.value.trim(),
     qty: qty.value.trim(),
     price: price.value.trim(),

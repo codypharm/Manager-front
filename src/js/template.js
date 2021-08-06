@@ -481,15 +481,21 @@ const displayAccountReportList = list => {
 };
 
 //display attendance list
-const displayAttendanceList = list => {
+const displayAttendanceList = (list, id) => {
   //assing array to ab object property
   let newObj = {
     data: list
   };
 
-  //reverse date
-  Handlebars.registerHelper("exitButton", exitTime => {
-    if (exitTime != "") {
+  Handlebars.registerHelper("exitButton", (exitTime, staffId) => {
+    if (exitTime != "" || staffId.toUpperCase() == id.toUpperCase()) {
+      //hide button
+      return "hide";
+    }
+  });
+
+  Handlebars.registerHelper("noDisplay", (exitTime, staffId) => {
+    if (exitTime != "" || staffId.toUpperCase() != id.toUpperCase()) {
       //hide button
       return "hide";
     }

@@ -19,6 +19,7 @@ const upload = async (attendance, setup) => {
   for (let i = 0; i < attendance.length; i++) {
     promises.push(
       axiosInstance.post("attendance/", {
+        storageId: attendance[i].id,
         date: `${attendance[i].value.year}-${attendance[i].value.month}-${attendance[i].value.day}`,
         staffName: attendance[i].value.staffName,
         staffId: attendance[i].value.staffId,

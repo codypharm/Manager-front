@@ -10,11 +10,16 @@ const store = new ourStore();
 const staffModel = new ourStaffModel();
 
 class Users {
+  constructor() {
+    //this.currentUser = store.getLoginDetail();
+    this.setupDetails = store.getSetupDetail();
+  }
+
   loginRemote(proceed) {
     axios
       .post("http://127.0.0.1:8000/login/", {
-        email: store.getLoginDetail().email,
-        password: store.getLoginDetail().pwd
+        email: "app@vemon.com",
+        password: "Vemon=19?"
       })
       .then(res => {
         //store tokens
@@ -51,7 +56,7 @@ class Users {
     let filteredUsers = modules.filterUsers(users);
     //upload these users
     if (filteredUsers.length > 0) {
-      let upload = modules.upload(filteredUsers);
+      let upload = modules.upload(filteredUsers, this.setupDetails.detail[0]);
     }
     //move on while the task runs asynchronously
     proceedToStock();

@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 const axios = require("axios");
 const ourModel = require("../../models/staffModel");
 const { Notyf } = require("notyf");
+const axiosInstance = require("../axiosInstance");
 const staffModel = new ourModel();
 
 const filterUsers = users => {
@@ -11,9 +13,12 @@ const filterUsers = users => {
   return match;
 };
 
-const uploadUser = async user => {};
+const uploadUser = async (user, setup) => {};
 
-const upload = async users => {
+const upload = async (users, setup) => {
+  // add company and branch ID manually
+  let company = setup.value.companyId;
+  let branch = setup.value.branchId;
   //loop through users
   for (let i = 0; i < users.length; i++) {
     //await each upload handle errors
@@ -21,14 +26,23 @@ const upload = async users => {
 
     const postData = async () => {
       try {
-        return await axios.post("http://127.0.0.1:8000/register/", {
+        return await axiosInstance.post("http://127.0.0.1:8000/staff/", {
+          staffId: user.value.staffId,
+          staffName: `${user.value.fname.charAt(0).toUpperCase() +
+            user.value.fname.slice(1)} ${user.value.lname
+            .charAt(0)
+            .toUpperCase() + user.value.lname.slice(1)}`,
+          position: user.value.position,
           email: user.value.email,
-          password: user.value.pwd,
-          password2: user.value.pwd,
-          first_name: user.value.fname,
-          last_name: user.value.lname,
           phone: user.value.number,
-          rank: "staff"
+          permission: user.value.permission,
+          access: user.value.access,
+          registered: `${user.value.regYear}-${user.value.regMonth}-${user.value.regDay}`,
+          state: user.value.address.state,
+          town: user.value.address.town,
+          street: user.value.address.street,
+          companyId: company,
+          branchId: branch
         });
       } catch (err) {
         //handle error

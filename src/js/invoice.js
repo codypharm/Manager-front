@@ -203,8 +203,8 @@ const getInvoices = (day, month, year) => {
   } else {
     document.getElementById("invoicesList").innerHTML =
       " <tr>" +
-      ' <td colspan="7" class="text-center">' +
-      "  <span>No sales found</span>" +
+      ' <td colspan="9" class="text-center">' +
+      "  <span>No invoice found</span>" +
       " </td>" +
       " </tr>";
 
@@ -249,14 +249,14 @@ const getOtherInvoices = (day, month, year, invoiceType) => {
       document.getElementById("invoicesList").innerHTML =
         " <tr>" +
         ' <td colspan="7" class="text-center">' +
-        "  <span>No sales found</span>" +
+        "  <span>No invoice found</span>" +
         " </td>" +
         " </tr>";
     } else {
       document.getElementById("invoicesList").innerHTML =
         " <tr>" +
         ' <td colspan="8" class="text-center">' +
-        "  <span>No sales found</span>" +
+        "  <span>No invoice found</span>" +
         " </td>" +
         " </tr>";
     }
@@ -600,14 +600,14 @@ const processInvoiceSearch = (e, invoiceType) => {
         document.getElementById("invoicesList").innerHTML =
           " <tr>" +
           ' <td colspan="7" class="text-center">' +
-          "  <span>No sales found</span>" +
+          "  <span>No invoice found</span>" +
           " </td>" +
           " </tr>";
       } else {
         document.getElementById("invoicesList").innerHTML =
           " <tr>" +
           ' <td colspan="8" class="text-center">' +
-          "  <span>No sales found</span>" +
+          "  <span>No invoice found</span>" +
           " </td>" +
           " </tr>";
       }

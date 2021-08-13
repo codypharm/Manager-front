@@ -709,6 +709,10 @@ const updateStatus = (e, staffEmail, command) => {
 //view click
 const viewStaff = e => {
   viewEmail = e.target.dataset.staffemail;
+  //get viewEmail for who is logged in
+  if (viewEmail.toUpperCase() == "OWNER") {
+    viewEmail = store.getLoginDetail().email;
+  }
   //get users and filter with email provided
 
   pageLoader("staffView", showStaffDetails);

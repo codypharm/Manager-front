@@ -201,10 +201,13 @@ class staffModel extends Database {
     }
   }
 
-  filterStaffDetails(users, email) {
+  filterStaffDetails(users, id) {
     let match = users.filter(user => {
-      //filter email match
-      return user.value.email == email;
+      //filter email match or ID match
+      return (
+        user.value.email == id ||
+        user.value.staffId.toUpperCase() == id.toUpperCase()
+      );
     });
 
     if (match.length > 0) {

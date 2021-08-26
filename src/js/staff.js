@@ -200,15 +200,18 @@ const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
         // eslint-disable-next-line no-undef
         displayError(errorDiv, "update not successfull, please try again");
       } else {
-        //check loged in is same with edited
-        if (store.getLoginDetail().staffId == oldDetails.value.staffId) {
+        //check logged in is same with edited
+        if (
+          store.getLoginDetail().staffId.toUpperCase() ==
+          oldDetails.value.staffId.toUpperCase()
+        ) {
           //set login details
           store.setUserData({
             loginStatus: true,
             fname: newDetails.fname,
             lname: newDetails.lname,
             email: newDetails.email,
-            staffId: oldDetails.staffI,
+            staffId: oldDetails.staffId,
             position: newDetails.position,
             image: oldDetails.value.image,
             access: newDetails.access,
@@ -727,4 +730,65 @@ const editStaff = e => {
 const uploadImage = () => {
   document.getElementById("upload_image").click();
   store.setEditDetail(editDetail);
+};
+
+//web socket command
+const socketUpdateUser = message => {
+  //update database of user
+  //get users
+  let users = staffModel.getUsers();
+  users.then(({ data, headers, status }) => {
+    let [selectedUser] = staffModel.filterStaffDetails(
+      data.rows,
+      message.staffId
+    );
+    let id = selectedUser.id;
+    let rev = selectedUser.value.rev;
+
+    //create details of user
+    let details = {
+      fname: selectedUser.value.fname,
+      lname: selectedUser.value.lname,
+      email: selectedUser.value.email,
+      number: selectedUser.value.number,
+      position: selectedUser.value.position,
+      gender: selectedUser.value.gender,
+      street: selectedUser.value.address.street,
+      town: selectedUser.value.address.town,
+      state: selectedUser.value.address.state,
+      permission: selectedUser.value.permission,
+      access: message.access,
+      staffId: selectedUser.value.staffId,
+      image: selectedUser.value.image,
+      pwd: selectedUser.value.pwd,
+      regDay: selectedUser.value.regDay,
+      regMonth: selectedUser.value.regMonth,
+      regYear: selectedUser.value.regYear,
+      updateDay: selectedUser.value.updateDay,
+      updateMonth: selectedUser.value.updateMonth,
+      updateYear: selectedUser.value.updateYear,
+      editedBy: selectedUser.value.editedBy,
+      editorEmail: selectedUser.value.editorEmail,
+      remote: selectedUser.value.remote
+    };
+
+    //update details
+    let updator = staffModel.updateStatus(id, rev, details);
+    updator.then(({ data, header, status }) => {
+      if (status == 201) {
+        //check if user is who is logged in
+        if (store.getLoginDetail().loginStatus) {
+          if (
+            store.getLoginDetail().staffId.toUpperCase() ==
+            message.staffId.toUpperCase()
+          ) {
+            //log user out
+            socketLogOut();
+          }
+        }
+      } else {
+        console.log("error");
+      }
+    });
+  });
 };

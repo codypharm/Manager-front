@@ -8,7 +8,15 @@ const { Notyf } = require("notyf");
 //get branches class
 const branchesClass = require("../api/branches");
 
+//get websocket connection
+const webSocket = require("../src/js/websocket");
+
 const branches = new branchesClass();
+
+//connect
+const connectSocket = detail => {
+  webSocket.connect(detail.value.companyId, detail.value.branchId);
+};
 
 //get setup details
 let viewUrl = db.viewUrl.setup;
@@ -16,6 +24,8 @@ var setUpDetails;
 let info = db.couch.get("vemon_setup", viewUrl);
 info.then(({ data, headers, status }) => {
   setUpDetails = data.rows;
+  //CONNECT WEBSOCKET
+  connectSocket(setUpDetails[0]);
   //store data in electron store
   store.setSetupDetail(setUpDetails);
 });
@@ -1033,6 +1043,57 @@ const formatMoney = money => {
   amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   //return amount
   return amount;
+};
+
+//socket logout
+const socketLogOut = () => {
+  showLoading();
+
+  let attendance = attendanceModel.getAttendance();
+  attendance.then(({ data }) => {
+    let attendanceRecord = data.rows;
+    let date = new Date();
+
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+    let id = store.getLoginDetail().staffId;
+    let myData = attendanceModel.getThisAttendance(
+      attendanceRecord,
+      day,
+      month,
+      year,
+      id
+    )[0];
+    //update attendance
+    let attendanceUpdater = attendanceModel.updateAttendance(myData);
+    attendanceUpdater.then(({ data, status }) => {
+      if (status == 201) {
+        //logout
+        store.forceLogout();
+        //go to login page
+
+        let url = "./pages/login.html";
+        fs.readFile(url, "utf-8", (err, data) => {
+          if (err) {
+            console.log(err);
+          }
+          //hide loading
+          hideLoading();
+          document.getElementsByTagName("main")[0].innerHTML = data;
+        });
+      }
+    });
+  });
+
+  //update attendance
+  /*let attendanceUpdater = attendanceModel.updateAttendance(data);
+  attendanceUpdater.then(({ data, status }) => {
+    if (status == 201) {
+      //go back and show list
+      listAttendance();
+    }
+  });*/
 };
 
 //logout code

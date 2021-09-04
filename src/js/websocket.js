@@ -14,10 +14,16 @@ class WebSocketService {
   }
 
   connect(company, branch) {
-    const path = `ws://127.0.0.1:8000/ws/chat/${company}${branch}/`;
+    const path = `ws://127.0.0.1:8000/ws/staff/${company}${branch}/`;
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
       console.log("socket opened");
+      let message = {
+        companyId: company,
+        branchId: branch
+      };
+
+      this.newChatMessage(message);
     };
 
     this.socketRef.onmessage = e => {
@@ -37,23 +43,32 @@ class WebSocketService {
 
   socketNewMessage(data) {
     //message received
-    const { message } = JSON.parse(data);
-    switch (message.section.toUpperCase()) {
-      case "STAFF_UPDATE":
-        socketUpdateUser(message);
-        break;
-
-      default:
-        break;
+    const message = JSON.parse(data);
+    //if just one message or message list
+    if (
+      message.section.toUpperCase() == "STAFF_UPDATE" &&
+      message.command.toUpperCase() == "NEW_MESSAGE"
+    ) {
+      socketUpdateUser(message);
+    } else if (
+      message.section.toUpperCase() == "STAFF_UPDATE" &&
+      message.command.toUpperCase() == "FETCH_MESSAGES"
+    ) {
+      //if message
+      message.list.forEach(async item => {
+        //update each user
+        await socketUpdateUser(item);
+      });
     }
 
-    // console.log(parseData);
+    console.log(message);
   }
 
-  newMessage(message) {
+  newChatMessage(message) {
     this.sendMessage({
-      from: message.from,
-      message: message.content
+      command: "fetch_messages",
+      companyId: message.companyId,
+      branchId: message.branchId
     });
   }
 
@@ -61,7 +76,7 @@ class WebSocketService {
     try {
       this.socketRef.send(
         JSON.stringify({
-          message: data
+          ...data
         })
       );
     } catch (error) {

@@ -733,7 +733,7 @@ const uploadImage = () => {
 };
 
 //web socket command
-const socketUpdateUser = message => {
+const socketUpdateUser = async message => {
   //update database of user
   //get users
   let users = staffModel.getUsers();
@@ -757,7 +757,7 @@ const socketUpdateUser = message => {
       town: selectedUser.value.address.town,
       state: selectedUser.value.address.state,
       permission: selectedUser.value.permission,
-      access: message.access,
+      access: message.permission,
       staffId: selectedUser.value.staffId,
       image: selectedUser.value.image,
       pwd: selectedUser.value.pwd,
@@ -780,7 +780,8 @@ const socketUpdateUser = message => {
         if (store.getLoginDetail().loginStatus) {
           if (
             store.getLoginDetail().staffId.toUpperCase() ==
-            message.staffId.toUpperCase()
+              message.staffId.toUpperCase() &&
+            message.permission.toUpperCase() == "CLOSED"
           ) {
             //log user out
             socketLogOut();

@@ -11,12 +11,9 @@ const branchesClass = require("../api/branches");
 //get websocket connection
 const webSocket = require("../src/js/websocket");
 
-const branches = new branchesClass();
+//const onlineTester = require("../src/js/onlineTester");
 
-//connect
-const connectSocket = detail => {
-  webSocket.connect(detail.value.companyId, detail.value.branchId);
-};
+const branches = new branchesClass();
 
 //get setup details
 let viewUrl = db.viewUrl.setup;
@@ -29,6 +26,22 @@ info.then(({ data, headers, status }) => {
   //store data in electron store
   store.setSetupDetail(setUpDetails);
 });
+
+//connect web socket
+const connectSocket = detail => {
+  //get time interval from store
+  let setUpInfo = store.getSetupDetail();
+  let package = setUpInfo.detail[0].value.app_package;
+
+  //check if app is premium and return if not premium
+  if (!package == "premium") return;
+  webSocket.connect(detail.value.companyId, detail.value.branchId);
+};
+
+//disconnect socket
+const disconnectSocket = () => {
+  webSocket.disconnect();
+};
 
 const notification = async () => {
   let stock;
@@ -63,6 +76,7 @@ const autosync = () => {
   //check if app is premium and return if not premium
   if (!package == "premium") return;
 
+  //connect
   let updateTime;
   //calculate intervals in millisecond
   if (interval == "30mins") {

@@ -41,6 +41,10 @@ class WebSocketService {
     };
   }
 
+  disconnect() {
+    this.socketRef.close();
+  }
+
   socketNewMessage(data) {
     //message received
     const message = JSON.parse(data);
@@ -55,10 +59,12 @@ class WebSocketService {
       message.command.toUpperCase() == "FETCH_MESSAGES"
     ) {
       //if message
-      message.list.forEach(async item => {
-        //update each user
-        await socketUpdateUser(item);
-      });
+      if (message.list.length > 0) {
+        message.list.forEach(async item => {
+          //update each user
+          await socketUpdateUser(item);
+        });
+      }
     }
 
     console.log(message);

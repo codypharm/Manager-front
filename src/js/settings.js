@@ -111,6 +111,9 @@ const submitAppSettings = e => {
   //loading
   showLoading();
 
+  //disconnect socket
+  disconnectSocket();
+
   //get values
   let logout_time = document.getElementById("logoutTime").value;
   let update_interval = document.getElementById("updateIn").value;
@@ -138,6 +141,9 @@ const submitAppSettings = e => {
             store.setSetupDetail(setUpDetails);
             //call sync function on renderer.js
             autosync();
+
+            //call websocket function on renderer.js
+            connectSocket();
           });
         }
       });

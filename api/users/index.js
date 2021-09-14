@@ -4,6 +4,7 @@ const ourStore = require("../../src/js/store");
 const ourStaffModel = require("../../models/staffModel");
 const modules = require("./modules");
 const { Notyf } = require("notyf");
+const axiosInstance = require("../axiosInstance");
 
 // instantiate classes
 const store = new ourStore();
@@ -24,7 +25,46 @@ class Users {
       .then(res => {
         //store tokens
         store.setTokens(res.data.access, res.data.refresh);
-        proceed();
+        //check is expiration exists
+        let companyId = this.setupDetails.detail[0].value.companyId;
+        axiosInstance
+          .get(`http://127.0.0.1:8000/companies/${companyId}`)
+          .then(res => {
+            let message = res.data.message;
+            if (message.toUpperCase() === "OPEN") {
+              proceed();
+            } else {
+              // Display an error notification
+              const notyf = new Notyf({
+                duration: 5000
+              });
+              notyf.error("Access denied, Company activation required");
+              //remove disabled and also loading sign
+              document.querySelector("#syncBtn").disabled = false;
+              document.getElementById("sync").style.display = "none";
+              //reset tokens to empty data
+              store.setTokens(false, false);
+              //set sync store
+              store.setSyncState(false);
+            }
+          })
+          .catch(err => {
+            let errorMessage =
+              "An error occurred, please check network connection and ensure you have correct company ID saved";
+            const notyf = new Notyf({
+              duration: 5000
+            });
+
+            // Display an error notification
+            notyf.error(`${errorMessage}`);
+            //remove disabled and also loading sign
+            document.querySelector("#syncBtn").disabled = false;
+            document.getElementById("sync").style.display = "none";
+            //reset tokens to empty data
+            store.setTokens(false, false);
+            //set sync store
+            store.setSyncState(false);
+          });
       })
       .catch(err => {
         let errorMessage = "An error occurred";

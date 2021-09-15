@@ -70,7 +70,7 @@ class Validator extends Database {
       number: "",
       gender: "",
       position: "manager",
-      permission: "admin",
+      permission: "super_admin",
       access: "open",
       remote: false,
       regDay: date.getDate(),

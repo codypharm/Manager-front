@@ -35,7 +35,7 @@ const connectSocket = detail => {
 
   //check if app is premium and return if not premium
   if (!package == "premium") return;
-  webSocket.connect(detail.value.companyId, detail.value.branchId);
+  //webSocket.connect(detail.value.companyId, detail.value.branchId);
 };
 
 //disconnect socket
@@ -520,6 +520,8 @@ const pageLoader = (page, fxn = false) => {
       console.log(err);
     } else {
       pagePlate.innerHTML = data;
+      //set permission access
+      setRankElements();
       if (fxn != false) {
         switch (page) {
           case "onlineSales":
@@ -596,6 +598,7 @@ const loadRightMenu = () => {
     lname,
     email,
     position,
+    permission,
     image,
     access,
     docId
@@ -603,6 +606,34 @@ const loadRightMenu = () => {
 
   //document.getElementById("staffAccount").dataset.staffEmail = email;
   $("#staffAccount").attr("data-staffEmail", email);
+};
+
+//hide for non admin
+const setRankElements = () => {
+  let loginDetails = store.getLoginDetail();
+  if (
+    loginDetails.permission.toUpperCase() !== "ADMIN" &&
+    loginDetails.permission.toUpperCase() !== "SUPER_ADMIN"
+  ) {
+    let list = document.querySelectorAll(".admin_only");
+    list = [...list, document.querySelectorAll(".super_admin_only")];
+    //check if no match exists
+    if (list.length < 1) return;
+    list.forEach(item => {
+      if (!item.classList.contains("hide")) {
+        item.classList.add("hide");
+      }
+    });
+  } else if (loginDetails.permission.toUpperCase() == "ADMIN") {
+    let list = document.querySelectorAll(".super_admin_only");
+    //check if no match exists
+    if (list.length < 1) return;
+    list.forEach(item => {
+      if (!item.classList.contains("hide")) {
+        item.classList.add("hide");
+      }
+    });
+  }
 };
 
 //handle setup checking

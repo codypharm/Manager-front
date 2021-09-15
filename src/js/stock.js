@@ -643,6 +643,7 @@ const handleExhaustedStockDisplay = () => {
 //handle expired stocking
 const handleExpiredStockDisplay = () => {
   let expiredStock = stockModel.getExpiredStock(stock);
+
   //display expired stock
   if (expiredStock != false) {
     //display all stock

@@ -892,7 +892,22 @@ body {
   cursor: pointer;
   float: left;
 }
+
+.staffListBase .otherUsers .listCard .staffAction .elongate {
+  width: 100%;
+  margin: 0;
+  height: 100%;
+  line-height: 40px;
+  text-align: center;
+  background-color: #e5e5e5;
+  cursor: pointer;
+}
 .staffListBase .otherUsers .listCard .staffAction .actions:hover {
+  background-color: #c4c4c4;
+  color: #fff;
+}
+
+.staffListBase .otherUsers .listCard .staffAction .elongate:hover {
   background-color: #c4c4c4;
   color: #fff;
 }

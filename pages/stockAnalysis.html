@@ -15,7 +15,7 @@
       </button>
 
       <button
-        class="btn  btn-success float-right mt-3 mr-1"
+        class="btn  btn-success float-right mt-3 mr-1 admin_only"
         onclick="showAnalysisEditForm(event)"
       >
         Edit
@@ -84,7 +84,7 @@
             <h3>Batch Breakdown</h3>
           </div>
           <div class="col text-right">
-            <div class="btn btn-sm btn-secondary" onclick="deleteProduct(event)">
+            <div class="btn btn-sm btn-secondary super_admin_only" onclick="deleteProduct(event)">
               Delete Product
             </div>
           </div>
@@ -99,7 +99,7 @@
             <th>Quantity</th>
             <th>Error</th>
             <th>Activity</th>
-            <th colspan="3" class="text-center">Action</th>
+            <th colspan="3" class="text-center admin_only">Action</th>
           </thead>
           <tbody id="batchList">
             <tr>
@@ -134,17 +134,17 @@
             Check
         </button>
       </td>
-      <td>
-        <td>
-          <button class="btn btn-sm btn-success" onclick="editBatch(event, '{{value.batchId}}')">
-            Edit
-          </button>
-          </td>
+      <td >
           <td>
-          <button class="btn btn-sm btn-secondary" onclick="deleteBatch(event,'{{value.batchId}}')">
-            Delete
-          </button>
-        </td>
+            <button class="btn btn-sm btn-success" onclick="editBatch(event, '{{value.batchId}}')">
+              Edit
+            </button>
+          </td>
+          <td class="{{rankAccess}}">
+            <button class="btn btn-sm btn-secondary" onclick="deleteBatch(event,'{{value.batchId}}')">
+              Delete
+            </button>
+          </td>
        </td>
   
     {{/each}}

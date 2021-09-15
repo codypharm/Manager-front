@@ -22,6 +22,7 @@ const displayStaff = data => {
     lname,
     email,
     position,
+    permission,
     image,
     access,
     docId
@@ -37,6 +38,31 @@ const displayStaff = data => {
       return "block";
     } else {
       return "activate";
+    }
+  });
+
+  //hide if not admin and not mine
+  Handlebars.registerHelper("rankAccess", email => {
+    let loginDetails = store.getLoginDetail();
+
+    if (
+      loginDetails.permission.toUpperCase() !== "SUPER_ADMIN" &&
+      loginDetails.email.toUpperCase() !== email.toUpperCase()
+    ) {
+      return "hide";
+    }
+  });
+  //hide if not admin and not mine
+  Handlebars.registerHelper("elongate", email => {
+    let loginDetails = store.getLoginDetail();
+
+    if (
+      loginDetails.permission.toUpperCase() !== "SUPER_ADMIN" &&
+      loginDetails.email.toUpperCase() !== email.toUpperCase()
+    ) {
+      return "elongate";
+    } else {
+      return "actions";
     }
   });
 
@@ -319,6 +345,15 @@ const displayExhaustedStock = products => {
     data: products
   };
 
+  //hide if not admin
+  Handlebars.registerHelper("rankAccess", () => {
+    let loginDetails = store.getLoginDetail();
+
+    if (loginDetails.permission.toUpperCase() !== "SUPER_ADMIN") {
+      return "hide";
+    }
+  });
+
   //get template
   let template = document.getElementById("exhaustedStockContainer").innerHTML;
   //compile template with handlebar
@@ -355,6 +390,15 @@ const displayExpiredStock = products => {
       }
     } else {
       return "N/A";
+    }
+  });
+
+  //hide if not admin
+  Handlebars.registerHelper("rankAccess", () => {
+    let loginDetails = store.getLoginDetail();
+
+    if (loginDetails.permission.toUpperCase() !== "SUPER_ADMIN") {
+      return "hide";
     }
   });
 
@@ -395,6 +439,15 @@ const listOutBatches = products => {
       }
     } else {
       return "N/A";
+    }
+  });
+
+  //hide if not admin
+  Handlebars.registerHelper("rankAccess", () => {
+    let loginDetails = store.getLoginDetail();
+
+    if (loginDetails.permission.toUpperCase() !== "SUPER_ADMIN") {
+      return "hide";
     }
   });
 

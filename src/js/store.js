@@ -76,6 +76,7 @@ class Store {
       email: user.email,
       staffId: user.staffId,
       position: user.position,
+      permission: user.permission,
       image: user.image,
       access: user.access,
       docId: user.id,

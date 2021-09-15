@@ -34,7 +34,7 @@
               <th>Quantity</th>
               <th>Expiry Date</th>
               <th>Remaining</th>
-              <th>Action</th>
+              <th class="super_admin_only">Action</th>
             </thead>
             <tbody id="expiredStockList">
               <tr>
@@ -61,7 +61,7 @@
       <td>{{value.qty}}</td>
       <td>{{value.expDate}}</td>
       <td>{{daysRemaining value.expDate}}</td>
-      <td>
+      <td class="{{rankAccess}}">
           <button class="btn btn-sm btn-secondary" onclick="deleteExpiredBatch(event,'{{value.batchId}}')">
               Clear
           </button>

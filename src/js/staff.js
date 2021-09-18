@@ -92,8 +92,23 @@ const validateSecPwd = e => {
   }
 };
 
-const showPwd = e => {
+const showPwd = (e, rank) => {
+  let detail = store.getLoginDetail();
   let pwdBearer = document.getElementsByClassName("passwordBearer")[0];
+
+  let errorBox = document.getElementById("permissionError");
+  //only allow super admin to create super admin
+  if (
+    detail.permission.toUpperCase() !== "SUPER_ADMIN" &&
+    rank.toUpperCase() == "SUPER_ADMIN"
+  ) {
+    if (!pwdBearer.classList.contains("hide")) {
+      pwdBearer.classList.add("hide");
+    }
+    errorBox.textContent = "Only a super admin can create a super admin ";
+    document.getElementById("superAdmin").checked = false;
+    return;
+  }
 
   if (pwdBearer.classList.contains("hide")) {
     pwdBearer.classList.remove("hide");
@@ -111,14 +126,35 @@ const hidePwd = e => {
 const handlePwdBox = e => {
   let perm = e.target.value;
   let pwdBox = document.getElementsByClassName("pwdCarrier")[0];
-  if (perm == "admin" && oldDetails.value.pwd == "") {
+  let detail = store.getLoginDetail();
+  if (
+    detail.permission.toUpperCase() !== "SUPER_ADMIN" &&
+    perm.toUpperCase() == "SUPER_ADMIN"
+  ) {
+    document.getElementById("permError").textContent =
+      "Only super admin is allowed to create super admin";
+    document.getElementById("permission").value = "";
+    return;
+  }
+  if (
+    (perm == "admin" || perm.toUpperCase() == "SUPER_ADMIN") &&
+    oldDetails.value.permission.toUpperCase() == "MEMBER"
+  ) {
+    if (pwdBox.classList.contains("hide")) {
+      pwdBox.classList.remove("hide");
+    }
+  } else if (
+    (perm == "admin" || perm.toUpperCase() == "SUPER_ADMIN") &&
+    oldDetails.value.permission.toUpperCase() !== "MEMBER" &&
+    oldDetails.value.email == detail.email
+  ) {
     if (pwdBox.classList.contains("hide")) {
       pwdBox.classList.remove("hide");
     }
   } else {
     if (!pwdBox.classList.contains("hide")) {
       pwdBox.classList.add("hide");
-      //empty  passsword field
+      //empty  password field
       document.getElementById("pwd").value = "";
       document.getElementById("pwd2").value = "";
       document.getElementById("pwdError").textContent = "";
@@ -164,6 +200,14 @@ const emailExists = (errorDiv, email, btn, details) => {
           if (status == 201) {
             // eslint-disable-next-line no-undef
             displaySuccess("Staff registered");
+            //hide password boxes
+            let pwdBearer = document.getElementsByClassName(
+              "passwordBearer"
+            )[0];
+
+            if (!pwdBearer.classList.contains("hide")) {
+              pwdBearer.classList.add("hide");
+            }
             setTimeout(() => {
               //clear and restart form
               document.getElementsByClassName("pwd2")[0].style.border = "";
@@ -198,7 +242,7 @@ const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
     ({ data, headers, status }) => {
       if (status != 201) {
         // eslint-disable-next-line no-undef
-        displayError(errorDiv, "update not successfull, please try again");
+        displayError(errorDiv, "update not successful, please try again");
       } else {
         //check logged in is same with edited
         if (
@@ -232,11 +276,13 @@ const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
         resetSaveBtn(btn);
         setTimeout(() => {
           hideSuccess();
+          loadStaffList();
         }, 900);
       }
     },
     err => {
       // eslint-disable-next-line no-undef
+
       displayError(errorDiv, err);
       resetSaveBtn(btn);
     }
@@ -270,6 +316,16 @@ const saveDetails = e => {
   let pwd = document.getElementById("pwd");
   let pwd2 = document.getElementById("pwd2");
   let image = document.getElementById("staffImage").src;
+  //if user was admin or super admin and its not the logged in person
+  //her must have had a password
+  if (
+    oldDetails.value.permission !== "MEMBER" &&
+    oldDetails.value.email !== store.getLoginDetail().email
+  ) {
+    //assign his old password to him
+    pwd.value = oldDetails.value.pwd;
+    pwd2.value = oldDetails.value.pwd;
+  }
 
   let details = {
     fname: fname.value.trim(),
@@ -328,14 +384,16 @@ const saveDetails = e => {
     displayError(errorDiv, "Please state should be alphabets only");
     resetSaveBtn(btn);
   } else if (
-    permission.value == "admin" &&
+    (permission.value == "admin" ||
+      permission.value.toUpperCase() == "SUPER_ADMIN") &&
     validate.notValidPassword(pwd.value.trim())
   ) {
     // eslint-disable-next-line no-undef
     displayError(errorDiv, "please enter a valid password");
     resetSaveBtn(btn);
   } else if (
-    permission.value == "admin" &&
+    (permission.value == "admin" ||
+      permission.value.toUpperCase() == "SUPER_ADMIN") &&
     pwd.value.trim() != pwd2.value.trim()
   ) {
     // eslint-disable-next-line no-undef
@@ -381,6 +439,7 @@ const register = e => {
   let town = document.getElementById("town");
   let state = document.getElementById("state");
   let adminPermission = document.getElementById("admin");
+  let superAdminPermission = document.getElementById("superAdmin");
   let memberPermission = document.getElementById("member");
   let gender = document.getElementById("gender");
   let pwd = document.getElementById("pwd");
@@ -389,6 +448,8 @@ const register = e => {
   let permissionLevel;
   if (adminPermission.checked == true) {
     permissionLevel = "admin";
+  } else if (superAdminPermission.checked == true) {
+    permissionLevel = "super_Admin";
   } else if (memberPermission.checked == true) {
     permissionLevel = "member";
   }
@@ -445,11 +506,25 @@ const register = e => {
     resetBtn(btn);
   } else if (
     adminPermission.checked == false &&
-    memberPermission.checked == false
+    memberPermission.checked == false &&
+    superAdminPermission.checked == false
   ) {
     // eslint-disable-next-line no-undef
     displayError(errorDiv, "Please select permission level");
     resetBtn(btn);
+  } else if (superAdminPermission.checked == true) {
+    if (pwd.value.trim() != pwd2.value.trim()) {
+      // eslint-disable-next-line no-undef
+      displayError(errorDiv, "Passwords do not match");
+      resetBtn(btn);
+    } else if (validate.notValidPassword(pwd.value.trim())) {
+      // eslint-disable-next-line no-undef
+      displayError(errorDiv, "Password not strong enough");
+      resetBtn(btn);
+    } else {
+      //check email address
+      emailExists(errorDiv, email, btn, details);
+    }
   } else if (adminPermission.checked == true) {
     if (pwd.value.trim() != pwd2.value.trim()) {
       // eslint-disable-next-line no-undef
@@ -596,10 +671,12 @@ const appendValues = details => {
     genderIndex = 2;
   }
 
-  if (permission == "admin") {
+  if (permission.toUpperCase() == "SUPER_ADMIN") {
     permissionIndex = 1;
-  } else {
+  } else if (permission == "admin") {
     permissionIndex = 2;
+  } else {
+    permissionIndex = 3;
   }
 
   document.getElementById("gender").selectedIndex = genderIndex;
@@ -634,6 +711,11 @@ const showStaffValues = selectedEmail => {
 
 //update status
 const updateStatus = (e, staffEmail, command) => {
+  //ensure only super user blocks someone
+  if (store.getLoginDetail().permission.toUpperCase() !== "SUPER_ADMIN") {
+    showModal("Only a super admin can block a user.");
+    return;
+  }
   //confirm command
   let confirmation = "Click OK to continue";
   if (confirm(confirmation)) {

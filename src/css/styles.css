@@ -696,7 +696,7 @@ body {
   display: inline-block;
   background-color: #fff;
   padding: 10px 20px;
-  width: 100px;
+  width: auto;
   border-radius: 5px;
   border: 1px solid #e5e5e5;
 }
@@ -711,6 +711,10 @@ body {
 .staffForm .formField .radioBox input[type="radio"]:focus label {
   background-color: #00c853;
   color: #fff;
+}
+
+.diff {
+  width: 100%;
 }
 .passwordBearer span {
   color: red;

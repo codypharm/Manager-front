@@ -761,7 +761,7 @@ const processLogin = e => {
           } else {
             displayError(
               errorDiv,
-              "Access denied, please contact appropriate personel"
+              "Access denied, please contact appropriate personnel"
             );
           }
         } else {

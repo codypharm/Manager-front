@@ -150,13 +150,21 @@
       </div>
 
       <div class="formField">
-        <label>Permision Level</label>
+        <span id="permissionError"></span>
+        <label>Permission Level</label>
         <div class="radioBox">
           <input
             type="radio"
             name="permission"
+            id="superAdmin"
+            onclick="showPwd(event,'super_admin')"
+          />
+          <label for="superAdmin">Super Admin</label>
+          <input
+            type="radio"
+            name="permission"
             id="admin"
-            onclick="showPwd(event)"
+            onclick="showPwd(event,'admin')"
           />
           <label for="admin">Admin</label>
 

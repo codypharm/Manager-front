@@ -20,7 +20,10 @@
     <div class="pt-4 pb-2 pl-3 pr-3 border">
       <div class="alert alert-danger hide " id="hide"></div>
       <form action="" id="saleForm" onsubmit="processSale(event)">
-        <label for="prodName">ProductID:</label>
+        <div class="suggestionBox">
+          <div class="suggestionItems" id="suggestionItems"></div>
+        </div>
+        <label for="prodName">Product:</label>
         <div class="input-group">
           <div class="input-group-prepend">
             <span class="input-group-text">
@@ -33,6 +36,7 @@
             placeholder="Product id or name"
             id="prodName"
             autofocus
+            oninput="suggestProduct(event)"
           />
         </div>
         <div class="clearfix mt-1">
@@ -232,6 +236,14 @@
     <td>{{qty}}</td>
     <td>{{price}}</td>
   </tr>
+
+  {{/each}}
+</script>
+<script id="suggestionContainer" type="text/xhandlebars-template">
+  {{#each data}}
+  <div class="suggestionItem" onclick="appendSuggestion(event, '{{value.name}}')">
+    {{value.name}}
+  </div>
 
   {{/each}}
 </script>

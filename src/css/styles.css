@@ -16,6 +16,11 @@ body {
   min-width: 600px;
   background-color: #f8f9fa;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
 .loadingWait {
   display: block;
   color: #00c853;
@@ -1501,6 +1506,57 @@ body {
   font-size: 0.9rem;
   color: #7f8c8d;
 }
+
+::-webkit-scrollbar {
+  width: 0.6rem;
+  background-color: #ccc;
+  border-radius: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #de9c00;
+  border-radius: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #de9c00;
+}
+
+.suggestionBox {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 150px;
+  left: 0;
+  padding-left: 70px;
+  padding-right: 30px;
+  padding-top: 5px;
+  z-index: 1000;
+}
+
+.suggestionItems {
+  width: 100%;
+  height: auto;
+  background-color: #fff;
+  -webkit-box-shadow: 0px 10px 10px 0px #cccccc;
+  -moz-box-shadow: 0px 10px 10px 0px #cccccc;
+  box-shadow: 0px 10px 10px 0px #cccccc;
+}
+
+.suggestionItem {
+  width: 100%;
+  height: auto;
+  padding: 5px;
+  line-height: 20px;
+  word-wrap: break-word;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+}
+
+.suggestionItem:hover {
+  background-color: #d6d6d6;
+}
+
 @media only screen and (max-width: 1024px) {
   .pageHead {
     padding-right: 5px;

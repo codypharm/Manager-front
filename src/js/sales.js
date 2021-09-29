@@ -1,5 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+
+//const salesModel = require("../../models/salesModel");
+
 //global variables
 var cart = [];
 
@@ -196,6 +199,23 @@ const addCart = (cart, prodId, qty) => {
 const addUpMatch = (stock, id) => {
   let matchQty = salesModel.addUpMatch(stock, id);
   return matchQty;
+};
+
+//suggest product
+const suggestProduct = e => {
+  let word = e.target.value.trim();
+  let match = salesModel.getMatchingProduct(stock, word);
+  if (match) {
+    console.log(match);
+    displaySuggestions(match);
+  }
+};
+
+//append suggestion
+const appendSuggestion = (e, name) => {
+  document.getElementById("prodName").value = name;
+  //hide suggestions
+  document.getElementById("suggestionItems").innerHTML = "";
 };
 
 //process sale

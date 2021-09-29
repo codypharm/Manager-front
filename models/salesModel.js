@@ -70,6 +70,22 @@ class salesModel extends Database {
     }
   }
 
+  getMatchingProduct(stock, id) {
+    let match = stock.filter(product => {
+      return (
+        (product.value.prodId.includes(id) ||
+          product.value.name.toUpperCase().includes(id.toUpperCase())) &&
+        Number(product.value.qty) > 0
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
   getUnit(stock, id) {
     let unit = 0;
     stock.forEach(product => {

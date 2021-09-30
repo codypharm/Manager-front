@@ -52,6 +52,7 @@ const getList = (day, month, year) => {
 };
 //list attendance
 const listAttendance = () => {
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -73,12 +74,14 @@ const listAttendance = () => {
       document.getElementById(
         "dispDate"
       ).textContent = `${day}-${month}-${year}`;
+      hideLoading();
     });
   });
 };
 
 //process attendance list
 const processAttendanceList = e => {
+  showLoading()
   e.preventDefault();
 
   let day = document.getElementById("attendanceDay").value;
@@ -88,6 +91,7 @@ const processAttendanceList = e => {
   //get list
   getList(day, month, year);
   document.getElementById("dispDate").textContent = `${day}-${month}-${year}`;
+  hideLoading()
 };
 
 //search attendance
@@ -206,8 +210,9 @@ const hideAttendance = e => {
 
 //exit staff
 const exitStaff = e => {
+  showLoading();
   let id = e.target.dataset.id;
-  console.log(id);
+
   //get date
   let day = document.getElementById("attendanceDay").value;
   let month = document.getElementById("attendanceMonth").value;
@@ -252,6 +257,8 @@ const exitStaff = e => {
           document.getElementById(
             "dispDate"
           ).textContent = `${day}-${month}-${year}`;
+
+          hideLoading();
         });
       }
     });

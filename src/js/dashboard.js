@@ -53,6 +53,8 @@ const handleStock = () => {
 
     //append to DOM
     document.getElementById("span5").textContent = totalStock;
+    //hide loading
+    hideLoading();
   });
 };
 
@@ -321,6 +323,8 @@ const handleDashExpenses = () => {
 
 //load up dashboard
 const loadUpdashboard = () => {
+  //show Loading
+  showLoading();
   //adjust notification
   notification();
   //handle date

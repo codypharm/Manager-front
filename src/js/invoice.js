@@ -267,6 +267,7 @@ const getOtherInvoices = (day, month, year, invoiceType) => {
 
 //load current invoices page
 const loadCurrentInvoices = () => {
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -276,11 +277,12 @@ const loadCurrentInvoices = () => {
   let myInvoices = invoiceModel.getAllInvoices();
   myInvoices.then(({ data, headers, status }) => {
     invoices = data.rows;
-    //get all invoices for the mathching date
+    //get all invoices for the matching date
     getInvoices(day, month, year);
 
     //enable button
     document.getElementById("processBtn").disabled = false;
+    hideLoading();
   });
 
   document.getElementById("invoiceDay").value = day;
@@ -290,6 +292,7 @@ const loadCurrentInvoices = () => {
 
 //load other invoices page
 const loadOtherInvoices = invoiceType => {
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -304,6 +307,7 @@ const loadOtherInvoices = invoiceType => {
 
     //enable button
     document.getElementById("processBtn").disabled = false;
+    hideLoading();
   });
 
   document.getElementById("otherInvoiceDay").value = day;
@@ -313,6 +317,7 @@ const loadOtherInvoices = invoiceType => {
 
 //process invoice for date entered
 const loadInvoices = e => {
+  showLoading();
   e.preventDefault();
 
   document.getElementById("invoicesList").innerHTML =
@@ -326,12 +331,14 @@ const loadInvoices = e => {
   let month = document.getElementById("invoiceMonth").value;
   let year = document.getElementById("invoiceYear").value;
 
-  //get all invoices for the mathching date
+  //get all invoices for the matching date
   getInvoices(day, month, year);
+  hideLoading();
 };
 
 //process other  invoice for date entered
 const loadOtherEnteredInvoices = (e, invoiceType) => {
+  showLoading();
   e.preventDefault();
 
   document.getElementById("invoicesList").innerHTML =
@@ -345,8 +352,9 @@ const loadOtherEnteredInvoices = (e, invoiceType) => {
   let month = document.getElementById("otherInvoiceMonth").value;
   let year = document.getElementById("otherInvoiceYear").value;
 
-  //get other invoices for the mathching date
+  //get other invoices for the matching date
   getOtherInvoices(day, month, year, invoiceType);
+  hideLoading();
 };
 
 //invoice view button

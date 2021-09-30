@@ -15,6 +15,17 @@ const webSocket = require("../src/js/websocket");
 
 const branches = new branchesClass();
 
+//loader sign
+const showLoading = () => {
+  $(".loadingModal").modal("show");
+};
+
+const hideLoading = () => {
+  $(".loadingModal").modal("hide");
+};
+
+showLoading()
+
 //get setup details
 let viewUrl = db.viewUrl.setup;
 var setUpDetails;
@@ -35,7 +46,7 @@ const connectSocket = detail => {
 
   //check if app is premium and return if not premium
   if (!package == "premium") return;
-  //webSocket.connect(detail.value.companyId, detail.value.branchId);
+  webSocket.connect(detail.value.companyId, detail.value.branchId);
 };
 
 //disconnect socket
@@ -182,14 +193,6 @@ const hideGenStaticModal = elem => {
   return true;
 };
 
-//loader sign
-const showLoading = () => {
-  $(".loadingModal").modal("show");
-};
-
-const hideLoading = () => {
-  $(".loadingModal").modal("hide");
-};
 
 // eslint-disable-next-line no-unused-vars
 const showInputs = e => {
@@ -651,6 +654,7 @@ db.getSetup().then(({ data }) => {
           console.log(err);
         }
         document.getElementsByTagName("main")[0].innerHTML = data;
+        hideLoading()
       });
     } else {
       //display app container since user is logged in
@@ -677,7 +681,7 @@ db.getSetup().then(({ data }) => {
 //login processing begins here
 const processLogin = e => {
   e.preventDefault();
-
+  showLoading();
   //get error div
   let errorDiv = document.getElementsByClassName("warning")[0];
   //hide error box
@@ -692,8 +696,10 @@ const processLogin = e => {
 
   if (validate.isEmpty(inputs)) {
     displayError(errorDiv, "Please fill all fields");
+    hideLoading()
   } else if (validate.isNotEmail(email.value.trim())) {
     displayError(errorDiv, "Email invalid");
+    hideLoading()
   } else {
     //get users promise
     let userPromise = login.getUsers();
@@ -747,8 +753,11 @@ const processLogin = e => {
                       document.getElementsByTagName("main")[0].innerHTML = data;
                       //start notification
                       notification();
+                      //hide loading
+                      hideLoading()
                       //load dashboard
                       pageLoader("dashboard", loadUpdashboard);
+                      
                       document
                         .getElementsByTagName("body")[0]
                         .classList.remove("setupBack");
@@ -759,12 +768,14 @@ const processLogin = e => {
               });
             }
           } else {
+            hideLoading()
             displayError(
               errorDiv,
               "Access denied, please contact appropriate personnel"
             );
           }
         } else {
+          hideLoading()
           displayError(errorDiv, "Invalid email or wrong password");
         }
       },

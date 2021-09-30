@@ -40,6 +40,7 @@ const proceedDeleteAll = () => {
 
 //verify all expenses
 const verifyAllExpense = () => {
+  showLoading();
   //get all expenses
   let expenseGetter = expenseModel.getExpenses();
   expenseGetter.then(({ data, headers, status }) => {
@@ -60,6 +61,7 @@ const verifyAllExpense = () => {
     });
 
     if (match.length > 0) {
+      hideLoading();
       //break
       showModal("The expense list can no longer be deleted");
     } else {
@@ -75,6 +77,7 @@ const verifyAllExpense = () => {
 
         //load expenses
         handleExpenses(day, month, year);
+        hideLoading();
       }
     }
   });
@@ -107,6 +110,7 @@ const deleteAllExpense = () => {
 
 //proceed delete
 const proceedDelete = (id, rev, amt, description) => {
+  showLoading();
   let expenseDeleter = expenseModel.deleteExpense(id, rev, amt, description);
   expenseDeleter.then(({ data, headers, status }) => {
     if (status == 200) {
@@ -120,6 +124,7 @@ const proceedDelete = (id, rev, amt, description) => {
 
       //load expenses
       handleExpenses(day, month, year);
+      hideLoading();
     }
   });
 };
@@ -185,7 +190,7 @@ const deleteExpense = (e, id, rev, amt, description) => {
 //load expenses of selected daTE
 const loadMyExpenses = e => {
   e.preventDefault();
-
+  showLoading();
   //add loading sign
   document.getElementById("expensesList").innerHTML =
     " <tr>" +
@@ -200,10 +205,12 @@ const loadMyExpenses = e => {
 
   //load expenses
   handleExpenses(day, month, year);
+  hideLoading();
 };
 
 //load current expenses
 const loadCurrentExpenses = () => {
+  showLoading();
   //enable button
   document.getElementById("processBtn").disabled = false;
   // showGenStaticModal("expenseContent", "expForm", "message");
@@ -232,6 +239,7 @@ const loadCurrentExpenses = () => {
 
     //load expenses
     handleExpenses(day, month, year);
+    hideLoading();
   });
 };
 

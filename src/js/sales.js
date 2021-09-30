@@ -317,7 +317,9 @@ const cancelCurSale = e => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
+      showLoading()
       deleteMatch(prodId);
+      hideLoading();
     }
   });
 };
@@ -698,11 +700,13 @@ const cancelAllSales = e => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
+      showLoading()
       //cleanup
       cart = [];
       store.setSaleStore(cart);
       updateCart(cart);
       emptyTable();
+      hideLoading();
     }
   });
 };
@@ -892,6 +896,7 @@ const getOtherSales = (day, month, year, saleType) => {
 
 //load current sales page
 const loadCurrentSales = () => {
+  showLoading()
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -901,20 +906,23 @@ const loadCurrentSales = () => {
   let salesGet = salesModel.getSales();
   salesGet.then(({ data, headers, status }) => {
     sales = data.rows;
-    //get sales for the mathching date
+    //get sales for the matching date
     getSales(day, month, year);
 
     //enable button
     document.getElementById("processBtn").disabled = false;
+    hideLoading()
   });
 
   document.getElementById("saleDay").value = day;
   document.getElementById("saleMonth").value = month;
   document.getElementById("saleYear").value = year;
+  
 };
 
 //load sales for online credit and cash transactions
 const loadOtherSales = saleType => {
+  showLoading()
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -929,6 +937,7 @@ const loadOtherSales = saleType => {
     //get sales for the matching date
     getOtherSales(day, month, year, saleType);
 
+    hideLoading()
     //enable button
     document.getElementById("processBtn").disabled = false;
   });
@@ -939,6 +948,7 @@ const loadOtherSales = saleType => {
 
 //load sales on button click
 const loadSales = e => {
+  showLoading()
   e.preventDefault();
 
   document.getElementById("salesList").innerHTML =
@@ -952,10 +962,12 @@ const loadSales = e => {
   let year = document.getElementById("saleYear").value;
 
   getSales(day, month, year);
+  hideLoading()
 };
 
 //load other sales
 const loadOtherSelectedSales = (e, saleType) => {
+ showLoading()
   e.preventDefault();
 
   document.getElementById("salesList").innerHTML =
@@ -970,6 +982,7 @@ const loadOtherSelectedSales = (e, saleType) => {
 
   //get sales for the mathching date
   getOtherSales(day, month, year, saleType);
+  hideLoading()
 };
 
 //function for sales search

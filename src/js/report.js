@@ -470,6 +470,7 @@ const proceedToGetSales = (month, year, reportType) => {
   //check if theres sales for this date
   let matchedSales = reportModel.getMatchingSales(sales, month, year);
   if (matchedSales == false) {
+    hideLoading();
     if (reportType == "product") {
       document.getElementById("productList").innerHTML =
         " <tr>" +
@@ -497,7 +498,7 @@ const proceedToGetSales = (month, year, reportType) => {
       //proceed to sort stock sales
       let reportList = proceedToSortStockSales(matchedSales);
       displayProductReportList(reportList);
-
+      hideLoading();
       //empty list
       reportArray = [];
     } else {
@@ -533,7 +534,7 @@ const proceedToGetSales = (month, year, reportType) => {
           );
 
           displayAccountReportList(reportList);
-
+          hideLoading();
           //empty list
           reportArray = [];
         });
@@ -544,6 +545,7 @@ const proceedToGetSales = (month, year, reportType) => {
 
 ///list report
 const listProductReport = () => {
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -574,6 +576,7 @@ const listProductReport = () => {
 
 //load list for entered date
 const loadProductReportList = e => {
+  showLoading();
   e.preventDefault();
 
   document.getElementById("productList").innerHTML =
@@ -595,6 +598,7 @@ const loadProductReportList = e => {
 //load account list for entered date
 
 const loadAccountReportList = e => {
+  showLoading();
   e.preventDefault();
 
   document.getElementById("accountList").innerHTML =
@@ -640,6 +644,7 @@ const searchProductReport = event => {
 
 //account report start
 const listAccountReport = () => {
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;

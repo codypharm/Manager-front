@@ -553,6 +553,7 @@ const settleStocking = product => {
 
 //upload list
 const uploadList = e => {
+  showLoading();
   recordedProduct.forEach(product => {
     //get id for database task
     let idGen = stockModel.generateId();
@@ -580,6 +581,7 @@ const uploadList = e => {
       );
     });
   });
+  hideLoading();
 };
 
 //fill up input
@@ -660,6 +662,7 @@ const handleExpiredStockDisplay = () => {
 
 // fetch all stock
 const fetchAllStock = stockViewType => {
+  showLoading();
   let getStock = stockModel.getStock();
   getStock.then(({ data, header, status }) => {
     stock = data.rows;
@@ -679,6 +682,7 @@ const fetchAllStock = stockViewType => {
       default:
         break;
     }
+    hideLoading();
   });
 };
 
@@ -1299,6 +1303,7 @@ const deleteBatch = (e, batchId) => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
+      showLoading();
       //get stock
       let getStock = stockModel.getStock();
       getStock.then(({ data, header, status }) => {
@@ -1364,6 +1369,8 @@ const proceedStockDelete = btn => {
 
       //adjust notification
       notification();
+
+      hideLoading();
     });
   });
 };
@@ -1384,6 +1391,7 @@ const deleteProduct = e => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
+      showLoading();
       proceedStockDelete(btn);
     }
   });
@@ -1409,6 +1417,7 @@ const deleteExpiredBatch = (e, batchId) => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
+      showLoading();
       //get stock
       let getStock = stockModel.getStock();
       getStock.then(({ data, header, status }) => {
@@ -1423,6 +1432,7 @@ const deleteExpiredBatch = (e, batchId) => {
         stockDeleter.then(({ data, headers, status }) => {
           //adjust notification
           notification();
+          hideLoading();
           //deleteFromActivities(batchId, btn);
           fetchAllStock("expiredStock");
         });

@@ -21,6 +21,7 @@ const displayStaff = data => {
     fname,
     lname,
     email,
+    staffId,
     position,
     permission,
     image,

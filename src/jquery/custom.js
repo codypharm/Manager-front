@@ -29,7 +29,7 @@ $(document).ready(function() {
     };
 
     reader.readAsDataURL(this.files[0]);
-
+    hideLoading();
     $("#uploadImageModal").modal("show");
   });
 
@@ -40,6 +40,7 @@ $(document).ready(function() {
         size: "viewport"
       })
       .then(function(response) {
+        showLoading();
         let date = Date.now();
         let rand = Math.floor(Math.random() * 101);
         //image name
@@ -61,12 +62,14 @@ $(document).ready(function() {
 
             if (store.getLoginDetail().staffId == staffDetail.value.staffId) {
               $("#containerImg").attr("src", imageName);
+
               user = {
                 fname: staffDetail.value.fname,
                 lname: staffDetail.value.lname,
                 email: staffDetail.value.email,
                 staffId: staffDetail.value.staffId,
                 position: staffDetail.value.position,
+                permission: staffDetail.value.permission,
                 image: imageName,
                 access: staffDetail.value.access,
                 docId: staffDetail.id
@@ -77,6 +80,7 @@ $(document).ready(function() {
           });
         //hide modal
         $("#uploadImageModal").modal("hide");
+        hideLoading();
       });
   });
 });

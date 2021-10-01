@@ -26,19 +26,24 @@ const getTotalStock = stock => {
 
 //get low stock
 const getLowStock = stock => {
-  let lowStock = dashboardModel.getExhaustedStock(stock);
+  let stockingGetter = stockModel.getStocking();
+  stockingGetter.then(({ data, header, status }) => {
+    stocking = data.rows;
+    //sort exhausted stock
+    exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
 
-  //display low stock
-  if (lowStock.length > 0) {
-    displayLowStock(lowStock);
-  } else {
-    document.getElementById("lowStockList").innerHTML =
-      " <tr>" +
-      ' <td colspan="3" class="text-center">' +
-      "  <span>No record found</span>" +
-      " </td>" +
-      " </tr>";
-  }
+    if (exhaustedStock != false) {
+      //display all exhausted stock
+      displayLowStock(exhaustedStock);
+    } else {
+      document.getElementById("lowStockList").innerHTML =
+        " <tr>" +
+        ' <td colspan="3" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  });
 };
 
 //handle dashStock

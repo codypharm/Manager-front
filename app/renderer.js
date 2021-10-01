@@ -24,7 +24,7 @@ const hideLoading = () => {
   $(".loadingModal").modal("hide");
 };
 
-showLoading()
+showLoading();
 
 //get setup details
 let viewUrl = db.viewUrl.setup;
@@ -192,7 +192,6 @@ const hideGenStaticModal = elem => {
 
   return true;
 };
-
 
 // eslint-disable-next-line no-unused-vars
 const showInputs = e => {
@@ -600,6 +599,7 @@ const loadRightMenu = () => {
     fname,
     lname,
     email,
+    staffId,
     position,
     permission,
     image,
@@ -654,7 +654,7 @@ db.getSetup().then(({ data }) => {
           console.log(err);
         }
         document.getElementsByTagName("main")[0].innerHTML = data;
-        hideLoading()
+        hideLoading();
       });
     } else {
       //display app container since user is logged in
@@ -696,10 +696,10 @@ const processLogin = e => {
 
   if (validate.isEmpty(inputs)) {
     displayError(errorDiv, "Please fill all fields");
-    hideLoading()
+    hideLoading();
   } else if (validate.isNotEmail(email.value.trim())) {
     displayError(errorDiv, "Email invalid");
-    hideLoading()
+    hideLoading();
   } else {
     //get users promise
     let userPromise = login.getUsers();
@@ -754,10 +754,10 @@ const processLogin = e => {
                       //start notification
                       notification();
                       //hide loading
-                      hideLoading()
+                      hideLoading();
                       //load dashboard
                       pageLoader("dashboard", loadUpdashboard);
-                      
+
                       document
                         .getElementsByTagName("body")[0]
                         .classList.remove("setupBack");
@@ -768,14 +768,14 @@ const processLogin = e => {
               });
             }
           } else {
-            hideLoading()
+            hideLoading();
             displayError(
               errorDiv,
               "Access denied, please contact appropriate personnel"
             );
           }
         } else {
-          hideLoading()
+          hideLoading();
           displayError(errorDiv, "Invalid email or wrong password");
         }
       },

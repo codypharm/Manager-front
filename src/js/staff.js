@@ -176,7 +176,6 @@ const resetSaveBtn = btn => {
 
 //email exists function
 const emailExists = (errorDiv, email, btn, details) => {
-  
   //check if email already exists
   let allUsers = staffModel.getUsers();
   //handle promise
@@ -188,7 +187,7 @@ const emailExists = (errorDiv, email, btn, details) => {
       // eslint-disable-next-line no-undef
       displayError(errorDiv, " sorry this email already exist");
       resetBtn(btn);
-      hideLoading()
+      hideLoading();
     } else {
       //generate id for user
       let idGen = staffModel.generateId();
@@ -198,7 +197,7 @@ const emailExists = (errorDiv, email, btn, details) => {
         let detailInsertion = staffModel.insertDetails(details, id);
         detailInsertion.then(({ data, headers, status }) => {
           if (status == 201) {
-            hideLoading()
+            hideLoading();
             // eslint-disable-next-line no-undef
             displaySuccess("Staff registered");
             //hide password boxes
@@ -209,7 +208,7 @@ const emailExists = (errorDiv, email, btn, details) => {
             if (!pwdBearer.classList.contains("hide")) {
               pwdBearer.classList.add("hide");
             }
-            
+
             setTimeout(() => {
               //clear and restart form
               document.getElementsByClassName("pwd2")[0].style.border = "";
@@ -227,7 +226,7 @@ const emailExists = (errorDiv, email, btn, details) => {
               " sorry an error occurred please try again later"
             );
             resetBtn(btn);
-            hideLoading()
+            hideLoading();
           }
         });
       });
@@ -279,7 +278,7 @@ const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
         hideLoading();
         displaySuccess("staff data updated successfully");
         resetSaveBtn(btn);
-        
+
         setTimeout(() => {
           hideSuccess();
           loadStaffList();
@@ -437,7 +436,7 @@ const saveDetails = e => {
 
 //register member
 const register = e => {
-  showLoading()
+  showLoading();
   e.preventDefault();
   e.target.textContent = "please wait...";
   let btn = e.target;
@@ -502,32 +501,32 @@ const register = e => {
     // eslint-disable-next-line no-undef
     displayError(errorDiv, "Please fill all fields");
     resetBtn(btn);
-    hideLoading()
+    hideLoading();
   } else if (validate.isNotAlpha(fname.value.trim())) {
     // eslint-disable-next-line no-undef
     displayError(errorDiv, "Please firstname should be alphabets only");
     resetBtn(btn);
-    hideLoading()
+    hideLoading();
   } else if (validate.isNotAlpha(lname.value.trim())) {
     // eslint-disable-next-line no-undef
     displayError(errorDiv, "Please lastname should be alphabets only");
     resetBtn(btn);
-    hideLoading()
+    hideLoading();
   } else if (validate.isNotEmail(email.value.trim())) {
     // eslint-disable-next-line no-undef
     displayError(errorDiv, "Please enter a valid email");
     resetBtn(btn);
-    hideLoading()
+    hideLoading();
   } else if (validate.isNotPhoneNumber(number.value.trim())) {
     // eslint-disable-next-line no-undef
     displayError(errorDiv, "Please enter a valid phone number");
     resetBtn(btn);
-    hideLoading()
+    hideLoading();
   } else if (validate.isNotAlpha(state.value.trim())) {
     // eslint-disable-next-line no-undef
     displayError(errorDiv, "Please state should be alphabets only");
     resetBtn(btn);
-    hideLoading()
+    hideLoading();
   } else if (
     adminPermission.checked == false &&
     memberPermission.checked == false &&
@@ -536,18 +535,18 @@ const register = e => {
     // eslint-disable-next-line no-undef
     displayError(errorDiv, "Please select permission level");
     resetBtn(btn);
-    hideLoading()
+    hideLoading();
   } else if (superAdminPermission.checked == true) {
     if (pwd.value.trim() != pwd2.value.trim()) {
       // eslint-disable-next-line no-undef
       displayError(errorDiv, "Passwords do not match");
       resetBtn(btn);
-      hideLoading()
+      hideLoading();
     } else if (validate.notValidPassword(pwd.value.trim())) {
       // eslint-disable-next-line no-undef
       displayError(errorDiv, "Password not strong enough");
       resetBtn(btn);
-      hideLoading()
+      hideLoading();
     } else {
       //check email address
       emailExists(errorDiv, email, btn, details);
@@ -557,12 +556,12 @@ const register = e => {
       // eslint-disable-next-line no-undef
       displayError(errorDiv, "Passwords do not match");
       resetBtn(btn);
-      hideLoading()
+      hideLoading();
     } else if (validate.notValidPassword(pwd.value.trim())) {
       // eslint-disable-next-line no-undef
       displayError(errorDiv, "Password not strong enough");
       resetBtn(btn);
-      hideLoading()
+      hideLoading();
     } else {
       //check email address
       emailExists(errorDiv, email, btn, details);
@@ -846,6 +845,7 @@ const editStaff = e => {
 
 const uploadImage = () => {
   document.getElementById("upload_image").click();
+  showLoading();
   store.setEditDetail(editDetail);
 };
 

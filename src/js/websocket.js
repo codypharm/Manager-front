@@ -1,4 +1,5 @@
 const staff = require("./staff");
+require("dotenv").config();
 
 class WebSocketService {
   static instance = null;
@@ -14,7 +15,7 @@ class WebSocketService {
   }
 
   connect(company, branch) {
-    const path = `ws://127.0.0.1:8000/ws/staff/${company}${branch}/`;
+    const path = `${process.env.SOCKET}/staff/${company}${branch}/`;
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
       console.log("socket opened");

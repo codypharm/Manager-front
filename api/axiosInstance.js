@@ -1,9 +1,13 @@
+/* eslint-disable no-undef */
 // authAxios.js
 const axios = require("axios");
 const Store = require("../src/js/store.js");
 const store = new Store();
+
+require("dotenv").config();
+
 const axiosInstance = axios.create({
-  baseURL: "http://127.0.0.1:8000/",
+  baseURL: `${process.env.HOST}/`,
   headers: { Accept: "application/json" },
   headers: { "Content-Type": "application/json" }
 });

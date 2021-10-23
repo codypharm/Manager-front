@@ -57,31 +57,36 @@ const listAttendance = () => {
   let day = date.getDate();
   let month = date.getMonth() + 1;
   let year = date.getFullYear();
-  let staffRecord = attendanceModel.getUsers().then(({ data }) => {
-    staffData = data.rows;
-    let attendance = attendanceModel.getAttendance();
-    attendance.then(({ data }) => {
-      attendanceRecord = data.rows;
+  let staffRecord = attendanceModel.getUsers().then(
+    ({ data }) => {
+      staffData = data.rows;
+      let attendance = attendanceModel.getAttendance();
+      attendance.then(({ data }) => {
+        attendanceRecord = data.rows;
 
-      //get list
-      getList(day, month, year);
-      //enable button
-      document.getElementById("processBtn").disabled = false;
-      //add values to DOM
-      document.getElementById("attendanceDay").value = day;
-      document.getElementById("attendanceMonth").value = month;
-      document.getElementById("attendanceYear").value = year;
-      document.getElementById(
-        "dispDate"
-      ).textContent = `${day}-${month}-${year}`;
-      hideLoading();
-    });
-  });
+        //get list
+        getList(day, month, year);
+        //enable button
+        document.getElementById("processBtn").disabled = false;
+        //add values to DOM
+        document.getElementById("attendanceDay").value = day;
+        document.getElementById("attendanceMonth").value = month;
+        document.getElementById("attendanceYear").value = year;
+        document.getElementById(
+          "dispDate"
+        ).textContent = `${day}-${month}-${year}`;
+        hideLoading();
+      });
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //process attendance list
 const processAttendanceList = e => {
-  showLoading()
+  showLoading();
   e.preventDefault();
 
   let day = document.getElementById("attendanceDay").value;
@@ -91,7 +96,7 @@ const processAttendanceList = e => {
   //get list
   getList(day, month, year);
   document.getElementById("dispDate").textContent = `${day}-${month}-${year}`;
-  hideLoading()
+  hideLoading();
 };
 
 //search attendance
@@ -180,24 +185,29 @@ const submitAttendance = e => {
       //insert into attendance database
       let dataRecord = attendanceModel.recordAttendance(id, thisUser[0]);
 
-      dataRecord.then(({ data, status }) => {
-        if (status == 201) {
-          //hide spinner
-          btnSpinner.classList.remove("spinner-border");
-          btnSpinner.classList.remove("spinner-border-sm");
+      dataRecord.then(
+        ({ data, status }) => {
+          if (status == 201) {
+            //hide spinner
+            btnSpinner.classList.remove("spinner-border");
+            btnSpinner.classList.remove("spinner-border-sm");
 
-          //show success attendance Alert
-          if (successBox.classList.contains("hide")) {
-            successBox.classList.remove("hide");
+            //show success attendance Alert
+            if (successBox.classList.contains("hide")) {
+              successBox.classList.remove("hide");
+            }
+
+            //HIDE modal
+            hideGenStaticModal("attendanceContent");
+
+            //go back and show list
+            listAttendance();
           }
-
-          //HIDE modal
-          hideGenStaticModal("attendanceContent");
-
-          //go back and show list
-          listAttendance();
+        },
+        err => {
+          console.log(err);
         }
-      });
+      );
     });
   }
 };
@@ -235,33 +245,38 @@ const exitStaff = e => {
       id
     )[0];
     let updater = attendanceModel.updateAttendance(data);
-    updater.then(({ data, headers, status }) => {
-      if (status == 201) {
-        //get attendance again
-        let attendance = attendanceModel.getAttendance();
-        attendance.then(({ data }) => {
-          attendanceRecord = data.rows;
+    updater.then(
+      ({ data, headers, status }) => {
+        if (status == 201) {
+          //get attendance again
+          let attendance = attendanceModel.getAttendance();
+          attendance.then(({ data }) => {
+            attendanceRecord = data.rows;
 
-          let day = document.getElementById("attendanceDay").value;
-          let month = document.getElementById("attendanceMonth").value;
-          let year = document.getElementById("attendanceYear").value;
+            let day = document.getElementById("attendanceDay").value;
+            let month = document.getElementById("attendanceMonth").value;
+            let year = document.getElementById("attendanceYear").value;
 
-          //get list
-          getList(day, month, year);
-          //enable button
-          document.getElementById("processBtn").disabled = false;
-          //add values to DOM
-          document.getElementById("attendanceDay").value = day;
-          document.getElementById("attendanceMonth").value = month;
-          document.getElementById("attendanceYear").value = year;
-          document.getElementById(
-            "dispDate"
-          ).textContent = `${day}-${month}-${year}`;
+            //get list
+            getList(day, month, year);
+            //enable button
+            document.getElementById("processBtn").disabled = false;
+            //add values to DOM
+            document.getElementById("attendanceDay").value = day;
+            document.getElementById("attendanceMonth").value = month;
+            document.getElementById("attendanceYear").value = year;
+            document.getElementById(
+              "dispDate"
+            ).textContent = `${day}-${month}-${year}`;
 
-          hideLoading();
-        });
+            hideLoading();
+          });
+        }
+      },
+      err => {
+        console.log(err);
       }
-    });
+    );
   } else {
     //show error message
     showModal("You can no longer exit from this date");

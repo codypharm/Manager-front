@@ -6,6 +6,7 @@ const ourStore = require("../../src/js/store");
 //const ourStaffModel = require("../../models/staffModel");
 //const modules = require("./modules");
 const { Notyf } = require("notyf");
+require("dotenv").config();
 
 // instantiate classes
 const store = new ourStore();
@@ -16,11 +17,23 @@ class Branches {
     this.currentUser = store.getLoginDetail();
   }
 
-  branchProcess(proceed, email = false, password = false, setup = false) {
+  branchProcess(
+    proceed,
+    email = false,
+    password = false,
+    setup = false,
+    RendShowLoading = false,
+    RendHideLoading = false
+  ) {
+    if (setup) {
+      RendShowLoading();
+    }
     axios
-      .post("http://127.0.0.1:8000/login/", {
-        email: email ? email : this.currentUser.email,
-        password: password ? password : this.currentUser.pwd
+      .post(`${process.env.HOST}/login/`, {
+        email: process.env.APP,
+        password: process.env.PASSWORD
+        // email: email ? email : this.currentUser.email,
+        // password: password ? password : this.currentUser.pwd
       })
       .then(res => {
         //store tokens
@@ -53,13 +66,24 @@ class Branches {
         } else {
           setup();
         }
+
+        if (setup) {
+          RendHideLoading();
+        }
       });
   }
 
   //fetch matching branch
-  fetchMatch(company, branch, continuePremium, setup) {
+  fetchMatch(
+    company,
+    branch,
+    continuePremium,
+    setup,
+    RendShowLoading = false,
+    RendHideLoading = false
+  ) {
     axiosInstance
-      .get(`http://127.0.0.1:8000/branches/${company}/${branch}/`)
+      .get(`${process.env.HOST}/branches/${company}/${branch}/`)
       .then(res => {
         continuePremium(res.data);
       })
@@ -76,13 +100,24 @@ class Branches {
         } else {
           setup();
         }
+
+        if (setup) {
+          RendHideLoading();
+        }
       });
   }
 
   //update branch online
-  updateBranchOnline(id, detail, fxn, setup) {
+  updateBranchOnline(
+    id,
+    detail,
+    fxn,
+    setup,
+    RendShowLoading = false,
+    RendHideLoading = false
+  ) {
     axiosInstance
-      .put(`http://127.0.0.1:8000/branches/branch/${id}/`, {
+      .put(`${process.env.HOST}/branches/branch/${id}/`, {
         branchId: detail.branchId,
         companyId: detail.companyId,
         address: detail.address,
@@ -106,6 +141,10 @@ class Branches {
           hideLoading();
         } else {
           setup();
+        }
+
+        if (setup) {
+          RendHideLoading();
         }
       });
   }

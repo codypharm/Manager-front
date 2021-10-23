@@ -121,9 +121,14 @@ const calculateTotal = cart => {
 //load cart
 const loadCart = () => {
   const getStock = stockModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
-  });
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
+    },
+    err => {
+      console.log(err);
+    }
+  );
 
   //get products in store
   let { record } = store.getSaleStore();
@@ -317,7 +322,7 @@ const cancelCurSale = e => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
-      showLoading()
+      showLoading();
       deleteMatch(prodId);
       hideLoading();
     }
@@ -464,32 +469,37 @@ const execInvoice = (
       cartCp,
       cartSp
     );
-    detailInsertion.then(({ data, headers, status }) => {
-      if (status == 201) {
-        //display and print invoice
-        if (showStaticModal(invoiceTemplate)) {
-          //load purchase to invoice
-          //console.log(cart);
-          displayPurchase(cart);
-          //enter static part of invoice
-          loadInvoiceStaticSection(
-            invoiceId,
-            deposit,
-            transType,
-            disccount,
-            netPrice,
-            totalPrice,
-            amtPaid,
-            balance
-          );
+    detailInsertion.then(
+      ({ data, headers, status }) => {
+        if (status == 201) {
+          //display and print invoice
+          if (showStaticModal(invoiceTemplate)) {
+            //load purchase to invoice
+            //console.log(cart);
+            displayPurchase(cart);
+            //enter static part of invoice
+            loadInvoiceStaticSection(
+              invoiceId,
+              deposit,
+              transType,
+              disccount,
+              netPrice,
+              totalPrice,
+              amtPaid,
+              balance
+            );
 
-          //clean up
-          cart = [];
+            //clean up
+            cart = [];
 
-          document.getElementById("prodName").focus();
+            document.getElementById("prodName").focus();
+          }
         }
+      },
+      err => {
+        console.log(err);
       }
-    });
+    );
   });
 };
 
@@ -531,7 +541,12 @@ const insertSale = (cart, cp, sp) => {
         transType,
         disccount
       );
-      detailInsertion.then(({ data, headers, status }) => {});
+      detailInsertion.then(
+        ({ data, headers, status }) => {},
+        err => {
+          console.log(err);
+        }
+      );
     });
   });
 
@@ -700,7 +715,7 @@ const cancelAllSales = e => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
-      showLoading()
+      showLoading();
       //cleanup
       cart = [];
       store.setSaleStore(cart);
@@ -896,7 +911,7 @@ const getOtherSales = (day, month, year, saleType) => {
 
 //load current sales page
 const loadCurrentSales = () => {
-  showLoading()
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -904,25 +919,29 @@ const loadCurrentSales = () => {
 
   //get sales
   let salesGet = salesModel.getSales();
-  salesGet.then(({ data, headers, status }) => {
-    sales = data.rows;
-    //get sales for the matching date
-    getSales(day, month, year);
+  salesGet.then(
+    ({ data, headers, status }) => {
+      sales = data.rows;
+      //get sales for the matching date
+      getSales(day, month, year);
 
-    //enable button
-    document.getElementById("processBtn").disabled = false;
-    hideLoading()
-  });
+      //enable button
+      document.getElementById("processBtn").disabled = false;
+      hideLoading();
+    },
+    err => {
+      console.log(err);
+    }
+  );
 
   document.getElementById("saleDay").value = day;
   document.getElementById("saleMonth").value = month;
   document.getElementById("saleYear").value = year;
-  
 };
 
 //load sales for online credit and cash transactions
 const loadOtherSales = saleType => {
-  showLoading()
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -932,15 +951,20 @@ const loadOtherSales = saleType => {
   document.getElementById("otherSaleYear").value = year;
   //get sales
   let salesGet = salesModel.getSales();
-  salesGet.then(({ data, headers, status }) => {
-    sales = data.rows;
-    //get sales for the matching date
-    getOtherSales(day, month, year, saleType);
+  salesGet.then(
+    ({ data, headers, status }) => {
+      sales = data.rows;
+      //get sales for the matching date
+      getOtherSales(day, month, year, saleType);
 
-    hideLoading()
-    //enable button
-    document.getElementById("processBtn").disabled = false;
-  });
+      hideLoading();
+      //enable button
+      document.getElementById("processBtn").disabled = false;
+    },
+    err => {
+      console.log(err);
+    }
+  );
 
   //enable button
   //document.getElementById("processBtn").disabled = false;
@@ -948,7 +972,7 @@ const loadOtherSales = saleType => {
 
 //load sales on button click
 const loadSales = e => {
-  showLoading()
+  showLoading();
   e.preventDefault();
 
   document.getElementById("salesList").innerHTML =
@@ -962,12 +986,12 @@ const loadSales = e => {
   let year = document.getElementById("saleYear").value;
 
   getSales(day, month, year);
-  hideLoading()
+  hideLoading();
 };
 
 //load other sales
 const loadOtherSelectedSales = (e, saleType) => {
- showLoading()
+  showLoading();
   e.preventDefault();
 
   document.getElementById("salesList").innerHTML =
@@ -982,7 +1006,7 @@ const loadOtherSelectedSales = (e, saleType) => {
 
   //get sales for the mathching date
   getOtherSales(day, month, year, saleType);
-  hideLoading()
+  hideLoading();
 };
 
 //function for sales search

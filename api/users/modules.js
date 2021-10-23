@@ -1,6 +1,8 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 const axios = require("axios");
 const ourModel = require("../../models/staffModel");
+require("dotenv").config();
 const { Notyf } = require("notyf");
 const axiosInstance = require("../axiosInstance");
 const staffModel = new ourModel();
@@ -26,7 +28,7 @@ const upload = async (users, setup) => {
 
     const postData = async () => {
       try {
-        return await axiosInstance.post("http://127.0.0.1:8000/staff/", {
+        return await axiosInstance.post(`${process.env.HOST}/staff/`, {
           staffId: user.value.staffId,
           staffName: `${user.value.fname.charAt(0).toUpperCase() +
             user.value.fname.slice(1)} ${user.value.lname

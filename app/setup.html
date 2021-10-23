@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
     <link rel="stylesheet" href="../src/css/styles.css" />
     <link rel="stylesheet" href="../node_modules/croppie/croppie.css" />
     <link rel="stylesheet" href="../src/css/styles.css" />
@@ -11,19 +15,19 @@
     <script>
       window.jQuery = window.$ = require("jquery");
     </script>
-    <title>Vemon</title>
+    <title>Manager-front</title>
   </head>
   <body class="setupBack">
     <main class="wrapper">
       <section class="setupBody">
         <header>
-          Vemon
+          Manager-front
         </header>
 
         <section>
           <br />
           <p>
-            Lets set up your vemon account
+            Lets set up your manager-front account
           </p>
           <br />
           <div class="warning hide"></div>
@@ -55,6 +59,21 @@
             <div class="standardBox hide">
               <div class="setupSubBox">
                 <div class="setUpLeft">
+                  <label for="app_key"> App Key :</label>
+                </div>
+                <div class="setUpRight">
+                  <input
+                    type="text"
+                    class="myInputs"
+                    class="myInputs"
+                    id="app_key"
+                    placeholder=" enter app key"
+                  />
+                </div>
+                <div style="clear:both"></div>
+              </div>
+              <div class="setupSubBox">
+                <div class="setUpLeft">
                   <label for="stdCompanyName"> Company name :</label>
                 </div>
                 <div class="setUpRight">
@@ -63,6 +82,7 @@
                     class="myInputs"
                     class="myInputs"
                     id="standardName"
+                    placeholder="enter company name"
                   />
                 </div>
                 <div style="clear:both"></div>
@@ -73,7 +93,12 @@
                   <label for="stdAddress"> Address :</label>
                 </div>
                 <div class="setUpRight">
-                  <input type="text" class="myInputs" id="stdAddress" />
+                  <input
+                    type="text"
+                    class="myInputs"
+                    id="stdAddress"
+                    placeholder="enter branch address"
+                  />
                 </div>
                 <div style="clear:both"></div>
               </div>
@@ -86,6 +111,21 @@
             <!-- premium box starts -->
             <!--- ==============================  -->
             <div class="premiumBox hide">
+              <div class="setupSubBox">
+                <div class="setUpLeft">
+                  <label for="app_key"> App Key :</label>
+                </div>
+                <div class="setUpRight">
+                  <input
+                    type="text"
+                    class="myInputs"
+                    class="myInputs"
+                    id="premium_app_key"
+                    placeholder="enter app key"
+                  />
+                </div>
+                <div style="clear:both"></div>
+              </div>
               <div class="setupSubBox">
                 <div class="setUpLeft">
                   <label for="companyName"> Company name :</label>
@@ -259,6 +299,9 @@
           </div>
 
           <div class="formFooter">
+            <button class="btn2 " id="setupNext" type="submit">
+              Next
+            </button>
             <button
               class="btn1"
               type="button"
@@ -266,7 +309,6 @@
             >
               Back
             </button>
-            <button class="btn2 " id="setupNext" type="submit">Next</button>
             <div style="clear: both"></div>
           </div>
         </form>
@@ -277,7 +319,40 @@
       </section>
     </main>
   </body>
+
+  <!-- //loading sign -->
+  <div
+    class="modal  loadingModal "
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-sm" role="document">
+      <div
+        class="modal-content "
+        style="margin-top: 200px; background-color: transparent; border: none"
+      >
+        <div>
+          <div class="sk-folding-cube">
+            <div class="sk-cube1 sk-cube"></div>
+            <div class="sk-cube2 sk-cube"></div>
+            <div class="sk-cube4 sk-cube"></div>
+            <div class="sk-cube3 sk-cube"></div>
+          </div>
+          <span class="loadingWait">Please wait...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../node_modules/croppie/croppie.js"></script>
   <script src="../src/js/files.js"></script>
+  <!-- boostrap js -->
+  <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
+  <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
 
   <script src="../src/jquery/custom.js"></script>
 

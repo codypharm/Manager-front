@@ -95,14 +95,17 @@ const submitStockSettings = e => {
     setupInfo.stock_limit = stockLimit;
 
     //update database
-    settingsModel
-      .updateSetUp(setupInfo, setupId)
-      .then(({ data, header, status }) => {
+    settingsModel.updateSetUp(setupInfo, setupId).then(
+      ({ data, header, status }) => {
         if (status == 201) {
           //reload sections
           loadSettingsSections();
         }
-      });
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 };
 
@@ -127,26 +130,34 @@ const submitAppSettings = e => {
     setupInfo.update_interval = update_interval;
 
     //update database
-    settingsModel
-      .updateSetUp(setupInfo, setupId)
-      .then(({ data, header, status }) => {
+    settingsModel.updateSetUp(setupInfo, setupId).then(
+      ({ data, header, status }) => {
         if (status == 201) {
           //restore new value
           let info = db.couch.get("vemon_setup", viewUrl);
-          info.then(({ data, headers, status }) => {
-            let setUpDetails = data.rows;
-            //reload sections
-            loadSettingsSections();
-            //store data in electron store
-            store.setSetupDetail(setUpDetails);
-            //call sync function on renderer.js
-            autosync();
+          info.then(
+            ({ data, headers, status }) => {
+              let setUpDetails = data.rows;
+              //reload sections
+              loadSettingsSections();
+              //store data in electron store
+              store.setSetupDetail(setUpDetails);
+              //call sync function on renderer.js
+              autosync();
 
-            //call websocket function on renderer.js
-            connectSocket();
-          });
+              //call websocket function on renderer.js
+              connectSocket();
+            },
+            err => {
+              console.log(err);
+            }
+          );
         }
-      });
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 };
 
@@ -214,14 +225,17 @@ const emailIsValid = email => {
 
 const completeUpdate = () => {
   //update database
-  settingsModel
-    .updateSetUp(setupInfo, setupId)
-    .then(({ data, header, status }) => {
+  settingsModel.updateSetUp(setupInfo, setupId).then(
+    ({ data, header, status }) => {
       if (status == 201) {
         //reload sections
         loadSettingsSections();
       }
-    });
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //continue premium processing
@@ -272,15 +286,18 @@ const submitAccountSettings = e => {
         setupInfo.phone = phone;
         //setupInfo.email = email;
         //update database
-        settingsModel
-          .updateSetUp(setupInfo, setupId)
-          .then(({ data, header, status }) => {
+        settingsModel.updateSetUp(setupInfo, setupId).then(
+          ({ data, header, status }) => {
             if (status == 201) {
               //reload sections
 
               loadSettingsSections();
             }
-          });
+          },
+          err => {
+            console.log(err);
+          }
+        );
       }
     } else {
       //validate for premium account

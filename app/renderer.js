@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
+
 //global variables
 //const api = require("../api");
 var viewEmail;
@@ -24,29 +25,35 @@ const hideLoading = () => {
   $(".loadingModal").modal("hide");
 };
 
-showLoading();
-
 //get setup details
 let viewUrl = db.viewUrl.setup;
 var setUpDetails;
 let info = db.couch.get("vemon_setup", viewUrl);
-info.then(({ data, headers, status }) => {
-  setUpDetails = data.rows;
-  //CONNECT WEBSOCKET
-  connectSocket(setUpDetails[0]);
-  //store data in electron store
-  store.setSetupDetail(setUpDetails);
-});
+info.then(
+  ({ data, headers, status }) => {
+    setUpDetails = data.rows;
+    //CONNECT WEBSOCKET
+    connectSocket(setUpDetails[0]);
+    //store data in electron store
+    store.setSetupDetail(setUpDetails);
+  },
+  err => {
+    console.log(err);
+  }
+);
 
 //connect web socket
 const connectSocket = detail => {
   //get time interval from store
   let setUpInfo = store.getSetupDetail();
-  let package = setUpInfo.detail[0].value.app_package;
 
-  //check if app is premium and return if not premium
-  if (!package == "premium") return;
-  webSocket.connect(detail.value.companyId, detail.value.branchId);
+  if (setUpInfo.detail.length > 0) {
+    let package = setUpInfo.detail[0].value.app_package;
+
+    //check if app is premium and return if not premium
+    if (!package == "premium") return;
+    // webSocket.connect(detail.value.companyId, detail.value.branchId);
+  }
 };
 
 //disconnect socket
@@ -59,22 +66,34 @@ const notification = async () => {
   let stocking;
   //get stock
   let getStock = stockModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
-    let stockingGetter = stockModel.getStocking();
-    stockingGetter.then(({ data, header, status }) => {
-      stocking = data.rows;
-      //sort exhausted stock
-      let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
-      let expiredStock = stockModel.getExpiredStock(stock);
-      let exhausted = !exhaustedStock ? 0 : exhaustedStock.length;
-      let expired = !expiredStock ? 0 : expiredStock.length;
-      let totalNotifications = exhausted + expired;
-      document.getElementById("notCounter").textContent = totalNotifications;
-      document.getElementById("exhaustedSpan").textContent = exhausted;
-      document.getElementById("expiredSpan").textContent = expired;
-    });
-  });
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
+      let stockingGetter = stockModel.getStocking();
+      stockingGetter.then(
+        ({ data, header, status }) => {
+          stocking = data.rows;
+          //sort exhausted stock
+          let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
+          let expiredStock = stockModel.getExpiredStock(stock);
+          let exhausted = !exhaustedStock ? 0 : exhaustedStock.length;
+          let expired = !expiredStock ? 0 : expiredStock.length;
+          let totalNotifications = exhausted + expired;
+          document.getElementById(
+            "notCounter"
+          ).textContent = totalNotifications;
+          document.getElementById("exhaustedSpan").textContent = exhausted;
+          document.getElementById("expiredSpan").textContent = expired;
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //auto sync with remote
@@ -195,6 +214,13 @@ const hideGenStaticModal = elem => {
 
 // eslint-disable-next-line no-unused-vars
 const showInputs = e => {
+  //hide error box
+  let errorDiv = document.getElementsByClassName("warning")[0];
+  //hide error box
+  if (!errorDiv.classList.contains("hide")) {
+    errorDiv.classList.add("hide");
+  }
+
   let target = e.target;
   let box = target.dataset.box;
   let otherBox;
@@ -259,16 +285,22 @@ const processStandard = errorDiv => {
   //get forms
   let setupForm = document.getElementsByClassName("setupForm")[0];
   let managerForm = document.getElementsByClassName("managerForm")[0];
+  //get app key
+  let appKey = document.getElementById("app_key").value;
   //get company name
   let companyName = document.getElementById("standardName").value;
   //get address
   let stdAddress = document.getElementById("stdAddress").value;
   //check if it is empty
-  if (companyName.length === 0 || stdAddress.length === 0) {
+  if (
+    companyName.trim().length === 0 ||
+    stdAddress.trim().length === 0 ||
+    appKey.trim().length === 0
+  ) {
     displayError(errorDiv, "Please fill all fields");
-  } /*else if (document.getElementById("termCheck").checked == false) {
-    displayError(errorDiv, "Please you need to accept our terms");
-  }*/ else {
+  } else if (validate.invalidAppkey(appKey)) {
+    displayError(errorDiv, "App key is invalid");
+  } else {
     //assign values to details object
     let package = "standard";
     let address = stdAddress;
@@ -283,6 +315,8 @@ const processPremium = errorDiv => {
   //get forms
   let setupForm = document.getElementsByClassName("setupForm")[0];
   let managerForm = document.getElementsByClassName("managerForm")[0];
+  //get app key
+  let appKey = document.getElementById("premium_app_key").value;
   //get company name
   let companyName = document.getElementById("companyName").value;
   //get address
@@ -299,23 +333,30 @@ const processPremium = errorDiv => {
 
   //check if all values are provided
   if (
-    companyName.length === 0 ||
-    premiumAddress.length === 0 ||
-    branchId.length === 0 ||
-    companyId.length === 0 ||
-    phone.length === 0
+    companyName.trim().length === 0 ||
+    premiumAddress.trim().length === 0 ||
+    branchId.trim().length === 0 ||
+    companyId.trim().length === 0 ||
+    phone.trim().length === 0 ||
+    appKey.trim().length === 0
   ) {
+    console.log(appKey.length);
     displayError(errorDiv, "Please fill all fields");
-  } /* else if (document.getElementById("termCheck").checked == false) {
-    displayError(errorDiv, "Please you need to accept our terms");
-  } */ else if (
-    validate.isNotPhoneNumber(phone)
-  ) {
+  } else if (validate.invalidAppkey(appKey)) {
+    displayError(errorDiv, "App key is invalid");
+  } else if (validate.isNotPhoneNumber(phone)) {
     displayError(errorDiv, "Please enter a valid Phone number");
   } else {
     let package = "premium";
     let address = premiumAddress;
-    details = { package, companyName, address, companyId, branchId, phone };
+    details = {
+      package,
+      companyName,
+      address,
+      companyId,
+      branchId,
+      phone
+    };
     //alter form
     changeForm(setupForm, managerForm);
   }
@@ -325,6 +366,7 @@ const processPremium = errorDiv => {
 // eslint-disable-next-line no-unused-vars
 const showManagerDetail = e => {
   e.preventDefault();
+
   let errorDiv = document.getElementsByClassName("warning")[0];
   //hide error box
   if (!errorDiv.classList.contains("hide")) {
@@ -355,10 +397,15 @@ const backToBranchDetails = e => {
 //user creation
 const createUser = userId => {
   let userDetailInsertion = validate.insertUser(details, userId);
-  userDetailInsertion.then(({ data, headers, status }) => {
-    //reload
-    remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
-  });
+  userDetailInsertion.then(
+    ({ data, headers, status }) => {
+      //reload
+      remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //complete setup
@@ -407,7 +454,14 @@ const continueSetup = data => {
     );
   } else {
     //update data online
-    branches.updateBranchOnline(data[0].id, details, completeSetup, setUp);
+    branches.updateBranchOnline(
+      data[0].id,
+      details,
+      completeSetup,
+      setUp,
+      showLoading,
+      hideLoading
+    );
   }
 };
 
@@ -417,7 +471,9 @@ const proceedSetup = () => {
     details.companyId,
     details.branchId,
     continueSetup,
-    setUp
+    setUp,
+    showLoading,
+    hideLoading
   );
 };
 
@@ -483,7 +539,9 @@ const enterDetails = e => {
         proceedSetup,
         details.manager_email,
         details.manager_password,
-        setUp
+        setUp,
+        showLoading,
+        hideLoading
       );
     } else {
       //go straight to local setup
@@ -640,42 +698,47 @@ const setRankElements = () => {
 };
 
 //handle setup checking
-db.getSetup().then(({ data }) => {
-  //check if we have set up
-  if (data.rows.length > 0) {
-    //check if user is logged in
-    let { loginStatus } = store.getLoginDetail();
+db.getSetup().then(
+  ({ data }) => {
+    //check if we have set up
+    if (data.rows.length > 0) {
+      //check if user is logged in
+      let { loginStatus } = store.getLoginDetail();
 
-    if (loginStatus == false) {
-      //display login page
-      let url = "./pages/login.html";
-      fs.readFile(url, "utf-8", (err, data) => {
-        if (err) {
-          console.log(err);
-        }
-        document.getElementsByTagName("main")[0].innerHTML = data;
-        hideLoading();
-      });
-    } else {
-      //display app container since user is logged in
-      document.getElementsByTagName("body")[0].classList.remove("setupBack");
-      let url = "./pages/container.html";
-      fs.readFile(url, "utf-8", (err, data) => {
-        if (err) {
-          console.log(err);
-        }
-        document.getElementsByTagName("main")[0].innerHTML = data;
-        appendUserDetails();
+      if (loginStatus == false) {
+        //display login page
+        let url = "./pages/login.html";
+        fs.readFile(url, "utf-8", (err, data) => {
+          if (err) {
+            console.log(err);
+          }
+          document.getElementsByTagName("main")[0].innerHTML = data;
+          hideLoading();
+        });
+      } else {
+        //display app container since user is logged in
+        document.getElementsByTagName("body")[0].classList.remove("setupBack");
+        let url = "./pages/container.html";
+        fs.readFile(url, "utf-8", (err, data) => {
+          if (err) {
+            console.log(err);
+          }
+          document.getElementsByTagName("main")[0].innerHTML = data;
+          appendUserDetails();
 
-        //load right menu attributes
-        loadRightMenu();
-        //load dashboard
-        //load work page
-        pageLoader("dashboard", loadUpdashboard);
-      });
+          //load right menu attributes
+          loadRightMenu();
+          //load dashboard
+          //load work page
+          pageLoader("dashboard", loadUpdashboard);
+        });
+      }
     }
+  },
+  err => {
+    console.log(err);
   }
-});
+);
 //ipcRenderer.send("as-message", "hello");
 
 //login processing begins here
@@ -739,32 +802,39 @@ const processLogin = e => {
                   thisUser[0]
                 );
 
-                dataRecord.then(({ data, status }) => {
-                  if (status == 201) {
-                    //display app container
-                    let url = "./pages/container.html";
+                dataRecord.then(
+                  ({ data, status }) => {
+                    if (status == 201) {
+                      //display app container
+                      let url = "./pages/container.html";
 
-                    fs.readFile(url, "utf-8", (err, data) => {
-                      if (err) {
-                        console.log(err);
-                      }
+                      fs.readFile(url, "utf-8", (err, data) => {
+                        if (err) {
+                          console.log(err);
+                        }
 
-                      //append main page
-                      document.getElementsByTagName("main")[0].innerHTML = data;
-                      //start notification
-                      notification();
-                      //hide loading
-                      hideLoading();
-                      //load dashboard
-                      pageLoader("dashboard", loadUpdashboard);
+                        //append main page
+                        document.getElementsByTagName(
+                          "main"
+                        )[0].innerHTML = data;
+                        //start notification
+                        notification();
+                        //hide loading
+                        hideLoading();
+                        //load dashboard
+                        pageLoader("dashboard", loadUpdashboard);
 
-                      document
-                        .getElementsByTagName("body")[0]
-                        .classList.remove("setupBack");
-                      appendUserDetails();
-                    });
+                        document
+                          .getElementsByTagName("body")[0]
+                          .classList.remove("setupBack");
+                        appendUserDetails();
+                      });
+                    }
+                  },
+                  err => {
+                    console.log(err);
                   }
-                });
+                );
               });
             }
           } else {
@@ -1106,41 +1176,46 @@ const socketLogOut = () => {
   showLoading();
 
   let attendance = attendanceModel.getAttendance();
-  attendance.then(({ data }) => {
-    let attendanceRecord = data.rows;
-    let date = new Date();
+  attendance.then(
+    ({ data }) => {
+      let attendanceRecord = data.rows;
+      let date = new Date();
 
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-    let id = store.getLoginDetail().staffId;
-    let myData = attendanceModel.getThisAttendance(
-      attendanceRecord,
-      day,
-      month,
-      year,
-      id
-    )[0];
-    //update attendance
-    let attendanceUpdater = attendanceModel.updateAttendance(myData);
-    attendanceUpdater.then(({ data, status }) => {
-      if (status == 201) {
-        //logout
-        store.forceLogout();
-        //go to login page
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+      let id = store.getLoginDetail().staffId;
+      let myData = attendanceModel.getThisAttendance(
+        attendanceRecord,
+        day,
+        month,
+        year,
+        id
+      )[0];
+      //update attendance
+      let attendanceUpdater = attendanceModel.updateAttendance(myData);
+      attendanceUpdater.then(({ data, status }) => {
+        if (status == 201) {
+          //logout
+          store.forceLogout();
+          //go to login page
 
-        let url = "./pages/login.html";
-        fs.readFile(url, "utf-8", (err, data) => {
-          if (err) {
-            console.log(err);
-          }
-          //hide loading
-          hideLoading();
-          document.getElementsByTagName("main")[0].innerHTML = data;
-        });
-      }
-    });
-  });
+          let url = "./pages/login.html";
+          fs.readFile(url, "utf-8", (err, data) => {
+            if (err) {
+              console.log(err);
+            }
+            //hide loading
+            hideLoading();
+            document.getElementsByTagName("main")[0].innerHTML = data;
+          });
+        }
+      });
+    },
+    err => {
+      console.log(err);
+    }
+  );
 
   //update attendance
   /*let attendanceUpdater = attendanceModel.updateAttendance(data);
@@ -1171,41 +1246,46 @@ const logMeOut = e => {
       showLoading();
 
       let attendance = attendanceModel.getAttendance();
-      attendance.then(({ data }) => {
-        let attendanceRecord = data.rows;
-        let date = new Date();
+      attendance.then(
+        ({ data }) => {
+          let attendanceRecord = data.rows;
+          let date = new Date();
 
-        let day = date.getDate();
-        let month = date.getMonth() + 1;
-        let year = date.getFullYear();
-        let id = store.getLoginDetail().staffId;
-        let myData = attendanceModel.getThisAttendance(
-          attendanceRecord,
-          day,
-          month,
-          year,
-          id
-        )[0];
-        //update attendance
-        let attendanceUpdater = attendanceModel.updateAttendance(myData);
-        attendanceUpdater.then(({ data, status }) => {
-          if (status == 201) {
-            //logout
-            store.forceLogout();
-            //go to login page
+          let day = date.getDate();
+          let month = date.getMonth() + 1;
+          let year = date.getFullYear();
+          let id = store.getLoginDetail().staffId;
+          let myData = attendanceModel.getThisAttendance(
+            attendanceRecord,
+            day,
+            month,
+            year,
+            id
+          )[0];
+          //update attendance
+          let attendanceUpdater = attendanceModel.updateAttendance(myData);
+          attendanceUpdater.then(({ data, status }) => {
+            if (status == 201) {
+              //logout
+              store.forceLogout();
+              //go to login page
 
-            let url = "./pages/login.html";
-            fs.readFile(url, "utf-8", (err, data) => {
-              if (err) {
-                console.log(err);
-              }
-              //hide loading
-              hideLoading();
-              document.getElementsByTagName("main")[0].innerHTML = data;
-            });
-          }
-        });
-      });
+              let url = "./pages/login.html";
+              fs.readFile(url, "utf-8", (err, data) => {
+                if (err) {
+                  console.log(err);
+                }
+                //hide loading
+                hideLoading();
+                document.getElementsByTagName("main")[0].innerHTML = data;
+              });
+            }
+          });
+        },
+        err => {
+          console.log(err);
+        }
+      );
 
       //update attendance
       /*let attendanceUpdater = attendanceModel.updateAttendance(data);

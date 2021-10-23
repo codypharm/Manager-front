@@ -19,11 +19,13 @@
   "homepage": "https://github.com/techyNonso/vemon#readme",
   "devDependencies": {
     "electron": "^7.1.8",
+    "electron-builder": "^22.13.1",
     "eslint": "^6.8.0",
     "eslint-config-node": "^4.0.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "install-peers": "^1.0.3",
     "prettier": "^1.19.1"
   },
   "dependencies": {
@@ -31,12 +33,14 @@
     "bootstrap": "^4.4.1",
     "chart.js": "^2.9.3",
     "croppie": "^2.6.4",
+    "dotenv": "^10.0.0",
     "electron-fetch": "^1.4.0",
     "electron-handlebars": "^2.0.0",
     "electron-less": "^1.1.0",
     "electron-reload": "^1.5.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^5.1.1",
+    "electron-updater": "^4.3.9",
     "font-awesome": "^4.7.0",
     "jquery": "^3.6.0",
     "moment": "^2.25.3",

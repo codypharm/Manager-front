@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 const axios = require("axios");
 const ourStore = require("../../src/js/store");
@@ -5,6 +6,7 @@ const ourStaffModel = require("../../models/staffModel");
 const modules = require("./modules");
 const { Notyf } = require("notyf");
 const axiosInstance = require("../axiosInstance");
+require("dotenv").config();
 
 // instantiate classes
 const store = new ourStore();
@@ -18,9 +20,9 @@ class Users {
 
   loginRemote(proceed) {
     axios
-      .post("http://127.0.0.1:8000/login/", {
-        email: "app@vemon.com",
-        password: "Vemon=19?"
+      .post(`${process.env.HOST}/login/`, {
+        email: process.env.APP,
+        password: process.env.PASSWORD
       })
       .then(res => {
         //store tokens
@@ -28,7 +30,7 @@ class Users {
         //check is expiration exists
         let companyId = this.setupDetails.detail[0].value.companyId;
         axiosInstance
-          .get(`http://127.0.0.1:8000/companies/${companyId}`)
+          .get(`${process.env.HOST}/companies/${companyId}`)
           .then(res => {
             let message = res.data.message;
             if (message.toUpperCase() === "OPEN") {

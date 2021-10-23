@@ -8,9 +8,14 @@ var oldDetails;
 var allUsers;
 var editDetail;
 let users = staffModel.getUsers();
-users.then(({ data, headers, status }) => {
-  allUsers = data.rows;
-});
+users.then(
+  ({ data, headers, status }) => {
+    allUsers = data.rows;
+  },
+  err => {
+    console.log(err);
+  }
+);
 const fnameAlpha = e => {
   let fname = e.target.value.trim();
   let errorBox = document.getElementById("fnameError");
@@ -179,59 +184,69 @@ const emailExists = (errorDiv, email, btn, details) => {
   //check if email already exists
   let allUsers = staffModel.getUsers();
   //handle promise
-  allUsers.then(({ data, headers, status }) => {
-    let users = data.rows;
-    //filter match
-    let match = staffModel.filterUsers(users, email);
-    if (match) {
-      // eslint-disable-next-line no-undef
-      displayError(errorDiv, " sorry this email already exist");
-      resetBtn(btn);
-      hideLoading();
-    } else {
-      //generate id for user
-      let idGen = staffModel.generateId();
-      idGen.then(ids => {
-        const id = ids[0];
-        //insert details
-        let detailInsertion = staffModel.insertDetails(details, id);
-        detailInsertion.then(({ data, headers, status }) => {
-          if (status == 201) {
-            hideLoading();
-            // eslint-disable-next-line no-undef
-            displaySuccess("Staff registered");
-            //hide password boxes
-            let pwdBearer = document.getElementsByClassName(
-              "passwordBearer"
-            )[0];
+  allUsers.then(
+    ({ data, headers, status }) => {
+      let users = data.rows;
+      //filter match
+      let match = staffModel.filterUsers(users, email);
+      if (match) {
+        // eslint-disable-next-line no-undef
+        displayError(errorDiv, " sorry this email already exist");
+        resetBtn(btn);
+        hideLoading();
+      } else {
+        //generate id for user
+        let idGen = staffModel.generateId();
+        idGen.then(ids => {
+          const id = ids[0];
+          //insert details
+          let detailInsertion = staffModel.insertDetails(details, id);
+          detailInsertion.then(
+            ({ data, headers, status }) => {
+              if (status == 201) {
+                hideLoading();
+                // eslint-disable-next-line no-undef
+                displaySuccess("Staff registered");
+                //hide password boxes
+                let pwdBearer = document.getElementsByClassName(
+                  "passwordBearer"
+                )[0];
 
-            if (!pwdBearer.classList.contains("hide")) {
-              pwdBearer.classList.add("hide");
+                if (!pwdBearer.classList.contains("hide")) {
+                  pwdBearer.classList.add("hide");
+                }
+
+                setTimeout(() => {
+                  //clear and restart form
+                  document.getElementsByClassName("pwd2")[0].style.border = "";
+                  document.getElementsByClassName("staffReg")[0].reset();
+                  // eslint-disable-next-line no-undef
+                  hideSuccess();
+                  resetBtn(btn);
+                  document.getElementById("fname").focus();
+                }, 900);
+              } else {
+                //display error
+                // eslint-disable-next-line no-undef
+                displayError(
+                  errorDiv,
+                  " sorry an error occurred please try again later"
+                );
+                resetBtn(btn);
+                hideLoading();
+              }
+            },
+            err => {
+              console.log(err);
             }
-
-            setTimeout(() => {
-              //clear and restart form
-              document.getElementsByClassName("pwd2")[0].style.border = "";
-              document.getElementsByClassName("staffReg")[0].reset();
-              // eslint-disable-next-line no-undef
-              hideSuccess();
-              resetBtn(btn);
-              document.getElementById("fname").focus();
-            }, 900);
-          } else {
-            //display error
-            // eslint-disable-next-line no-undef
-            displayError(
-              errorDiv,
-              " sorry an error occurred please try again later"
-            );
-            resetBtn(btn);
-            hideLoading();
-          }
+          );
         });
-      });
+      }
+    },
+    err => {
+      console.log(err);
     }
-  });
+  );
 };
 
 //update staff details
@@ -596,13 +611,18 @@ const displayCurrentStaff = () => {
 const showList = () => {
   showLoading();
   let users = staffModel.getUsers();
-  users.then(({ data, headers, status }) => {
-    //show staff template
-    allUsers = data.rows;
-    displayCurrentStaff();
-    displayStaff(data.rows);
-    hideLoading();
-  });
+  users.then(
+    ({ data, headers, status }) => {
+      //show staff template
+      allUsers = data.rows;
+      displayCurrentStaff();
+      displayStaff(data.rows);
+      hideLoading();
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //search staff
@@ -717,13 +737,18 @@ const appendValues = details => {
 const showStaffDetails = selectedEmail => {
   showLoading();
   let users = staffModel.getUsers();
-  users.then(({ data, headers, status }) => {
-    //filter
-    [details] = staffModel.filterStaffDetails(data.rows, selectedEmail);
+  users.then(
+    ({ data, headers, status }) => {
+      //filter
+      [details] = staffModel.filterStaffDetails(data.rows, selectedEmail);
 
-    appendDetails(details);
-    hideLoading();
-  });
+      appendDetails(details);
+      hideLoading();
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //display edit details
@@ -731,16 +756,21 @@ const showStaffValues = selectedEmail => {
   showLoading();
   //get users and filter with email provided
   let users = staffModel.getUsers();
-  users.then(({ data, headers, status }) => {
-    //filter
-    let [staffDetails] = staffModel.filterStaffDetails(
-      data.rows,
-      selectedEmail
-    );
-    appendValues(staffDetails);
-    editDetail = staffDetails;
-    hideLoading();
-  });
+  users.then(
+    ({ data, headers, status }) => {
+      //filter
+      let [staffDetails] = staffModel.filterStaffDetails(
+        data.rows,
+        selectedEmail
+      );
+      appendValues(staffDetails);
+      editDetail = staffDetails;
+      hideLoading();
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //update status
@@ -769,59 +799,72 @@ const updateStatus = (e, staffEmail, command) => {
 
     //get users
     let users = staffModel.getUsers();
-    users.then(({ data, headers, status }) => {
-      let [selectedUser] = staffModel.filterStaffDetails(data.rows, staffEmail);
-      let id = selectedUser.id;
-      let rev = selectedUser.value.rev;
+    users.then(
+      ({ data, headers, status }) => {
+        let [selectedUser] = staffModel.filterStaffDetails(
+          data.rows,
+          staffEmail
+        );
+        let id = selectedUser.id;
+        let rev = selectedUser.value.rev;
 
-      //create details of user
-      let details = {
-        fname: selectedUser.value.fname,
-        lname: selectedUser.value.lname,
-        email: selectedUser.value.email,
-        number: selectedUser.value.number,
-        position: selectedUser.value.position,
-        gender: selectedUser.value.gender,
-        street: selectedUser.value.address.street,
-        town: selectedUser.value.address.town,
-        state: selectedUser.value.address.state,
-        permission: selectedUser.value.permission,
-        access: access,
-        staffId: selectedUser.value.staffId,
-        image: selectedUser.value.image,
-        pwd: selectedUser.value.pwd,
-        regDay: selectedUser.value.regDay,
-        regMonth: selectedUser.value.regMonth,
-        regYear: selectedUser.value.regYear,
-        updateDay: selectedUser.value.updateDay,
-        updateMonth: selectedUser.value.updateMonth,
-        updateYear: selectedUser.value.updateYear,
-        editedBy: selectedUser.value.editedBy,
-        editorEmail: selectedUser.value.editorEmail,
-        remote: selectedUser.value.remote
-      };
-      //update details
-      let updator = staffModel.updateStatus(id, rev, details);
-      updator.then(({ data, header, status }) => {
-        if (status == 201) {
-          let target = e.target;
-          //remove both block and activate classes
-          if (target.classList.contains("block")) {
-            target.classList.remove("block");
-          } else if (target.classList.contains("activate")) {
-            target.classList.remove("activate");
+        //create details of user
+        let details = {
+          fname: selectedUser.value.fname,
+          lname: selectedUser.value.lname,
+          email: selectedUser.value.email,
+          number: selectedUser.value.number,
+          position: selectedUser.value.position,
+          gender: selectedUser.value.gender,
+          street: selectedUser.value.address.street,
+          town: selectedUser.value.address.town,
+          state: selectedUser.value.address.state,
+          permission: selectedUser.value.permission,
+          access: access,
+          staffId: selectedUser.value.staffId,
+          image: selectedUser.value.image,
+          pwd: selectedUser.value.pwd,
+          regDay: selectedUser.value.regDay,
+          regMonth: selectedUser.value.regMonth,
+          regYear: selectedUser.value.regYear,
+          updateDay: selectedUser.value.updateDay,
+          updateMonth: selectedUser.value.updateMonth,
+          updateYear: selectedUser.value.updateYear,
+          editedBy: selectedUser.value.editedBy,
+          editorEmail: selectedUser.value.editorEmail,
+          remote: selectedUser.value.remote
+        };
+        //update details
+        let updator = staffModel.updateStatus(id, rev, details);
+        updator.then(
+          ({ data, header, status }) => {
+            if (status == 201) {
+              let target = e.target;
+              //remove both block and activate classes
+              if (target.classList.contains("block")) {
+                target.classList.remove("block");
+              } else if (target.classList.contains("activate")) {
+                target.classList.remove("activate");
+              }
+              //add new class
+              target.classList.add(newClass);
+              //add new dataset
+              target.dataset.acctStatus = newClass;
+              //add new text
+              target.innerHTML = newClass;
+            } else {
+              console.log("error");
+            }
+          },
+          err => {
+            console.log(err);
           }
-          //add new class
-          target.classList.add(newClass);
-          //add new dataset
-          target.dataset.acctStatus = newClass;
-          //add new text
-          target.innerHTML = newClass;
-        } else {
-          console.log("error");
-        }
-      });
-    });
+        );
+      },
+      err => {
+        console.log(err);
+      }
+    );
   }
 };
 
@@ -854,59 +897,69 @@ const socketUpdateUser = async message => {
   //update database of user
   //get users
   let users = staffModel.getUsers();
-  users.then(({ data, headers, status }) => {
-    let [selectedUser] = staffModel.filterStaffDetails(
-      data.rows,
-      message.staffId
-    );
-    let id = selectedUser.id;
-    let rev = selectedUser.value.rev;
+  users.then(
+    ({ data, headers, status }) => {
+      let [selectedUser] = staffModel.filterStaffDetails(
+        data.rows,
+        message.staffId
+      );
+      let id = selectedUser.id;
+      let rev = selectedUser.value.rev;
 
-    //create details of user
-    let details = {
-      fname: selectedUser.value.fname,
-      lname: selectedUser.value.lname,
-      email: selectedUser.value.email,
-      number: selectedUser.value.number,
-      position: selectedUser.value.position,
-      gender: selectedUser.value.gender,
-      street: selectedUser.value.address.street,
-      town: selectedUser.value.address.town,
-      state: selectedUser.value.address.state,
-      permission: selectedUser.value.permission,
-      access: message.permission,
-      staffId: selectedUser.value.staffId,
-      image: selectedUser.value.image,
-      pwd: selectedUser.value.pwd,
-      regDay: selectedUser.value.regDay,
-      regMonth: selectedUser.value.regMonth,
-      regYear: selectedUser.value.regYear,
-      updateDay: selectedUser.value.updateDay,
-      updateMonth: selectedUser.value.updateMonth,
-      updateYear: selectedUser.value.updateYear,
-      editedBy: selectedUser.value.editedBy,
-      editorEmail: selectedUser.value.editorEmail,
-      remote: selectedUser.value.remote
-    };
+      //create details of user
+      let details = {
+        fname: selectedUser.value.fname,
+        lname: selectedUser.value.lname,
+        email: selectedUser.value.email,
+        number: selectedUser.value.number,
+        position: selectedUser.value.position,
+        gender: selectedUser.value.gender,
+        street: selectedUser.value.address.street,
+        town: selectedUser.value.address.town,
+        state: selectedUser.value.address.state,
+        permission: selectedUser.value.permission,
+        access: message.permission,
+        staffId: selectedUser.value.staffId,
+        image: selectedUser.value.image,
+        pwd: selectedUser.value.pwd,
+        regDay: selectedUser.value.regDay,
+        regMonth: selectedUser.value.regMonth,
+        regYear: selectedUser.value.regYear,
+        updateDay: selectedUser.value.updateDay,
+        updateMonth: selectedUser.value.updateMonth,
+        updateYear: selectedUser.value.updateYear,
+        editedBy: selectedUser.value.editedBy,
+        editorEmail: selectedUser.value.editorEmail,
+        remote: selectedUser.value.remote
+      };
 
-    //update details
-    let updator = staffModel.updateStatus(id, rev, details);
-    updator.then(({ data, header, status }) => {
-      if (status == 201) {
-        //check if user is who is logged in
-        if (store.getLoginDetail().loginStatus) {
-          if (
-            store.getLoginDetail().staffId.toUpperCase() ==
-              message.staffId.toUpperCase() &&
-            message.permission.toUpperCase() == "CLOSED"
-          ) {
-            //log user out
-            socketLogOut();
+      //update details
+      let updator = staffModel.updateStatus(id, rev, details);
+      updator.then(
+        ({ data, header, status }) => {
+          if (status == 201) {
+            //check if user is who is logged in
+            if (store.getLoginDetail().loginStatus) {
+              if (
+                store.getLoginDetail().staffId.toUpperCase() ==
+                  message.staffId.toUpperCase() &&
+                message.permission.toUpperCase() == "CLOSED"
+              ) {
+                //log user out
+                socketLogOut();
+              }
+            }
+          } else {
+            console.log("error");
           }
+        },
+        err => {
+          console.log(err);
         }
-      } else {
-        console.log("error");
-      }
-    });
-  });
+      );
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };

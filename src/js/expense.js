@@ -43,44 +43,49 @@ const verifyAllExpense = () => {
   showLoading();
   //get all expenses
   let expenseGetter = expenseModel.getExpenses();
-  expenseGetter.then(({ data, headers, status }) => {
-    //update expenses variable with current state of expenses
-    expenses = data.rows;
+  expenseGetter.then(
+    ({ data, headers, status }) => {
+      //update expenses variable with current state of expenses
+      expenses = data.rows;
 
-    let date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-    let match = expenses.filter(expense => {
-      return (
-        expense.value.day != day ||
-        expense.value.month != month ||
-        expense.value.year != year ||
-        expense.value.remote == true
-      );
-    });
+      let date = new Date();
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+      let match = expenses.filter(expense => {
+        return (
+          expense.value.day != day ||
+          expense.value.month != month ||
+          expense.value.year != year ||
+          expense.value.remote == true
+        );
+      });
 
-    if (match.length > 0) {
-      hideLoading();
-      //break
-      showModal("The expense list can no longer be deleted");
-    } else {
-      //proceed with deletion
-      if (proceedDeleteAll()) {
-        //delete all expense in array
-        expenses = [];
-
-        //get date
-        let day = document.getElementById("expenseDay").value;
-        let month = document.getElementById("expenseMonth").value;
-        let year = document.getElementById("expenseYear").value;
-
-        //load expenses
-        handleExpenses(day, month, year);
+      if (match.length > 0) {
         hideLoading();
+        //break
+        showModal("The expense list can no longer be deleted");
+      } else {
+        //proceed with deletion
+        if (proceedDeleteAll()) {
+          //delete all expense in array
+          expenses = [];
+
+          //get date
+          let day = document.getElementById("expenseDay").value;
+          let month = document.getElementById("expenseMonth").value;
+          let year = document.getElementById("expenseYear").value;
+
+          //load expenses
+          handleExpenses(day, month, year);
+          hideLoading();
+        }
       }
+    },
+    err => {
+      console.log(err);
     }
-  });
+  );
 };
 //delete all expense
 const deleteAllExpense = () => {
@@ -112,21 +117,26 @@ const deleteAllExpense = () => {
 const proceedDelete = (id, rev, amt, description) => {
   showLoading();
   let expenseDeleter = expenseModel.deleteExpense(id, rev, amt, description);
-  expenseDeleter.then(({ data, headers, status }) => {
-    if (status == 200) {
-      //filter expenses
-      expenses = expenseModel.removeExpense(expenses, id);
+  expenseDeleter.then(
+    ({ data, headers, status }) => {
+      if (status == 200) {
+        //filter expenses
+        expenses = expenseModel.removeExpense(expenses, id);
 
-      //get date
-      let day = document.getElementById("expenseDay").value;
-      let month = document.getElementById("expenseMonth").value;
-      let year = document.getElementById("expenseYear").value;
+        //get date
+        let day = document.getElementById("expenseDay").value;
+        let month = document.getElementById("expenseMonth").value;
+        let year = document.getElementById("expenseYear").value;
 
-      //load expenses
-      handleExpenses(day, month, year);
-      hideLoading();
+        //load expenses
+        handleExpenses(day, month, year);
+        hideLoading();
+      }
+    },
+    err => {
+      console.log(err);
     }
-  });
+  );
 };
 
 //verify expense
@@ -150,41 +160,48 @@ const deleteExpense = (e, id, rev, amt, description) => {
   //check if expense has been recorded online
   //get all expenses
   let expenseGetter = expenseModel.getExpenses();
-  expenseGetter.then(({ data, headers, status }) => {
-    let expenses = data.rows;
-    // get this expense
-    let expense = expenses.filter(expense => {
-      return expense.id == id;
-    })[0].value;
-    //check if the expense if for today and not synchronized
-    let unApprove = verifyExpense(expense);
+  expenseGetter.then(
+    ({ data, headers, status }) => {
+      let expenses = data.rows;
+      // get this expense
+      let expense = expenses.filter(expense => {
+        return expense.id == id;
+      })[0].value;
+      //check if the expense if for today and not synchronized
+      let unApprove = verifyExpense(expense);
 
-    if (unApprove) {
-      //show error for date
-      showModal("You can no longer delete expense for this date");
-    } else if (expense.remote) {
-      //show error for already sync
-      showModal("This expense is already online and can no longer be deleted");
-    } else {
-      //proceed to delete
-      //get window object
-      const window = BrowserWindow.getFocusedWindow();
-      //show dialog
-      let resp = dialog.showMessageBox(window, {
-        title: "Vemon",
-        buttons: ["Yes", "Cancel"],
-        type: "info",
-        message: "Click Ok to delete expense"
-      });
+      if (unApprove) {
+        //show error for date
+        showModal("You can no longer delete expense for this date");
+      } else if (expense.remote) {
+        //show error for already sync
+        showModal(
+          "This expense is already online and can no longer be deleted"
+        );
+      } else {
+        //proceed to delete
+        //get window object
+        const window = BrowserWindow.getFocusedWindow();
+        //show dialog
+        let resp = dialog.showMessageBox(window, {
+          title: "Vemon",
+          buttons: ["Yes", "Cancel"],
+          type: "info",
+          message: "Click Ok to delete expense"
+        });
 
-      //check if response is yes
-      resp.then((response, checkboxChecked) => {
-        if (response.response == 0) {
-          proceedDelete(id, rev, amt, description);
-        }
-      });
+        //check if response is yes
+        resp.then((response, checkboxChecked) => {
+          if (response.response == 0) {
+            proceedDelete(id, rev, amt, description);
+          }
+        });
+      }
+    },
+    err => {
+      console.log(err);
     }
-  });
+  );
 };
 
 //load expenses of selected daTE
@@ -228,19 +245,29 @@ const loadCurrentExpenses = () => {
 
   //get staffList
   let userGetter = staffModel.getUsers();
-  userGetter.then(({ data, header, status }) => {
-    staffList = data.rows;
-  });
+  userGetter.then(
+    ({ data, header, status }) => {
+      staffList = data.rows;
+    },
+    err => {
+      console.log(err);
+    }
+  );
 
   //get all expenses
   let expenseGetter = expenseModel.getExpenses();
-  expenseGetter.then(({ data, headers, status }) => {
-    expenses = data.rows;
+  expenseGetter.then(
+    ({ data, headers, status }) => {
+      expenses = data.rows;
 
-    //load expenses
-    handleExpenses(day, month, year);
-    hideLoading();
-  });
+      //load expenses
+      handleExpenses(day, month, year);
+      hideLoading();
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //handle show warning for expenses
@@ -328,24 +355,29 @@ const submitExpenses = e => {
         name
       );
 
-      expenseloader.then(({ data, header, status }) => {
-        if (status == 201) {
-          //show success message
-          showExpSuccess("expense recorded");
+      expenseloader.then(
+        ({ data, header, status }) => {
+          if (status == 201) {
+            //show success message
+            showExpSuccess("expense recorded");
 
-          //reset form
-          document.getElementById("expAmt").value = "";
-          document.getElementById("expDescription").value = "";
-          document.getElementById("expName").value = "";
-          setTimeout(() => {
-            //hide the pop up
-            if (hideGenStaticModal("expenseContent")) {
-              //reload table with date
-              loadCurrentExpenses();
-            }
-          }, 900);
+            //reset form
+            document.getElementById("expAmt").value = "";
+            document.getElementById("expDescription").value = "";
+            document.getElementById("expName").value = "";
+            setTimeout(() => {
+              //hide the pop up
+              if (hideGenStaticModal("expenseContent")) {
+                //reload table with date
+                loadCurrentExpenses();
+              }
+            }, 900);
+          }
+        },
+        err => {
+          console.log(err);
         }
-      });
+      );
     });
   }
 };

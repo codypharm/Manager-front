@@ -64,13 +64,23 @@ const hideStockEditSuccess = () => {
 const loadStoreContent = () => {
   let getStocking = stockModel.getStocking();
   let getStock = stockModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
-  });
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
+    },
+    err => {
+      console.log(err);
+    }
+  );
 
-  getStocking.then(({ data, header, status }) => {
-    stocking = data.rows;
-  });
+  getStocking.then(
+    ({ data, header, status }) => {
+      stocking = data.rows;
+    },
+    err => {
+      console.log(err);
+    }
+  );
   //ensure btn is active
   document.getElementById("addBtn").disabled = false;
 
@@ -623,23 +633,28 @@ const handleAllStockDisplay = () => {
 //handle exhausted stock
 const handleExhaustedStockDisplay = () => {
   let stockingGetter = stockModel.getStocking();
-  stockingGetter.then(({ data, header, status }) => {
-    stocking = data.rows;
-    //sort exhausted stock
-    exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
+  stockingGetter.then(
+    ({ data, header, status }) => {
+      stocking = data.rows;
+      //sort exhausted stock
+      exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
 
-    if (exhaustedStock != false) {
-      //display all stock
-      displayExhaustedStock(exhaustedStock);
-    } else {
-      document.getElementById("exhaustedStockList").innerHTML =
-        " <tr>" +
-        ' <td colspan="4" class="text-center">' +
-        "  <span>No record found</span>" +
-        " </td>" +
-        " </tr>";
+      if (exhaustedStock != false) {
+        //display all stock
+        displayExhaustedStock(exhaustedStock);
+      } else {
+        document.getElementById("exhaustedStockList").innerHTML =
+          " <tr>" +
+          ' <td colspan="4" class="text-center">' +
+          "  <span>No record found</span>" +
+          " </td>" +
+          " </tr>";
+      }
+    },
+    err => {
+      console.log(err);
     }
-  });
+  );
 };
 
 //handle expired stocking
@@ -664,26 +679,31 @@ const handleExpiredStockDisplay = () => {
 const fetchAllStock = stockViewType => {
   showLoading();
   let getStock = stockModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
-    switch (stockViewType) {
-      case "allStock":
-        handleAllStockDisplay();
-        break;
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
+      switch (stockViewType) {
+        case "allStock":
+          handleAllStockDisplay();
+          break;
 
-      case "exhaustedStock":
-        handleExhaustedStockDisplay();
-        break;
+        case "exhaustedStock":
+          handleExhaustedStockDisplay();
+          break;
 
-      case "expiredStock":
-        handleExpiredStockDisplay();
-        break;
+        case "expiredStock":
+          handleExpiredStockDisplay();
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
+      hideLoading();
+    },
+    err => {
+      console.log(err);
     }
-    hideLoading();
-  });
+  );
 };
 
 //performing search in expired stock
@@ -849,19 +869,24 @@ const analyseTop = selectedStockList => {
 
 const analyseStock = () => {
   let getStock = stockModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
-    let productId = analysisSelected;
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
+      let productId = analysisSelected;
 
-    //get selected product
-    let selectedStockList = stockModel.getSelectedStock(stock, productId);
+      //get selected product
+      let selectedStockList = stockModel.getSelectedStock(stock, productId);
 
-    //handle top section
-    analyseTop(selectedStockList);
+      //handle top section
+      analyseTop(selectedStockList);
 
-    //display all batch
-    listOutBatches(selectedStockList);
-  });
+      //display all batch
+      listOutBatches(selectedStockList);
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //show error log
@@ -974,48 +999,63 @@ const submitBatchEdit = e => {
         edit,
         detail.batchId
       );
-      stockUpdateInsert.then(({ data, headers, status }) => {
-        if (status == 201) {
-          //update stockingForm
-          let editUpdate = stockModel.editUpdateStock(
-            detail,
-            editQty,
-            editExpDate,
-            updateId
-          );
+      stockUpdateInsert.then(
+        ({ data, headers, status }) => {
+          if (status == 201) {
+            //update stockingForm
+            let editUpdate = stockModel.editUpdateStock(
+              detail,
+              editQty,
+              editExpDate,
+              updateId
+            );
 
-          editUpdate.then(({ data, headers, status }) => {
-            if (status == 201) {
-              //get stock
-              let getStock = stockModel.getStock();
-              getStock.then(({ data, header, status }) => {
-                stock = data.rows;
+            editUpdate.then(
+              ({ data, headers, status }) => {
+                if (status == 201) {
+                  //get stock
+                  let getStock = stockModel.getStock();
+                  getStock.then(
+                    ({ data, header, status }) => {
+                      stock = data.rows;
 
-                //get selected product
-                let selectedStockList = stockModel.getSelectedStock(
-                  stock,
-                  detail.prodId
-                );
-                //handle top section
-                analyseTop(selectedStockList);
+                      //get selected product
+                      let selectedStockList = stockModel.getSelectedStock(
+                        stock,
+                        detail.prodId
+                      );
+                      //handle top section
+                      analyseTop(selectedStockList);
 
-                //display all batch
-                listOutBatches(selectedStockList);
+                      //display all batch
+                      listOutBatches(selectedStockList);
 
-                //remove spinner
-                btn.classList.remove("spinner-border");
-                btn.classList.remove("spinner-border-sm");
+                      //remove spinner
+                      btn.classList.remove("spinner-border");
+                      btn.classList.remove("spinner-border-sm");
 
-                //adjust notification
-                notification();
+                      //adjust notification
+                      notification();
 
-                //hide modal
-                hideGenStaticModal("batchEditContent");
-              });
-            }
-          });
+                      //hide modal
+                      hideGenStaticModal("batchEditContent");
+                    },
+                    err => {
+                      console.log(err);
+                    }
+                  );
+                }
+              },
+              err => {
+                console.log(err);
+              }
+            );
+          }
+        },
+        err => {
+          console.log(err);
         }
-      });
+      );
     });
   } else {
     //remove spinner
@@ -1039,29 +1079,34 @@ const showAnalysisEditForm = e => {
 
   //get stock
   let getStock = stockModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
 
-    //get selected stock
-    let selectedStock = stockModel.getSelectedStock(stock, id);
-    if (selectedStock != false) {
-      let detail = selectedStock[0].value;
+      //get selected stock
+      let selectedStock = stockModel.getSelectedStock(stock, id);
+      if (selectedStock != false) {
+        let detail = selectedStock[0].value;
 
-      //insert to DOM
-      document.getElementById("editAnalysisName").value = detail.name;
-      document.getElementById("editAnalysisForm").value = detail.form;
-      document.getElementById("editAnalysisUnit").value = detail.unit;
-      document.getElementById("editAnalysisPrice").value = detail.price;
-      document.getElementById("editAnalysisBrand").value = detail.brand;
+        //insert to DOM
+        document.getElementById("editAnalysisName").value = detail.name;
+        document.getElementById("editAnalysisForm").value = detail.form;
+        document.getElementById("editAnalysisUnit").value = detail.unit;
+        document.getElementById("editAnalysisPrice").value = detail.price;
+        document.getElementById("editAnalysisBrand").value = detail.brand;
 
-      //get values
-      oldForm = detail.form;
-      oldUnit = detail.unit;
-      oldPrice = detail.price;
-      oldName = detail.name;
-      oldBrand = detail.brand;
+        //get values
+        oldForm = detail.form;
+        oldUnit = detail.unit;
+        oldPrice = detail.price;
+        oldName = detail.name;
+        oldBrand = detail.brand;
+      }
+    },
+    err => {
+      console.log(err);
     }
-  });
+  );
 };
 
 //submit product edit
@@ -1152,32 +1197,45 @@ const submitProductEdit = e => {
                 unit.value,
                 brand.value
               )
-              .then(() => {
-                //hide loading sign
-                btn.classList.remove("spinner-border");
-                btn.classList.remove("spinner-border-sm");
-                //get stock
-                let getStock = stockModel.getStock();
-                getStock.then(({ data, header, status }) => {
-                  stock = data.rows;
+              .then(
+                () => {
+                  //hide loading sign
+                  btn.classList.remove("spinner-border");
+                  btn.classList.remove("spinner-border-sm");
+                  //get stock
+                  let getStock = stockModel.getStock();
+                  getStock.then(
+                    ({ data, header, status }) => {
+                      stock = data.rows;
 
-                  //get selected product
-                  let selectedStockList = stockModel.getSelectedStock(
-                    stock,
-                    id
+                      //get selected product
+                      let selectedStockList = stockModel.getSelectedStock(
+                        stock,
+                        id
+                      );
+                      //handle top section
+                      analyseTop(selectedStockList);
+
+                      //display all batch
+                      listOutBatches(selectedStockList);
+
+                      edit = [];
+                      editClass = [];
+                      // remove modal
+                      hideGenStaticModal("productEditContent");
+                    },
+                    err => {
+                      console.log(err);
+                    }
                   );
-                  //handle top section
-                  analyseTop(selectedStockList);
-
-                  //display all batch
-                  listOutBatches(selectedStockList);
-
-                  edit = [];
-                  editClass = [];
-                  // remove modal
-                  hideGenStaticModal("productEditContent");
-                });
-              });
+                },
+                err => {
+                  console.log(err);
+                }
+              );
+          },
+          err => {
+            console.log(err);
           }
         );
       });
@@ -1197,23 +1255,28 @@ const checkStock = () => {
   document.getElementById("stockCheckId").textContent = batchSelected;
   //get activities
   let activitiesGetter = stockModel.getActivities();
-  activitiesGetter.then(({ data, headers, status }) => {
-    let activities = data.rows;
+  activitiesGetter.then(
+    ({ data, headers, status }) => {
+      let activities = data.rows;
 
-    //filter out matches
-    let list = stockModel.getActivityMatch(activities, batchSelected);
-    if (list != false) {
-      //list changes
-      displayStockChanges(list);
-    } else {
-      document.getElementById("stockChangesList").innerHTML =
-        " <tr>" +
-        ' <td colspan="5" class="text-center">' +
-        "  <span>No record found</span>" +
-        " </td>" +
-        " </tr>";
+      //filter out matches
+      let list = stockModel.getActivityMatch(activities, batchSelected);
+      if (list != false) {
+        //list changes
+        displayStockChanges(list);
+      } else {
+        document.getElementById("stockChangesList").innerHTML =
+          " <tr>" +
+          ' <td colspan="5" class="text-center">' +
+          "  <span>No record found</span>" +
+          " </td>" +
+          " </tr>";
+      }
+    },
+    err => {
+      console.log(err);
     }
-  });
+  );
 };
 
 //check batch analysis
@@ -1228,18 +1291,24 @@ const checkBatch = batchId => {
 const viewChanges = (e, rev) => {
   //get activities
   let activitiesGetter = stockModel.getActivities();
-  activitiesGetter.then(({ data, headers, status }) => {
-    let activities = data.rows;
+  activitiesGetter.then(
+    ({ data, headers, status }) => {
+      let activities = data.rows;
 
-    //get a particular activity
-    let act = stockModel.getAct(activities, rev)[0];
+      //get a particular activity
+      let act = stockModel.getAct(activities, rev)[0];
 
-    //show modal
-    showGenStaticModal("changesContent");
-    //add to DOM
-    document.getElementById("changesBatchId").textContent = act.value.editedId;
-    document.getElementById("changesText").textContent = act.value.detail;
-  });
+      //show modal
+      showGenStaticModal("changesContent");
+      //add to DOM
+      document.getElementById("changesBatchId").textContent =
+        act.value.editedId;
+      document.getElementById("changesText").textContent = act.value.detail;
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //delete batch from activities
@@ -1249,40 +1318,55 @@ const deleteFromActivities = (batchId, btn) => {
     '<span class="spinner-border spinner-border-sm"></span> Delete';
   //get activities
   let actGetter = stockModel.getActivities();
-  actGetter.then(({ data, headers, status }) => {
-    let acts = data.rows;
+  actGetter.then(
+    ({ data, headers, status }) => {
+      let acts = data.rows;
 
-    //get matching actvities
-    let selectedActs = stockModel.getActivityMatch(acts, batchId);
-    //delete
-    let deleted = stockModel.deleteActs(selectedActs);
+      //get matching actvities
+      let selectedActs = stockModel.getActivityMatch(acts, batchId);
+      //delete
+      let deleted = stockModel.deleteActs(selectedActs);
 
-    deleted.then(() => {
-      //get stock
-      let getStock = stockModel.getStock();
-      getStock.then(({ data, header, status }) => {
-        stock = data.rows;
-        //check if stock remains
-        let remainingStock = stockModel.getMatch(stock, analysisSelected);
-        if (remainingStock != false) {
-          //get selected product
-          let selectedStockList = stockModel.getSelectedStock(
-            stock,
-            analysisSelected
+      deleted.then(
+        () => {
+          //get stock
+          let getStock = stockModel.getStock();
+          getStock.then(
+            ({ data, header, status }) => {
+              stock = data.rows;
+              //check if stock remains
+              let remainingStock = stockModel.getMatch(stock, analysisSelected);
+              if (remainingStock != false) {
+                //get selected product
+                let selectedStockList = stockModel.getSelectedStock(
+                  stock,
+                  analysisSelected
+                );
+
+                //handle top section
+                analyseTop(selectedStockList);
+
+                //display all batch
+                listOutBatches(selectedStockList);
+              } else {
+                // go back
+                loadAllStock();
+              }
+            },
+            err => {
+              console.log(err);
+            }
           );
-
-          //handle top section
-          analyseTop(selectedStockList);
-
-          //display all batch
-          listOutBatches(selectedStockList);
-        } else {
-          // go back
-          loadAllStock();
+        },
+        err => {
+          console.log(err);
         }
-      });
-    });
-  });
+      );
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //delete batch
@@ -1306,23 +1390,33 @@ const deleteBatch = (e, batchId) => {
       showLoading();
       //get stock
       let getStock = stockModel.getStock();
-      getStock.then(({ data, header, status }) => {
-        stock = data.rows;
+      getStock.then(
+        ({ data, header, status }) => {
+          stock = data.rows;
 
-        //get the particular stock
-        let batch = stockModel.getBatch(stock, batchId)[0];
-        let id = batch.id;
-        let details = batch.value;
-        //delete stock
-        let stockDeleter = stockModel.deleteStock(id, details.rev);
-        stockDeleter.then(({ data, headers, status }) => {
-          //delete batch from activities
-          deleteFromActivities(batchId, btn);
+          //get the particular stock
+          let batch = stockModel.getBatch(stock, batchId)[0];
+          let id = batch.id;
+          let details = batch.value;
+          //delete stock
+          let stockDeleter = stockModel.deleteStock(id, details.rev);
+          stockDeleter.then(
+            ({ data, headers, status }) => {
+              //delete batch from activities
+              deleteFromActivities(batchId, btn);
 
-          //adjust notification
-          notification();
-        });
-      });
+              //adjust notification
+              notification();
+            },
+            err => {
+              console.log(err);
+            }
+          );
+        },
+        err => {
+          console.log(err);
+        }
+      );
     }
   });
 };
@@ -1331,23 +1425,31 @@ const deleteBatch = (e, batchId) => {
 const deleteProductActs = async (btn, batches) => {
   //get activities
   let activitiesGetter = stockModel.getActivities();
-  activitiesGetter.then(({ data, headers, status }) => {
-    let activities = data.rows;
-    let acts;
-    //loop through products
-    for (const batch of batches) {
-      acts = stockModel.getActivitiesForBatch(activities, batch.value.batchId);
+  activitiesGetter.then(
+    ({ data, headers, status }) => {
+      let activities = data.rows;
+      let acts;
+      //loop through products
+      for (const batch of batches) {
+        acts = stockModel.getActivitiesForBatch(
+          activities,
+          batch.value.batchId
+        );
 
-      if (acts.length > 0) {
-        let actsDeleter = stockModel.deleteActs(acts);
+        if (acts.length > 0) {
+          let actsDeleter = stockModel.deleteActs(acts);
+        }
       }
-    }
 
-    //remove spinner
-    btn.innerHTML = "Delete Product";
-    //go back
-    pageLoader("allStock", fetchAllStock);
-  });
+      //remove spinner
+      btn.innerHTML = "Delete Product";
+      //go back
+      pageLoader("allStock", fetchAllStock);
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //continue stock delete
@@ -1359,20 +1461,30 @@ const proceedStockDelete = btn => {
 
   //get stock
   let getStock = stockModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
-    let thisStock = stockModel.getMatch(stock, id);
-    let deleteStock = stockModel.deleteThisProduct(thisStock);
-    deleteStock.then(() => {
-      //delete activities
-      deleteProductActs(btn, thisStock);
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
+      let thisStock = stockModel.getMatch(stock, id);
+      let deleteStock = stockModel.deleteThisProduct(thisStock);
+      deleteStock.then(
+        () => {
+          //delete activities
+          deleteProductActs(btn, thisStock);
 
-      //adjust notification
-      notification();
+          //adjust notification
+          notification();
 
-      hideLoading();
-    });
-  });
+          hideLoading();
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //delete product
@@ -1420,23 +1532,33 @@ const deleteExpiredBatch = (e, batchId) => {
       showLoading();
       //get stock
       let getStock = stockModel.getStock();
-      getStock.then(({ data, header, status }) => {
-        stock = data.rows;
+      getStock.then(
+        ({ data, header, status }) => {
+          stock = data.rows;
 
-        //get the particular stock
-        let batch = stockModel.getBatch(stock, batchId)[0];
-        let id = batch.id;
-        let details = batch.value;
-        //delete stock
-        let stockDeleter = stockModel.deleteStock(id, details.rev);
-        stockDeleter.then(({ data, headers, status }) => {
-          //adjust notification
-          notification();
-          hideLoading();
-          //deleteFromActivities(batchId, btn);
-          fetchAllStock("expiredStock");
-        });
-      });
+          //get the particular stock
+          let batch = stockModel.getBatch(stock, batchId)[0];
+          let id = batch.id;
+          let details = batch.value;
+          //delete stock
+          let stockDeleter = stockModel.deleteStock(id, details.rev);
+          stockDeleter.then(
+            ({ data, headers, status }) => {
+              //adjust notification
+              notification();
+              hideLoading();
+              //deleteFromActivities(batchId, btn);
+              fetchAllStock("expiredStock");
+            },
+            err => {
+              console.log(err);
+            }
+          );
+        },
+        err => {
+          console.log(err);
+        }
+      );
     }
   });
 };

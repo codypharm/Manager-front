@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 "use strict";
 
@@ -41,26 +42,36 @@ const createWindow = () => {
   store.forceLogout();
 
   //handle dblist the promise
-  db.listDb().then(() => {
-    displayPage();
-  });
+  db.listDb().then(
+    () => {
+      displayPage();
+    },
+    err => {
+      console.log(err);
+    }
+  );
 
   const displayPage = () => {
-    db.getSetup().then(({ data }) => {
-      let setUp = data.rows;
+    db.getSetup().then(
+      ({ data }) => {
+        let setUp = data.rows;
 
-      if (setUp.length > 0) {
-        // and load the setup.html of the app.
+        if (setUp.length > 0) {
+          // and load the setup.html of the app.
 
-        mainWindow.loadURL(`file://${__dirname}/index.html`);
-        mainWindow.maximize();
-        //get current page
-      } else {
-        // and load the index.html of the app.
-        mainWindow.loadURL(`file://${__dirname}/setup.html`);
-        mainWindow.maximize();
+          mainWindow.loadURL(`file://${__dirname}/index.html`);
+          mainWindow.maximize();
+          //get current page
+        } else {
+          // and load the index.html of the app.
+          mainWindow.loadURL(`file://${__dirname}/setup.html`);
+          mainWindow.maximize();
+        }
+      },
+      err => {
+        console.log(err);
       }
-    });
+    );
   };
 
   // Open the DevTools.

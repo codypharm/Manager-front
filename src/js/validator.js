@@ -1,5 +1,10 @@
+/* eslint-disable no-undef */
 //import db file
 const Database = require("./db");
+
+const crypto = require("crypto");
+require("dotenv").config();
+
 const {
   verifyPhoneNumber,
   // eslint-disable-next-line no-unused-vars
@@ -119,6 +124,22 @@ class Validator extends Database {
     if (!match.test(pwd)) {
       return true;
     }
+  }
+
+  invalidAppkey(appKey) {
+    const secret = `${process.env.APP_SECRET}`;
+
+    const hash = crypto
+      .createHmac("sha256", secret)
+      .update("4013-4567-3421-6789")
+      .digest("hex");
+
+    const newHash = crypto
+      .createHmac("sha256", secret)
+      .update(`${appKey}`)
+      .digest("hex");
+
+    if (hash !== newHash) return true;
   }
 }
 

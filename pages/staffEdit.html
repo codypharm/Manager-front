@@ -204,8 +204,10 @@
         </div>
 
         <div class="fieldBottom permission editPerm">
+          <span id="permError"></span>
           <select id="permission" onchange="handlePwdBox(event)">
             <option value="">Select</option>
+            <option value="super_admin" id="super_admin">Super Admin</option>
             <option value="admin" id="admin">Admin</option>
             <option value="member" id="memeber">Member</option>
           </select>

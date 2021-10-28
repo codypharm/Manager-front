@@ -1,5 +1,10 @@
+/* eslint-disable no-undef */
 //import db file
 const Database = require("./db");
+
+const crypto = require("crypto");
+require("dotenv").config();
+
 const {
   verifyPhoneNumber,
   // eslint-disable-next-line no-unused-vars
@@ -28,6 +33,7 @@ class Validator extends Database {
       address: details.address,
       companyId: details.companyId,
       branchId: details.branchId,
+      phone: details.phone,
       manager_firstname:
         details.manager_firstname[0].toUpperCase() +
         details.manager_firstname.slice(1),
@@ -35,7 +41,13 @@ class Validator extends Database {
         details.manager_lastname[0].toUpperCase() +
         details.manager_lastname.slice(1),
       manager_password: details.manager_password,
-      manager_email: details.manager_email
+      manager_email: details.manager_email,
+      remote: false,
+      expiration_limit: "90",
+      logout_time: "30mins",
+
+      stock_limit: "30",
+      update_interval: "1hr"
     });
   }
 
@@ -63,8 +75,9 @@ class Validator extends Database {
       number: "",
       gender: "",
       position: "manager",
-      permission: "admin",
+      permission: "super_admin",
       access: "open",
+      remote: false,
       regDay: date.getDate(),
       regMonth: date.getMonth(),
       regYear: date.getFullYear()
@@ -111,6 +124,22 @@ class Validator extends Database {
     if (!match.test(pwd)) {
       return true;
     }
+  }
+
+  invalidAppkey(appKey) {
+    const secret = `${process.env.APP_SECRET}`;
+
+    const hash = crypto
+      .createHmac("sha256", secret)
+      .update("4013-4567-3421-6789")
+      .digest("hex");
+
+    const newHash = crypto
+      .createHmac("sha256", secret)
+      .update(`${appKey}`)
+      .digest("hex");
+
+    if (hash !== newHash) return true;
   }
 }
 

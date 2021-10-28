@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 "use strict";
 
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, Notification } = require("electron");
 const Database = require("../src/js/db");
 const Store = require("../src/js/store");
+//const { CATCH_ON_MAIN } = require("../utils/constants");
 
 //const path = require("path");
 // eslint-disable-next-line
@@ -40,26 +42,36 @@ const createWindow = () => {
   store.forceLogout();
 
   //handle dblist the promise
-  db.listDb().then(() => {
-    displayPage();
-  });
+  db.listDb().then(
+    () => {
+      displayPage();
+    },
+    err => {
+      console.log(err);
+    }
+  );
 
   const displayPage = () => {
-    db.getSetup().then(({ data }) => {
-      let setUp = data.rows;
+    db.getSetup().then(
+      ({ data }) => {
+        let setUp = data.rows;
 
-      if (setUp.length > 0) {
-        // and load the setup.html of the app.
+        if (setUp.length > 0) {
+          // and load the setup.html of the app.
 
-        mainWindow.loadURL(`file://${__dirname}/index.html`);
-        mainWindow.maximize();
-        //get current page
-      } else {
-        // and load the index.html of the app.
-        mainWindow.loadURL(`file://${__dirname}/setup.html`);
-        mainWindow.maximize();
+          mainWindow.loadURL(`file://${__dirname}/index.html`);
+          mainWindow.maximize();
+          //get current page
+        } else {
+          // and load the index.html of the app.
+          mainWindow.loadURL(`file://${__dirname}/setup.html`);
+          mainWindow.maximize();
+        }
+      },
+      err => {
+        console.log(err);
       }
-    });
+    );
   };
 
   // Open the DevTools.
@@ -73,6 +85,13 @@ const createWindow = () => {
     mainWindow = null;
   });
 };
+
+/*ipcMain.on(CATCH_ON_MAIN, (event, arg) => {
+  let n = new Notification({
+    title: "Synchronization Report",
+    body: arg
+  }).show();
+});*/
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

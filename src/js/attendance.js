@@ -38,8 +38,9 @@ const getList = (day, month, year) => {
   );
 
   if (matchingList.length > 0) {
+    let id = store.getLoginDetail().staffId;
     //display list
-    displayAttendanceList(matchingList);
+    displayAttendanceList(matchingList, id);
   } else {
     document.getElementById("attendanceDispList").innerHTML =
       " <tr>" +
@@ -51,33 +52,41 @@ const getList = (day, month, year) => {
 };
 //list attendance
 const listAttendance = () => {
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
   let year = date.getFullYear();
-  let staffRecord = attendanceModel.getUsers().then(({ data }) => {
-    staffData = data.rows;
-    let attendance = attendanceModel.getAttendance();
-    attendance.then(({ data }) => {
-      attendanceRecord = data.rows;
+  let staffRecord = attendanceModel.getUsers().then(
+    ({ data }) => {
+      staffData = data.rows;
+      let attendance = attendanceModel.getAttendance();
+      attendance.then(({ data }) => {
+        attendanceRecord = data.rows;
 
-      //get list
-      getList(day, month, year);
-      //enable button
-      document.getElementById("processBtn").disabled = false;
-      //add values to DOM
-      document.getElementById("attendanceDay").value = day;
-      document.getElementById("attendanceMonth").value = month;
-      document.getElementById("attendanceYear").value = year;
-      document.getElementById(
-        "dispDate"
-      ).textContent = `${day}-${month}-${year}`;
-    });
-  });
+        //get list
+        getList(day, month, year);
+        //enable button
+        document.getElementById("processBtn").disabled = false;
+        //add values to DOM
+        document.getElementById("attendanceDay").value = day;
+        document.getElementById("attendanceMonth").value = month;
+        document.getElementById("attendanceYear").value = year;
+        document.getElementById(
+          "dispDate"
+        ).textContent = `${day}-${month}-${year}`;
+        hideLoading();
+      });
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //process attendance list
 const processAttendanceList = e => {
+  showLoading();
   e.preventDefault();
 
   let day = document.getElementById("attendanceDay").value;
@@ -87,6 +96,7 @@ const processAttendanceList = e => {
   //get list
   getList(day, month, year);
   document.getElementById("dispDate").textContent = `${day}-${month}-${year}`;
+  hideLoading();
 };
 
 //search attendance
@@ -112,8 +122,9 @@ const searchAllAttendance = e => {
   let searchList = attendanceModel.extractAttendance(matchingList, value);
 
   if (searchList.length > 0) {
+    let id = store.getLoginDetail().staffId;
     //display list
-    displayAttendanceList(searchList);
+    displayAttendanceList(searchList, id);
   } else {
     document.getElementById("attendanceDispList").innerHTML =
       " <tr>" +
@@ -124,7 +135,7 @@ const searchAllAttendance = e => {
   }
 };
 
-//submit attandance
+//submit attendance
 const submitAttendance = e => {
   e.preventDefault();
   let valueId = document.getElementById("attendanceId").value;
@@ -158,12 +169,13 @@ const submitAttendance = e => {
   } else if (
     attendanceModel.marked(attendanceRecord, valueId, day, month, year)
   ) {
-    displayError(errorBox, "Attendance already recorded for this user today");
+    displayError(errorBox, "This user has already been signed in");
     let btnSpinner = document.getElementById("subAttandanceLoader");
     btnSpinner.classList.remove("spinner-border");
     btnSpinner.classList.remove("spinner-border-sm");
   } else {
-    //get user detaails
+    //get user details
+
     let thisUser = attendanceModel.getThisUser(staffData, valueId);
 
     //generate unique id
@@ -173,24 +185,29 @@ const submitAttendance = e => {
       //insert into attendance database
       let dataRecord = attendanceModel.recordAttendance(id, thisUser[0]);
 
-      dataRecord.then(({ data, status }) => {
-        if (status == 201) {
-          //hide spinner
-          btnSpinner.classList.remove("spinner-border");
-          btnSpinner.classList.remove("spinner-border-sm");
+      dataRecord.then(
+        ({ data, status }) => {
+          if (status == 201) {
+            //hide spinner
+            btnSpinner.classList.remove("spinner-border");
+            btnSpinner.classList.remove("spinner-border-sm");
 
-          //show success attendance Alert
-          if (successBox.classList.contains("hide")) {
-            successBox.classList.remove("hide");
+            //show success attendance Alert
+            if (successBox.classList.contains("hide")) {
+              successBox.classList.remove("hide");
+            }
+
+            //HIDE modal
+            hideGenStaticModal("attendanceContent");
+
+            //go back and show list
+            listAttendance();
           }
-
-          //HIDE modal
-          hideGenStaticModal("attendanceContent");
-
-          //go back and show list
-          listAttendance();
+        },
+        err => {
+          console.log(err);
         }
-      });
+      );
     });
   }
 };
@@ -203,6 +220,7 @@ const hideAttendance = e => {
 
 //exit staff
 const exitStaff = e => {
+  showLoading();
   let id = e.target.dataset.id;
 
   //get date
@@ -226,30 +244,39 @@ const exitStaff = e => {
       year,
       id
     )[0];
+    let updater = attendanceModel.updateAttendance(data);
+    updater.then(
+      ({ data, headers, status }) => {
+        if (status == 201) {
+          //get attendance again
+          let attendance = attendanceModel.getAttendance();
+          attendance.then(({ data }) => {
+            attendanceRecord = data.rows;
 
-    //get window object
-    const window = BrowserWindow.getFocusedWindow();
-    //show dialog
-    let resp = dialog.showMessageBox(window, {
-      title: "Vemon",
-      buttons: ["Yes", "Cancel"],
-      type: "info",
-      message: "Click Okay to exit"
-    });
+            let day = document.getElementById("attendanceDay").value;
+            let month = document.getElementById("attendanceMonth").value;
+            let year = document.getElementById("attendanceYear").value;
 
-    //check if response is yes
-    resp.then((response, checkboxChecked) => {
-      if (response.response == 0) {
-        //update attendance
-        let attendanceUpdater = attendanceModel.updateAttendance(data);
-        attendanceUpdater.then(({ data, status }) => {
-          if (status == 201) {
-            //go back and show list
-            listAttendance();
-          }
-        });
+            //get list
+            getList(day, month, year);
+            //enable button
+            document.getElementById("processBtn").disabled = false;
+            //add values to DOM
+            document.getElementById("attendanceDay").value = day;
+            document.getElementById("attendanceMonth").value = month;
+            document.getElementById("attendanceYear").value = year;
+            document.getElementById(
+              "dispDate"
+            ).textContent = `${day}-${month}-${year}`;
+
+            hideLoading();
+          });
+        }
+      },
+      err => {
+        console.log(err);
       }
-    });
+    );
   } else {
     //show error message
     showModal("You can no longer exit from this date");

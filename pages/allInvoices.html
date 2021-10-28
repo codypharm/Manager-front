@@ -91,6 +91,8 @@
             <th>Invoice Id</th>
 
             <th>Transaction</th>
+            <th>Price</th>
+            <th>Discount</th>
             <th>Net Price</th>
             <th>Paid</th>
             <th>Balance</th>
@@ -99,7 +101,7 @@
           </thead>
           <tbody id="invoicesList">
             <tr>
-              <td colspan="7" class="text-center">
+              <td colspan="9" class="text-center">
                 <div class="spinner-grow text-success"></div>
               </td>
             </tr>
@@ -115,12 +117,14 @@
   <tr>
     <td>{{value.invoiceId}}</td>
     <td>{{value.transType}}</td>
+    <td>{{value.totalPrice}}</td>
+    <td>{{value.disccount}}</td>
     <td>{{netPrice value.netPrice}}</td>
     <td>{{paid value.amtPaid}}</td>
     <td>{{invoiceBalance value.balance}}</td>
     <td>{{invoiceStatus value.balance}}</td>
     <td>
-      <button type="button" class="btn btn-sm  btn-success " onclick="viewInvoice(event,'{{value.invoiceId}}','{{value.day}}-{{value.month}}-{{value.year}}','all')">
+      <button type="button" class="btn btn-sm  btn-success " data-id='{{value.invoiceId}}' data-type='{{value.transType}}' onclick="viewInvoice(event,'{{value.day}}-{{value.month}}-{{value.year}}','all')">
         view
       </button>
     </td>

@@ -70,6 +70,22 @@ class salesModel extends Database {
     }
   }
 
+  getMatchingProduct(stock, id) {
+    let match = stock.filter(product => {
+      return (
+        (product.value.prodId.includes(id) ||
+          product.value.name.toUpperCase().includes(id.toUpperCase())) &&
+        Number(product.value.qty) > 0
+      );
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
   getUnit(stock, id) {
     let unit = 0;
     stock.forEach(product => {
@@ -179,7 +195,7 @@ class salesModel extends Database {
         product.productId == id ||
         product.name.toUpperCase() == id.toUpperCase()
       ) {
-        price = (product.initialPrice * qty) / unit;
+        price = Number(Number(Number(product.initialPrice) * qty) / unit);
 
         product.qty = qty;
         product.price = price;
@@ -212,6 +228,7 @@ class salesModel extends Database {
       price: product.value.price,
       totalCost: product.value.totalCost,
       pricePerMinUnit: product.value.ppmu,
+      remote: false,
       expDate: product.value.expDate,
       error: product.value.error,
       day: product.value.day,
@@ -234,6 +251,9 @@ class salesModel extends Database {
       invoiceId: invoiceId,
       transactionType: transType,
       disccount: disccount,
+      cp: product.cp,
+      sp: product.sp,
+      remote: false,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear()
@@ -252,22 +272,28 @@ class salesModel extends Database {
     netPrice,
     totalPrice,
     amtPaid,
-    balance
+    balance,
+    cp,
+    sp
   ) {
     let date = new Date();
+    let loginDetail = store.getLoginDetail();
     return this.couch.insert("invoice", {
       id: id,
       invoiceId: invoiceId,
       customerAddress: customerAddress,
       customerName: customerName,
       customerNumber: customerNumber,
-
       transType: transType,
       disccount: disccount,
       netPrice: netPrice,
       totalPrice: totalPrice,
       amtPaid: amtPaid,
+      remote: false,
       balance: balance,
+      cp,
+      sp,
+      attender: loginDetail.fname + " " + loginDetail.lname,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear()
@@ -373,7 +399,7 @@ class salesModel extends Database {
       totalDisccount += Number(sale.value.disccount);
     });
     let averageDisccount = totalDisccount / match.length;
-    return Math.ceil(averageDisccount);
+    return averageDisccount;
   }
 
   getOtherAvgDisccount(match, saleType) {
@@ -413,6 +439,39 @@ class salesModel extends Database {
       return match;
     } else {
       return false;
+    }
+  }
+
+  //update current match
+  remoteSalesUpdateMatch(detail, id) {
+    return this.couch.update("sales", {
+      _id: id,
+      _rev: detail.rev,
+      qty: detail.qty,
+      name: detail.name,
+      price: detail.price,
+      productId: detail.productId,
+      brand: detail.brand,
+      invoiceId: detail.invoiceId,
+      transactionType: detail.transType,
+      disccount: detail.disccount,
+      cp: detail.cp,
+      sp: detail.sp,
+      remote: true,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year
+    });
+  }
+
+  async remoteUpdateSales(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteSalesUpdateMatch(allMatch[i].value, allMatch[i].id);
     }
   }
 }

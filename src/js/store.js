@@ -16,6 +16,12 @@ class Store {
 
       setupDetail: {
         type: "object"
+      },
+      tokens: {
+        type: "object"
+      },
+      syncState: {
+        type: "object"
       }
     };
     //instantiate store
@@ -48,6 +54,14 @@ class Store {
     return this.store.get("editDetail");
   }
 
+  getTokens() {
+    return this.store.get("tokens");
+  }
+
+  getSyncState() {
+    return this.store.get("syncState");
+  }
+
   setEditDetail(editDetail) {
     this.store.set("editDetail", {
       detail: editDetail
@@ -62,9 +76,11 @@ class Store {
       email: user.email,
       staffId: user.staffId,
       position: user.position,
+      permission: user.permission,
       image: user.image,
       access: user.access,
-      docId: user.id
+      docId: user.id,
+      pwd: user.pwd
     });
 
     return true;
@@ -85,6 +101,18 @@ class Store {
   setSaleStore(record) {
     this.store.set("records", {
       record: record
+    });
+  }
+
+  setSyncState(state) {
+    this.store.set("syncState", {
+      state
+    });
+  }
+  setTokens(access, refresh) {
+    this.store.set("tokens", {
+      access,
+      refresh
     });
   }
 }

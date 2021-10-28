@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-//globale variables
+
+//const salesModel = require("../../models/salesModel");
+
+//global variables
 var cart = [];
 
 //global variable
@@ -54,7 +57,7 @@ var invoiceTemplate =
   " <tr>" +
   "   <th>Sub Total</th>" +
   "   <td></td>" +
-  '  <td><stong id="total"></stong></td>' +
+  '  <td><strong id="total"></strong></td>' +
   " </tr>" +
   " <tr>" +
   "  <th>Disccount</th>" +
@@ -118,9 +121,14 @@ const calculateTotal = cart => {
 //load cart
 const loadCart = () => {
   const getStock = stockModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
-  });
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
+    },
+    err => {
+      console.log(err);
+    }
+  );
 
   //get products in store
   let { record } = store.getSaleStore();
@@ -198,6 +206,23 @@ const addUpMatch = (stock, id) => {
   return matchQty;
 };
 
+//suggest product
+const suggestProduct = e => {
+  let word = e.target.value.trim();
+  let match = salesModel.getMatchingProduct(stock, word);
+  if (match) {
+    console.log(match);
+    displaySuggestions(match);
+  }
+};
+
+//append suggestion
+const appendSuggestion = (e, name) => {
+  document.getElementById("prodName").value = name;
+  //hide suggestions
+  document.getElementById("suggestionItems").innerHTML = "";
+};
+
 //process sale
 const processSale = e => {
   e.preventDefault();
@@ -215,11 +240,11 @@ const processSale = e => {
 
   //if no quantity is provided
   if (qty < 1) {
-    //get the proguct unit
+    //get the product unit
 
     qty += unit;
   }
-  //check if product is in cart and add it
+  //check if product is in cart and add it and return the new qty
   qty = addCart(cart, prodId.value.trim(), qty);
 
   //adding up quantity of matching products
@@ -239,13 +264,13 @@ const processSale = e => {
   }
 };
 
-const addUpQty = (e, prodId, unit) => {
-  prodId = prodId.toString();
-
+const addUpQty = (e, unit) => {
+  prodId = e.target.dataset.id;
   let qty = Number(e.target.value);
 
   //adding up quantity of matching products
   let matchQty = addUpMatch(stock, prodId);
+
   if (qty > matchQty) {
     showWarning("Quantity entered is not available or stock is exhausted !!!");
     //set it back to 1 or unit quantity
@@ -297,7 +322,9 @@ const cancelCurSale = e => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
+      showLoading();
       deleteMatch(prodId);
+      hideLoading();
     }
   });
 };
@@ -319,33 +346,47 @@ const handleTransType = e => {
   }
 };
 
-const sub = (obj, qty) => {
-  //if stock if more than purchase quantity
+const sub = (obj, qty, cp, sp) => {
+  //if stock is more than purchase quantity
   if (Number(obj.value.qty) > Number(qty)) {
+    cp += Number(obj.value.ppmu) * Number(qty);
+    sp += Number(obj.value.price) * Number(qty);
+    //console.log(cp, sp, qty);
     //subtract purchase
     obj.value.qty = Number(obj.value.qty) - Number(qty);
     //purchase  = 0
     qty = 0;
+
     //return new values
-    return [obj, qty];
-    //if purcahse is more than stock
+    return [obj, qty, cp, sp];
+    //if purchase is more than stock
   } else if (Number(obj.value.qty) < Number(qty)) {
-    //subtract purcahse from stock
+    //did that batch contribute ?
+    if (Number(obj.value.qty) > 0) {
+      cp += Number(obj.value.ppmu) * Number(obj.value.qty);
+      sp += Number(obj.value.price) * Number(obj.value.qty);
+    }
+    //subtract stock from purchase
     qty = Number(qty) - Number(obj.value.qty);
     //stock = 0
     obj.value.qty = 0;
 
     //return new values
-    return [obj, qty];
+    return [obj, qty, cp, sp];
     //if stock == purchase
   } else {
-    //purchse = 0
+    //did that batch contribute ?
+    if (Number(obj.value.qty) > 0) {
+      cp += Number(obj.value.ppmu) * Number(qty);
+      sp += Number(obj.value.price) * Number(qty);
+    }
+    //purchase = 0
     obj.value.qty = 0;
     //stock == 0
     qty = 0;
 
     //return new values
-    return [obj, qty];
+    return [obj, qty, cp, sp];
   }
 };
 
@@ -404,7 +445,9 @@ const execInvoice = (
   netPrice,
   totalPrice,
   amtPaid,
-  balance
+  balance,
+  cartCp,
+  cartSp
 ) => {
   let idGen = salesModel.generateId();
   idGen.then(ids => {
@@ -422,39 +465,47 @@ const execInvoice = (
       netPrice,
       totalPrice,
       amtPaid,
-      balance
+      balance,
+      cartCp,
+      cartSp
     );
-    detailInsertion.then(({ data, headers, status }) => {
-      if (status == 201) {
-        //display and print invoice
-        if (showStaticModal(invoiceTemplate)) {
-          //load purchase to invoice
-          displayPurchase(cart);
-          //enter static part of invoice
-          loadInvoiceStaticSection(
-            invoiceId,
-            deposit,
-            transType,
-            disccount,
-            netPrice,
-            totalPrice,
-            amtPaid,
-            balance
-          );
+    detailInsertion.then(
+      ({ data, headers, status }) => {
+        if (status == 201) {
+          //display and print invoice
+          if (showStaticModal(invoiceTemplate)) {
+            //load purchase to invoice
+            //console.log(cart);
+            displayPurchase(cart);
+            //enter static part of invoice
+            loadInvoiceStaticSection(
+              invoiceId,
+              deposit,
+              transType,
+              disccount,
+              netPrice,
+              totalPrice,
+              amtPaid,
+              balance
+            );
 
-          //clean up
-          cart = [];
+            //clean up
+            cart = [];
 
-          document.getElementById("prodName").focus();
+            document.getElementById("prodName").focus();
+          }
         }
+      },
+      err => {
+        console.log(err);
       }
-    });
+    );
   });
 };
 
 //insert sale into db
-const insertSale = cart => {
-  //get some neccesary details
+const insertSale = (cart, cp, sp) => {
+  //get some necessary details
   let amtPaid;
   let balance = 0;
   let customerName = document.getElementById("customerName").value;
@@ -490,7 +541,12 @@ const insertSale = cart => {
         transType,
         disccount
       );
-      detailInsertion.then(({ data, headers, status }) => {});
+      detailInsertion.then(
+        ({ data, headers, status }) => {},
+        err => {
+          console.log(err);
+        }
+      );
     });
   });
 
@@ -506,7 +562,9 @@ const insertSale = cart => {
     netPrice,
     totalPrice,
     amtPaid,
-    balance
+    balance,
+    cp,
+    sp
   );
 
   //clear cart table
@@ -520,40 +578,64 @@ const insertSale = cart => {
 //subtract qty from stock and update stock table
 const execute = (match, qty) => {
   //reverse the array
-  match = match.reverse();
-  //loop throughnthe match
+  //match = match.reverse();
+  //loop through the match
+  let totalProductCp = 0;
+  let totalProductSp = 0;
+
   match.forEach(obj => {
     //get new values of each obj or product and qty remaining from purchase qty
-    let [newProd, newQty] = sub(obj, qty);
-    //assign new qty value to qty
-    qty = newQty;
+    //if qty > 0
+    if (qty > 0) {
+      let [newProd, newQty, cp, sp] = sub(
+        obj,
+        qty,
+        totalProductCp,
+        totalProductSp
+      );
+      totalProductCp = cp;
+      totalProductSp = sp;
+      //console.log(totalProductCp, totalProductSp, qty);
+      //assign new qty value to qty
+      qty = newQty;
 
-    let stockUpdate = salesModel.updateStock(newProd);
-    stockUpdate.then(
-      ({ data, headers, status }) => {},
-      err => {
-        console.log(err);
-      }
-    );
+      let stockUpdate = salesModel.updateStock(newProd);
+      stockUpdate.then(
+        ({ data, headers, status }) => {},
+        err => {
+          console.log(err);
+        }
+      );
+    }
   });
+
+  return [totalProductCp, totalProductSp];
 };
 
 //continue process
 const process = cart => {
   let match;
   let newValue;
+  let cartCp = 0;
+  let cartSp = 0;
   //loop through cart
-  cart.forEach(product => {
+  cart.forEach((product, index) => {
     //get matching product from db
     match = salesModel.getMatch(stock, product.productId);
     //get quantity bought
     let qty = product.qty;
     //handle each match
-    execute(match, qty);
+    let [totalProductCp, totalProductSp] = execute(match, qty);
+    //assign this cp and sp to this product in cart
+    cart[index].cp = totalProductCp;
+    cart[index].sp = totalProductSp;
+    //add up this total cp and sp to total cart cp and sp
+    cartCp += totalProductCp;
+    cartSp += totalProductSp;
   });
 
   //insert into sales
-  insertSale(cart);
+  insertSale(cart, cartCp, cartSp);
 };
 
 //process cart
@@ -571,6 +653,8 @@ const processCart = e => {
     let deposit = document.getElementById("deposit");
 
     let inputs = [name, number, address, deposit];
+    let numNet = netPrice.textContent.replace(/[^\d.-]/g, "");
+    numNet = Number(numNet).toFixed(0);
 
     if (transType == "") {
       showModal("Please enter a transaction type.");
@@ -580,12 +664,18 @@ const processCart = e => {
       transType == "credit" &&
       salesModel.isNotAlpha(name.value.trim())
     ) {
-      showModal("Please neter a valid name.");
+      showModal("Please enter a valid name.");
     } else if (
       transType == "credit" &&
       salesModel.isNotPhoneNumber(number.value.trim())
     ) {
       showModal("Please enter a valid phone number.");
+    } else if (transType == "credit" && deposit.value == Number(numNet)) {
+      showModal(
+        "Amount deposited matches that of cash sales and not credit sales"
+      );
+    } else if (transType == "credit" && deposit.value > Number(numNet)) {
+      showModal("Amount deposited is more than net price");
     } else {
       //get window object
       const window = BrowserWindow.getFocusedWindow();
@@ -594,7 +684,7 @@ const processCart = e => {
         title: "Vemon",
         buttons: ["Yes", "Cancel"],
         type: "info",
-        message: "Are you sure all purchase have been recorded"
+        message: "Are you sure all purchase has been recorded"
       });
 
       //check if response is yes
@@ -625,11 +715,13 @@ const cancelAllSales = e => {
   //check if response is yes
   resp.then((response, checkboxChecked) => {
     if (response.response == 0) {
+      showLoading();
       //cleanup
       cart = [];
       store.setSaleStore(cart);
       updateCart(cart);
       emptyTable();
+      hideLoading();
     }
   });
 };
@@ -703,30 +795,30 @@ const addUpDispOnlineSales = match => {
 //get average disccount
 const getAverageDisccount = match => {
   let averageDisccount = salesModel.getAvgDisccount(match);
-  document.getElementById("avgDisccount").textContent = averageDisccount;
+  //document.getElementById("avgDisccount").textContent = averageDisccount;
 };
 
 //get average disccount for other sale types
 const getOtherAverageDisccount = (match, saleType) => {
   let averageDisccount = salesModel.getOtherAvgDisccount(match, saleType);
 
-  document.getElementById("avgDisccount").textContent = averageDisccount;
+  //document.getElementById("avgDisccount").textContent = averageDisccount;
 };
 
 //get Balance
 const getBalance = match => {
   let total = salesModel.getTotalSales(match);
   let avgDis = salesModel.getAvgDisccount(match);
-  let balance = total - (avgDis * total) / 100;
-  document.getElementById("balance").textContent = formatMoney(balance);
+  //let balance = total; //- (avgDis * total) / 100;
+  //document.getElementById("balance").textContent = formatMoney(balance);
 };
 
 //get other balance
 const getOtherBalance = (match, saleType) => {
   let total = salesModel.getOtherTotalSales(match, saleType);
   let avgDis = salesModel.getOtherAvgDisccount(match, saleType);
-  let balance = total - (avgDis * total) / 100;
-  document.getElementById("balance").textContent = formatMoney(balance);
+  // let balance = total - (avgDis * total) / 100;
+  //document.getElementById("balance").textContent = formatMoney(balance);
 };
 
 //mark all empty summary box
@@ -737,8 +829,8 @@ const allSummaryHandle = saleType => {
     document.getElementById("totalOnlineSales").textContent = "-";
     document.getElementById("totalCreditSales").textContent = "-";
   }
-  document.getElementById("avgDisccount").textContent = "-";
-  document.getElementById("balance").textContent = "-";
+  //document.getElementById("avgDisccount").textContent = "-";
+  //document.getElementById("balance").textContent = "-";
 };
 
 //get sales matching the date provided
@@ -819,6 +911,7 @@ const getOtherSales = (day, month, year, saleType) => {
 
 //load current sales page
 const loadCurrentSales = () => {
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -826,14 +919,20 @@ const loadCurrentSales = () => {
 
   //get sales
   let salesGet = salesModel.getSales();
-  salesGet.then(({ data, headers, status }) => {
-    sales = data.rows;
-    //get sales for the mathching date
-    getSales(day, month, year);
+  salesGet.then(
+    ({ data, headers, status }) => {
+      sales = data.rows;
+      //get sales for the matching date
+      getSales(day, month, year);
 
-    //enable button
-    document.getElementById("processBtn").disabled = false;
-  });
+      //enable button
+      document.getElementById("processBtn").disabled = false;
+      hideLoading();
+    },
+    err => {
+      console.log(err);
+    }
+  );
 
   document.getElementById("saleDay").value = day;
   document.getElementById("saleMonth").value = month;
@@ -842,6 +941,7 @@ const loadCurrentSales = () => {
 
 //load sales for online credit and cash transactions
 const loadOtherSales = saleType => {
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -851,18 +951,28 @@ const loadOtherSales = saleType => {
   document.getElementById("otherSaleYear").value = year;
   //get sales
   let salesGet = salesModel.getSales();
-  salesGet.then(({ data, headers, status }) => {
-    sales = data.rows;
-    //get sales for the mathching date
-    getOtherSales(day, month, year, saleType);
+  salesGet.then(
+    ({ data, headers, status }) => {
+      sales = data.rows;
+      //get sales for the matching date
+      getOtherSales(day, month, year, saleType);
 
-    //enable button
-    document.getElementById("processBtn").disabled = false;
-  });
+      hideLoading();
+      //enable button
+      document.getElementById("processBtn").disabled = false;
+    },
+    err => {
+      console.log(err);
+    }
+  );
+
+  //enable button
+  //document.getElementById("processBtn").disabled = false;
 };
 
 //load sales on button click
 const loadSales = e => {
+  showLoading();
   e.preventDefault();
 
   document.getElementById("salesList").innerHTML =
@@ -876,10 +986,12 @@ const loadSales = e => {
   let year = document.getElementById("saleYear").value;
 
   getSales(day, month, year);
+  hideLoading();
 };
 
 //load other sales
 const loadOtherSelectedSales = (e, saleType) => {
+  showLoading();
   e.preventDefault();
 
   document.getElementById("salesList").innerHTML =
@@ -894,6 +1006,7 @@ const loadOtherSelectedSales = (e, saleType) => {
 
   //get sales for the mathching date
   getOtherSales(day, month, year, saleType);
+  hideLoading();
 };
 
 //function for sales search

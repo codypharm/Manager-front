@@ -32,7 +32,17 @@ class attendanceModel extends Database {
       );
     });
 
-    return match;
+    let sorted = match.sort((a, b) => {
+      if (a.value.staffName.toUpperCase() < b.value.staffName.toUpperCase())
+        return -1;
+
+      if (a.value.staffName.toUpperCase() > b.value.staffName.toUpperCase())
+        return 1;
+
+      return 0;
+    });
+
+    return sorted;
   }
 
   extractAttendance(list, value) {
@@ -70,6 +80,7 @@ class attendanceModel extends Database {
         record.value.day == day &&
         record.value.month == month &&
         record.value.year == year &&
+        !record.value.exitTime &&
         record.value.staffId.toUpperCase() == valueId.toUpperCase()
       );
     });
@@ -87,6 +98,7 @@ class attendanceModel extends Database {
         record.value.day == day &&
         record.value.month == month &&
         record.value.year == year &&
+        !record.value.exitTime &&
         record.value.staffId.toUpperCase() == id.toUpperCase()
       );
     });
@@ -121,7 +133,8 @@ class attendanceModel extends Database {
       arrivalRecorder: loginDetail.fname + " " + loginDetail.lname,
       arrivalRecorderEmail: loginDetail.email,
       exitRecorder: "",
-      exitRecorderEmail: ""
+      exitRecorderEmail: "",
+      remote: false
     });
   }
 
@@ -142,8 +155,40 @@ class attendanceModel extends Database {
       arrivalRecorder: data.value.arrivalRecorder,
       arrivalRecorderEmail: data.value.arrivalRecorderEmail,
       exitRecorder: loginDetail.fname + " " + loginDetail.lname,
-      exitRecorderEmail: loginDetail.email
+      exitRecorderEmail: loginDetail.email,
+      remote: false
     });
+  }
+
+  //update current match
+  remoteAttendanceUpdateMatch(detail, id) {
+    return this.couch.update("attendance", {
+      _id: id,
+      _rev: detail.rev,
+      staffId: detail.staffId,
+      staffName: detail.staffName,
+      arrivalTime: detail.arrivalTime,
+      exitTime: detail.exitTime,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year,
+      arrivalRecorder: detail.arrivalRecorder,
+      arrivalRecorderEmail: detail.arrivalRecorderEmail,
+      exitRecorder: detail.exitRecorder,
+      exitRecorderEmail: detail.exitRecorderEmail,
+      remote: true
+    });
+  }
+
+  async remoteUpdateAllAttendance(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteAttendanceUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
   }
 }
 

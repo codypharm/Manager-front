@@ -34,7 +34,7 @@
               <th>Quantity</th>
              
              
-              <th>Action</th>
+              <th class="super_admin_only">Action</th>
             </thead>
             <tbody id="exhaustedStockList">
               <tr>
@@ -59,7 +59,7 @@
      
       <td>{{value.qty}}</td>
       
-      <td>
+      <td class="{{rankAccess}}">
           <button class="btn btn-sm btn-secondary" onclick="deleteProduct(event,'{{value.prodId}}')">
               Delete
           </button>

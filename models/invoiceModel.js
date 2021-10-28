@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //import db file
 const Database = require("../src/js/db");
@@ -135,11 +136,15 @@ class Invoice extends Database {
       customerName: detail.value.customerName,
       customerNumber: detail.value.customerNumber,
       transType: "credit",
+      attender: detail.value.attender,
       disccount: detail.value.disccount,
       netPrice: detail.value.netPrice,
       totalPrice: detail.value.totalPrice,
       amtPaid: newAmtPaid,
       balance: newBalance,
+      cp: detail.value.cp,
+      sp: detail.value.sp,
+      remote: false,
       day: detail.value.day,
       month: detail.value.month,
       year: detail.value.year
@@ -148,14 +153,79 @@ class Invoice extends Database {
 
   insertClearanceDetails(id, amtEntered, invoiceId) {
     let date = new Date();
+    let loginDetail = store.getLoginDetail();
     return this.couch.insert("debt_clearance", {
       id: id,
       paymentFor: invoiceId,
       currentAmtPaid: amtEntered,
+      remote: false,
+      attender: loginDetail.fname + " " + loginDetail.lname,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear()
     });
+  }
+
+  //update current match
+  remoteInvoicesUpdateMatch(detail, id) {
+    return this.couch.update("invoice", {
+      _id: id,
+      _rev: detail.rev,
+      invoiceId: detail.invoiceId,
+      customerAddress: detail.customerAddress,
+      customerName: detail.customerName,
+      customerNumber: detail.customerNumber,
+      transType: detail.transType,
+      disccount: detail.disccount,
+      attender: detail.attender,
+      netPrice: detail.netPrice,
+      totalPrice: detail.totalPrice,
+      amtPaid: detail.amtPaid,
+      cp: detail.cp,
+      sp: detail.sp,
+      remote: true,
+      balance: detail.balance,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year
+    });
+  }
+
+  async remoteUpdateInvoices(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteInvoicesUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
+  }
+
+  //update current match
+  remoteClearanceUpdateMatch(detail, id) {
+    return this.couch.update("debt_clearance", {
+      _id: id,
+      _rev: detail.rev,
+      paymentFor: detail.paymentFor,
+      currentAmtPaid: detail.currentAmtPaid,
+      attender: detail.attender,
+      remote: true,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year
+    });
+  }
+
+  async remoteUpdateClearance(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteClearanceUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
   }
 }
 

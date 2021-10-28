@@ -18,7 +18,7 @@ const getProductSales = (prodId, matchedSales) => {
   }
 };
 
-//caluculate total sale volume
+//caluclate total sale volume
 const calculateVolume = thisSales => {
   let total = 0;
   //loop through the sales
@@ -47,11 +47,12 @@ const calculatePercentVolume = (saleVolume, totalSalesVolume) => {
 const getAveragePpmu = prodId => {
   let count = 0;
   let totalPpmu = 0;
-  //loop through stock and calculate average ppmu
+  //loop through stock and calculate average ppmu for the batch remaining
   stock.forEach(product => {
     if (product.value.prodId == prodId) {
       count++;
       totalPpmu += Number(product.value.ppmu);
+      //console.log(totalPpmu);
     }
   });
 
@@ -62,9 +63,9 @@ const getAveragePpmu = prodId => {
 const getTotalProfit = matchedSales => {
   let totalGain = 0;
   matchedSales.forEach(sale => {
-    let avgPpmu = getAveragePpmu(sale.value.productId);
-    let costPrice = Number(avgPpmu * sale.value.qty);
-    let gain = Number(sale.value.price - costPrice);
+    //let avgPpmu = getAveragePpmu(sale.value.productId);
+    //let costPrice = sale.value.cp
+    let gain = Number(sale.value.sp - sale.value.cp);
     totalGain += gain;
   });
 
@@ -190,7 +191,7 @@ const getCurrentDaySales = (matchedSales, saleDay) => {
 };
 
 //get matching stock values
-const getProducDetail = id => {
+const getProductDetail = id => {
   let unit;
   stock.forEach(prod => {
     if (prod.value.prodId == id) {
@@ -201,29 +202,31 @@ const getProducDetail = id => {
   return [unit];
 };
 //analyse sales
-const getAccountAnalysis = sales => {
+const getAccountAnalysis = (invoices, day) => {
   let dailyGain = 0;
   let dailyCp = 0;
   let dailySp = 0;
   //loop through sales for a particular day
-  sales.forEach(product => {
-    let [unit] = getProducDetail(product.value.productId);
-    //get actuall unit sold
-    let unitSold = Number(product.value.qty / unit);
+  invoices.forEach(invoice => {
+    //let [unit] = getProductDetail(product.value.productId);
+    //get actual unit sold
+    //let unitSold = Number(product.value.qty / unit);
     //get selling price
     //let sellingPrice = unitSold * product.value.price;
-    let sellingPrice = product.value.price;
+    let sellingPrice = invoice.value.sp;
     dailySp += sellingPrice;
     //get average ppmu (pricePerMinUnit)
-    let averagePpmu = getAveragePpmu(product.value.productId);
+    //let averagePpmu = getAveragePpmu(product.value.productId);
+    //console.log(averagePpmu, product);
     //get cost price
-    let costPrice = averagePpmu * unitSold;
+    let costPrice = invoice.value.cp; //averagePpmu * unitSold;
     dailyCp += costPrice;
+
     //get gain
     let gain = sellingPrice - costPrice;
     dailyGain += gain;
   });
-
+  //console.log(dailyCp, day);
   return [dailyCp, dailySp, dailyGain];
 };
 
@@ -231,6 +234,15 @@ const getAccountAnalysis = sales => {
 const getSalesForLastDay = (day, month, sales) => {
   let match = sales.filter(sale => {
     return sale.value.day == day && sale.value.month == month;
+  });
+
+  return match;
+};
+
+//extract invoices for last day of previous month
+const getInvoicesForLastDay = (day, month, invoices) => {
+  let match = invoices.filter(invoice => {
+    return invoice.value.day == day && invoice.value.month == month;
   });
 
   return match;
@@ -248,6 +260,7 @@ const proceedToSortAccountList = (
 ) => {
   let totalSalesVolume = getTotalSalesVolume(matchedSales);
   let expiredVolume = getExpVolume(expStock);
+
   let expenseAmount = getTotalExpense(mainExp);
   let totalIncome = getTotalIncome(actualInvoices);
 
@@ -289,18 +302,28 @@ const proceedToSortAccountList = (
       let lastDay = new Date(yearForMonth, lastMonth + 1, 0);
 
       //get sales for last day
-      let salesForLastDay = getSalesForLastDay(
+      //commented out because we now work with invoices
+      /*let salesForLastDay = getSalesForLastDay(
         lastDay.getDate(),
         lastMonth + 1,
         sales
+      );*/
+
+      //get Invoices for last day
+
+      let invoicesForLastDay = getInvoicesForLastDay(
+        lastDay.getDate(),
+        lastMonth + 1,
+        allInvoices
       );
 
       //get analysis for last day of last month
       let [lastDailyCp, lastDailySp, lastDailyGain] = getAccountAnalysis(
-        salesForLastDay
+        invoicesForLastDay,
+        saleDay
       );
 
-      //assing this as yesterdays gain
+      //assign this as yesterdays gain
       yesterdayGain = lastDailyGain;
       previousDayGain = lastDailyGain;
       previousDaySp = lastDailySp;
@@ -321,8 +344,13 @@ const proceedToSortAccountList = (
     let totalExp = addUpExp(dayExpenses);
     let [net, amtPaid, toPay] = addUpFields(dayInvoices);
     let dispBalance = amtPaid - totalExp;
-    let [dailyCp, dailySp, dailyGain] = getAccountAnalysis(currentDaySales);
-    todayGain = dailyGain;
+    //analysis now with invoice analysis
+    let [dailyCp, dailySp, dailyGain] = getAccountAnalysis(
+      dayInvoices,
+      saleDay
+    );
+
+    todayGain = dailyGain.toFixed(2);
     gainDiff = todayGain - yesterdayGain;
     percDiff = Number((gainDiff / yesterdayGain) * 100).toFixed(1);
     if (isFinite(percDiff)) {
@@ -380,6 +408,17 @@ const proceedToSortAccountList = (
   return reportArray;
 };
 
+//get total selling price
+const getTotalSpCp = sales => {
+  let sp = 0;
+  let cp = 0;
+  sales.forEach(sale => {
+    sp += sale.value.sp;
+    cp += sale.value.cp;
+  });
+  return [sp, cp];
+};
+
 //proceed to sort stock sales
 const proceedToSortStockSales = matchedSales => {
   let sortedStock = reportModel.sortStock(stock);
@@ -396,17 +435,10 @@ const proceedToSortStockSales = matchedSales => {
       let saleVolume = calculateVolume(productSales);
       //get percent volume
       let percentVol = calculatePercentVolume(saleVolume, totalSalesVolume);
-      //caluculate number of unit sold
+      //calculate number of unit sold
       let unitSold = Number(saleVolume / product.value.unit);
-      //selling price for this unit sold
-      let sellingPrice = unitSold * product.value.price;
-
-      //get average ppmu (pricePerMinUnit)
-      let averagePpmu = getAveragePpmu(product.value.prodId);
-      //cost price for sold unit
-      let costPrice = averagePpmu * unitSold;
-      //calculate gain
-      let profit = sellingPrice - costPrice;
+      let [sp, cp] = getTotalSpCp(productSales);
+      let profit = sp - cp;
       //calculate percentage profit
       let percentageGain = ((profit / totalGain) * 100).toFixed(2);
 
@@ -418,7 +450,7 @@ const proceedToSortStockSales = matchedSales => {
         percentProfit: percentageGain
       });
     } else {
-      //everyting should be zero
+      //everything should be zero
       reportArray.push({
         id: product.value.prodId,
         name: product.value.name,
@@ -438,6 +470,7 @@ const proceedToGetSales = (month, year, reportType) => {
   //check if theres sales for this date
   let matchedSales = reportModel.getMatchingSales(sales, month, year);
   if (matchedSales == false) {
+    hideLoading();
     if (reportType == "product") {
       document.getElementById("productList").innerHTML =
         " <tr>" +
@@ -465,52 +498,64 @@ const proceedToGetSales = (month, year, reportType) => {
       //proceed to sort stock sales
       let reportList = proceedToSortStockSales(matchedSales);
       displayProductReportList(reportList);
-
+      hideLoading();
       //empty list
       reportArray = [];
     } else {
       //get expenses for this month
       let expenses = reportModel.getExpenses();
-      expenses.then(({ data }) => {
-        let allExp = data.rows;
-        //get expenses for this month
-        let mainExp = reportModel.getMatchingExp(month, year, allExp);
-        //get expired stock for this month
-        let expStock = reportModel.getMonthExpiredStock(stock, month, year);
+      expenses.then(
+        ({ data }) => {
+          let allExp = data.rows;
 
-        let allInvoices = reportModel.getAllInvoices();
-        allInvoices.then(({ data }) => {
-          let invoices = data.rows;
+          //get expenses for this month
+          let mainExp = reportModel.getMatchingExp(month, year, allExp);
+          //get expired stock for this month
+          let expStock = reportModel.getMonthExpiredStock(stock, month, year);
 
-          let actualInvoices = reportModel.getMatchInvoices(
-            invoices,
-            month,
-            year
+          let allInvoices = reportModel.getAllInvoices();
+          allInvoices.then(
+            ({ data }) => {
+              let invoices = data.rows;
+
+              let actualInvoices = reportModel.getMatchInvoices(
+                invoices,
+                month,
+                year
+              );
+
+              //get for account
+              let reportList = proceedToSortAccountList(
+                matchedSales,
+                mainExp,
+                expStock,
+                actualInvoices,
+                invoices,
+                month,
+                year
+              );
+
+              displayAccountReportList(reportList);
+              hideLoading();
+              //empty list
+              reportArray = [];
+            },
+            err => {
+              console.log(err);
+            }
           );
-
-          //get for account
-          let reportList = proceedToSortAccountList(
-            matchedSales,
-            mainExp,
-            expStock,
-            actualInvoices,
-            invoices,
-            month,
-            year
-          );
-
-          displayAccountReportList(reportList);
-
-          //empty list
-          reportArray = [];
-        });
-      });
+        },
+        err => {
+          console.log(err);
+        }
+      );
     }
   }
 };
 
 ///list report
 const listProductReport = () => {
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -521,26 +566,37 @@ const listProductReport = () => {
   document.getElementById("prodReportMonth").value = month;
 
   let getStock = reportModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
 
-    let getSales = reportModel.getSales();
-    getSales.then(({ data, headers, status }) => {
-      sales = data.rows;
+      let getSales = reportModel.getSales();
+      getSales.then(
+        ({ data, headers, status }) => {
+          sales = data.rows;
 
-      // proceed to list
-      proceedToGetSales(month, year, "product");
-      //display date
-      document.getElementById("dispDate").textContent = `${month}-${year}`;
+          // proceed to list
+          proceedToGetSales(month, year, "product");
+          //display date
+          document.getElementById("dispDate").textContent = `${month}-${year}`;
 
-      //enable button
-      document.getElementById("processBtn").disabled = false;
-    });
-  });
+          //enable button
+          document.getElementById("processBtn").disabled = false;
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //load list for entered date
 const loadProductReportList = e => {
+  showLoading();
   e.preventDefault();
 
   document.getElementById("productList").innerHTML =
@@ -562,6 +618,7 @@ const loadProductReportList = e => {
 //load account list for entered date
 
 const loadAccountReportList = e => {
+  showLoading();
   e.preventDefault();
 
   document.getElementById("accountList").innerHTML =
@@ -607,6 +664,7 @@ const searchProductReport = event => {
 
 //account report start
 const listAccountReport = () => {
+  showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -617,22 +675,32 @@ const listAccountReport = () => {
   document.getElementById("acctReportMonth").value = month;
 
   let getStock = reportModel.getStock();
-  getStock.then(({ data, header, status }) => {
-    stock = data.rows;
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
 
-    let getSales = reportModel.getSales();
-    getSales.then(({ data, headers, status }) => {
-      sales = data.rows;
+      let getSales = reportModel.getSales();
+      getSales.then(
+        ({ data, headers, status }) => {
+          sales = data.rows;
 
-      // proceed to list
-      proceedToGetSales(month, year, "account");
-      //display date
-      document.getElementById("dispDate").textContent = `${month}-${year}`;
+          // proceed to list
+          proceedToGetSales(month, year, "account");
+          //display date
+          document.getElementById("dispDate").textContent = `${month}-${year}`;
 
-      //enable button
-      document.getElementById("processBtn").disabled = false;
-    });
-  });
+          //enable button
+          document.getElementById("processBtn").disabled = false;
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 ///button to load each gain analysis

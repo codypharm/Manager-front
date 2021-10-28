@@ -85,32 +85,6 @@ class dashboardModel extends Database {
     return sortedArray;
   }
 
-  diminishingStock(sortedStock, stockLimit) {
-    let match = sortedStock.filter(item => {
-      return Number(item.value.qty) <= Number(stockLimit);
-    });
-
-    if (match.length > 0) {
-      return match;
-    } else {
-      return false;
-    }
-  }
-
-  //works with exhausting stock based on stock limit
-  getExhaustedStock(stock) {
-    //get sorted stock
-    let sortedStock = this.sortStock(stock);
-    //get stock limit
-    let { detail } = store.getSetupDetail();
-    if (detail != undefined) {
-      let stockLimit = 10; // detail[0].value.stockLimit;
-
-      //get stocks that have reached limit
-      return this.diminishingStock(sortedStock, stockLimit);
-    }
-  }
-
   /*
 
   getMatchingRecord(record, day, month, year) {

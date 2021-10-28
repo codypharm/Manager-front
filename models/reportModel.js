@@ -38,11 +38,7 @@ class reportModel extends Database {
       return expense.value.month == month && expense.value.year == year;
     });
 
-    if (match.length > 0) {
-      return match;
-    } else {
-      return false;
-    }
+    return match;
   }
 
   getMatchingSales(sales, month, year) {

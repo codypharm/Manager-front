@@ -1,19 +1,134 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
+
 //global variables
+//const api = require("../api");
 var viewEmail;
 var editEmail;
+const { Notyf } = require("notyf");
+//get branches class
+const branchesClass = require("../api/branches");
+
+//get websocket connection
+const webSocket = require("../src/js/websocket");
+
+//const onlineTester = require("../src/js/onlineTester");
+
+const branches = new branchesClass();
+
+//loader sign
+const showLoading = () => {
+  $(".loadingModal").modal("show");
+};
+
+const hideLoading = () => {
+  $(".loadingModal").modal("hide");
+};
 
 //get setup details
-var setUpDetails;
 let viewUrl = db.viewUrl.setup;
-
+var setUpDetails;
 let info = db.couch.get("vemon_setup", viewUrl);
-info.then(({ data, headers, status }) => {
-  setUpDetails = data.rows;
-  //store data in electron store
-  store.setSetupDetail(setUpDetails);
-});
+info.then(
+  ({ data, headers, status }) => {
+    setUpDetails = data.rows;
+    //CONNECT WEBSOCKET
+    connectSocket(setUpDetails[0]);
+    //store data in electron store
+    store.setSetupDetail(setUpDetails);
+  },
+  err => {
+    console.log(err);
+  }
+);
+
+//connect web socket
+const connectSocket = detail => {
+  //get time interval from store
+  let setUpInfo = store.getSetupDetail();
+
+  if (setUpInfo.detail.length > 0) {
+    let package = setUpInfo.detail[0].value.app_package;
+
+    //check if app is premium and return if not premium
+    if (!package == "premium") return;
+    // webSocket.connect(detail.value.companyId, detail.value.branchId);
+  }
+};
+
+//disconnect socket
+const disconnectSocket = () => {
+  webSocket.disconnect();
+};
+
+const notification = async () => {
+  let stock;
+  let stocking;
+  //get stock
+  let getStock = stockModel.getStock();
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
+      let stockingGetter = stockModel.getStocking();
+      stockingGetter.then(
+        ({ data, header, status }) => {
+          stocking = data.rows;
+          //sort exhausted stock
+          let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
+          let expiredStock = stockModel.getExpiredStock(stock);
+          let exhausted = !exhaustedStock ? 0 : exhaustedStock.length;
+          let expired = !expiredStock ? 0 : expiredStock.length;
+          let totalNotifications = exhausted + expired;
+          document.getElementById(
+            "notCounter"
+          ).textContent = totalNotifications;
+          document.getElementById("exhaustedSpan").textContent = exhausted;
+          document.getElementById("expiredSpan").textContent = expired;
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    },
+    err => {
+      console.log(err);
+    }
+  );
+};
+
+//auto sync with remote
+const autosync = () => {
+  //get time interval from store
+  let setUpInfo = store.getSetupDetail();
+  let interval = setUpInfo.detail[0].value.update_interval;
+  let package = setUpInfo.detail[0].value.app_package;
+
+  //check if app is premium and return if not premium
+  if (!package == "premium") return;
+
+  //connect
+  let updateTime;
+  //calculate intervals in millisecond
+  if (interval == "30mins") {
+    updateTime = 30 * 60 * 1000;
+  } else if (interval == "1hr") {
+    updateTime = 120 * 60 * 1000;
+  } else if (interval == "3hr") {
+    updateTime = 180 * 60 * 1000;
+  } else if (interval == "6hr") {
+    updateTime = 240 * 60 * 1000;
+  } else if (interval == "12hr") {
+    updateTime = 720 * 60 * 1000;
+  }
+
+  //synchronize with remote
+  setInterval(() => {
+    document.getElementById("sync").style.display = "";
+    //disable synchronization button
+    document.getElementById("syncBtn").disabled = true;
+    api();
+  }, updateTime);
+};
 
 const appendUserDetails = () => {
   let user = store.getLoginDetail();
@@ -35,7 +150,8 @@ var details = {
   manager_firstname: "",
   manager_lastname: "",
   manager_password: "",
-  manager_email: ""
+  manager_email: "",
+  phone: 0
 };
 
 const showModal = message => {
@@ -96,17 +212,15 @@ const hideGenStaticModal = elem => {
   return true;
 };
 
-//loader sign
-const showLoading = () => {
-  $(".loadingModal").modal("show");
-};
-
-const hideLoading = () => {
-  $(".loadingModal").modal("hide");
-};
-
 // eslint-disable-next-line no-unused-vars
 const showInputs = e => {
+  //hide error box
+  let errorDiv = document.getElementsByClassName("warning")[0];
+  //hide error box
+  if (!errorDiv.classList.contains("hide")) {
+    errorDiv.classList.add("hide");
+  }
+
   let target = e.target;
   let box = target.dataset.box;
   let otherBox;
@@ -171,17 +285,23 @@ const processStandard = errorDiv => {
   //get forms
   let setupForm = document.getElementsByClassName("setupForm")[0];
   let managerForm = document.getElementsByClassName("managerForm")[0];
+  //get app key
+  let appKey = document.getElementById("app_key").value;
   //get company name
   let companyName = document.getElementById("standardName").value;
   //get address
   let stdAddress = document.getElementById("stdAddress").value;
   //check if it is empty
-  if (companyName.length === 0 || stdAddress.length === 0) {
+  if (
+    companyName.trim().length === 0 ||
+    stdAddress.trim().length === 0 ||
+    appKey.trim().length === 0
+  ) {
     displayError(errorDiv, "Please fill all fields");
-  } else if (document.getElementById("termCheck").checked == false) {
-    displayError(errorDiv, "Please you need to accept our terms");
+  } else if (validate.invalidAppkey(appKey)) {
+    displayError(errorDiv, "App key is invalid");
   } else {
-    //asign values to details object
+    //assign values to details object
     let package = "standard";
     let address = stdAddress;
     details = { package, companyName, address };
@@ -195,6 +315,8 @@ const processPremium = errorDiv => {
   //get forms
   let setupForm = document.getElementsByClassName("setupForm")[0];
   let managerForm = document.getElementsByClassName("managerForm")[0];
+  //get app key
+  let appKey = document.getElementById("premium_app_key").value;
   //get company name
   let companyName = document.getElementById("companyName").value;
   //get address
@@ -203,22 +325,38 @@ const processPremium = errorDiv => {
   //get branch id
   let branchId = document.getElementById("branchId").value;
 
-  //get branch id
+  //get company id
   let companyId = document.getElementById("companyId").value;
+
+  //get branch phone number
+  let phone = document.getElementById("phone").value;
+
   //check if all values are provided
   if (
-    companyName.length === 0 ||
-    premiumAddress.length === 0 ||
-    branchId.length === 0 ||
-    companyId.length === 0
+    companyName.trim().length === 0 ||
+    premiumAddress.trim().length === 0 ||
+    branchId.trim().length === 0 ||
+    companyId.trim().length === 0 ||
+    phone.trim().length === 0 ||
+    appKey.trim().length === 0
   ) {
+    console.log(appKey.length);
     displayError(errorDiv, "Please fill all fields");
-  } else if (document.getElementById("termCheck").checked == false) {
-    displayError(errorDiv, "Please you need to accept our terms");
+  } else if (validate.invalidAppkey(appKey)) {
+    displayError(errorDiv, "App key is invalid");
+  } else if (validate.isNotPhoneNumber(phone)) {
+    displayError(errorDiv, "Please enter a valid Phone number");
   } else {
     let package = "premium";
     let address = premiumAddress;
-    details = { package, companyName, address, companyId, branchId };
+    details = {
+      package,
+      companyName,
+      address,
+      companyId,
+      branchId,
+      phone
+    };
     //alter form
     changeForm(setupForm, managerForm);
   }
@@ -228,6 +366,7 @@ const processPremium = errorDiv => {
 // eslint-disable-next-line no-unused-vars
 const showManagerDetail = e => {
   e.preventDefault();
+
   let errorDiv = document.getElementsByClassName("warning")[0];
   //hide error box
   if (!errorDiv.classList.contains("hide")) {
@@ -240,9 +379,102 @@ const showManagerDetail = e => {
     // eslint-disable-next-line no-undef
     processPremium(errorDiv);
   } else {
-    let error = "Please sellect a package";
+    let error = "Please select a package";
     displayError(errorDiv, error);
   }
+};
+
+const backToBranchDetails = e => {
+  document.getElementById("setupNext").disabled = false;
+
+  //get forms
+  let setupForm = document.getElementsByClassName("setupForm")[0];
+  let managerForm = document.getElementsByClassName("managerForm")[0];
+
+  changeForm(managerForm, setupForm);
+};
+
+//user creation
+const createUser = userId => {
+  let userDetailInsertion = validate.insertUser(details, userId);
+  userDetailInsertion.then(
+    ({ data, headers, status }) => {
+      //reload
+      remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
+    },
+    err => {
+      console.log(err);
+    }
+  );
+};
+
+//complete setup
+const completeSetup = () => {
+  //create setup  database
+  //generate id
+  let idGen = validate.generateId();
+  idGen.then(ids => {
+    const id = ids[0];
+
+    //insert details
+    let detailInsertion = validate.insertDetails(details, id);
+    detailInsertion.then(
+      ({ data, headers, status }) => {
+        //generate id
+        let userIdGen = validate.generateId();
+        userIdGen.then(ids => {
+          const userId = ids[0];
+          createUser(userId);
+        });
+      },
+      err => {
+        console.warn(err);
+      }
+    );
+  });
+};
+
+const setUp = () => {
+  //enable setup button
+  document.getElementById("setupNext").disabled = false;
+};
+
+//update matching branch online
+const continueSetup = data => {
+  if (data.length == 0) {
+    //enable setup button
+    setUp();
+    const notyf = new Notyf({
+      duration: 5000
+    });
+
+    // Display an error notification
+    notyf.error(
+      "No Branch exists with this matching company Id and branch Id, please verify and try again."
+    );
+  } else {
+    //update data online
+    branches.updateBranchOnline(
+      data[0].id,
+      details,
+      completeSetup,
+      setUp,
+      showLoading,
+      hideLoading
+    );
+  }
+};
+
+//fetch matching branch
+const proceedSetup = () => {
+  branches.fetchMatch(
+    details.companyId,
+    details.branchId,
+    continueSetup,
+    setUp,
+    showLoading,
+    hideLoading
+  );
 };
 
 //process managers details
@@ -300,37 +532,21 @@ const enterDetails = e => {
     details.manager_password = pwd.value.trim();
     details.manager_email = email.value.trim();
 
-    //user creation
-    const createUser = userId => {
-      let userDetailInsertion = validate.insertUser(details, userId);
-      userDetailInsertion.then(({ data, headers, status }) => {
-        //reload
-        remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
-      });
-    };
-
-    //create setup  database
-    //generate id
-    let idGen = validate.generateId();
-    idGen.then(ids => {
-      const id = ids[0];
-
-      //insert details
-      let detailInsertion = validate.insertDetails(details, id);
-      detailInsertion.then(
-        ({ data, headers, status }) => {
-          //generate id
-          let userIdGen = validate.generateId();
-          userIdGen.then(ids => {
-            const userId = ids[0];
-            createUser(userId);
-          });
-        },
-        err => {
-          console.warn(err);
-        }
+    if (details.package.toUpperCase() == "PREMIUM") {
+      document.getElementById("setupNext").disabled = true;
+      //set up online
+      branches.branchProcess(
+        proceedSetup,
+        details.manager_email,
+        details.manager_password,
+        setUp,
+        showLoading,
+        hideLoading
       );
-    });
+    } else {
+      //go straight to local setup
+      completeSetup();
+    }
   }
 };
 
@@ -364,6 +580,8 @@ const pageLoader = (page, fxn = false) => {
       console.log(err);
     } else {
       pagePlate.innerHTML = data;
+      //set permission access
+      setRankElements();
       if (fxn != false) {
         switch (page) {
           case "onlineSales":
@@ -410,14 +628,26 @@ const pageLoader = (page, fxn = false) => {
 };
 
 //hide menu if document is clicked
-document.addEventListener("click", e => {
+const handleBodyClick = e => {
   let menu = document.getElementsByClassName("userDrop")[0];
-  if (e.target.className != "rightMenu" && e.target.className != "rightIcons") {
-    if (!menu.classList.contains("hide")) {
-      menu.classList.add("hide");
+  let menu2 = document.getElementsByClassName("notificationDrop")[0];
+
+  //check if Dom is loaded
+  if (menu && menu2) {
+    if (
+      e.target.className != "rightMenu" &&
+      e.target.className != "rightIcons"
+    ) {
+      if (!menu.classList.contains("hide")) {
+        menu.classList.add("hide");
+      }
+
+      if (!menu2.classList.contains("hide")) {
+        menu2.classList.add("hide");
+      }
     }
   }
-});
+};
 
 //load right menu
 const loadRightMenu = () => {
@@ -427,7 +657,9 @@ const loadRightMenu = () => {
     fname,
     lname,
     email,
+    staffId,
     position,
+    permission,
     image,
     access,
     docId
@@ -437,48 +669,82 @@ const loadRightMenu = () => {
   $("#staffAccount").attr("data-staffEmail", email);
 };
 
-//handle setup checking
-db.getSetup().then(({ data }) => {
-  //check if we have set up
-  if (data.rows.length > 0) {
-    //check if user is logged in
-    let { loginStatus } = store.getLoginDetail();
-
-    if (loginStatus == false) {
-      //display login page
-      let url = "./pages/login.html";
-      fs.readFile(url, "utf-8", (err, data) => {
-        if (err) {
-          console.log(err);
-        }
-        document.getElementsByTagName("main")[0].innerHTML = data;
-      });
-    } else {
-      //display app container since user is logged in
-      document.getElementsByTagName("body")[0].classList.remove("setupBack");
-      let url = "./pages/container.html";
-      fs.readFile(url, "utf-8", (err, data) => {
-        if (err) {
-          console.log(err);
-        }
-        document.getElementsByTagName("main")[0].innerHTML = data;
-        appendUserDetails();
-
-        //load right menu attributes
-        loadRightMenu();
-        //load dashboard
-        //load work page
-        pageLoader("settings", loadSettingsSections);
-      });
-    }
+//hide for non admin
+const setRankElements = () => {
+  let loginDetails = store.getLoginDetail();
+  if (
+    loginDetails.permission.toUpperCase() !== "ADMIN" &&
+    loginDetails.permission.toUpperCase() !== "SUPER_ADMIN"
+  ) {
+    let list = document.querySelectorAll(".admin_only");
+    list = [...list, document.querySelectorAll(".super_admin_only")];
+    //check if no match exists
+    if (list.length < 1) return;
+    list.forEach(item => {
+      if (!item.classList.contains("hide")) {
+        item.classList.add("hide");
+      }
+    });
+  } else if (loginDetails.permission.toUpperCase() == "ADMIN") {
+    let list = document.querySelectorAll(".super_admin_only");
+    //check if no match exists
+    if (list.length < 1) return;
+    list.forEach(item => {
+      if (!item.classList.contains("hide")) {
+        item.classList.add("hide");
+      }
+    });
   }
-});
+};
+
+//handle setup checking
+db.getSetup().then(
+  ({ data }) => {
+    //check if we have set up
+    if (data.rows.length > 0) {
+      //check if user is logged in
+      let { loginStatus } = store.getLoginDetail();
+
+      if (loginStatus == false) {
+        //display login page
+        let url = "./pages/login.html";
+        fs.readFile(url, "utf-8", (err, data) => {
+          if (err) {
+            console.log(err);
+          }
+          document.getElementsByTagName("main")[0].innerHTML = data;
+          hideLoading();
+        });
+      } else {
+        //display app container since user is logged in
+        document.getElementsByTagName("body")[0].classList.remove("setupBack");
+        let url = "./pages/container.html";
+        fs.readFile(url, "utf-8", (err, data) => {
+          if (err) {
+            console.log(err);
+          }
+          document.getElementsByTagName("main")[0].innerHTML = data;
+          appendUserDetails();
+
+          //load right menu attributes
+          loadRightMenu();
+          //load dashboard
+          //load work page
+          pageLoader("dashboard", loadUpdashboard);
+        });
+      }
+    }
+  },
+  err => {
+    console.log(err);
+  }
+);
 //ipcRenderer.send("as-message", "hello");
 
 //login processing begins here
 const processLogin = e => {
   e.preventDefault();
-
+  showLoading();
   //get error div
   let errorDiv = document.getElementsByClassName("warning")[0];
   //hide error box
@@ -493,8 +759,10 @@ const processLogin = e => {
 
   if (validate.isEmpty(inputs)) {
     displayError(errorDiv, "Please fill all fields");
+    hideLoading();
   } else if (validate.isNotEmail(email.value.trim())) {
     displayError(errorDiv, "Email invalid");
+    hideLoading();
   } else {
     //get users promise
     let userPromise = login.getUsers();
@@ -510,33 +778,74 @@ const processLogin = e => {
           let access = login.checkAccess(users, email);
 
           if (access) {
-            //get user details and store
+            //get user details and store it
             let userObj = login.getUserData(users, email);
             let user = userObj.value;
+
             //store them in electron store
             if (store.setUserData(user)) {
-              //display app container
-              let url = "./pages/container.html";
+              //start auto sync
+              autosync();
 
-              fs.readFile(url, "utf-8", (err, data) => {
-                if (err) {
-                  console.log(err);
-                }
-                document.getElementsByTagName("main")[0].innerHTML = data;
-                pageLoader("dashboard", loadUpdashboard);
-                document
-                  .getElementsByTagName("body")[0]
-                  .classList.remove("setupBack");
-                appendUserDetails();
+              //record attendance
+              //get user details
+
+              let thisUser = attendanceModel.getThisUser(users, user.staffId);
+
+              //generate unique id
+              let genId = attendanceModel.generateId();
+              genId.then(ids => {
+                let id = ids[0];
+                //insert into attendance database
+                let dataRecord = attendanceModel.recordAttendance(
+                  id,
+                  thisUser[0]
+                );
+
+                dataRecord.then(
+                  ({ data, status }) => {
+                    if (status == 201) {
+                      //display app container
+                      let url = "./pages/container.html";
+
+                      fs.readFile(url, "utf-8", (err, data) => {
+                        if (err) {
+                          console.log(err);
+                        }
+
+                        //append main page
+                        document.getElementsByTagName(
+                          "main"
+                        )[0].innerHTML = data;
+                        //start notification
+                        notification();
+                        //hide loading
+                        hideLoading();
+                        //load dashboard
+                        pageLoader("dashboard", loadUpdashboard);
+
+                        document
+                          .getElementsByTagName("body")[0]
+                          .classList.remove("setupBack");
+                        appendUserDetails();
+                      });
+                    }
+                  },
+                  err => {
+                    console.log(err);
+                  }
+                );
               });
             }
           } else {
+            hideLoading();
             displayError(
               errorDiv,
-              "Access denied, please contact appropriate personel"
+              "Access denied, please contact appropriate personnel"
             );
           }
         } else {
+          hideLoading();
           displayError(errorDiv, "Invalid email or wrong password");
         }
       },
@@ -560,8 +869,26 @@ const hideSideBar = e => {
 
 //setting dropper
 const drop = e => {
+  let notificationDrop = document.getElementsByClassName("notificationDrop")[0];
+
+  if (!notificationDrop.classList.contains("hide")) {
+    notificationDrop.classList.add("hide");
+  }
+
   let element = document
     .getElementsByClassName("userDrop")[0]
+    .classList.toggle("hide");
+};
+
+//notification dropper
+const dropNotification = e => {
+  let userDrop = document.getElementsByClassName("userDrop")[0];
+
+  if (!userDrop.classList.contains("hide")) {
+    userDrop.classList.add("hide");
+  }
+  let element = document
+    .getElementsByClassName("notificationDrop")[0]
     .classList.toggle("hide");
 };
 
@@ -842,4 +1169,132 @@ const formatMoney = money => {
   amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   //return amount
   return amount;
+};
+
+//socket logout
+const socketLogOut = () => {
+  showLoading();
+
+  let attendance = attendanceModel.getAttendance();
+  attendance.then(
+    ({ data }) => {
+      let attendanceRecord = data.rows;
+      let date = new Date();
+
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+      let id = store.getLoginDetail().staffId;
+      let myData = attendanceModel.getThisAttendance(
+        attendanceRecord,
+        day,
+        month,
+        year,
+        id
+      )[0];
+      //update attendance
+      let attendanceUpdater = attendanceModel.updateAttendance(myData);
+      attendanceUpdater.then(({ data, status }) => {
+        if (status == 201) {
+          //logout
+          store.forceLogout();
+          //go to login page
+
+          let url = "./pages/login.html";
+          fs.readFile(url, "utf-8", (err, data) => {
+            if (err) {
+              console.log(err);
+            }
+            //hide loading
+            hideLoading();
+            document.getElementsByTagName("main")[0].innerHTML = data;
+          });
+        }
+      });
+    },
+    err => {
+      console.log(err);
+    }
+  );
+
+  //update attendance
+  /*let attendanceUpdater = attendanceModel.updateAttendance(data);
+  attendanceUpdater.then(({ data, status }) => {
+    if (status == 201) {
+      //go back and show list
+      listAttendance();
+    }
+  });*/
+};
+
+//logout code
+const logMeOut = e => {
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Vemon",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click Okay to logout"
+  });
+
+  //check if response is yes
+  resp.then((response, checkboxChecked) => {
+    if (response.response == 0) {
+      //show loading
+      showLoading();
+
+      let attendance = attendanceModel.getAttendance();
+      attendance.then(
+        ({ data }) => {
+          let attendanceRecord = data.rows;
+          let date = new Date();
+
+          let day = date.getDate();
+          let month = date.getMonth() + 1;
+          let year = date.getFullYear();
+          let id = store.getLoginDetail().staffId;
+          let myData = attendanceModel.getThisAttendance(
+            attendanceRecord,
+            day,
+            month,
+            year,
+            id
+          )[0];
+          //update attendance
+          let attendanceUpdater = attendanceModel.updateAttendance(myData);
+          attendanceUpdater.then(({ data, status }) => {
+            if (status == 201) {
+              //logout
+              store.forceLogout();
+              //go to login page
+
+              let url = "./pages/login.html";
+              fs.readFile(url, "utf-8", (err, data) => {
+                if (err) {
+                  console.log(err);
+                }
+                //hide loading
+                hideLoading();
+                document.getElementsByTagName("main")[0].innerHTML = data;
+              });
+            }
+          });
+        },
+        err => {
+          console.log(err);
+        }
+      );
+
+      //update attendance
+      /*let attendanceUpdater = attendanceModel.updateAttendance(data);
+      attendanceUpdater.then(({ data, status }) => {
+        if (status == 201) {
+          //go back and show list
+          listAttendance();
+        }
+      });*/
+    }
+  });
 };

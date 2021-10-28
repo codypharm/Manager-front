@@ -26,34 +26,51 @@ const getTotalStock = stock => {
 
 //get low stock
 const getLowStock = stock => {
-  let lowStock = dashboardModel.getExhaustedStock(stock);
+  let stockingGetter = stockModel.getStocking();
+  stockingGetter.then(
+    ({ data, header, status }) => {
+      stocking = data.rows;
+      //sort exhausted stock
+      exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
 
-  //display low stock
-  if (lowStock.length > 0) {
-    displayLowStock(lowStock);
-  } else {
-    document.getElementById("lowStockList").innerHTML =
-      " <tr>" +
-      ' <td colspan="3" class="text-center">' +
-      "  <span>No record found</span>" +
-      " </td>" +
-      " </tr>";
-  }
+      if (exhaustedStock != false) {
+        //display all exhausted stock
+        displayLowStock(exhaustedStock);
+      } else {
+        document.getElementById("lowStockList").innerHTML =
+          " <tr>" +
+          ' <td colspan="3" class="text-center">' +
+          "  <span>No record found</span>" +
+          " </td>" +
+          " </tr>";
+      }
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //handle dashStock
 const handleStock = () => {
-  dashboardModel.getStock().then(({ data }) => {
-    dashStock = data.rows;
+  dashboardModel.getStock().then(
+    ({ data }) => {
+      dashStock = data.rows;
 
-    //get total stock
-    let totalStock = getTotalStock(dashStock);
-    //get low stock
-    let lowStock = getLowStock(dashStock);
+      //get total stock
+      let totalStock = getTotalStock(dashStock);
+      //get low stock
+      let lowStock = getLowStock(dashStock);
 
-    //append to DOM
-    document.getElementById("span5").textContent = totalStock;
-  });
+      //append to DOM
+      document.getElementById("span5").textContent = totalStock;
+      //hide loading
+      hideLoading();
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //get current sales
@@ -89,21 +106,26 @@ const getTotalAmt = sales => {
 
 //handle dashSales
 const handleSales = () => {
-  dashboardModel.getSales().then(({ data }) => {
-    dashSales = data.rows;
+  dashboardModel.getSales().then(
+    ({ data }) => {
+      dashSales = data.rows;
 
-    //get sales for today
-    let currentSales = getCurrentSales(dashSales);
-    //get total Sales
-    let totalSales = getTotalSales(currentSales);
+      //get sales for today
+      let currentSales = getCurrentSales(dashSales);
+      //get total Sales
+      let totalSales = getTotalSales(currentSales);
 
-    //get total amount
-    let totalAmt = getTotalAmt(currentSales);
+      //get total amount
+      let totalAmt = getTotalAmt(currentSales);
 
-    //append to DOM
-    document.getElementById("span1").textContent = formatMoney(totalSales);
-    //document.getElementById("span4").textContent = totalAmt;
-  });
+      //append to DOM
+      document.getElementById("span1").textContent = formatMoney(totalSales);
+      //document.getElementById("span4").textContent = totalAmt;
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //get invoices
@@ -256,72 +278,91 @@ const getAmountPerMonth = invoices => {
 
 //handle dashInvoices
 const handleInvoices = () => {
-  dashboardModel.getAllInvoices().then(({ data }) => {
-    dashInvoices = data.rows;
+  dashboardModel.getAllInvoices().then(
+    ({ data }) => {
+      dashInvoices = data.rows;
 
-    //get money made for each month
-    let amountArray = getAmountPerMonth(dashInvoices);
+      //get money made for each month
+      let amountArray = getAmountPerMonth(dashInvoices);
 
-    //get current dashInvoices
-    let currentInvoices = getCurrentInvoices(dashInvoices);
-    let [onlineTrans, cashTrans, creditTrans] = getTransNumbers(
-      currentInvoices
-    );
+      //get current dashInvoices
+      let currentInvoices = getCurrentInvoices(dashInvoices);
+      let [onlineTrans, cashTrans, creditTrans] = getTransNumbers(
+        currentInvoices
+      );
 
-    let [amount, totalPaid, totalDebt] = getInvoiceBreakDown(currentInvoices);
-    if (onlineTrans == 0 && cashTrans == 0 && creditTrans == 0) {
-      document.getElementById("doughnutBox").textContent =
-        "No transactions yet";
-    } else {
-      //display doughnut
-      displayDoughtnut(onlineTrans, cashTrans, creditTrans);
+      let [amount, totalPaid, totalDebt] = getInvoiceBreakDown(currentInvoices);
+      if (onlineTrans == 0 && cashTrans == 0 && creditTrans == 0) {
+        document.getElementById("doughnutBox").textContent =
+          "No transactions yet";
+      } else {
+        //display doughnut
+        displayDoughtnut(onlineTrans, cashTrans, creditTrans);
+      }
+      //display chart
+      displayChart(amountArray);
+
+      //get debt invoices
+      let debtInvoices = getCurrentDebts(currentInvoices);
+
+      if (debtInvoices.length > 0) {
+        //display debts
+        displayDashDebts(debtInvoices);
+      } else {
+        document.getElementById("dashDebtList").innerHTML =
+          " <tr>" +
+          ' <td colspan="2" class="text-center">' +
+          "  <span>No record found</span>" +
+          " </td>" +
+          " </tr>";
+      }
+      //append to DOM
+      document.getElementById("span2").textContent = formatMoney(totalDebt);
+      document.getElementById("span3").textContent = formatMoney(totalPaid);
+      document.getElementById("span4").textContent = formatMoney(amount);
+      document.getElementById("span6").textContent = currentInvoices.length;
+      document.getElementById("span8").textContent = currentInvoices.length;
+    },
+    err => {
+      console.log(err);
     }
-    //display chart
-    displayChart(amountArray);
-
-    //get debt invoices
-    let debtInvoices = getCurrentDebts(currentInvoices);
-
-    if (debtInvoices.length > 0) {
-      //display debts
-      displayDashDebts(debtInvoices);
-    } else {
-      document.getElementById("dashDebtList").innerHTML =
-        " <tr>" +
-        ' <td colspan="2" class="text-center">' +
-        "  <span>No record found</span>" +
-        " </td>" +
-        " </tr>";
-    }
-    //append to DOM
-    document.getElementById("span2").textContent = formatMoney(totalDebt);
-    document.getElementById("span3").textContent = formatMoney(totalPaid);
-    document.getElementById("span4").textContent = formatMoney(amount);
-    document.getElementById("span6").textContent = currentInvoices.length;
-    document.getElementById("span8").textContent = currentInvoices.length;
-  });
+  );
 };
 
 //handle dashUsers
 const handleUsers = () => {
-  dashboardModel.getUsers().then(({ data }) => {
-    dashUsers = data.rows;
+  dashboardModel.getUsers().then(
+    ({ data }) => {
+      dashUsers = data.rows;
 
-    //appende to DOM
-    document.getElementById("span7").textContent = dashUsers.length;
-  });
+      //appende to DOM
+      document.getElementById("span7").textContent = dashUsers.length;
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //handle exenses
 const handleDashExpenses = () => {
-  dashboardModel.getExpenses().then(({ data }) => {
-    dashExpenses = data.rows;
-  });
+  dashboardModel.getExpenses().then(
+    ({ data }) => {
+      dashExpenses = data.rows;
+    },
+    err => {
+      console.log(err);
+    }
+  );
 };
 
 //load up dashboard
 const loadUpdashboard = () => {
-  //handlle date
+  //show Loading
+  showLoading();
+  //adjust notification
+  notification();
+  //handle date
   let date = new Date();
   day = date.getDate();
   month = date.getMonth() + 1;
@@ -343,4 +384,12 @@ const loadUpdashboard = () => {
   handleStock();
 
   document.getElementById("brId").textContent = setup.value.branchId;
+};
+
+//synchronize with remote
+const synchronize = e => {
+  document.getElementById("sync").style.display = "";
+  //disable synchronization button
+  e.target.disabled = true;
+  api();
 };

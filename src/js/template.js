@@ -21,7 +21,9 @@ const displayStaff = data => {
     fname,
     lname,
     email,
+    staffId,
     position,
+    permission,
     image,
     access,
     docId
@@ -37,6 +39,31 @@ const displayStaff = data => {
       return "block";
     } else {
       return "activate";
+    }
+  });
+
+  //hide if not admin and not mine
+  Handlebars.registerHelper("rankAccess", email => {
+    let loginDetails = store.getLoginDetail();
+
+    if (
+      loginDetails.permission.toUpperCase() !== "SUPER_ADMIN" &&
+      loginDetails.email.toUpperCase() !== email.toUpperCase()
+    ) {
+      return "hide";
+    }
+  });
+  //hide if not admin and not mine
+  Handlebars.registerHelper("elongate", email => {
+    let loginDetails = store.getLoginDetail();
+
+    if (
+      loginDetails.permission.toUpperCase() !== "SUPER_ADMIN" &&
+      loginDetails.email.toUpperCase() !== email.toUpperCase()
+    ) {
+      return "elongate";
+    } else {
+      return "actions";
     }
   });
 
@@ -319,6 +346,15 @@ const displayExhaustedStock = products => {
     data: products
   };
 
+  //hide if not admin
+  Handlebars.registerHelper("rankAccess", () => {
+    let loginDetails = store.getLoginDetail();
+
+    if (loginDetails.permission.toUpperCase() !== "SUPER_ADMIN") {
+      return "hide";
+    }
+  });
+
   //get template
   let template = document.getElementById("exhaustedStockContainer").innerHTML;
   //compile template with handlebar
@@ -355,6 +391,15 @@ const displayExpiredStock = products => {
       }
     } else {
       return "N/A";
+    }
+  });
+
+  //hide if not admin
+  Handlebars.registerHelper("rankAccess", () => {
+    let loginDetails = store.getLoginDetail();
+
+    if (loginDetails.permission.toUpperCase() !== "SUPER_ADMIN") {
+      return "hide";
     }
   });
 
@@ -395,6 +440,15 @@ const listOutBatches = products => {
       }
     } else {
       return "N/A";
+    }
+  });
+
+  //hide if not admin
+  Handlebars.registerHelper("rankAccess", () => {
+    let loginDetails = store.getLoginDetail();
+
+    if (loginDetails.permission.toUpperCase() !== "SUPER_ADMIN") {
+      return "hide";
     }
   });
 
@@ -481,15 +535,21 @@ const displayAccountReportList = list => {
 };
 
 //display attendance list
-const displayAttendanceList = list => {
+const displayAttendanceList = (list, id) => {
   //assing array to ab object property
   let newObj = {
     data: list
   };
 
-  //reverse date
-  Handlebars.registerHelper("exitButton", exitTime => {
-    if (exitTime != "") {
+  Handlebars.registerHelper("exitButton", (exitTime, staffId) => {
+    if (exitTime != "" || staffId.toUpperCase() == id.toUpperCase()) {
+      //hide button
+      return "hide";
+    }
+  });
+
+  Handlebars.registerHelper("noDisplay", (exitTime, staffId) => {
+    if (exitTime != "" || staffId.toUpperCase() != id.toUpperCase()) {
       //hide button
       return "hide";
     }
@@ -556,4 +616,25 @@ const displayDashDebts = list => {
 
   //paste html into DOM
   let container = (document.getElementById("dashDebtList").innerHTML = myhtml);
+};
+
+//display all suggested items
+const displaySuggestions = list => {
+  //assing array to ab object property
+  let newObj = {
+    data: list
+  };
+
+  //get template
+  let template = document.getElementById("suggestionContainer").innerHTML;
+  //compile template with handlebar
+  let compiledData = Handlebars.compile(template);
+
+  //make data html
+  let myhtml = compiledData(newObj);
+
+  //paste html into DOM
+  let container = (document.getElementById(
+    "suggestionItems"
+  ).innerHTML = myhtml);
 };

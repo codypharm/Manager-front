@@ -28,7 +28,9 @@ class Login extends Database {
   checkAccess(users, email) {
     let match = users.filter(user => {
       return (
-        user.value.email == email.value.trim() && user.value.access == "open"
+        user.value.email == email.value.trim() &&
+        user.value.access == "open" &&
+        user.value.permission.toUpperCase() !== "MEMBER"
       );
     });
 

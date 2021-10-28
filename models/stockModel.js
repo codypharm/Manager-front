@@ -14,6 +14,11 @@ class stockModel extends Database {
     return this.couch.get("stock", viewUrl);
   }
 
+  getStocking() {
+    let viewUrl = this.viewUrl.stocking;
+    return this.couch.get("stocking_record", viewUrl);
+  }
+
   getActivities() {
     let viewUrl = this.viewUrl.activities;
     return this.couch.get("all_activities", viewUrl);
@@ -152,6 +157,22 @@ class stockModel extends Database {
     }
   }
 
+  getStockMatch(stock, id) {
+    let match = stock.filter(product => {
+      return product.value.prodId == id.trim();
+    });
+
+    return match;
+  }
+
+  getStockingMatch(stocking, id) {
+    let match = stocking.filter(product => {
+      return product.value.productId == id.trim();
+    });
+
+    return match;
+  }
+
   productInList(recordedProduct, name, productId) {
     let match = recordedProduct.filter(product => {
       return (
@@ -244,6 +265,14 @@ class stockModel extends Database {
     return this.couch.uniqid(n);
   }
 
+  insertStocking(product, id, qty) {
+    return this.couch.insert("stocking_record", {
+      id,
+      productId: product.productId,
+      qty
+    });
+  }
+
   uploadList(product, id) {
     let batchId = "BT";
     batchId += Math.floor(Math.random() * 10000000);
@@ -269,9 +298,12 @@ class stockModel extends Database {
       unit: product.unit,
       form: product.form[0].toUpperCase() + product.form.slice(1),
       price: product.price,
-      pricePerMinUnit: Number(product.totalCost) / Number(product.qty),
+      pricePerMinUnit:
+        (Number(product.totalCost) * Number(product.unit)) /
+        Number(product.qty),
       error: error,
       batchId: batchId,
+      remote: false,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear(),
@@ -322,9 +354,37 @@ class stockModel extends Database {
     return sortedArray;
   }
 
-  diminishingStock(sortedStock, stockLimit) {
-    let match = sortedStock.filter(item => {
-      return Number(item.value.qty) <= Number(stockLimit);
+  getStockingQty(id, stocking) {
+    let match = stocking.filter(item => {
+      return item.value.productId == id;
+    });
+
+    return match[0].value.qty;
+  }
+
+  checkIfDiminished(limit, stockingQty, qty) {
+    let value = (Number(limit) / 100) * Number(stockingQty);
+    //if less than required percentage
+    if (Number(qty) <= value) {
+      return true;
+    }
+
+    return false;
+  }
+
+  diminishingStock(sortedStock, stockLimit, stocking) {
+    let match = [];
+    sortedStock.forEach(product => {
+      //get stocking qty
+      let stockingQty = this.getStockingQty(product.value.prodId, stocking);
+      //check if diminished
+      let diminished = this.checkIfDiminished(
+        stockLimit,
+        stockingQty,
+        product.value.qty
+      );
+
+      if (diminished) match = [...match, product];
     });
 
     if (match.length > 0) {
@@ -335,15 +395,16 @@ class stockModel extends Database {
   }
 
   //works with exhausting stock based on stock limit
-  getExhaustedStock(stock) {
+  getExhaustedStock(stock, stocking) {
     //get sorted stock
     let sortedStock = this.sortStock(stock);
     //get stock limit
     let { detail } = store.getSetupDetail();
+
     if (detail != undefined) {
-      let stockLimit = detail[0].value.stockLimit;
+      let stockLimit = detail[0].value.stock_limit;
       //get stocks that have reached limit
-      return this.diminishingStock(sortedStock, stockLimit);
+      return this.diminishingStock(sortedStock, stockLimit, stocking);
     }
   }
 
@@ -358,9 +419,9 @@ class stockModel extends Database {
     //get date limit
 
     let { detail } = store.getSetupDetail();
+
     if (detail != undefined) {
-      let dateLimit = detail[0].value.dateLimit;
-      console.log(dateLimit);
+      let dateLimit = detail[0].value.expiration_limit;
       let selectedStock = stock.filter(item => {
         if (item.value.expDate != "") {
           return (
@@ -461,6 +522,7 @@ class stockModel extends Database {
       activity: editClass,
       detail: edit,
       editedId: batchId,
+      remote: false,
       staffName: loginDetail.fname + " " + loginDetail.lname,
       staffId: loginDetail.staffId
     });
@@ -476,11 +538,13 @@ class stockModel extends Database {
       qty: editQty,
       form: detail.form,
       unit: detail.unit,
-      pricePerMinUnit: Number(detail.totalCost) / Number(editQty),
+      pricePerMinUnit:
+        (Number(detail.totalCost) * Number(detail.unit)) / Number(editQty),
       price: detail.price,
       totalCost: detail.totalCost,
       expDate: editExpDate,
       error: detail.error,
+      remote: false,
       day: detail.day,
       month: detail.month,
       year: detail.year,
@@ -489,9 +553,17 @@ class stockModel extends Database {
     });
   }
 
+  updateStocking(detail, qty) {
+    return this.couch.update("stocking_record", {
+      _id: detail.id,
+      _rev: detail.value.rev,
+      productId: detail.value.productId,
+      qty: qty
+    });
+  }
+
   //update current match
   updateMatch(detail, id, name, form, price, unit, brand) {
-    console.log(detail);
     return this.couch.update("stock", {
       _id: id,
       _rev: detail.rev,
@@ -505,8 +577,10 @@ class stockModel extends Database {
       price: price,
       totalCost: detail.totalCost,
       expDate: detail.expDate,
-      pricePerMinUnit: detail.ppmu,
+      pricePerMinUnit:
+        (Number(detail.totalCost) * Number(unit)) / Number(detail.qty),
       error: detail.error,
+      remote: false,
       day: detail.day,
       month: detail.month,
       year: detail.year,
@@ -535,6 +609,73 @@ class stockModel extends Database {
     }
   }
 
+  //update current match
+  remoteUpdateMatch(detail, id) {
+    return this.couch.update("stock", {
+      _id: id,
+      _rev: detail.rev,
+      batchId: detail.batchId,
+      productId: detail.prodId,
+      brand: detail.brand[0].toUpperCase() + detail.brand.slice(1),
+      name: detail.name[0].toUpperCase() + detail.name.slice(1),
+      qty: detail.qty,
+      form: detail.form[0].toUpperCase() + detail.form.slice(1),
+      unit: detail.unit,
+      price: detail.price,
+      totalCost: detail.totalCost,
+      expDate: detail.expDate,
+      pricePerMinUnit: detail.ppmu,
+      error: detail.error,
+      remote: true,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year,
+      recorder: detail.recName,
+      recorderEmail: detail.recEmail
+    });
+  }
+
+  async remoteUpdateAllProduct(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
+  }
+
+  //update current match
+  remoteActivityUpdateMatch(detail, id) {
+    return this.couch.update("all_activities", {
+      _id: id,
+      _rev: detail.rev,
+      day: detail.day,
+      month: detail.month,
+      year: detail.year,
+      activity: detail.activity,
+      detail: detail.detail,
+      remote: true,
+      editedId: detail.editedId,
+      staffName: detail.staffName,
+      staffId: detail.staffId
+    });
+  }
+
+  async remoteUpdateAllActivities(allMatch) {
+    const matchLength = allMatch.length;
+    const checker = matchLength - 1;
+
+    //loop through matches
+
+    for (let i = 0; i < matchLength; i++) {
+      //wait for update to happen
+      await this.remoteActivityUpdateMatch(allMatch[i].value, allMatch[i].id);
+    }
+  }
+
   insertProductUpdate(editClass, edit, batchId, id) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
@@ -546,6 +687,7 @@ class stockModel extends Database {
       year: date.getFullYear(),
       activity: editClass.join(", "),
       detail: edit.join(", "),
+      remote: false,
       editedId: batchId,
       staffName: loginDetail.fname + " " + loginDetail.lname,
       staffId: loginDetail.staffId
@@ -593,6 +735,8 @@ class stockModel extends Database {
       return act.value.editedId == batchId;
     });
     if (match.length > 0) {
+      return match;
+    } else {
       return match;
     }
   }

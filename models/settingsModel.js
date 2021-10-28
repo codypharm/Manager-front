@@ -49,6 +49,24 @@ class settingsModel extends Database {
       return false;
     }
   }
+
+  updateSetUp(detail, id) {
+    return this.couch.update("vemon_setup", {
+      _id: id,
+      _rev: detail.rev,
+      address: detail.address,
+      package: detail.app_package,
+      branchId: detail.branchId,
+      companyId: detail.companyId,
+      companyName: detail.companyName,
+      //email: detail.email,
+      expiration_limit: detail.expiration_limit,
+      logout_time: detail.logout_time,
+      phone: detail.phone,
+      stock_limit: detail.stock_limit,
+      update_interval: detail.update_interval
+    });
+  }
   /*
   getMatchingSales(sales, month, year) {
     let match = sales.filter(sale => {

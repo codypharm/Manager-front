@@ -98,7 +98,7 @@ const deleteAllExpense = () => {
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
   let resp = dialog.showMessageBox(window, {
-    title: "Vemon",
+    title: "Manager-front",
     buttons: ["Yes", "Cancel"],
     type: "info",
     message: "Click Ok to delete expense"
@@ -184,7 +184,7 @@ const deleteExpense = (e, id, rev, amt, description) => {
         const window = BrowserWindow.getFocusedWindow();
         //show dialog
         let resp = dialog.showMessageBox(window, {
-          title: "Vemon",
+          title: "Manager-front",
           buttons: ["Yes", "Cancel"],
           type: "info",
           message: "Click Ok to delete expense"

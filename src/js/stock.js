@@ -183,7 +183,7 @@ const cancelRecord = e => {
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
   let resp = dialog.showMessageBox(window, {
-    title: "Vemon",
+    title: "Manager-front",
     buttons: ["Yes", "Cancel"],
     type: "info",
     message: "Click Ok to delete item from list"
@@ -468,7 +468,7 @@ const cancelAllRecord = e => {
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
   let resp = dialog.showMessageBox(window, {
-    title: "Vemon",
+    title: "Manager-front",
     buttons: ["Yes", "Cancel"],
     type: "info",
     message: "Click Ok to delete record"
@@ -1378,7 +1378,7 @@ const deleteBatch = (e, batchId) => {
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
   let resp = dialog.showMessageBox(window, {
-    title: "Vemon",
+    title: "Manager-front",
     buttons: ["Yes", "Cancel"],
     type: "info",
     message: "Click Ok to delete this batch and anything related to it"
@@ -1494,7 +1494,7 @@ const deleteProduct = e => {
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
   let resp = dialog.showMessageBox(window, {
-    title: "Vemon",
+    title: "Manager-front",
     buttons: ["Yes", "Cancel"],
     type: "info",
     message: "Click Ok to delete this product and all attachments to it"
@@ -1520,7 +1520,7 @@ const deleteExpiredBatch = (e, batchId) => {
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
   let resp = dialog.showMessageBox(window, {
-    title: "Vemon",
+    title: "Manager-front",
     buttons: ["Yes", "Cancel"],
     type: "info",
     message: "Click Ok to delete this batch and anything related to it"

@@ -313,7 +313,7 @@ const cancelCurSale = e => {
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
   let resp = dialog.showMessageBox(window, {
-    title: "Vemon",
+    title: "Manager-front",
     buttons: ["Yes", "Cancel"],
     type: "info",
     message: "Click Ok to delete item from list"
@@ -681,7 +681,7 @@ const processCart = e => {
       const window = BrowserWindow.getFocusedWindow();
       //show dialog
       let resp = dialog.showMessageBox(window, {
-        title: "Vemon",
+        title: "Manager-front",
         buttons: ["Yes", "Cancel"],
         type: "info",
         message: "Are you sure all purchase has been recorded"
@@ -706,7 +706,7 @@ const cancelAllSales = e => {
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
   let resp = dialog.showMessageBox(window, {
-    title: "Vemon",
+    title: "Manager-front",
     buttons: ["Yes", "Cancel"],
     type: "info",
     message: "Click Ok to delete item from cart"

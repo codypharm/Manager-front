@@ -33,6 +33,7 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     minHeight: 500,
     minWidth: 700,
+    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true
     }

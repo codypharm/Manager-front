@@ -30,12 +30,21 @@ const getLowStock = stock => {
   stockingGetter.then(
     ({ data, header, status }) => {
       stocking = data.rows;
-      //sort exhausted stock
-      exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
+      if (stocking.length > 0) {
+        //sort exhausted stock
+        exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
 
-      if (exhaustedStock != false) {
-        //display all exhausted stock
-        displayLowStock(exhaustedStock);
+        if (exhaustedStock != false) {
+          //display all exhausted stock
+          displayLowStock(exhaustedStock);
+        } else {
+          document.getElementById("lowStockList").innerHTML =
+            " <tr>" +
+            ' <td colspan="3" class="text-center">' +
+            "  <span>No record found</span>" +
+            " </td>" +
+            " </tr>";
+        }
       } else {
         document.getElementById("lowStockList").innerHTML =
           " <tr>" +
@@ -383,13 +392,29 @@ const loadUpdashboard = () => {
   //get dashStock
   handleStock();
 
-  document.getElementById("brId").textContent = setup.value.branchId;
+  document.getElementById("brId").textContent = setup.value.branchId
+    ? setup.value.branchId
+    : "N/A";
 };
 
 //synchronize with remote
 const synchronize = e => {
-  document.getElementById("sync").style.display = "";
-  //disable synchronization button
-  e.target.disabled = true;
-  api();
+  let setUpInfo = store.getSetupDetail();
+  let package = setUpInfo.detail[0].value.app_package;
+
+  //check if app is premium and return if not premium
+  if (package !== "premium") {
+    //handle error
+    const notyf = new Notyf({
+      duration: 3000
+    });
+
+    // Display an error notification
+    notyf.error("This feature is only available on premium plans");
+  } else {
+    document.getElementById("sync").style.display = "";
+    //disable synchronization button
+    e.target.disabled = true;
+    api();
+  }
 };

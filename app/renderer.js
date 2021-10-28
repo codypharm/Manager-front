@@ -51,7 +51,7 @@ const connectSocket = detail => {
     let package = setUpInfo.detail[0].value.app_package;
 
     //check if app is premium and return if not premium
-    if (!package == "premium") return;
+    if (package !== "premium") return;
     // webSocket.connect(detail.value.companyId, detail.value.branchId);
   }
 };
@@ -73,17 +73,19 @@ const notification = async () => {
       stockingGetter.then(
         ({ data, header, status }) => {
           stocking = data.rows;
-          //sort exhausted stock
-          let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
-          let expiredStock = stockModel.getExpiredStock(stock);
-          let exhausted = !exhaustedStock ? 0 : exhaustedStock.length;
-          let expired = !expiredStock ? 0 : expiredStock.length;
-          let totalNotifications = exhausted + expired;
-          document.getElementById(
-            "notCounter"
-          ).textContent = totalNotifications;
-          document.getElementById("exhaustedSpan").textContent = exhausted;
-          document.getElementById("expiredSpan").textContent = expired;
+          if (stocking.length > 0) {
+            //sort exhausted stock
+            let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
+            let expiredStock = stockModel.getExpiredStock(stock);
+            let exhausted = !exhaustedStock ? 0 : exhaustedStock.length;
+            let expired = !expiredStock ? 0 : expiredStock.length;
+            let totalNotifications = exhausted + expired;
+            document.getElementById(
+              "notCounter"
+            ).textContent = totalNotifications;
+            document.getElementById("exhaustedSpan").textContent = exhausted;
+            document.getElementById("expiredSpan").textContent = expired;
+          }
         },
         err => {
           console.log(err);
@@ -104,7 +106,7 @@ const autosync = () => {
   let package = setUpInfo.detail[0].value.app_package;
 
   //check if app is premium and return if not premium
-  if (!package == "premium") return;
+  if (package !== "premium") return;
 
   //connect
   let updateTime;
@@ -1233,7 +1235,7 @@ const logMeOut = e => {
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
   let resp = dialog.showMessageBox(window, {
-    title: "Vemon",
+    title: "Manager-front",
     buttons: ["Yes", "Cancel"],
     type: "info",
     message: "Click Okay to logout"

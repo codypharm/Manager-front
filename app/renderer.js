@@ -1,6 +1,18 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-
+let setUp = setupDb.allDocs()
+console.log(setUp)
+if(setup.doc.rows.length < 1){
+  //display login page
+  let url = "./setup.html";
+  fs.readFile(url, "utf-8", (err, data) => {
+    if (err) {
+      console.log(err);
+    }
+    document.getElementsByTagName("main")[0].innerHTML = data;
+    hideLoading();
+  });
+}
 //global variables
 //const api = require("../api");
 var viewEmail;

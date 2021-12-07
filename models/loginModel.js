@@ -1,11 +1,8 @@
 /* eslint-disable no-unused-vars */
 //import db file
-const Database = require("../src/js/db");
 
-class Login extends Database {
-  constructor() {
-    super();
-  }
+class Login {
+ 
 
   getUsers() {
     let viewUrl = this.viewUrl.users;

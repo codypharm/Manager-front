@@ -1,17 +1,15 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //import db file
-const Database = require("../src/js/db");
+
 const {
   verifyPhoneNumber,
   // eslint-disable-next-line no-unused-vars
   COUNTRY_CODE
 } = require("nigerian-phone-number-validator");
 
-class salesModel extends Database {
-  constructor() {
-    super();
-  }
+class salesModel  {
+  
 
   generateId() {
     return this.couch.uniqid();

@@ -1,5 +1,16 @@
 /* eslint-disable no-unused-vars */
 //classes get instantiated here
+const usersDb = new PouchDB('users');
+const stockDb = new PouchDB('stock');
+const salesDb = new PouchDB('sales');
+const attendanceDb = new PouchDB('attendance');
+const expensesDb = new PouchDB('expenses');
+const activitiesDb = new PouchDB('activities');
+const debt_clearanceDb = new PouchDB('debt_clearance');
+const stockingDb = new PouchDB('stocking');
+const invoicesDb = new PouchDB('invoices');
+const setupDb = new PouchDB('setup');
+
 
 // validate comes from renderer process
 //require files
@@ -24,9 +35,9 @@ const fs = require("fs");
 const Login = require("../models/loginModel");
 
 //instantiate classes
-const validate = new Validator();
+//const validate = new Validator();
 const store = new Store();
-const db = new Database();
+//const db = new Database();
 const login = new Login();
 const staffModel = new StaffModel();
 const stockModel = new StockModel();

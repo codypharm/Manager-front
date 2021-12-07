@@ -1,11 +1,8 @@
 /* eslint-disable no-unused-vars */
 //import db file
-const Database = require("../src/js/db");
 
-class Expense extends Database {
-  constructor() {
-    super();
-  }
+class Expense  {
+  
 
   generateId() {
     return this.couch.uniqid();

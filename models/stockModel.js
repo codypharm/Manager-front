@@ -1,13 +1,10 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //import db file
-const Database = require("../src/js/db");
 const moment = require("moment");
 
-class stockModel extends Database {
-  constructor() {
-    super();
-  }
+class stockModel {
+  
 
   getStock() {
     let viewUrl = this.viewUrl.stock;

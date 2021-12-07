@@ -1,13 +1,10 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //import db file
-const Database = require("../src/js/db");
 const moment = require("moment");
 
-class reportModel extends Database {
-  constructor() {
-    super();
-  }
+class reportModel {
+  
 
   generateId() {
     return this.couch.uniqid();

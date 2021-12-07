@@ -1,13 +1,9 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //import db file
-const Database = require("../src/js/db");
 
-class staffModel extends Database {
-  constructor() {
-    super();
-  }
-
+class staffModel {
+ 
   generateId() {
     return this.couch.uniqid();
   }

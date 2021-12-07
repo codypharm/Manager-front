@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 //import db file
-const Database = require("./db");
 
 const crypto = require("crypto");
 require("dotenv").config();
@@ -11,10 +10,8 @@ const {
   COUNTRY_CODE
 } = require("nigerian-phone-number-validator");
 
-class Validator extends Database {
-  constructor() {
-    super();
-  }
+class Validator {
+  
 
   createDb(dbName) {
     return this.couch.createDatabase(dbName);

@@ -3,7 +3,7 @@
 "use strict";
 
 const { app, BrowserWindow, ipcMain, Notification } = require("electron");
-//const Database = require("../src/js/db");
+const Database = require("../src/js/db");
 const Store = require("../src/js/store");
 //const { CATCH_ON_MAIN } = require("../utils/constants");
 
@@ -15,7 +15,7 @@ require("electron-reload")(__dirname);
 app.commandLine.appendSwitch("enable-experimental-web-platform-features");
 
 //instantiate classes
-//const db = new Database();
+const db = new Database();
 const store = new Store();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -35,19 +35,13 @@ const createWindow = () => {
     minWidth: 700,
     autoHideMenuBar: true,
     webPreferences: {
-      nodeIntegration: true,
-      //contextIsolation: false,
+      nodeIntegration: true
     }
   });
 
   // force log user out
   store.forceLogout();
 
-  //load
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
-  mainWindow.maximize();
-
-  /*
   //handle dblist the promise
   db.listDb().then(
     () => {
@@ -79,7 +73,7 @@ const createWindow = () => {
         console.log(err);
       }
     );
-  };*/
+  };
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools();

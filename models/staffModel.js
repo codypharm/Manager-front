@@ -5,12 +5,12 @@
 class staffModel {
  
 
-  insertDetails(details, id) {
+  async insertDetails(details) {
     let staffId = "STF";
     staffId += Math.floor(Math.random() * 1000);
     let date = new Date();
-    return this.couch.insert("users", {
-      id: id,
+    return usersDb.put({
+      _id: `${+ new Date()}`,
       firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
       lastname: details.lname[0].toUpperCase() + details.lname.slice(1),
       email: details.email,
@@ -34,18 +34,18 @@ class staffModel {
     });
   }
 
-  updateUser(id, rev, details, oldDetails) {
+  async updateUser(id, rev, details, oldDetails) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
-    return this.couch.update("users", {
-      _id: id,
-      _rev: rev,
+    return usersDb.put({
+      _id: `${id}`,
+      _rev: `${rev}`,
       firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
       lastname: details.lname[0].toUpperCase() + details.lname.slice(1),
       email: details.email,
       number: details.number,
       position: details.position,
-      staffId: oldDetails.value.staffId,
+      staffId: oldDetails.staffId,
       gender: details.gender,
       address: {
         street: details.street,
@@ -65,18 +65,18 @@ class staffModel {
       updateYear: date.getFullYear(),
       editedBy: loginDetail.fname + " " + loginDetail.lname,
       editorEmail: loginDetail.email,
-      remote: oldDetails.value.remote
+      remote: oldDetails.remote
     });
   }
 
-  updateUserImage(id, details, imageName) {
+  async updateUserImage(id, details, imageName) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
-    return this.couch.update("users", {
+    return usersDb.put({
       _id: id,
-      _rev: details.rev,
-      firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
-      lastname: details.lname[0].toUpperCase() + details.lname.slice(1),
+      _rev: details._rev,
+      firstname: details.firstname[0].toUpperCase() + details.firstname.slice(1),
+      lastname: details.lastname[0].toUpperCase() + details.lastname.slice(1),
       email: details.email,
       number: details.number,
       position: details.position,
@@ -91,7 +91,7 @@ class staffModel {
       permission: details.permission,
       access: details.access,
       image: imageName,
-      password: details.pwd,
+      password: details.password,
       regDay: details.regDay,
       regMonth: details.regMonth,
       regYear: details.regYear,
@@ -104,8 +104,8 @@ class staffModel {
   }
 
   //update status
-  updateStatus(id, rev, details) {
-    return this.couch.update("users", {
+  async updateStatus(id, rev, details) {
+    return usersDb.put({
       _id: id,
       _rev: rev,
       firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
@@ -171,7 +171,7 @@ class staffModel {
 
   filterUsers(users, email) {
     let match = users.filter(user => {
-      return user.value.email == email.value.trim();
+      return user.email == email.value.trim();
     });
 
     if (match.length > 0) {
@@ -181,7 +181,7 @@ class staffModel {
 
   filterNumber(users, number) {
     let match = users.filter(user => {
-      return user.value.number == number.value.trim();
+      return user.number == number.value.trim();
     });
 
     if (match.length > 0) {
@@ -193,8 +193,8 @@ class staffModel {
     let match = users.filter(user => {
       //filter email match or ID match
       return (
-        user.value.email == id ||
-        user.value.staffId.toUpperCase() == id.toUpperCase()
+        user.email == id ||
+        user.staffId.toUpperCase() == id.toUpperCase()
       );
     });
 
@@ -206,7 +206,7 @@ class staffModel {
   filterOutUser(users, email) {
     let match = users.filter(user => {
       //filter email match
-      return user.value.email !== email;
+      return user.email !== email;
     });
 
     if (match.length > 0) {
@@ -215,19 +215,20 @@ class staffModel {
   }
 
   extractUsers(allUsers, val) {
+    
     let email = store.getLoginDetail().email;
     let fname = store.getLoginDetail().fname;
     let lname = store.getLoginDetail().lname;
     let userName = fname.toUpperCase() + " " + lname.toUpperCase();
     let match = allUsers.filter(user => {
-      let nameArray = [user.value.fname, user.value.lname];
+      let nameArray = [user.firstname, user.lastname];
       let concatName = nameArray.join(" ");
 
       return (
-        (user.value.fname.toUpperCase().includes(val.toUpperCase()) ||
-          user.value.lname.toUpperCase().includes(val.toUpperCase()) ||
+        (user.firstname.toUpperCase().includes(val.toUpperCase()) ||
+          user.lastname.toUpperCase().includes(val.toUpperCase()) ||
           concatName.toUpperCase().includes(val.toUpperCase())) &&
-        user.value.email != email
+        user.email != email
       );
     });
 

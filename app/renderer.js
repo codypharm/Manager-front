@@ -13,7 +13,6 @@ const generateWorkingList = async (db,list) => {
   return data
 }
 
-
 //page loader
 const pageLoader = (page, fxn = false) => {
   pagePlate = document.getElementsByClassName("pagePlate")[0];
@@ -476,7 +475,7 @@ const storeSetup = async () => {
 
   let {rows} = await setupDb.allDocs()
   let workingList = await generateWorkingList(setupDb,rows)
-  console.log(workingList)
+  console.log(workingList[0])
   store.setSetupDetail(workingList[0]);
 }
 
@@ -487,8 +486,9 @@ storeSetup()
 const autosync = () => {
   //get time interval from store
   let setUpInfo = store.getSetupDetail();
-  let interval = setUpInfo.detail[0].update_interval;
-  let package = setUpInfo.detail[0].package;
+  
+  let interval = setUpInfo.update_interval;
+  let package = setUpInfo.package;
 
   //check if app is premium and return if not premium
   if (package !== "premium") return;
@@ -521,6 +521,7 @@ const autosync = () => {
 
 const appendUserDetails = () => {
   let user = store.getLoginDetail();
+  console.log(user)
   document.getElementById("containerImg").src = user.image;
   document.getElementById(
     "nameBox"
@@ -977,7 +978,7 @@ const processLogin = async e => {
             //get user details and store it
             let user = login.getUserData(users, email);
    
-
+            console.log(user)
             //store them in electron store
             if (store.setUserData(user)) {
               //start auto sync

@@ -39,7 +39,7 @@ $(document).ready(function() {
         type: "canvas",
         size: "viewport"
       })
-      .then(function(response) {
+      .then(async function(response) {
         showLoading();
         let date = Date.now();
         let rand = Math.floor(Math.random() * 101);
@@ -54,30 +54,29 @@ $(document).ready(function() {
           //console.log(error);
         });
 
-        staffModel
-          .updateUserImage(staffDetail.id, staffDetail.value, imageName)
-          // eslint-disable-next-line no-unused-vars
-          .then(({ data, headers, status }) => {
+        await staffModel
+          .updateUserImage(staffDetail._id, staffDetail, imageName)
+          
             $("#staffImage").attr("src", imageName);
-
-            if (store.getLoginDetail().staffId == staffDetail.value.staffId) {
+              
+            if (store.getLoginDetail().staffId == staffDetail.staffId) {
               $("#containerImg").attr("src", imageName);
 
               user = {
-                fname: staffDetail.value.fname,
-                lname: staffDetail.value.lname,
-                email: staffDetail.value.email,
-                staffId: staffDetail.value.staffId,
-                position: staffDetail.value.position,
-                permission: staffDetail.value.permission,
+                firstname: staffDetail.firstname,
+                lastname: staffDetail.lastname,
+                email: staffDetail.email,
+                staffId: staffDetail.staffId,
+                position: staffDetail.position,
+                permission: staffDetail.permission,
                 image: imageName,
-                access: staffDetail.value.access,
-                docId: staffDetail.id
+                access: staffDetail.access,
+                _id: staffDetail._id
               };
 
               store.setUserData(user);
             }
-          });
+          
         //hide modal
         $("#uploadImageModal").modal("hide");
         hideLoading();

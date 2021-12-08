@@ -28,6 +28,7 @@ const displayStaff = data => {
     access,
     docId
   } = store.getLoginDetail();
+  
   //filter current user out
   let otherUsers = staffModel.filterOutUser(data, email);
   let newObj = {

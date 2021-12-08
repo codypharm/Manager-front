@@ -143,15 +143,15 @@ const handlePwdBox = e => {
   }
   if (
     (perm == "admin" || perm.toUpperCase() == "SUPER_ADMIN") &&
-    oldDetails.value.permission.toUpperCase() == "MEMBER"
+    oldDetails.permission.toUpperCase() == "MEMBER"
   ) {
     if (pwdBox.classList.contains("hide")) {
       pwdBox.classList.remove("hide");
     }
   } else if (
     (perm == "admin" || perm.toUpperCase() == "SUPER_ADMIN") &&
-    oldDetails.value.permission.toUpperCase() !== "MEMBER" &&
-    oldDetails.value.email == detail.email
+    oldDetails.permission.toUpperCase() !== "MEMBER" &&
+    oldDetails.email == detail.email
   ) {
     if (pwdBox.classList.contains("hide")) {
       pwdBox.classList.remove("hide");
@@ -180,30 +180,23 @@ const resetSaveBtn = btn => {
 };
 
 //email exists function
-const emailExists = (errorDiv, email, btn, details) => {
+const emailExists = async (errorDiv, email, btn, details) => {
   //check if email already exists
-  let allUsers = staffModel.getUsers();
-  //handle promise
-  allUsers.then(
-    ({ data, headers, status }) => {
-      let users = data.rows;
+  let {rows} = await usersDb.allDocs()
+  let allUsers = await generateWorkingList(usersDb,rows)
+  
       //filter match
-      let match = staffModel.filterUsers(users, email);
+      let match = staffModel.filterUsers(allUsers, email);
       if (match) {
         // eslint-disable-next-line no-undef
         displayError(errorDiv, " sorry this email already exist");
         resetBtn(btn);
         hideLoading();
       } else {
-        //generate id for user
-        let idGen = staffModel.generateId();
-        idGen.then(ids => {
-          const id = ids[0];
-          //insert details
-          let detailInsertion = staffModel.insertDetails(details, id);
-          detailInsertion.then(
-            ({ data, headers, status }) => {
-              if (status == 201) {
+        
+          let detailInsertion = await staffModel.insertDetails(details);
+          
+              if (detailInsertion.ok) {
                 hideLoading();
                 // eslint-disable-next-line no-undef
                 displaySuccess("Staff registered");
@@ -235,51 +228,48 @@ const emailExists = (errorDiv, email, btn, details) => {
                 resetBtn(btn);
                 hideLoading();
               }
-            },
-            err => {
-              console.log(err);
-            }
-          );
-        });
+            
+       
       }
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //update staff details
-const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
-  let id = oldDetails.id;
-  let rev = oldDetails.value.rev;
+const updateStaffDetails = async (newDetails, oldDetails, errorDiv, btn) => {
+  let id = oldDetails._id;
+  let rev = oldDetails._rev;
 
-  let update = staffModel.updateUser(id, rev, newDetails, oldDetails);
-  update.then(
-    ({ data, headers, status }) => {
-      if (status != 201) {
+  let update =  await staffModel.updateUser(id, rev, newDetails, oldDetails);
+  
+      if (!update.ok) {
         // eslint-disable-next-line no-undef
         displayError(errorDiv, "update not successful, please try again");
         hideLoading();
       } else {
+        
         //check logged in is same with edited
         if (
           store.getLoginDetail().staffId.toUpperCase() ==
-          oldDetails.value.staffId.toUpperCase()
+          oldDetails.staffId.toUpperCase()
         ) {
+
+          
           //set login details
           store.setUserData({
             loginStatus: true,
-            fname: newDetails.fname,
-            lname: newDetails.lname,
+            firstname: newDetails.fname,
+            lastname: newDetails.lname,
             email: newDetails.email,
             staffId: oldDetails.staffId,
             position: newDetails.position,
-            image: oldDetails.value.image,
+            permission: newDetails.permission,
+            image: oldDetails.image,
             access: newDetails.access,
-            docId: oldDetails.id
+            _id: oldDetails._id,
+            password: newDetails.pwd
           });
 
+          
           //update logged in user details
           document.getElementById(
             "nameBox"
@@ -299,14 +289,7 @@ const updateStaffDetails = (newDetails, oldDetails, errorDiv, btn) => {
           loadStaffList();
         }, 900);
       }
-    },
-    err => {
-      // eslint-disable-next-line no-undef
-
-      displayError(errorDiv, err);
-      resetSaveBtn(btn);
-    }
-  );
+    
 };
 
 //save edited detail
@@ -340,12 +323,12 @@ const saveDetails = e => {
   //if user was admin or super admin and its not the logged in person
   //her must have had a password
   if (
-    oldDetails.value.permission !== "MEMBER" &&
-    oldDetails.value.email !== store.getLoginDetail().email
+    oldDetails.permission !== "MEMBER" &&
+    oldDetails.email !== store.getLoginDetail().email
   ) {
     //assign his old password to him
-    pwd.value = oldDetails.value.pwd;
-    pwd2.value = oldDetails.value.pwd;
+    pwd.value = oldDetails.password;
+    pwd2.value = oldDetails.password;
   }
 
   let details = {
@@ -359,12 +342,12 @@ const saveDetails = e => {
     gender: gender.value,
     permission: permission.value,
     position: pon.value.trim(),
-    access: oldDetails.value.access,
+    access: oldDetails.access,
     image: image,
     pwd: pwd.value.trim(),
-    regDay: oldDetails.value.regDay,
-    regMonth: oldDetails.value.regMonth,
-    regYear: oldDetails.value.regYear
+    regDay: oldDetails.regDay,
+    regMonth: oldDetails.regMonth,
+    regYear: oldDetails.regYear
   };
 
   let inputs = [
@@ -429,7 +412,7 @@ const saveDetails = e => {
     resetSaveBtn(btn);
     hideLoading();
   } else if (
-    details.email !== oldDetails.value.email &&
+    details.email !== oldDetails.email &&
     staffModel.filterUsers(allUsers, email)
   ) {
     // eslint-disable-next-line no-undef
@@ -437,7 +420,7 @@ const saveDetails = e => {
     resetSaveBtn(btn);
     hideLoading();
   } else if (
-    details.number !== oldDetails.value.number &&
+    details.number !== oldDetails.number &&
     staffModel.filterNumber(allUsers, number)
   ) {
     // eslint-disable-next-line no-undef
@@ -599,6 +582,7 @@ const displayCurrentStaff = () => {
     access,
     docId
   } = store.getLoginDetail();
+  
 
   //display current user details first
   $(".currentStaffName").append(fname + " " + lname);
@@ -608,22 +592,18 @@ const displayCurrentStaff = () => {
   $("#currentStaffEdit").attr("data-staffEmail", email);
 };
 
-const showList = () => {
-  console.log("ok")
+const showList =async  () => {
+ 
   //showLoading();
-  let users = staffModel.getUsers();
-  users.then(
-    ({ data, headers, status }) => {
+  let {rows} = await usersDb.allDocs()
+  let users = await generateWorkingList(usersDb,rows)
+  
       //show staff template
-      allUsers = data.rows;
+      allUsers = users;
       displayCurrentStaff();
-      displayStaff(data.rows);
+      displayStaff(users);
       hideLoading();
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //search staff
@@ -642,7 +622,7 @@ const searchStaff = e => {
     }
   } else {
     searchResult = staffModel.extractUsers(allUsers, val);
-
+    console.log(searchResult)
     if (searchResult != false) {
       displayStaff(searchResult);
       if (!warn.classList.contains("hide")) {
@@ -658,68 +638,73 @@ const searchStaff = e => {
 
 //append details to view
 const appendDetails = details => {
-  document.getElementById("editBtn").dataset.staffemail = details.value.email;
+  document.getElementById("editBtn").dataset.staffemail = details.email;
   document.getElementsByClassName("viewName")[0].textContent =
-    details.value.fname + " " + details.value.lname;
+    details.firstname + " " + details.lastname;
   document.getElementsByClassName("viewPosition")[0].textContent =
-    details.value.position;
-  document.getElementsByClassName("staffImage")[0].src = details.value.image;
-  document.getElementsByClassName("id")[0].textContent = details.value.staffId;
+    details.position;
+  document.getElementsByClassName("staffImage")[0].src = details.image;
+  document.getElementsByClassName("id")[0].textContent = details.staffId;
 
   document.getElementsByClassName("gender")[0].textContent =
-    details.value.gender;
-  document.getElementsByClassName("email")[0].textContent = details.value.email;
+    details.gender;
+  document.getElementsByClassName("email")[0].textContent = details.email;
   document.getElementsByClassName("number")[0].textContent =
-    details.value.number;
+    details.number;
   document.getElementsByClassName("street")[0].textContent =
-    details.value.address.street;
+    details.address.street;
   document.getElementsByClassName("town")[0].textContent =
-    details.value.address.town;
+    details.address.town;
   document.getElementsByClassName("state")[0].textContent =
-    details.value.address.state;
+    details.address.state;
   document.getElementsByClassName("permission")[0].textContent =
-    details.value.permission;
+    details.permission;
   document.getElementsByClassName("access")[0].textContent =
-    details.value.access;
+    details.access;
   document.getElementsByClassName("regDate")[0].textContent =
-    details.value.regDay +
+    details.regDay +
     " / " +
-    details.value.regMonth +
+    details.regMonth +
     " / " +
-    details.value.regYear;
-  if (details.value.updateDay != undefined) {
+    details.regYear;
+  if (details.updateDay != undefined) {
     document.getElementsByClassName("updateDate")[0].textContent =
-      details.value.updateDay +
+      details.updateDay +
       " / " +
-      details.value.updateMonth +
+      details.updateMonth +
       " / " +
-      details.value.updateYear;
+      details.updateYear;
   }
 };
 
 //append values to form
-const appendValues = details => {
+const appendValues = async details => {
+  let {rows} = await usersDb.allDocs()
+  allUsers = await generateWorkingList(usersDb,rows)
+  
   oldDetails = details;
 
-  document.getElementById("fname").value = details.value.fname;
-  document.getElementById("lname").value = details.value.lname;
-  document.getElementById("email").value = details.value.email;
-  document.getElementById("staffImage").src = details.value.image;
-  document.getElementById("number").value = details.value.number;
-  document.getElementById("street").value = details.value.address.street;
-  document.getElementById("town").value = details.value.address.town;
-  document.getElementById("state").value = details.value.address.state;
-  document.getElementById("pon").value = details.value.position;
-  document.getElementById("pwd").value = details.value.pwd;
-  document.getElementById("pwd2").value = details.value.pwd;
-  let gender = details.value.gender;
-  let permission = details.value.permission;
+  document.getElementById("fname").value = details.firstname;
+  document.getElementById("lname").value = details.lastname;
+  document.getElementById("email").value = details.email;
+  document.getElementById("staffImage").src = details.image;
+  document.getElementById("number").value = details.number;
+  document.getElementById("street").value = details.address.street;
+  document.getElementById("town").value = details.address.town;
+  document.getElementById("state").value = details.address.state;
+  document.getElementById("pon").value = details.position;
+  document.getElementById("pwd").value = details.password;
+  document.getElementById("pwd2").value = details.password;
+  let gender = details.gender;
+  let permission = details.permission;
   let permissionIndex;
   let genderIndex;
   if (gender == "female") {
     genderIndex = 1;
-  } else {
+  } else if(gender == "male") {
     genderIndex = 2;
+  }else{
+    genderIndex = 0
   }
 
   if (permission.toUpperCase() == "SUPER_ADMIN") {
@@ -735,47 +720,39 @@ const appendValues = details => {
 };
 
 //display staff details
-const showStaffDetails = selectedEmail => {
+const showStaffDetails = async selectedEmail => {
   showLoading();
-  let users = staffModel.getUsers();
-  users.then(
-    ({ data, headers, status }) => {
+  let {rows} = await usersDb.allDocs()
+  let users = await generateWorkingList(usersDb,rows)
+  
       //filter
-      [details] = staffModel.filterStaffDetails(data.rows, selectedEmail);
+      let [details] = staffModel.filterStaffDetails(users, selectedEmail);
 
       appendDetails(details);
       hideLoading();
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
+    
 };
 
 //display edit details
-const showStaffValues = selectedEmail => {
+const showStaffValues = async selectedEmail => {
   showLoading();
   //get users and filter with email provided
-  let users = staffModel.getUsers();
-  users.then(
-    ({ data, headers, status }) => {
-      //filter
+  let {rows} = await usersDb.allDocs()
+  let users = await generateWorkingList(usersDb,rows)
+  
       let [staffDetails] = staffModel.filterStaffDetails(
-        data.rows,
+        users,
         selectedEmail
       );
       appendValues(staffDetails);
       editDetail = staffDetails;
       hideLoading();
-    },
-    err => {
-      console.log(err);
-    }
-  );
+   
 };
 
 //update status
-const updateStatus = (e, staffEmail, command) => {
+const updateStatus = async (e, staffEmail, command) => {
   //ensure only super user blocks someone
   if (store.getLoginDetail().permission.toUpperCase() !== "SUPER_ADMIN") {
     showModal("Only a super admin can block a user.");
@@ -798,48 +775,47 @@ const updateStatus = (e, staffEmail, command) => {
 
     let newClass = command === "block" ? "activate" : "block";
 
+    let {rows} = await usersDb.allDocs()
     //get users
-    let users = staffModel.getUsers();
-    users.then(
-      ({ data, headers, status }) => {
+    let users = await generateWorkingList(usersDb, rows);
+    
         let [selectedUser] = staffModel.filterStaffDetails(
-          data.rows,
+          users,
           staffEmail
         );
-        let id = selectedUser.id;
-        let rev = selectedUser.value.rev;
+        let id = selectedUser._id;
+        let rev = selectedUser._rev;
 
         //create details of user
         let details = {
-          fname: selectedUser.value.fname,
-          lname: selectedUser.value.lname,
-          email: selectedUser.value.email,
-          number: selectedUser.value.number,
-          position: selectedUser.value.position,
-          gender: selectedUser.value.gender,
-          street: selectedUser.value.address.street,
-          town: selectedUser.value.address.town,
-          state: selectedUser.value.address.state,
-          permission: selectedUser.value.permission,
+          fname: selectedUser.firstname,
+          lname: selectedUser.lastname,
+          email: selectedUser.email,
+          number: selectedUser.number,
+          position: selectedUser.position,
+          gender: selectedUser.gender,
+          street: selectedUser.address.street,
+          town: selectedUser.address.town,
+          state: selectedUser.address.state,
+          permission: selectedUser.permission,
           access: access,
-          staffId: selectedUser.value.staffId,
-          image: selectedUser.value.image,
-          pwd: selectedUser.value.pwd,
-          regDay: selectedUser.value.regDay,
-          regMonth: selectedUser.value.regMonth,
-          regYear: selectedUser.value.regYear,
-          updateDay: selectedUser.value.updateDay,
-          updateMonth: selectedUser.value.updateMonth,
-          updateYear: selectedUser.value.updateYear,
-          editedBy: selectedUser.value.editedBy,
-          editorEmail: selectedUser.value.editorEmail,
-          remote: selectedUser.value.remote
+          staffId: selectedUser.staffId,
+          image: selectedUser.image,
+          pwd: selectedUser.password,
+          regDay: selectedUser.regDay,
+          regMonth: selectedUser.regMonth,
+          regYear: selectedUser.regYear,
+          updateDay: selectedUser.updateDay,
+          updateMonth: selectedUser.updateMonth,
+          updateYear: selectedUser.updateYear,
+          editedBy: selectedUser.editedBy,
+          editorEmail: selectedUser.editorEmail,
+          remote: selectedUser.remote
         };
         //update details
-        let updator = staffModel.updateStatus(id, rev, details);
-        updator.then(
-          ({ data, header, status }) => {
-            if (status == 201) {
+        let updator = await staffModel.updateStatus(id, rev, details);
+        
+            
               let target = e.target;
               //remove both block and activate classes
               if (target.classList.contains("block")) {
@@ -853,19 +829,9 @@ const updateStatus = (e, staffEmail, command) => {
               target.dataset.acctStatus = newClass;
               //add new text
               target.innerHTML = newClass;
-            } else {
-              console.log("error");
-            }
-          },
-          err => {
-            console.log(err);
-          }
-        );
-      },
-      err => {
-        console.log(err);
-      }
-    );
+           
+         
+      
   }
 };
 
@@ -964,6 +930,3 @@ const socketUpdateUser = async message => {
     }
   );
 };
-
-
-module.exports = {showList}

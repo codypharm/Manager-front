@@ -35,7 +35,7 @@ const fs = require("fs");
 const Login = require("../models/loginModel");
 
 //instantiate classes
-//const validate = new Validator();
+const validate = new Validator();
 const store = new Store();
 //const db = new Database();
 const login = new Login();

@@ -21,9 +21,9 @@ class Validator {
     return this.couch.uniqid();
   }
 
-  insertDetails(details, id) {
-    return this.couch.insert("vemon_setup", {
-      id: id,
+ async insertDetails(details) {
+    return setupDb.put({
+      _id: `${+ new Date()}`,
       package: details.package,
       companyName:
         details.companyName[0].toUpperCase() + details.companyName.slice(1),
@@ -48,12 +48,12 @@ class Validator {
     });
   }
 
-  insertUser(details, id) {
+  async insertUser(details) {
     let staffId = "STF";
     staffId += Math.floor(Math.random() * 1000);
     let date = new Date();
-    return this.couch.insert("users", {
-      id: id,
+    return usersDb.put({
+      _id: `${+ new Date()}`,
       image: "../images/profile.png",
       staffId: staffId,
       firstname:

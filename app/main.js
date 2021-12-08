@@ -36,7 +36,7 @@ const createWindow = () => {
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
-      //contextIsolation: false,
+      
     }
   });
 

@@ -1,18 +1,548 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-let setUp = setupDb.allDocs()
-console.log(setUp)
-if(setup.doc.rows.length < 1){
-  //display login page
-  let url = "./setup.html";
+
+//loader sign
+const showLoading = () => {
+  $(".loadingModal").modal("show");
+};
+
+const hideLoading = () => {
+  $(".loadingModal").modal("hide");
+};
+
+
+//show loading
+showLoading()
+//generate working list
+const generateWorkingList = async (db,list) => {
+  let data = [];
+  for (let i = 0; i < list.length; i++) {
+    //wait for update to happen
+    let doc = await db.get(list[i].id)
+    data = [...data, doc]
+  }
+
+  return data
+}
+const play = async () => {
+
+  let {rows} = await usersDb.allDocs()
+  let workingList = await generateWorkingList(usersDb,rows)
+  console.log(workingList)
+}
+
+play()
+//compare the two passwords
+// eslint-disable-next-line no-unused-vars
+const comparePassword = e => {
+  let pwd = document.getElementById("pwd");
+  let secPwd = e.target;
+  if (pwd.value != secPwd.value) {
+    secPwd.style.border = "1px solid red";
+  } else {
+    secPwd.style.border = "1px solid green";
+  }
+};
+//empty confirmation password
+// eslint-disable-next-line no-unused-vars
+const emptySecPassword = e => {
+  let secPwd = document.getElementById("confirmPwd");
+  secPwd.value = "";
+  secPwd.style.border = "none";
+};
+
+//page loader
+const pageLoader = (page, fxn = false) => {
+  pagePlate = document.getElementsByClassName("pagePlate")[0];
+  let url = `./pages/${page}.html`;
+
   fs.readFile(url, "utf-8", (err, data) => {
     if (err) {
       console.log(err);
+    } else {
+      pagePlate.innerHTML = data;
+      //set permission access
+      setRankElements();
+      if (fxn != false) {
+        switch (page) {
+          case "onlineSales":
+            fxn("online");
+            break;
+
+          case "cashSales":
+            fxn("cash");
+            break;
+
+          case "creditSales":
+            fxn("credit");
+            break;
+
+          case "debtInvoices":
+            fxn("debt");
+            break;
+
+          case "clearedInvoices":
+            fxn("cleared");
+            break;
+          case "allStock":
+            fxn("allStock");
+            break;
+          case "expiredStock":
+            fxn("expiredStock");
+            break;
+          case "exhaustedStock":
+            fxn("exhaustedStock");
+            break;
+          case "staffView":
+            fxn(viewEmail);
+            break;
+          case "staffEdit":
+            fxn(editEmail);
+            break;
+          default:
+            fxn();
+            break;
+        }
+      }
     }
-    document.getElementsByTagName("main")[0].innerHTML = data;
-    hideLoading();
   });
-}
+};
+
+
+//error display
+const displayError = (element, error) => {
+  if (element.classList.contains("hide")) {
+    element.classList.remove("hide");
+    element.textContent = error;
+  }
+};
+
+//success display
+const displaySuccess = message => {
+  let element = document.getElementsByClassName("success")[0];
+  if (element.classList.contains("hide")) {
+    element.classList.remove("hide");
+    element.textContent = message;
+  }
+};
+
+
+//success hide
+const hideSuccess = message => {
+  let element = document.getElementsByClassName("success")[0];
+  if (!element.classList.contains("hide")) {
+    element.classList.add("hide");
+  }
+};
+
+//define change form
+const changeForm = (formToHide, formToShow) => {
+  if (!formToHide.classList.contains("hide")) {
+    formToHide.classList.add("hide");
+  }
+
+  if (formToShow.classList.contains("hide")) {
+    formToShow.classList.remove("hide");
+  }
+};
+// process standard
+const processStandard = errorDiv => {
+  //get forms
+  let setupForm = document.getElementsByClassName("setupForm")[0];
+  let managerForm = document.getElementsByClassName("managerForm")[0];
+  //get app key
+  let appKey = document.getElementById("app_key").value;
+  //get company name
+  let companyName = document.getElementById("standardName").value;
+  //get address
+  let stdAddress = document.getElementById("stdAddress").value;
+  //check if it is empty
+  if (
+    companyName.trim().length === 0 ||
+    stdAddress.trim().length === 0 ||
+    appKey.trim().length === 0
+  ) {
+    displayError(errorDiv, "Please fill all fields");
+  } else if (validate.invalidAppkey(appKey)) {
+    displayError(errorDiv, "App key is invalid");
+  } else {
+    //assign values to details object
+    let package = "standard";
+    let address = stdAddress;
+    details = { package, companyName, address };
+    //alter form
+    changeForm(setupForm, managerForm);
+  }
+};
+
+//process premium account
+const processPremium = errorDiv => {
+  //get forms
+  let setupForm = document.getElementsByClassName("setupForm")[0];
+  let managerForm = document.getElementsByClassName("managerForm")[0];
+  //get app key
+  let appKey = document.getElementById("premium_app_key").value;
+  //get company name
+  let companyName = document.getElementById("companyName").value;
+  //get address
+  let premiumAddress = document.getElementById("premiumAddress").value;
+
+  //get branch id
+  let branchId = document.getElementById("branchId").value;
+
+  //get company id
+  let companyId = document.getElementById("companyId").value;
+
+  //get branch phone number
+  let phone = document.getElementById("phone").value;
+
+  //check if all values are provided
+  if (
+    companyName.trim().length === 0 ||
+    premiumAddress.trim().length === 0 ||
+    branchId.trim().length === 0 ||
+    companyId.trim().length === 0 ||
+    phone.trim().length === 0 ||
+    appKey.trim().length === 0
+  ) {
+    console.log(appKey.length);
+    displayError(errorDiv, "Please fill all fields");
+  } else if (validate.invalidAppkey(appKey)) {
+    displayError(errorDiv, "App key is invalid");
+  } else if (validate.isNotPhoneNumber(phone)) {
+    displayError(errorDiv, "Please enter a valid Phone number");
+  } else {
+    let package = "premium";
+    let address = premiumAddress;
+    details = {
+      package,
+      companyName,
+      address,
+      companyId,
+      branchId,
+      phone
+    };
+    //alter form
+    changeForm(setupForm, managerForm);
+  }
+};
+
+const backToBranchDetails = e => {
+  document.getElementById("setupNext").disabled = false;
+
+  //get forms
+  let setupForm = document.getElementsByClassName("setupForm")[0];
+  let managerForm = document.getElementsByClassName("managerForm")[0];
+
+  changeForm(managerForm, setupForm);
+};
+
+
+//process on clicking next button
+// eslint-disable-next-line no-unused-vars
+const showManagerDetail = e => {
+  e.preventDefault();
+
+  let errorDiv = document.getElementsByClassName("warning")[0];
+  //hide error box
+  if (!errorDiv.classList.contains("hide")) {
+    errorDiv.classList.add("hide");
+  }
+  if (document.getElementById("standard").checked == true) {
+    // eslint-disable-next-line no-undef
+    processStandard(errorDiv);
+  } else if (document.getElementById("premium").checked == true) {
+    // eslint-disable-next-line no-undef
+    processPremium(errorDiv);
+  } else {
+    let error = "Please select a package";
+    displayError(errorDiv, error);
+  }
+};
+
+//hide menu if document is clicked
+const handleBodyClick = e => {
+  let menu = document.getElementsByClassName("userDrop")[0];
+  let menu2 = document.getElementsByClassName("notificationDrop")[0];
+
+  //check if Dom is loaded
+  if (menu && menu2) {
+    if (
+      e.target.className != "rightMenu" &&
+      e.target.className != "rightIcons"
+    ) {
+      if (!menu.classList.contains("hide")) {
+        menu.classList.add("hide");
+      }
+
+      if (!menu2.classList.contains("hide")) {
+        menu2.classList.add("hide");
+      }
+    }
+  }
+};
+
+
+// eslint-disable-next-line no-unused-vars
+const showInputs = e => {
+  //hide error box
+  let errorDiv = document.getElementsByClassName("warning")[0];
+  //hide error box
+  if (!errorDiv.classList.contains("hide")) {
+    errorDiv.classList.add("hide");
+  }
+
+  let target = e.target;
+  let box = target.dataset.box;
+  let otherBox;
+
+  if (box == "standardBox") {
+    otherBox = "premiumBox";
+  } else {
+    otherBox = "standardBox";
+  }
+  //get the div
+  let theDiv = document.getElementsByClassName(box)[0];
+  let otherDiv = document.getElementsByClassName(otherBox)[0];
+  let myInputs = document.getElementsByClassName("myInputs");
+
+  for (var element of myInputs) {
+    element.value = "";
+  }
+
+  theDiv.classList.remove("hide");
+  if (!otherDiv.classList.contains("hide")) {
+    otherDiv.classList.add("hide");
+  }
+};
+
+
+
+//user creation
+const createUser = async () => {
+  let userDetailInsertion = await validate.insertUser(details);
+  if(userDetailInsertion.ok){
+    
+   remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
+  }
+ 
+};
+
+//complete setup
+const completeSetup = async  () => {
+  //create setup  database
+  //generate id
+    //insert details
+    let detailInsertion = await validate.insertDetails(details);
+    if(detailInsertion.ok){
+      createUser()
+    }
+    /*detailInsertion.then(
+      ({ data, headers, status }) => {
+        //generate id
+        let userIdGen = validate.generateId();
+        userIdGen.then(ids => {
+          const userId = ids[0];
+          createUser(userId);
+        });
+      },
+      err => {
+        console.warn(err);
+      }
+    );*/
+  
+};
+
+const setUp = () => {
+  //enable setup button
+  document.getElementById("setupNext").disabled = false;
+};
+
+//update matching branch online
+const continueSetup = data => {
+  if (data.length == 0) {
+    //enable setup button
+    setUp();
+    const notyf = new Notyf({
+      duration: 5000
+    });
+
+    // Display an error notification
+    notyf.error(
+      "No Branch exists with this matching company Id and branch Id, please verify and try again."
+    );
+  } else {
+    //update data online
+    branches.updateBranchOnline(
+      data[0].id,
+      details,
+      completeSetup,
+      setUp,
+      showLoading,
+      hideLoading
+    );
+  }
+};
+
+//fetch matching branch
+const proceedSetup = () => {
+  branches.fetchMatch(
+    details.companyId,
+    details.branchId,
+    continueSetup,
+    setUp,
+    showLoading,
+    hideLoading
+  );
+};
+
+//process managers details
+// eslint-disable-next-line no-unused-vars
+const enterDetails = e => {
+  e.preventDefault();
+  //get error div
+  let errorDiv = document.getElementsByClassName("warning")[0];
+  //hide error box
+  if (!errorDiv.classList.contains("hide")) {
+    errorDiv.classList.add("hide");
+  }
+
+  //get all fields
+  let fname = document.getElementById("fname");
+  let lname = document.getElementById("lname");
+  let email = document.getElementById("email");
+  let pwd = document.getElementById("pwd");
+  let secPwd = document.getElementById("confirmPwd");
+  let inputs = [fname, lname, email, pwd, secPwd];
+
+  //check fields
+  if (validate.isEmpty(inputs)) {
+    displayError(errorDiv, "Please fill all fields");
+  }
+
+  //check if alpha only
+  else if (validate.isNotAlpha(fname.value.trim())) {
+    displayError(errorDiv, "First name should have alphabets only");
+  }
+
+  //check if alpha only
+  else if (validate.isNotAlpha(lname.value.trim())) {
+    displayError(errorDiv, "Last name should have alphabets only");
+  }
+
+  //validate if email
+  else if (validate.isNotEmail(email.value.trim())) {
+    displayError(errorDiv, "Email is not valid");
+  }
+
+  //validate password
+  //let returnedValue = validate.validPassword(pwd.value.trim());
+  else if (validate.notValidPassword(pwd.value.trim())) {
+    displayError(
+      errorDiv,
+      "Invalid password!!! Password should have an uppercase, a lowercase, a number, a special character and a minimum of six values "
+    );
+  } else if (pwd.value != secPwd.value) {
+    displayError(errorDiv, "Passwords do not match ");
+  } else {
+    //store details in the details object
+    details.manager_firstname = fname.value.trim();
+    details.manager_lastname = lname.value.trim();
+    details.manager_password = pwd.value.trim();
+    details.manager_email = email.value.trim();
+
+    if (details.package.toUpperCase() == "PREMIUM") {
+      document.getElementById("setupNext").disabled = true;
+      //set up online
+      branches.branchProcess(
+        proceedSetup,
+        details.manager_email,
+        details.manager_password,
+        setUp,
+        showLoading,
+        hideLoading
+      );
+    } else {
+      //go straight to local setup
+      completeSetup();
+    }
+  }
+};
+
+//load right menu
+const loadRightMenu = () => {
+  //add details to right menu
+  let {
+    loginStatus,
+    fname,
+    lname,
+    email,
+    staffId,
+    position,
+    permission,
+    image,
+    access,
+    docId
+  } = store.getLoginDetail();
+
+  //document.getElementById("staffAccount").dataset.staffEmail = email;
+  $("#staffAccount").attr("data-staffEmail", email);
+};
+
+
+
+
+
+//check for setup details
+setupDb.allDocs((err,doc) => {
+  
+  
+  if(doc.rows.length < 1){
+    let url = "./app/setup.html";
+    fs.readFile(url, "utf-8", (err, data) => {
+      if (err) {
+        console.log(err);
+      }
+      document.getElementsByTagName("main")[0].innerHTML = data;
+      
+    });
+  }else {
+    //check if user is logged in
+    let { loginStatus } = store.getLoginDetail();
+    //if user is not logged in
+    if (loginStatus == false) {
+      //display login page
+      let url = "./app/pages/login.html";
+      fs.readFile(url, "utf-8", (err, data) => {
+        if (err) {
+          console.log(err);
+        }
+        document.getElementsByTagName("main")[0].innerHTML = data;
+        hideLoading();
+      });
+    }else{
+      //display app container since user is logged in
+      document.getElementsByTagName("body")[0].classList.remove("setupBack");
+      let url = "./pages/container.html";
+      fs.readFile(url, "utf-8", (err, data) => {
+        if (err) {
+          console.log(err);
+        }
+        document.getElementsByTagName("main")[0].innerHTML = data;
+        appendUserDetails();
+
+        //load right menu attributes
+        loadRightMenu();
+        //load dashboard
+        //load work page
+        pageLoader("dashboard", loadUpdashboard);
+      });
+    }
+  }
+ })
+
+
+
 //global variables
 //const api = require("../api");
 var viewEmail;
@@ -28,19 +558,12 @@ const webSocket = require("../src/js/websocket");
 
 const branches = new branchesClass();
 
-//loader sign
-const showLoading = () => {
-  $(".loadingModal").modal("show");
-};
-
-const hideLoading = () => {
-  $(".loadingModal").modal("hide");
-};
 
 //get setup details
 let viewUrl = db.viewUrl.setup;
 var setUpDetails;
-let info = db.couch.get("vemon_setup", viewUrl);
+
+/*let info = db.couch.get("vemon_setup", viewUrl);
 info.then(
   ({ data, headers, status }) => {
     setUpDetails = data.rows;
@@ -72,7 +595,7 @@ const connectSocket = detail => {
 const disconnectSocket = () => {
   webSocket.disconnect();
 };
-
+*/
 const notification = async () => {
   let stock;
   let stocking;
@@ -225,464 +748,6 @@ const hideGenStaticModal = elem => {
 
   return true;
 };
-
-// eslint-disable-next-line no-unused-vars
-const showInputs = e => {
-  //hide error box
-  let errorDiv = document.getElementsByClassName("warning")[0];
-  //hide error box
-  if (!errorDiv.classList.contains("hide")) {
-    errorDiv.classList.add("hide");
-  }
-
-  let target = e.target;
-  let box = target.dataset.box;
-  let otherBox;
-
-  if (box == "standardBox") {
-    otherBox = "premiumBox";
-  } else {
-    otherBox = "standardBox";
-  }
-  //get the div
-  let theDiv = document.getElementsByClassName(box)[0];
-  let otherDiv = document.getElementsByClassName(otherBox)[0];
-  let myInputs = document.getElementsByClassName("myInputs");
-
-  for (var element of myInputs) {
-    element.value = "";
-  }
-
-  theDiv.classList.remove("hide");
-  if (!otherDiv.classList.contains("hide")) {
-    otherDiv.classList.add("hide");
-  }
-};
-
-//error display
-const displayError = (element, error) => {
-  if (element.classList.contains("hide")) {
-    element.classList.remove("hide");
-    element.textContent = error;
-  }
-};
-
-//success display
-const displaySuccess = message => {
-  let element = document.getElementsByClassName("success")[0];
-  if (element.classList.contains("hide")) {
-    element.classList.remove("hide");
-    element.textContent = message;
-  }
-};
-
-//success hide
-const hideSuccess = message => {
-  let element = document.getElementsByClassName("success")[0];
-  if (!element.classList.contains("hide")) {
-    element.classList.add("hide");
-  }
-};
-
-//define change form
-const changeForm = (formToHide, formToShow) => {
-  if (!formToHide.classList.contains("hide")) {
-    formToHide.classList.add("hide");
-  }
-
-  if (formToShow.classList.contains("hide")) {
-    formToShow.classList.remove("hide");
-  }
-};
-// process standard
-const processStandard = errorDiv => {
-  //get forms
-  let setupForm = document.getElementsByClassName("setupForm")[0];
-  let managerForm = document.getElementsByClassName("managerForm")[0];
-  //get app key
-  let appKey = document.getElementById("app_key").value;
-  //get company name
-  let companyName = document.getElementById("standardName").value;
-  //get address
-  let stdAddress = document.getElementById("stdAddress").value;
-  //check if it is empty
-  if (
-    companyName.trim().length === 0 ||
-    stdAddress.trim().length === 0 ||
-    appKey.trim().length === 0
-  ) {
-    displayError(errorDiv, "Please fill all fields");
-  } else if (validate.invalidAppkey(appKey)) {
-    displayError(errorDiv, "App key is invalid");
-  } else {
-    //assign values to details object
-    let package = "standard";
-    let address = stdAddress;
-    details = { package, companyName, address };
-    //alter form
-    changeForm(setupForm, managerForm);
-  }
-};
-
-//process premium account
-const processPremium = errorDiv => {
-  //get forms
-  let setupForm = document.getElementsByClassName("setupForm")[0];
-  let managerForm = document.getElementsByClassName("managerForm")[0];
-  //get app key
-  let appKey = document.getElementById("premium_app_key").value;
-  //get company name
-  let companyName = document.getElementById("companyName").value;
-  //get address
-  let premiumAddress = document.getElementById("premiumAddress").value;
-
-  //get branch id
-  let branchId = document.getElementById("branchId").value;
-
-  //get company id
-  let companyId = document.getElementById("companyId").value;
-
-  //get branch phone number
-  let phone = document.getElementById("phone").value;
-
-  //check if all values are provided
-  if (
-    companyName.trim().length === 0 ||
-    premiumAddress.trim().length === 0 ||
-    branchId.trim().length === 0 ||
-    companyId.trim().length === 0 ||
-    phone.trim().length === 0 ||
-    appKey.trim().length === 0
-  ) {
-    console.log(appKey.length);
-    displayError(errorDiv, "Please fill all fields");
-  } else if (validate.invalidAppkey(appKey)) {
-    displayError(errorDiv, "App key is invalid");
-  } else if (validate.isNotPhoneNumber(phone)) {
-    displayError(errorDiv, "Please enter a valid Phone number");
-  } else {
-    let package = "premium";
-    let address = premiumAddress;
-    details = {
-      package,
-      companyName,
-      address,
-      companyId,
-      branchId,
-      phone
-    };
-    //alter form
-    changeForm(setupForm, managerForm);
-  }
-};
-
-//process on clicking next button
-// eslint-disable-next-line no-unused-vars
-const showManagerDetail = e => {
-  e.preventDefault();
-
-  let errorDiv = document.getElementsByClassName("warning")[0];
-  //hide error box
-  if (!errorDiv.classList.contains("hide")) {
-    errorDiv.classList.add("hide");
-  }
-  if (document.getElementById("standard").checked == true) {
-    // eslint-disable-next-line no-undef
-    processStandard(errorDiv);
-  } else if (document.getElementById("premium").checked == true) {
-    // eslint-disable-next-line no-undef
-    processPremium(errorDiv);
-  } else {
-    let error = "Please select a package";
-    displayError(errorDiv, error);
-  }
-};
-
-const backToBranchDetails = e => {
-  document.getElementById("setupNext").disabled = false;
-
-  //get forms
-  let setupForm = document.getElementsByClassName("setupForm")[0];
-  let managerForm = document.getElementsByClassName("managerForm")[0];
-
-  changeForm(managerForm, setupForm);
-};
-
-//user creation
-const createUser = userId => {
-  let userDetailInsertion = validate.insertUser(details, userId);
-  userDetailInsertion.then(
-    ({ data, headers, status }) => {
-      //reload
-      remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
-    },
-    err => {
-      console.log(err);
-    }
-  );
-};
-
-//complete setup
-const completeSetup = () => {
-  //create setup  database
-  //generate id
-  let idGen = validate.generateId();
-  idGen.then(ids => {
-    const id = ids[0];
-
-    //insert details
-    let detailInsertion = validate.insertDetails(details, id);
-    detailInsertion.then(
-      ({ data, headers, status }) => {
-        //generate id
-        let userIdGen = validate.generateId();
-        userIdGen.then(ids => {
-          const userId = ids[0];
-          createUser(userId);
-        });
-      },
-      err => {
-        console.warn(err);
-      }
-    );
-  });
-};
-
-const setUp = () => {
-  //enable setup button
-  document.getElementById("setupNext").disabled = false;
-};
-
-//update matching branch online
-const continueSetup = data => {
-  if (data.length == 0) {
-    //enable setup button
-    setUp();
-    const notyf = new Notyf({
-      duration: 5000
-    });
-
-    // Display an error notification
-    notyf.error(
-      "No Branch exists with this matching company Id and branch Id, please verify and try again."
-    );
-  } else {
-    //update data online
-    branches.updateBranchOnline(
-      data[0].id,
-      details,
-      completeSetup,
-      setUp,
-      showLoading,
-      hideLoading
-    );
-  }
-};
-
-//fetch matching branch
-const proceedSetup = () => {
-  branches.fetchMatch(
-    details.companyId,
-    details.branchId,
-    continueSetup,
-    setUp,
-    showLoading,
-    hideLoading
-  );
-};
-
-//process managers details
-// eslint-disable-next-line no-unused-vars
-const enterDetails = e => {
-  e.preventDefault();
-  //get error div
-  let errorDiv = document.getElementsByClassName("warning")[0];
-  //hide error box
-  if (!errorDiv.classList.contains("hide")) {
-    errorDiv.classList.add("hide");
-  }
-
-  //get all fields
-  let fname = document.getElementById("fname");
-  let lname = document.getElementById("lname");
-  let email = document.getElementById("email");
-  let pwd = document.getElementById("pwd");
-  let secPwd = document.getElementById("confirmPwd");
-  let inputs = [fname, lname, email, pwd, secPwd];
-
-  //check fields
-  if (validate.isEmpty(inputs)) {
-    displayError(errorDiv, "Please fill all fields");
-  }
-
-  //check if alpha only
-  else if (validate.isNotAlpha(fname.value.trim())) {
-    displayError(errorDiv, "First name should have alphabets only");
-  }
-
-  //check if alpha only
-  else if (validate.isNotAlpha(lname.value.trim())) {
-    displayError(errorDiv, "Last name should have alphabets only");
-  }
-
-  //validate if email
-  else if (validate.isNotEmail(email.value.trim())) {
-    displayError(errorDiv, "Email is not valid");
-  }
-
-  //validate password
-  //let returnedValue = validate.validPassword(pwd.value.trim());
-  else if (validate.notValidPassword(pwd.value.trim())) {
-    displayError(
-      errorDiv,
-      "Invalid password!!! Password should have an uppercase, a lowercase, a number, a special character and a minimum of six values "
-    );
-  } else if (pwd.value != secPwd.value) {
-    displayError(errorDiv, "Passwords do not match ");
-  } else {
-    //store details in the details object
-    details.manager_firstname = fname.value.trim();
-    details.manager_lastname = lname.value.trim();
-    details.manager_password = pwd.value.trim();
-    details.manager_email = email.value.trim();
-
-    if (details.package.toUpperCase() == "PREMIUM") {
-      document.getElementById("setupNext").disabled = true;
-      //set up online
-      branches.branchProcess(
-        proceedSetup,
-        details.manager_email,
-        details.manager_password,
-        setUp,
-        showLoading,
-        hideLoading
-      );
-    } else {
-      //go straight to local setup
-      completeSetup();
-    }
-  }
-};
-
-//compare the two passwords
-// eslint-disable-next-line no-unused-vars
-const comparePassword = e => {
-  let pwd = document.getElementById("pwd");
-  let secPwd = e.target;
-  if (pwd.value != secPwd.value) {
-    secPwd.style.border = "1px solid red";
-  } else {
-    secPwd.style.border = "1px solid green";
-  }
-};
-
-//empty confirmation password
-// eslint-disable-next-line no-unused-vars
-const emptySecPassword = e => {
-  let secPwd = document.getElementById("confirmPwd");
-  secPwd.value = "";
-  secPwd.style.border = "none";
-};
-
-//page loader
-const pageLoader = (page, fxn = false) => {
-  pagePlate = document.getElementsByClassName("pagePlate")[0];
-  let url = `./pages/${page}.html`;
-
-  fs.readFile(url, "utf-8", (err, data) => {
-    if (err) {
-      console.log(err);
-    } else {
-      pagePlate.innerHTML = data;
-      //set permission access
-      setRankElements();
-      if (fxn != false) {
-        switch (page) {
-          case "onlineSales":
-            fxn("online");
-            break;
-
-          case "cashSales":
-            fxn("cash");
-            break;
-
-          case "creditSales":
-            fxn("credit");
-            break;
-
-          case "debtInvoices":
-            fxn("debt");
-            break;
-
-          case "clearedInvoices":
-            fxn("cleared");
-            break;
-          case "allStock":
-            fxn("allStock");
-            break;
-          case "expiredStock":
-            fxn("expiredStock");
-            break;
-          case "exhaustedStock":
-            fxn("exhaustedStock");
-            break;
-          case "staffView":
-            fxn(viewEmail);
-            break;
-          case "staffEdit":
-            fxn(editEmail);
-            break;
-          default:
-            fxn();
-            break;
-        }
-      }
-    }
-  });
-};
-
-//hide menu if document is clicked
-const handleBodyClick = e => {
-  let menu = document.getElementsByClassName("userDrop")[0];
-  let menu2 = document.getElementsByClassName("notificationDrop")[0];
-
-  //check if Dom is loaded
-  if (menu && menu2) {
-    if (
-      e.target.className != "rightMenu" &&
-      e.target.className != "rightIcons"
-    ) {
-      if (!menu.classList.contains("hide")) {
-        menu.classList.add("hide");
-      }
-
-      if (!menu2.classList.contains("hide")) {
-        menu2.classList.add("hide");
-      }
-    }
-  }
-};
-
-//load right menu
-const loadRightMenu = () => {
-  //add details to right menu
-  let {
-    loginStatus,
-    fname,
-    lname,
-    email,
-    staffId,
-    position,
-    permission,
-    image,
-    access,
-    docId
-  } = store.getLoginDetail();
-
-  //document.getElementById("staffAccount").dataset.staffEmail = email;
-  $("#staffAccount").attr("data-staffEmail", email);
-};
-
 //hide for non admin
 const setRankElements = () => {
   let loginDetails = store.getLoginDetail();
@@ -711,6 +776,7 @@ const setRankElements = () => {
   }
 };
 
+/*
 //handle setup checking
 db.getSetup().then(
   ({ data }) => {
@@ -752,7 +818,7 @@ db.getSetup().then(
   err => {
     console.log(err);
   }
-);
+);*/
 //ipcRenderer.send("as-message", "hello");
 
 //login processing begins here
@@ -1214,7 +1280,7 @@ const socketLogOut = () => {
           store.forceLogout();
           //go to login page
 
-          let url = "./pages/login.html";
+          let url = "./app/pages/login.html";
           fs.readFile(url, "utf-8", (err, data) => {
             if (err) {
               console.log(err);
@@ -1284,7 +1350,7 @@ const logMeOut = e => {
               store.forceLogout();
               //go to login page
 
-              let url = "./pages/login.html";
+              let url = "./app/pages/login.html";
               fs.readFile(url, "utf-8", (err, data) => {
                 if (err) {
                   console.log(err);

@@ -10,7 +10,7 @@ class staffModel {
 
   getUsers() {
     let viewUrl = this.viewUrl.users;
-    return this.couch.get("users", viewUrl);
+    return {};
   }
 
   insertDetails(details, id) {

@@ -7,7 +7,7 @@
 var oldDetails;
 var allUsers;
 var editDetail;
-let users = staffModel.getUsers();
+/*let users = staffModel.getUsers();
 users.then(
   ({ data, headers, status }) => {
     allUsers = data.rows;
@@ -15,7 +15,7 @@ users.then(
   err => {
     console.log(err);
   }
-);
+);*/
 const fnameAlpha = e => {
   let fname = e.target.value.trim();
   let errorBox = document.getElementById("fnameError");
@@ -609,7 +609,8 @@ const displayCurrentStaff = () => {
 };
 
 const showList = () => {
-  showLoading();
+  console.log("ok")
+  //showLoading();
   let users = staffModel.getUsers();
   users.then(
     ({ data, headers, status }) => {
@@ -963,3 +964,6 @@ const socketUpdateUser = async message => {
     }
   );
 };
+
+
+module.exports = {showList}

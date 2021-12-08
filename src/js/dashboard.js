@@ -368,7 +368,7 @@ const handleDashExpenses = () => {
 //load up dashboard
 const loadUpdashboard = () => {
   //show Loading
-  showLoading();
+  //showLoading();
   //adjust notification
   notification();
   //handle date

@@ -1,18 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-
-//loader sign
-const showLoading = () => {
-  $(".loadingModal").modal("show");
-};
-
-const hideLoading = () => {
-  $(".loadingModal").modal("hide");
-};
-
-
-//show loading
-showLoading()
+//const staffModules = require('../src/js/staff')
 //generate working list
 const generateWorkingList = async (db,list) => {
   let data = [];
@@ -24,37 +12,12 @@ const generateWorkingList = async (db,list) => {
 
   return data
 }
-const play = async () => {
 
-  let {rows} = await usersDb.allDocs()
-  let workingList = await generateWorkingList(usersDb,rows)
-  console.log(workingList)
-}
-
-play()
-//compare the two passwords
-// eslint-disable-next-line no-unused-vars
-const comparePassword = e => {
-  let pwd = document.getElementById("pwd");
-  let secPwd = e.target;
-  if (pwd.value != secPwd.value) {
-    secPwd.style.border = "1px solid red";
-  } else {
-    secPwd.style.border = "1px solid green";
-  }
-};
-//empty confirmation password
-// eslint-disable-next-line no-unused-vars
-const emptySecPassword = e => {
-  let secPwd = document.getElementById("confirmPwd");
-  secPwd.value = "";
-  secPwd.style.border = "none";
-};
 
 //page loader
 const pageLoader = (page, fxn = false) => {
   pagePlate = document.getElementsByClassName("pagePlate")[0];
-  let url = `./pages/${page}.html`;
+  let url = `./app/pages/${page}.html`;
 
   fs.readFile(url, "utf-8", (err, data) => {
     if (err) {
@@ -108,6 +71,490 @@ const pageLoader = (page, fxn = false) => {
   });
 };
 
+
+
+
+
+//dashboard
+const loadDashboard = e => {
+  let dashboard = document.getElementsByClassName("dashboard")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(dashboard, "selected");
+
+  pageLoader("dashboard", loadUpdashboard);
+};
+
+//all sales
+const loadAllSales = e => {
+  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
+  let allSales = document.getElementsByClassName("allSales")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(allSales, "selected");
+  addClass(subMenu1, "selectedDropper");
+  pageLoader("allSales", loadCurrentSales);
+};
+
+//cash sales
+const loadCashSales = e => {
+  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
+  let cashSales = document.getElementsByClassName("cashSales")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(cashSales, "selected");
+  addClass(subMenu1, "selectedDropper");
+  pageLoader("cashSales", loadOtherSales);
+};
+
+//credit sales
+const loadCreditSales = e => {
+  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
+  let creditSales = document.getElementsByClassName("creditSales")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(creditSales, "selected");
+  addClass(subMenu1, "selectedDropper");
+  pageLoader("creditSales", loadOtherSales);
+};
+
+//online sales
+const loadOnlineSales = e => {
+  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
+  let onlineSales = document.getElementsByClassName("onlineSales")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(onlineSales, "selected");
+  addClass(subMenu1, "selectedDropper");
+  pageLoader("onlineSales", loadOtherSales);
+};
+
+//add sales
+const loadAddSales = e => {
+  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
+  let addSales = document.getElementsByClassName("addSales")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(addSales, "selected");
+  addClass(subMenu1, "selectedDropper");
+  pageLoader("addSales", loadCart);
+};
+
+//stock list
+const loadAllStock = () => {
+  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
+  let allStock = document.getElementsByClassName("allStock")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(allStock, "selected");
+  addClass(subMenu2, "selectedDropper");
+  pageLoader("allStock", fetchAllStock);
+};
+
+//expired stock
+const loadExpiredStock = e => {
+  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
+  let expiredStock = document.getElementsByClassName("expiredStock")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(expiredStock, "selected");
+  addClass(subMenu2, "selectedDropper");
+  pageLoader("expiredStock", fetchAllStock);
+};
+
+//stock exhausted
+const loadExhaustedStock = e => {
+  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
+  let exhaustedStock = document.getElementsByClassName("exhaustedStock")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(exhaustedStock, "selected");
+  addClass(subMenu2, "selectedDropper");
+  pageLoader("exhaustedStock", fetchAllStock);
+};
+
+//stock list
+const loadAddStock = e => {
+  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
+  let addStock = document.getElementsByClassName("addStock")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(addStock, "selected");
+  addClass(subMenu2, "selectedDropper");
+  pageLoader("addStock", loadStoreContent);
+};
+
+//staff list
+const loadStaffList = e => {
+  let subMenu3 = document.getElementsByClassName("subMenu3")[0];
+  let staffList = document.getElementsByClassName("staffList")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(staffList, "selected");
+  addClass(subMenu3, "selectedDropper");
+  pageLoader("staffList", showList);
+};
+
+//attendance
+const loadAttendance = e => {
+  let subMenu3 = document.getElementsByClassName("subMenu3")[0];
+  let attendance = document.getElementsByClassName("attendance")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(attendance, "selected");
+  addClass(subMenu3, "selectedDropper");
+  pageLoader("attendance", listAttendance);
+};
+
+//staff add
+const loadAddStaff = e => {
+  let subMenu3 = document.getElementsByClassName("subMenu3")[0];
+  let addStaff = document.getElementsByClassName("addStaff")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(addStaff, "selected");
+  addClass(subMenu3, "selectedDropper");
+  pageLoader("staffAdd");
+};
+
+//all invoices
+const loadAllInvoices = e => {
+  let subMenu4 = document.getElementsByClassName("subMenu4")[0];
+  let allInvoices = document.getElementsByClassName("allInvoices")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(allInvoices, "selected");
+  addClass(subMenu4, "selectedDropper");
+  pageLoader("allInvoices", loadCurrentInvoices);
+};
+
+//cleared invoices
+const loadClearedInvoices = e => {
+  let subMenu4 = document.getElementsByClassName("subMenu4")[0];
+  let clearedInvoices = document.getElementsByClassName("clearedInvoices")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(clearedInvoices, "selected");
+  addClass(subMenu4, "selectedDropper");
+  pageLoader("clearedInvoices", loadOtherInvoices);
+};
+
+//debt invoices
+const loadDebtInvoices = e => {
+  let subMenu4 = document.getElementsByClassName("subMenu4")[0];
+  let debtInvoices = document.getElementsByClassName("debtInvoices")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(debtInvoices, "selected");
+  addClass(subMenu4, "selectedDropper");
+  pageLoader("debtInvoices", loadOtherInvoices);
+};
+
+//expenses
+const loadExpenses = e => {
+  let expenses = document.getElementsByClassName("expenses")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(expenses, "selected");
+  pageLoader("expenses", loadCurrentExpenses);
+};
+
+//reports
+const loadReports = e => {
+  let reports = document.getElementsByClassName("reports")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(reports, "selected");
+  pageLoader("reports");
+};
+
+const loadAccountReports = e => {
+  let accountReport = document.getElementsByClassName("accountReport")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(accountReport, "selected");
+  pageLoader("accountReport", listAccountReport);
+};
+
+const loadProductReports = e => {
+  let productReport = document.getElementsByClassName("productReport")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(productReport, "selected");
+  pageLoader("productReport", listProductReport);
+};
+
+const loadSettings = e => {
+  //let productReport = document.getElementsByClassName("productReport")[0];
+  //remove previous selections
+  selectionRemover();
+  //addClass(productReport, "selected");
+  pageLoader("settings", loadSettingsSections);
+};
+
+///currency formater
+const formatMoney = money => {
+  //ensure two decimal places
+  let amount = Number(money).toFixed(2);
+  //add commas where needed
+  amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  //return amount
+  return amount;
+};
+
+
+// sidebar handler
+const hideSideBar = e => {
+  let sideBar = document.getElementsByClassName("sidePane")[0];
+  let pageBase = document.getElementsByClassName("pageBase")[0];
+  let pageHead = document.getElementsByClassName("pageHead")[0];
+
+  sideBar.classList.toggle("hide");
+  pageBase.classList.toggle("reducePad");
+  pageHead.classList.toggle("reduceHeadPad");
+};
+
+//setting dropper
+const drop = e => {
+  let notificationDrop = document.getElementsByClassName("notificationDrop")[0];
+
+  if (!notificationDrop.classList.contains("hide")) {
+    notificationDrop.classList.add("hide");
+  }
+
+  let element = document
+    .getElementsByClassName("userDrop")[0]
+    .classList.toggle("hide");
+};
+
+//notification dropper
+const dropNotification = e => {
+  let userDrop = document.getElementsByClassName("userDrop")[0];
+
+  if (!userDrop.classList.contains("hide")) {
+    userDrop.classList.add("hide");
+  }
+  let element = document
+    .getElementsByClassName("notificationDrop")[0]
+    .classList.toggle("hide");
+};
+
+//menu drop settings
+const dropSales = e => {
+  let sub = document.getElementsByClassName("subMenu1")[0];
+  sub.classList.toggle("tap");
+};
+
+const dropStock = e => {
+  let sub = document.getElementsByClassName("subMenu2")[0];
+  sub.classList.toggle("tap");
+};
+
+const dropStaff = e => {
+  let sub = document.getElementsByClassName("subMenu3")[0];
+  sub.classList.toggle("tap");
+};
+
+const dropInvoice = e => {
+  let sub = document.getElementsByClassName("subMenu4")[0];
+  sub.classList.toggle("tap");
+};
+
+const dropReport = e => {
+  let sub = document.getElementsByClassName("subMenu5")[0];
+  sub.classList.toggle("tap");
+};
+
+//link selection starts
+
+//selection remover
+const selectionRemover = () => {
+  //get all li
+  let allLi = document.getElementsByTagName("li");
+  for (var li of allLi) {
+    if (li.classList.contains("selected")) {
+      li.classList.remove("selected");
+    }
+
+    if (li.classList.contains("selectedDropper")) {
+      li.classList.remove("selectedDropper");
+    }
+
+    if (li.classList.contains("tap")) {
+      li.classList.remove("tap");
+    }
+  }
+};
+
+//class Adder
+const addClass = (elem, className) => {
+  elem.classList.add(className);
+};
+
+
+
+const notification = async () => {
+  let stock;
+  let stocking;
+  //get stock
+  let getStock = stockModel.getStock();
+  getStock.then(
+    ({ data, header, status }) => {
+      stock = data.rows;
+      let stockingGetter = stockModel.getStocking();
+      stockingGetter.then(
+        ({ data, header, status }) => {
+          stocking = data.rows;
+          if (stocking.length > 0) {
+            //sort exhausted stock
+            let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
+            let expiredStock = stockModel.getExpiredStock(stock);
+            let exhausted = !exhaustedStock ? 0 : exhaustedStock.length;
+            let expired = !expiredStock ? 0 : expiredStock.length;
+            let totalNotifications = exhausted + expired;
+            document.getElementById(
+              "notCounter"
+            ).textContent = totalNotifications;
+            document.getElementById("exhaustedSpan").textContent = exhausted;
+            document.getElementById("expiredSpan").textContent = expired;
+          }
+        },
+        err => {
+          console.log(err);
+        }
+      );
+    },
+    err => {
+      console.log(err);
+    }
+  );
+};
+
+
+//hide for non admin
+const setRankElements = () => {
+  let loginDetails = store.getLoginDetail();
+  if (
+    loginDetails.permission.toUpperCase() !== "ADMIN" &&
+    loginDetails.permission.toUpperCase() !== "SUPER_ADMIN"
+  ) {
+    let list = document.querySelectorAll(".admin_only");
+    list = [...list, document.querySelectorAll(".super_admin_only")];
+    //check if no match exists
+    if (list.length < 1) return;
+    list.forEach(item => {
+      if (!item.classList.contains("hide")) {
+        item.classList.add("hide");
+      }
+    });
+  } else if (loginDetails.permission.toUpperCase() == "ADMIN") {
+    let list = document.querySelectorAll(".super_admin_only");
+    //check if no match exists
+    if (list.length < 1) return;
+    list.forEach(item => {
+      if (!item.classList.contains("hide")) {
+        item.classList.add("hide");
+      }
+    });
+  }
+};
+//loader sign
+const showLoading = () => {
+  $(".loadingModal").modal("show");
+};
+
+const hideLoading = () => {
+  $(".loadingModal").modal("hide");
+};
+
+
+//show loading
+//showLoading()
+
+//store setup details
+const storeSetup = async () => {
+
+  let {rows} = await setupDb.allDocs()
+  let workingList = await generateWorkingList(setupDb,rows)
+  console.log(workingList)
+  store.setSetupDetail(workingList[0]);
+}
+
+storeSetup()
+
+
+//auto sync with remote
+const autosync = () => {
+  //get time interval from store
+  let setUpInfo = store.getSetupDetail();
+  let interval = setUpInfo.detail[0].update_interval;
+  let package = setUpInfo.detail[0].package;
+
+  //check if app is premium and return if not premium
+  if (package !== "premium") return;
+
+  //connect
+  let updateTime;
+  //calculate intervals in millisecond
+  if (interval == "30mins") {
+    updateTime = 30 * 60 * 1000;
+  } else if (interval == "1hr") {
+    updateTime = 120 * 60 * 1000;
+  } else if (interval == "3hr") {
+    updateTime = 180 * 60 * 1000;
+  } else if (interval == "6hr") {
+    updateTime = 240 * 60 * 1000;
+  } else if (interval == "12hr") {
+    updateTime = 720 * 60 * 1000;
+  }
+
+  //synchronize with remote
+  setInterval(() => {
+    document.getElementById("sync").style.display = "";
+    //disable synchronization button
+    document.getElementById("syncBtn").disabled = true;
+    api();
+  }, updateTime);
+};
+
+
+
+const appendUserDetails = () => {
+  let user = store.getLoginDetail();
+  document.getElementById("containerImg").src = user.image;
+  document.getElementById(
+    "nameBox"
+  ).textContent = `${user.fname} ${user.lname}`;
+  document.getElementById("position").textContent = user.position;
+};
+
+
+const play = async () => {
+
+  let {rows} = await usersDb.allDocs()
+  let workingList = await generateWorkingList(usersDb,rows)
+  console.log(workingList)
+}
+
+play()
+//compare the two passwords
+// eslint-disable-next-line no-unused-vars
+const comparePassword = e => {
+  let pwd = document.getElementById("pwd");
+  let secPwd = e.target;
+  if (pwd.value != secPwd.value) {
+    secPwd.style.border = "1px solid red";
+  } else {
+    secPwd.style.border = "1px solid green";
+  }
+};
+//empty confirmation password
+// eslint-disable-next-line no-unused-vars
+const emptySecPassword = e => {
+  let secPwd = document.getElementById("confirmPwd");
+  secPwd.value = "";
+  secPwd.style.border = "none";
+};
 
 //error display
 const displayError = (element, error) => {
@@ -491,6 +938,102 @@ const loadRightMenu = () => {
 
 
 
+//login processing begins here
+const processLogin = async e => {
+  e.preventDefault();
+  showLoading();
+  //get error div
+  let errorDiv = document.getElementsByClassName("warning")[0];
+  //hide error box
+  if (!errorDiv.classList.contains("hide")) {
+    errorDiv.classList.add("hide");
+  }
+
+  let btn = e.target;
+  let email = document.getElementById("email");
+  let pwd = document.getElementById("pwd");
+  let inputs = [email, pwd];
+
+  if (validate.isEmpty(inputs)) {
+    displayError(errorDiv, "Please fill all fields");
+    hideLoading();
+  } else if (validate.isNotEmail(email.value.trim())) {
+    displayError(errorDiv, "Email invalid");
+    hideLoading();
+  } else {
+    
+    
+        //get users
+        let {rows} = await usersDb.allDocs()
+        let users = await generateWorkingList(usersDb,rows)
+        
+        //filter users for a match
+        let match = login.filterUsers(users, email, pwd);
+        if (match) {
+          //check if account is blocked
+          let access = login.checkAccess(users, email);
+
+          if (access) {
+            //get user details and store it
+            let user = login.getUserData(users, email);
+   
+
+            //store them in electron store
+            if (store.setUserData(user)) {
+              //start auto sync
+              autosync();
+
+              //record attendance
+              //get user details
+
+              let thisUser = attendanceModel.getThisUser(users, user.staffId);
+
+                let dataRecord = await attendanceModel.recordAttendance(
+                  thisUser[0]
+                );
+
+                      //display app container
+                      let url = "./app/pages/container.html";
+
+                      fs.readFile(url, "utf-8", (err, data) => {
+                        if (err) {
+                          console.log(err);
+                        }
+
+                        //append main page
+                        document.getElementsByTagName(
+                          "main"
+                        )[0].innerHTML = data;
+                        //start notification
+                        notification();
+                        //hide loading
+                        hideLoading();
+                        //load dashboard
+                        pageLoader("dashboard", loadUpdashboard);
+
+                        document
+                          .getElementsByTagName("body")[0]
+                          .classList.remove("setupBack");
+                        appendUserDetails();
+                      });
+                   
+             
+            }
+          } else {
+            hideLoading();
+            displayError(
+              errorDiv,
+              "Access denied, please contact appropriate personnel"
+            );
+          }
+        } else {
+          hideLoading();
+          displayError(errorDiv, "Invalid email or wrong password");
+        }
+     
+  }
+};
+
 
 
 //check for setup details
@@ -523,7 +1066,7 @@ setupDb.allDocs((err,doc) => {
     }else{
       //display app container since user is logged in
       document.getElementsByTagName("body")[0].classList.remove("setupBack");
-      let url = "./pages/container.html";
+      let url = "./app/pages/container.html";
       fs.readFile(url, "utf-8", (err, data) => {
         if (err) {
           console.log(err);
@@ -560,8 +1103,8 @@ const branches = new branchesClass();
 
 
 //get setup details
-let viewUrl = db.viewUrl.setup;
-var setUpDetails;
+//let viewUrl = db.viewUrl.setup;
+//var setUpDetails;
 
 /*let info = db.couch.get("vemon_setup", viewUrl);
 info.then(
@@ -596,87 +1139,6 @@ const disconnectSocket = () => {
   webSocket.disconnect();
 };
 */
-const notification = async () => {
-  let stock;
-  let stocking;
-  //get stock
-  let getStock = stockModel.getStock();
-  getStock.then(
-    ({ data, header, status }) => {
-      stock = data.rows;
-      let stockingGetter = stockModel.getStocking();
-      stockingGetter.then(
-        ({ data, header, status }) => {
-          stocking = data.rows;
-          if (stocking.length > 0) {
-            //sort exhausted stock
-            let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
-            let expiredStock = stockModel.getExpiredStock(stock);
-            let exhausted = !exhaustedStock ? 0 : exhaustedStock.length;
-            let expired = !expiredStock ? 0 : expiredStock.length;
-            let totalNotifications = exhausted + expired;
-            document.getElementById(
-              "notCounter"
-            ).textContent = totalNotifications;
-            document.getElementById("exhaustedSpan").textContent = exhausted;
-            document.getElementById("expiredSpan").textContent = expired;
-          }
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    },
-    err => {
-      console.log(err);
-    }
-  );
-};
-
-//auto sync with remote
-const autosync = () => {
-  //get time interval from store
-  let setUpInfo = store.getSetupDetail();
-  let interval = setUpInfo.detail[0].value.update_interval;
-  let package = setUpInfo.detail[0].value.app_package;
-
-  //check if app is premium and return if not premium
-  if (package !== "premium") return;
-
-  //connect
-  let updateTime;
-  //calculate intervals in millisecond
-  if (interval == "30mins") {
-    updateTime = 30 * 60 * 1000;
-  } else if (interval == "1hr") {
-    updateTime = 120 * 60 * 1000;
-  } else if (interval == "3hr") {
-    updateTime = 180 * 60 * 1000;
-  } else if (interval == "6hr") {
-    updateTime = 240 * 60 * 1000;
-  } else if (interval == "12hr") {
-    updateTime = 720 * 60 * 1000;
-  }
-
-  //synchronize with remote
-  setInterval(() => {
-    document.getElementById("sync").style.display = "";
-    //disable synchronization button
-    document.getElementById("syncBtn").disabled = true;
-    api();
-  }, updateTime);
-};
-
-const appendUserDetails = () => {
-  let user = store.getLoginDetail();
-
-  document.getElementById("containerImg").src = user.image;
-  document.getElementById(
-    "nameBox"
-  ).textContent = `${user.fname} ${user.lname}`;
-  document.getElementById("position").textContent = user.position;
-};
-
 //details store
 var details = {
   package: "",
@@ -748,33 +1210,6 @@ const hideGenStaticModal = elem => {
 
   return true;
 };
-//hide for non admin
-const setRankElements = () => {
-  let loginDetails = store.getLoginDetail();
-  if (
-    loginDetails.permission.toUpperCase() !== "ADMIN" &&
-    loginDetails.permission.toUpperCase() !== "SUPER_ADMIN"
-  ) {
-    let list = document.querySelectorAll(".admin_only");
-    list = [...list, document.querySelectorAll(".super_admin_only")];
-    //check if no match exists
-    if (list.length < 1) return;
-    list.forEach(item => {
-      if (!item.classList.contains("hide")) {
-        item.classList.add("hide");
-      }
-    });
-  } else if (loginDetails.permission.toUpperCase() == "ADMIN") {
-    let list = document.querySelectorAll(".super_admin_only");
-    //check if no match exists
-    if (list.length < 1) return;
-    list.forEach(item => {
-      if (!item.classList.contains("hide")) {
-        item.classList.add("hide");
-      }
-    });
-  }
-};
 
 /*
 //handle setup checking
@@ -820,436 +1255,6 @@ db.getSetup().then(
   }
 );*/
 //ipcRenderer.send("as-message", "hello");
-
-//login processing begins here
-const processLogin = e => {
-  e.preventDefault();
-  showLoading();
-  //get error div
-  let errorDiv = document.getElementsByClassName("warning")[0];
-  //hide error box
-  if (!errorDiv.classList.contains("hide")) {
-    errorDiv.classList.add("hide");
-  }
-
-  let btn = e.target;
-  let email = document.getElementById("email");
-  let pwd = document.getElementById("pwd");
-  let inputs = [email, pwd];
-
-  if (validate.isEmpty(inputs)) {
-    displayError(errorDiv, "Please fill all fields");
-    hideLoading();
-  } else if (validate.isNotEmail(email.value.trim())) {
-    displayError(errorDiv, "Email invalid");
-    hideLoading();
-  } else {
-    //get users promise
-    let userPromise = login.getUsers();
-    userPromise.then(
-      ({ data, headers, status }) => {
-        //get users
-        let users = data.rows;
-
-        //filter users for a match
-        let match = login.filterUsers(users, email, pwd);
-        if (match) {
-          //check if account is blocked
-          let access = login.checkAccess(users, email);
-
-          if (access) {
-            //get user details and store it
-            let userObj = login.getUserData(users, email);
-            let user = userObj.value;
-
-            //store them in electron store
-            if (store.setUserData(user)) {
-              //start auto sync
-              autosync();
-
-              //record attendance
-              //get user details
-
-              let thisUser = attendanceModel.getThisUser(users, user.staffId);
-
-              //generate unique id
-              let genId = attendanceModel.generateId();
-              genId.then(ids => {
-                let id = ids[0];
-                //insert into attendance database
-                let dataRecord = attendanceModel.recordAttendance(
-                  id,
-                  thisUser[0]
-                );
-
-                dataRecord.then(
-                  ({ data, status }) => {
-                    if (status == 201) {
-                      //display app container
-                      let url = "./pages/container.html";
-
-                      fs.readFile(url, "utf-8", (err, data) => {
-                        if (err) {
-                          console.log(err);
-                        }
-
-                        //append main page
-                        document.getElementsByTagName(
-                          "main"
-                        )[0].innerHTML = data;
-                        //start notification
-                        notification();
-                        //hide loading
-                        hideLoading();
-                        //load dashboard
-                        pageLoader("dashboard", loadUpdashboard);
-
-                        document
-                          .getElementsByTagName("body")[0]
-                          .classList.remove("setupBack");
-                        appendUserDetails();
-                      });
-                    }
-                  },
-                  err => {
-                    console.log(err);
-                  }
-                );
-              });
-            }
-          } else {
-            hideLoading();
-            displayError(
-              errorDiv,
-              "Access denied, please contact appropriate personnel"
-            );
-          }
-        } else {
-          hideLoading();
-          displayError(errorDiv, "Invalid email or wrong password");
-        }
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  }
-};
-
-// sidebar handler
-const hideSideBar = e => {
-  let sideBar = document.getElementsByClassName("sidePane")[0];
-  let pageBase = document.getElementsByClassName("pageBase")[0];
-  let pageHead = document.getElementsByClassName("pageHead")[0];
-
-  sideBar.classList.toggle("hide");
-  pageBase.classList.toggle("reducePad");
-  pageHead.classList.toggle("reduceHeadPad");
-};
-
-//setting dropper
-const drop = e => {
-  let notificationDrop = document.getElementsByClassName("notificationDrop")[0];
-
-  if (!notificationDrop.classList.contains("hide")) {
-    notificationDrop.classList.add("hide");
-  }
-
-  let element = document
-    .getElementsByClassName("userDrop")[0]
-    .classList.toggle("hide");
-};
-
-//notification dropper
-const dropNotification = e => {
-  let userDrop = document.getElementsByClassName("userDrop")[0];
-
-  if (!userDrop.classList.contains("hide")) {
-    userDrop.classList.add("hide");
-  }
-  let element = document
-    .getElementsByClassName("notificationDrop")[0]
-    .classList.toggle("hide");
-};
-
-//menu drop settings
-const dropSales = e => {
-  let sub = document.getElementsByClassName("subMenu1")[0];
-  sub.classList.toggle("tap");
-};
-
-const dropStock = e => {
-  let sub = document.getElementsByClassName("subMenu2")[0];
-  sub.classList.toggle("tap");
-};
-
-const dropStaff = e => {
-  let sub = document.getElementsByClassName("subMenu3")[0];
-  sub.classList.toggle("tap");
-};
-
-const dropInvoice = e => {
-  let sub = document.getElementsByClassName("subMenu4")[0];
-  sub.classList.toggle("tap");
-};
-
-const dropReport = e => {
-  let sub = document.getElementsByClassName("subMenu5")[0];
-  sub.classList.toggle("tap");
-};
-
-//link selection starts
-
-//selection remover
-const selectionRemover = () => {
-  //get all li
-  let allLi = document.getElementsByTagName("li");
-  for (var li of allLi) {
-    if (li.classList.contains("selected")) {
-      li.classList.remove("selected");
-    }
-
-    if (li.classList.contains("selectedDropper")) {
-      li.classList.remove("selectedDropper");
-    }
-
-    if (li.classList.contains("tap")) {
-      li.classList.remove("tap");
-    }
-  }
-};
-
-//class Adder
-const addClass = (elem, className) => {
-  elem.classList.add(className);
-};
-
-//dashboard
-const loadDashboard = e => {
-  let dashboard = document.getElementsByClassName("dashboard")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(dashboard, "selected");
-
-  pageLoader("dashboard", loadUpdashboard);
-};
-
-//all sales
-const loadAllSales = e => {
-  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
-  let allSales = document.getElementsByClassName("allSales")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(allSales, "selected");
-  addClass(subMenu1, "selectedDropper");
-  pageLoader("allSales", loadCurrentSales);
-};
-
-//cash sales
-const loadCashSales = e => {
-  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
-  let cashSales = document.getElementsByClassName("cashSales")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(cashSales, "selected");
-  addClass(subMenu1, "selectedDropper");
-  pageLoader("cashSales", loadOtherSales);
-};
-
-//credit sales
-const loadCreditSales = e => {
-  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
-  let creditSales = document.getElementsByClassName("creditSales")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(creditSales, "selected");
-  addClass(subMenu1, "selectedDropper");
-  pageLoader("creditSales", loadOtherSales);
-};
-
-//online sales
-const loadOnlineSales = e => {
-  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
-  let onlineSales = document.getElementsByClassName("onlineSales")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(onlineSales, "selected");
-  addClass(subMenu1, "selectedDropper");
-  pageLoader("onlineSales", loadOtherSales);
-};
-
-//add sales
-const loadAddSales = e => {
-  let subMenu1 = document.getElementsByClassName("subMenu1")[0];
-  let addSales = document.getElementsByClassName("addSales")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(addSales, "selected");
-  addClass(subMenu1, "selectedDropper");
-  pageLoader("addSales", loadCart);
-};
-
-//stock list
-const loadAllStock = () => {
-  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
-  let allStock = document.getElementsByClassName("allStock")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(allStock, "selected");
-  addClass(subMenu2, "selectedDropper");
-  pageLoader("allStock", fetchAllStock);
-};
-
-//expired stock
-const loadExpiredStock = e => {
-  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
-  let expiredStock = document.getElementsByClassName("expiredStock")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(expiredStock, "selected");
-  addClass(subMenu2, "selectedDropper");
-  pageLoader("expiredStock", fetchAllStock);
-};
-
-//stock exhausted
-const loadExhaustedStock = e => {
-  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
-  let exhaustedStock = document.getElementsByClassName("exhaustedStock")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(exhaustedStock, "selected");
-  addClass(subMenu2, "selectedDropper");
-  pageLoader("exhaustedStock", fetchAllStock);
-};
-
-//stock list
-const loadAddStock = e => {
-  let subMenu2 = document.getElementsByClassName("subMenu2")[0];
-  let addStock = document.getElementsByClassName("addStock")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(addStock, "selected");
-  addClass(subMenu2, "selectedDropper");
-  pageLoader("addStock", loadStoreContent);
-};
-
-//staff list
-const loadStaffList = e => {
-  let subMenu3 = document.getElementsByClassName("subMenu3")[0];
-  let staffList = document.getElementsByClassName("staffList")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(staffList, "selected");
-  addClass(subMenu3, "selectedDropper");
-  pageLoader("staffList", showList);
-};
-
-//attendance
-const loadAttendance = e => {
-  let subMenu3 = document.getElementsByClassName("subMenu3")[0];
-  let attendance = document.getElementsByClassName("attendance")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(attendance, "selected");
-  addClass(subMenu3, "selectedDropper");
-  pageLoader("attendance", listAttendance);
-};
-
-//staff add
-const loadAddStaff = e => {
-  let subMenu3 = document.getElementsByClassName("subMenu3")[0];
-  let addStaff = document.getElementsByClassName("addStaff")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(addStaff, "selected");
-  addClass(subMenu3, "selectedDropper");
-  pageLoader("staffAdd");
-};
-
-//all invoices
-const loadAllInvoices = e => {
-  let subMenu4 = document.getElementsByClassName("subMenu4")[0];
-  let allInvoices = document.getElementsByClassName("allInvoices")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(allInvoices, "selected");
-  addClass(subMenu4, "selectedDropper");
-  pageLoader("allInvoices", loadCurrentInvoices);
-};
-
-//cleared invoices
-const loadClearedInvoices = e => {
-  let subMenu4 = document.getElementsByClassName("subMenu4")[0];
-  let clearedInvoices = document.getElementsByClassName("clearedInvoices")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(clearedInvoices, "selected");
-  addClass(subMenu4, "selectedDropper");
-  pageLoader("clearedInvoices", loadOtherInvoices);
-};
-
-//debt invoices
-const loadDebtInvoices = e => {
-  let subMenu4 = document.getElementsByClassName("subMenu4")[0];
-  let debtInvoices = document.getElementsByClassName("debtInvoices")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(debtInvoices, "selected");
-  addClass(subMenu4, "selectedDropper");
-  pageLoader("debtInvoices", loadOtherInvoices);
-};
-
-//expenses
-const loadExpenses = e => {
-  let expenses = document.getElementsByClassName("expenses")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(expenses, "selected");
-  pageLoader("expenses", loadCurrentExpenses);
-};
-
-//reports
-const loadReports = e => {
-  let reports = document.getElementsByClassName("reports")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(reports, "selected");
-  pageLoader("reports");
-};
-
-const loadAccountReports = e => {
-  let accountReport = document.getElementsByClassName("accountReport")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(accountReport, "selected");
-  pageLoader("accountReport", listAccountReport);
-};
-
-const loadProductReports = e => {
-  let productReport = document.getElementsByClassName("productReport")[0];
-  //remove previous selections
-  selectionRemover();
-  addClass(productReport, "selected");
-  pageLoader("productReport", listProductReport);
-};
-
-const loadSettings = e => {
-  //let productReport = document.getElementsByClassName("productReport")[0];
-  //remove previous selections
-  selectionRemover();
-  //addClass(productReport, "selected");
-  pageLoader("settings", loadSettingsSections);
-};
-
-///currency formater
-const formatMoney = money => {
-  //ensure two decimal places
-  let amount = Number(money).toFixed(2);
-  //add commas where needed
-  amount = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  //return amount
-  return amount;
-};
 
 //socket logout
 const socketLogOut = () => {

@@ -109,19 +109,19 @@ class attendanceModel {
 
   getThisUser(staffData, valueId) {
     let match = staffData.filter(data => {
-      return data.value.staffId.toUpperCase() == valueId.toUpperCase();
+      return data.staffId.toUpperCase() == valueId.toUpperCase();
     });
 
     return match;
   }
 
-  recordAttendance(id, detail) {
+  async recordAttendance( detail) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
-    return this.couch.insert("attendance", {
-      _id: id,
-      staffId: detail.value.staffId.toUpperCase(),
-      staffName: detail.value.fname + " " + detail.value.lname,
+    return attendanceDb.put({
+      _id: `${+ new Date()}`,
+      staffId: detail.staffId.toUpperCase(),
+      staffName: detail.firstname + " " + detail.lastname,
       arrivalTime: date.getHours() + ":" + date.getMinutes(),
       exitTime: "",
       day: date.getDate(),

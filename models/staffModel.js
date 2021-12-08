@@ -4,14 +4,6 @@
 
 class staffModel {
  
-  generateId() {
-    return this.couch.uniqid();
-  }
-
-  getUsers() {
-    let viewUrl = this.viewUrl.users;
-    return {};
-  }
 
   insertDetails(details, id) {
     let staffId = "STF";

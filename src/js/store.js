@@ -71,16 +71,16 @@ class Store {
   setUserData(user) {
     this.store.set("loginDetails", {
       loginStatus: true,
-      fname: user.fname,
-      lname: user.lname,
+      fname: user.firstname,
+      lname: user.lastname,
       email: user.email,
       staffId: user.staffId,
       position: user.position,
       permission: user.permission,
       image: user.image,
       access: user.access,
-      docId: user.id,
-      pwd: user.pwd
+      docId: user._id,
+      pwd: user.password
     });
 
     return true;

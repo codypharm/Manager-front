@@ -12,8 +12,8 @@ class Login {
   filterUsers(users, email, pwd) {
     let match = users.filter(user => {
       return (
-        user.value.email == email.value.trim() &&
-        user.value.pwd == pwd.value.trim()
+        user.email == email.value.trim() &&
+        user.password == pwd.value.trim()
       );
     });
 
@@ -25,9 +25,9 @@ class Login {
   checkAccess(users, email) {
     let match = users.filter(user => {
       return (
-        user.value.email == email.value.trim() &&
-        user.value.access == "open" &&
-        user.value.permission.toUpperCase() !== "MEMBER"
+        user.email == email.value.trim() &&
+        user.access == "open" &&
+        user.permission.toUpperCase() !== "MEMBER"
       );
     });
 
@@ -38,7 +38,7 @@ class Login {
 
   getUserData(users, email) {
     let match = users.filter(user => {
-      return user.value.email == email.value.trim();
+      return user.email == email.value.trim();
     });
 
     let [userObj] = match;

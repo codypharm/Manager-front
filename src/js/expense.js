@@ -5,11 +5,12 @@
 var expenses;
 var expenseForm;
 var staffList;
-
+var currentExpenses
 //handle expenses
 const handleExpenses = (day, month, year) => {
   //filter expenses with this date
   let matchedExpenses = expenseModel.matchExpense(expenses, day, month, year);
+  currentExpenses = matchedExpenses
   if (!matchedExpenses) {
     document.getElementById("expensesList").innerHTML =
       " <tr>" +
@@ -26,38 +27,28 @@ const handleExpenses = (day, month, year) => {
 };
 
 //proceed delete ll
-const proceedDeleteAll = () => {
-  expenses.forEach(async expense => {
-    expenseDeleter = await expenseModel.deleteExpense(
-      expense.id,
-      expense.value.rev,
-      expense.value.amt,
-      expense.value.description
-    );
-  });
-  return true;
+const proceedDeleteAll = async () => {
+  for (let i = 0; i < currentExpenses.length; i++) {
+    let expense = currentExpenses[i];
+    await expenseModel.deleteExpense(expense._id,expense._rev,expense.amt, expense.description)
+  }
+  return true
 };
 
 //verify all expenses
-const verifyAllExpense = () => {
+const verifyAllExpense =async () => {
   showLoading();
-  //get all expenses
-  let expenseGetter = expenseModel.getExpenses();
-  expenseGetter.then(
-    ({ data, headers, status }) => {
-      //update expenses variable with current state of expenses
-      expenses = data.rows;
-
+  
       let date = new Date();
       let day = date.getDate();
       let month = date.getMonth() + 1;
       let year = date.getFullYear();
-      let match = expenses.filter(expense => {
+      let match = currentExpenses.filter(expense => {
         return (
-          expense.value.day != day ||
-          expense.value.month != month ||
-          expense.value.year != year ||
-          expense.value.remote == true
+          expense.day != day &&
+          expense.month != month &&
+          expense.year != year &&
+          expense.remote == true
         );
       });
 
@@ -67,9 +58,9 @@ const verifyAllExpense = () => {
         showModal("The expense list can no longer be deleted");
       } else {
         //proceed with deletion
-        if (proceedDeleteAll()) {
+        if (await proceedDeleteAll()) {
           //delete all expense in array
-          expenses = [];
+          expenses = await expenseModel.getExpenses();
 
           //get date
           let day = document.getElementById("expenseDay").value;
@@ -81,19 +72,22 @@ const verifyAllExpense = () => {
           hideLoading();
         }
       }
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 //delete all expense
 const deleteAllExpense = () => {
+ 
+  //if no expense to delete
+  if(!currentExpenses)return
+
   //check if sync is on
-  if (store.getSyncState().state) {
-    showModal("Please try again when synchronization has ended.");
-    return;
+  if (store.getSyncState() != undefined ) {
+    if(store.getSyncState().state){
+      showModal("Please try again when synchronization has ended.");
+      return;
+    }
   }
+ 
   //get window object
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
@@ -114,12 +108,11 @@ const deleteAllExpense = () => {
 };
 
 //proceed delete
-const proceedDelete = (id, rev, amt, description) => {
+const proceedDelete = async (id, rev, amt, description) => {
   showLoading();
-  let expenseDeleter = expenseModel.deleteExpense(id, rev, amt, description);
-  expenseDeleter.then(
-    ({ data, headers, status }) => {
-      if (status == 200) {
+  let expenseDeleter =  await expenseModel.deleteExpense(id, rev, amt, description);
+
+     
         //filter expenses
         expenses = expenseModel.removeExpense(expenses, id);
 
@@ -131,16 +124,13 @@ const proceedDelete = (id, rev, amt, description) => {
         //load expenses
         handleExpenses(day, month, year);
         hideLoading();
-      }
-    },
-    err => {
-      console.log(err);
-    }
-  );
+      
+   
 };
 
 //verify expense
-const verifyExpense = expense => {
+const 
+verifyExpense = expense => {
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -151,22 +141,24 @@ const verifyExpense = expense => {
 };
 
 //delete expense
-const deleteExpense = (e, id, rev, amt, description) => {
+const deleteExpense = async (e, id, rev, amt, description) => {
+  
   //check if sync is on
-  if (store.getSyncState().state) {
-    showModal("Please try again when synchronization has ended.");
-    return;
+  if (store.getSyncState() != undefined) {
+    if(store.getSyncState().state){
+      showModal("Please try again when synchronization has ended.");
+      return;
+    }
   }
   //check if expense has been recorded online
   //get all expenses
-  let expenseGetter = expenseModel.getExpenses();
-  expenseGetter.then(
-    ({ data, headers, status }) => {
-      let expenses = data.rows;
+  let expenses = await expenseModel.getExpenses();
+  
       // get this expense
       let expense = expenses.filter(expense => {
-        return expense.id == id;
-      })[0].value;
+        return expense._id == id;
+      })[0];
+      
       //check if the expense if for today and not synchronized
       let unApprove = verifyExpense(expense);
 
@@ -197,11 +189,7 @@ const deleteExpense = (e, id, rev, amt, description) => {
           }
         });
       }
-    },
-    err => {
-      console.log(err);
-    }
-  );
+   
 };
 
 //load expenses of selected daTE
@@ -226,7 +214,7 @@ const loadMyExpenses = e => {
 };
 
 //load current expenses
-const loadCurrentExpenses = () => {
+const loadCurrentExpenses = async () => {
   showLoading();
   //enable button
   document.getElementById("processBtn").disabled = false;
@@ -244,30 +232,14 @@ const loadCurrentExpenses = () => {
   document.getElementById("expenseYear").value = year;
 
   //get staffList
-  let userGetter = staffModel.getUsers();
-  userGetter.then(
-    ({ data, header, status }) => {
-      staffList = data.rows;
-    },
-    err => {
-      console.log(err);
-    }
-  );
-
-  //get all expenses
-  let expenseGetter = expenseModel.getExpenses();
-  expenseGetter.then(
-    ({ data, headers, status }) => {
-      expenses = data.rows;
-
+  
+  
+  expenses = await expenseModel.getExpenses()
+ 
       //load expenses
       handleExpenses(day, month, year);
       hideLoading();
-    },
-    err => {
-      console.log(err);
-    }
-  );
+   
 };
 
 //handle show warning for expenses
@@ -322,7 +294,7 @@ const showExpForm = () => {
 };
 
 //submit expense form
-const submitExpenses = e => {
+const submitExpenses = async e => {
   e.preventDefault();
 
   //hide all alert box
@@ -343,21 +315,15 @@ const submitExpenses = e => {
     //check if staff id exist
     showExpError("Invalid name");
   } else {
-    console.log("ok");
-    let genId = expenseModel.generateId();
-    genId.then(ids => {
-      let id = ids[0];
+    
       //insert exepense into db
-      let expenseloader = expenseModel.insertExpense(
-        id,
+      let expenseloader = await expenseModel.insertExpense(
+       
         amt,
         description,
         name
       );
 
-      expenseloader.then(
-        ({ data, header, status }) => {
-          if (status == 201) {
             //show success message
             showExpSuccess("expense recorded");
 
@@ -372,12 +338,7 @@ const submitExpenses = e => {
                 loadCurrentExpenses();
               }
             }, 900);
-          }
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    });
+         
+   
   }
 };

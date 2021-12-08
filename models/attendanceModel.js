@@ -6,34 +6,22 @@ const moment = require("moment");
 class attendanceModel {
   
 
-  generateId() {
-    return this.couch.uniqid();
-  }
-
-  getUsers() {
-    let viewUrl = this.viewUrl.users;
-    return this.couch.get("users", viewUrl);
-  }
-
-  getAttendance() {
-    let viewUrl = this.viewUrl.attendance;
-    return this.couch.get("attendance", viewUrl);
-  }
+  
 
   getMatchingRecord(record, day, month, year) {
     let match = record.filter(list => {
       return (
-        Number(list.value.year) == year &&
-        Number(list.value.month) == month &&
-        Number(list.value.day) == day
+        Number(list.year) == year &&
+        Number(list.month) == month &&
+        Number(list.day) == day
       );
     });
 
     let sorted = match.sort((a, b) => {
-      if (a.value.staffName.toUpperCase() < b.value.staffName.toUpperCase())
+      if (a.staffName.toUpperCase() < b.staffName.toUpperCase())
         return -1;
 
-      if (a.value.staffName.toUpperCase() > b.value.staffName.toUpperCase())
+      if (a.staffName.toUpperCase() > b.staffName.toUpperCase())
         return 1;
 
       return 0;
@@ -45,8 +33,8 @@ class attendanceModel {
   extractAttendance(list, value) {
     let match = list.filter(item => {
       return (
-        item.value.staffId.toUpperCase().includes(value.toUpperCase()) ||
-        item.value.staffName.toUpperCase().includes(value.toUpperCase())
+        item.staffId.toUpperCase().includes(value.toUpperCase()) ||
+        item.staffName.toUpperCase().includes(value.toUpperCase())
       );
     });
 
@@ -61,7 +49,7 @@ class attendanceModel {
 
   idExists(valueId, staffData) {
     let match = staffData.filter(data => {
-      return data.value.staffId.toUpperCase() == valueId.toUpperCase();
+      return data.staffId.toUpperCase() == valueId.toUpperCase();
     });
 
     if (match.length > 0) {
@@ -74,11 +62,11 @@ class attendanceModel {
   marked(attendanceRecord, valueId, day, month, year) {
     let match = attendanceRecord.filter(record => {
       return (
-        record.value.day == day &&
-        record.value.month == month &&
-        record.value.year == year &&
-        !record.value.exitTime &&
-        record.value.staffId.toUpperCase() == valueId.toUpperCase()
+        record.day == day &&
+        record.month == month &&
+        record.year == year &&
+        !record.exitTime &&
+        record.staffId.toUpperCase() == valueId.toUpperCase()
       );
     });
 
@@ -92,11 +80,11 @@ class attendanceModel {
   getThisAttendance(attendanceRecord, day, month, year, id) {
     let match = attendanceRecord.filter(record => {
       return (
-        record.value.day == day &&
-        record.value.month == month &&
-        record.value.year == year &&
-        !record.value.exitTime &&
-        record.value.staffId.toUpperCase() == id.toUpperCase()
+        record.day == day &&
+        record.month == month &&
+        record.year == year &&
+        !record.exitTime &&
+        record.staffId.toUpperCase() == id.toUpperCase()
       );
     });
 
@@ -136,21 +124,21 @@ class attendanceModel {
   }
 
   //update attendance
-  updateAttendance(data) {
+  async updateAttendance(data) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
-    return this.couch.update("attendance", {
-      _id: data.id,
-      _rev: data.value.rev,
-      staffId: data.value.staffId,
-      staffName: data.value.staffName,
-      arrivalTime: data.value.arrivalTime,
+    return attendanceDb.put({
+      _id: data._id,
+      _rev: data._rev,
+      staffId: data.staffId,
+      staffName: data.staffName,
+      arrivalTime: data.arrivalTime,
       exitTime: date.getHours() + ":" + date.getMinutes(),
-      day: data.value.day,
-      month: data.value.month,
-      year: data.value.year,
-      arrivalRecorder: data.value.arrivalRecorder,
-      arrivalRecorderEmail: data.value.arrivalRecorderEmail,
+      day: data.day,
+      month: data.month,
+      year: data.year,
+      arrivalRecorder: data.arrivalRecorder,
+      arrivalRecorderEmail: data.arrivalRecorderEmail,
       exitRecorder: loginDetail.fname + " " + loginDetail.lname,
       exitRecorderEmail: loginDetail.email,
       remote: false

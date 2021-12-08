@@ -112,12 +112,12 @@
 <script id="expensesContainer" type="text/xhandlebars-template">
   {{#each data}}
   <tr>
-    <td>{{value.name}}</td>
+    <td>{{name}}</td>
 
-    <td>{{value.description}}</td>
-    <td>{{amt value.amt}}</td>
+    <td>{{description}}</td>
+    <td>{{amt amt}}</td>
     <td>
-      <button class="btn btn-secondary btn-sm" onclick="deleteExpense(event, '{{id}}','{{value.rev}}','{{value.amt}}','{{value.description}}')">
+      <button class="btn btn-secondary btn-sm" onclick="deleteExpense(event, '{{_id}}','{{_rev}}','{{amt}}','{{description}}')">
         Delete
       </button>
     </td>

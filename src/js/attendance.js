@@ -30,6 +30,7 @@ const recordAttendance = e => {
 
 //get list
 const getList = (day, month, year) => {
+  console.log(attendanceRecord)
   let matchingList = attendanceModel.getMatchingRecord(
     attendanceRecord,
     day,
@@ -51,19 +52,18 @@ const getList = (day, month, year) => {
   }
 };
 //list attendance
-const listAttendance = () => {
+const listAttendance = async() => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
   let year = date.getFullYear();
-  let staffRecord = attendanceModel.getUsers().then(
-    ({ data }) => {
-      staffData = data.rows;
-      let attendance = attendanceModel.getAttendance();
-      attendance.then(({ data }) => {
-        attendanceRecord = data.rows;
 
+  let {rows} = await usersDb.allDocs()
+   staffData = await generateWorkingList(usersDb,rows)
+      let attendanceRow = await attendanceDb.allDocs()
+       attendanceRecord = await generateWorkingList(attendanceDb, attendanceRow.rows)
+      
         //get list
         getList(day, month, year);
         //enable button
@@ -76,12 +76,8 @@ const listAttendance = () => {
           "dispDate"
         ).textContent = `${day}-${month}-${year}`;
         hideLoading();
-      });
-    },
-    err => {
-      console.log(err);
-    }
-  );
+     
+   
 };
 
 //process attendance list
@@ -178,16 +174,11 @@ const submitAttendance = e => {
 
     let thisUser = attendanceModel.getThisUser(staffData, valueId);
 
-    //generate unique id
-    let genId = attendanceModel.generateId();
-    genId.then(ids => {
-      let id = ids[0];
+   
       //insert into attendance database
-      let dataRecord = attendanceModel.recordAttendance(id, thisUser[0]);
+      let dataRecord = attendanceModel.recordAttendance(thisUser[0]);
 
-      dataRecord.then(
-        ({ data, status }) => {
-          if (status == 201) {
+        
             //hide spinner
             btnSpinner.classList.remove("spinner-border");
             btnSpinner.classList.remove("spinner-border-sm");
@@ -202,13 +193,9 @@ const submitAttendance = e => {
 
             //go back and show list
             listAttendance();
-          }
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    });
+          
+        
+   
   }
 };
 
@@ -219,7 +206,7 @@ const hideAttendance = e => {
 };
 
 //exit staff
-const exitStaff = e => {
+const exitStaff = async e => {
   showLoading();
   let id = e.target.dataset.id;
 
@@ -234,7 +221,7 @@ const exitStaff = e => {
   let currMonth = date.getMonth() + 1;
 
   let currYear = date.getFullYear();
-
+  
   //check if we are in the current day
   if (currDay == day && currMonth == month && currYear == year) {
     let data = attendanceModel.getThisAttendance(
@@ -244,18 +231,15 @@ const exitStaff = e => {
       year,
       id
     )[0];
-    let updater = attendanceModel.updateAttendance(data);
-    updater.then(
-      ({ data, headers, status }) => {
-        if (status == 201) {
-          //get attendance again
-          let attendance = attendanceModel.getAttendance();
-          attendance.then(({ data }) => {
-            attendanceRecord = data.rows;
-
-            let day = document.getElementById("attendanceDay").value;
-            let month = document.getElementById("attendanceMonth").value;
-            let year = document.getElementById("attendanceYear").value;
+    let updater = await attendanceModel.updateAttendance(data);
+   
+        
+          let {rows} = await attendanceDb.allDocs()
+          attendanceRecord = await generateWorkingList(attendanceDb, rows)
+          
+            day = document.getElementById("attendanceDay").value;
+            month = document.getElementById("attendanceMonth").value;
+            year = document.getElementById("attendanceYear").value;
 
             //get list
             getList(day, month, year);
@@ -270,13 +254,9 @@ const exitStaff = e => {
             ).textContent = `${day}-${month}-${year}`;
 
             hideLoading();
-          });
-        }
-      },
-      err => {
-        console.log(err);
-      }
-    );
+        
+        
+     
   } else {
     //show error message
     showModal("You can no longer exit from this date");

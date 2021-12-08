@@ -120,13 +120,13 @@
   <tr>
 
     
-    <td>{{value.staffName}}</td>
-    <td>{{value.arrivalTime}}</td>
-    <td data-id="{{value.staffId}}">
+    <td>{{staffName}}</td>
+    <td>{{arrivalTime}}</td>
+    <td data-id="{{staffId}}">
      
-    <button class="btn btn-sm btn-danger  {{exitButton value.exitTime value.staffId}}"  data-id="{{value.staffId}}" style="width:80px" onclick="exitStaff(event)">Exit</button>
-    <span class="{{exitDisplay value.exitTime}}">{{value.exitTime}}</span>
-    <span class="{{noDisplay value.exitTime value.staffId}}">--</span>
+    <button class="btn btn-sm btn-danger  {{exitButton exitTime staffId}}"  data-id="{{staffId}}" style="width:80px" onclick="exitStaff(event)">Exit</button>
+    <span class="{{exitDisplay exitTime}}">{{exitTime}}</span>
+    <span class="{{noDisplay exitTime staffId}}">--</span>
     </td>
 
 

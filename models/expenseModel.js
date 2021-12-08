@@ -3,14 +3,10 @@
 
 class Expense  {
   
-
-  generateId() {
-    return this.couch.uniqid();
-  }
-
-  getExpenses() {
-    let viewUrl = this.viewUrl.expenses;
-    return this.couch.get("expenses", viewUrl);
+  async getExpenses(){
+    let {rows} = await expensesDb.allDocs()
+    let expenses = await generateWorkingList(expensesDb,rows)
+    return expenses
   }
 
   isEmpty(inputs) {
@@ -46,10 +42,10 @@ class Expense  {
     }
   }
 
-  insertExpense(id, amt, description, name) {
+ async insertExpense(amt, description, name) {
     let date = new Date();
-    return this.couch.insert("expenses", {
-      id: id,
+   return expensesDb.put({
+      _id: `${+ new Date()}`,
       name: name[0].toUpperCase() + name.slice(1),
       amt: amt,
       description: description[0].toUpperCase() + description.slice(1),
@@ -63,9 +59,9 @@ class Expense  {
   matchExpense(expenses, day, month, year) {
     let match = expenses.filter(expense => {
       return (
-        expense.value.day == day &&
-        expense.value.month == month &&
-        expense.value.year == year
+        expense.day == day &&
+        expense.month == month &&
+        expense.year == year
       );
     });
 
@@ -76,13 +72,13 @@ class Expense  {
     }
   }
 
-  insertExpAct(id, edit, editClass) {
+  async insertExpAct( edit, editClass) {
     let date = new Date();
     // eslint-disable-next-line no-undef
     let loginDetail = store.getLoginDetail();
 
-    return this.couch.insert("all_activities", {
-      id: id,
+    return activitiesDb.put({
+      _id: `${+ new Date()}`,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear(),
@@ -96,26 +92,20 @@ class Expense  {
 
   async deleteExpense(id, rev, amt, description) {
     //insert into activities
-    let idGen = this.generateId();
-    idGen.then(ids => {
-      let newId = ids[0];
+    
       let editClass = "Expense delete";
       let edit = `Expense of amount ${amt} was deleted`;
-      let activityInsert = this.insertExpAct(newId, edit, editClass);
-      /*activityInsert.then(({data,headers,status}) => {
-        if(status == 201){
-
-        }
-      })*/
-    });
+      let activityInsert = await this.insertExpAct( edit, editClass);
+      
+    
     //delete from db
-    return this.couch.del("expenses", id, rev);
+    return expensesDb.remove(id, rev);
   }
 
   removeExpense(expenses, id) {
     //filter out expenses
     let match = expenses.filter(expense => {
-      return expense.id != id;
+      return expense._id != id;
     });
 
     if (match.length > 0) {
@@ -150,6 +140,10 @@ class Expense  {
       await this.remoteExpenseUpdateMatch(allMatch[i].value, allMatch[i].id);
     }
   }
+
+ /* async deleteAll (list) {
+    return expensesDb.bulkDocs(list)
+  }*/
 }
 
 module.exports = Expense;

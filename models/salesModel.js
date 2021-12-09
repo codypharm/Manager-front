@@ -11,14 +11,6 @@ const {
 class salesModel  {
   
 
-  generateId() {
-    return this.couch.uniqid();
-  }
-
-  getStock() {
-    let viewUrl = this.viewUrl.stock;
-    return this.couch.get("stock", viewUrl);
-  }
 
   isEmpty(inputs) {
     //filter input
@@ -58,8 +50,8 @@ class salesModel  {
   productExists(stock, id) {
     let match = stock.filter(product => {
       return (
-        product.value.prodId == id.value.trim() ||
-        product.value.name.toUpperCase() == id.value.trim().toUpperCase()
+        product.productId == id.value.trim() ||
+        product.name.toUpperCase() == id.value.trim().toUpperCase()
       );
     });
 
@@ -71,9 +63,8 @@ class salesModel  {
   getMatchingProduct(stock, id) {
     let match = stock.filter(product => {
       return (
-        (product.value.prodId.includes(id) ||
-          product.value.name.toUpperCase().includes(id.toUpperCase())) &&
-        Number(product.value.qty) > 0
+        product.productId.includes(id) ||
+          product.name.toUpperCase().includes(id.toUpperCase()) //&&Number(product.qty) > 0
       );
     });
 
@@ -88,10 +79,10 @@ class salesModel  {
     let unit = 0;
     stock.forEach(product => {
       if (
-        product.value.prodId == id ||
-        product.value.name.toUpperCase() == id.toUpperCase()
+        product.productId == id ||
+        product.name.toUpperCase() == id.toUpperCase()
       ) {
-        unit = product.value.unit;
+        unit = product.unit;
       }
     });
 
@@ -100,7 +91,7 @@ class salesModel  {
 
   getMatch(stock, id) {
     let match = stock.filter(product => {
-      return product.value.prodId == id && Number(product.value.qty) > 0;
+      return product.productId == id && Number(product.qty) > 0;
     });
 
     if (match.length > 0) {
@@ -152,10 +143,10 @@ class salesModel  {
     let matchQty = 0;
     stock.forEach(product => {
       if (
-        product.value.prodId == id ||
-        product.value.name.toUpperCase() == id.toUpperCase()
+        product.productId == id ||
+        product.name.toUpperCase() == id.toUpperCase()
       ) {
-        matchQty += Number(product.value.qty);
+        matchQty += Number(product.qty);
       }
     });
     return matchQty;
@@ -166,19 +157,19 @@ class salesModel  {
     let price;
     stock.forEach(product => {
       if (
-        product.value.prodId == id ||
-        product.value.name.toUpperCase() == id.toUpperCase()
+        product.productId == id ||
+        product.name.toUpperCase() == id.toUpperCase()
       ) {
-        price = (product.value.price * qty) / unit;
+        price = (product.price * qty) / unit;
         obj = {
-          id: product.id,
-          name: product.value.name,
-          productId: product.value.prodId,
-          brand: product.value.brand,
+          id: product._id,
+          name: product.name,
+          productId: product.productId,
+          brand: product.brand,
           qty: qty,
-          initialPrice: product.value.price,
+          initialPrice: product.price,
           price: price,
-          unit: product.value.unit
+          unit: product.unit
         };
       }
     });
@@ -212,35 +203,36 @@ class salesModel  {
     return [price, qty];
   }
 
-  updateStock(product) {
-    return this.couch.update("stock", {
-      _id: product.id,
-      _rev: product.value.rev,
-      batchId: product.value.batchId,
-      productId: product.value.prodId,
-      brand: product.value.brand,
-      name: product.value.name,
-      qty: product.value.qty,
-      form: product.value.form,
-      unit: product.value.unit,
-      price: product.value.price,
-      totalCost: product.value.totalCost,
-      pricePerMinUnit: product.value.ppmu,
+  async updateStock(product) {
+    
+    return stockDb.put({
+      _id: product._id,
+      _rev: product._rev,
+      batchId: product.batchId,
+      productId: product.productId,
+      brand: product.brand,
+      name: product.name,
+      qty: product.qty,
+      form: product.form,
+      unit: product.unit,
+      price: product.price,
+      totalCost: product.totalCost,
+      pricePerMinUnit: product.ppmu,
       remote: false,
-      expDate: product.value.expDate,
-      error: product.value.error,
-      day: product.value.day,
-      month: product.value.month,
-      year: product.value.year,
-      recorder: product.value.recName,
-      recorderEmail: product.value.recEmail
+      expDate: product.expDate,
+      error: product.error,
+      day: product.day,
+      month: product.month,
+      year: product.year,
+      recorder: product.recName,
+      recorderEmail: product.recEmail
     });
   }
 
-  insertSales(product, id, invoiceId, transType, disccount) {
+  insertSales(product, invoiceId, transType, disccount) {
     let date = new Date();
-    return this.couch.insert("sales", {
-      id: id,
+    return salesDb.put({
+      _id: `${+ new Date()}${product.productId}`,
       qty: product.qty,
       name: product.name,
       price: product.price,
@@ -259,7 +251,6 @@ class salesModel  {
   }
 
   insertInvoice(
-    id,
     invoiceId,
     customerAddress,
     customerName,
@@ -276,8 +267,8 @@ class salesModel  {
   ) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
-    return this.couch.insert("invoice", {
-      id: id,
+    return invoicesDb.put({
+      _id: `${+ new Date()}`,
       invoiceId: invoiceId,
       customerAddress: customerAddress,
       customerName: customerName,

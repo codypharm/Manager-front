@@ -1524,6 +1524,7 @@ html {
 .suggestionBox {
   width: 100%;
   height: auto;
+  max-height: 200px;
   position: absolute;
   top: 150px;
   left: 0;

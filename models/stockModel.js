@@ -18,9 +18,10 @@ class stockModel {
     return stocking;
   }
 
-  getActivities() {
-    let viewUrl = this.viewUrl.activities;
-    return this.couch.get("all_activities", viewUrl);
+  async getActivities() {
+    let {rows} = await activitiesDb.allDocs()
+    let activities = await generateWorkingList(activitiesDb, rows)
+    return activities;
   }
 
   isEmpty(inputs) {
@@ -37,10 +38,11 @@ class stockModel {
 
   idExists(stock, id) {
     let match = stock.filter(product => {
-      return product.prodId == id.value.trim();
+      return product.productId == id.value.trim();
     });
 
     if (match.length > 0) {
+      
       return true;
     }
   }
@@ -48,7 +50,7 @@ class stockModel {
   noNameMatch(stock, id, name) {
     let match = stock.filter(product => {
       return (
-        product.prodId == id.value.trim() &&
+        product.productId == id.value.trim() &&
         product.name.toUpperCase() != name.value.trim().toUpperCase()
       );
     });
@@ -61,8 +63,8 @@ class stockModel {
   noNameEditMatch(stock, id, name) {
     let match = stock.filter(product => {
       return (
-        product.value.prodId != id &&
-        product.value.name.toUpperCase() == name.value.trim().toUpperCase()
+        product.productId != id &&
+        product.name.toUpperCase() == name.value.trim().toUpperCase()
       );
     });
 
@@ -73,12 +75,13 @@ class stockModel {
   nameError(stock, id, name) {
     let match = stock.filter(product => {
       return (
-        product.prodId != id.value.trim() &&
+        product.productId != id.value.trim() &&
         product.name.toUpperCase() == name.value.trim().toUpperCase()
       );
     });
 
     if (match.length > 0) {
+      
       return true;
     }
   }
@@ -86,7 +89,7 @@ class stockModel {
   noBrandMatch(stock, id, brand) {
     let match = stock.filter(product => {
       return (
-        product.prodId == id.value.trim() &&
+        product.productId == id.value.trim() &&
         product.brand.toUpperCase() != brand.value.trim().toUpperCase()
       );
     });
@@ -99,7 +102,7 @@ class stockModel {
   noFormMatch(stock, id, form) {
     let match = stock.filter(product => {
       return (
-        product.prodId == id.value.trim() &&
+        product.productId == id.value.trim() &&
         product.form.toUpperCase() != form.value.trim().toUpperCase()
       );
     });
@@ -112,7 +115,7 @@ class stockModel {
   expError(stock, id, date) {
     let match = stock.filter(product => {
       return (
-        product.prodId == id.value.trim() &&
+        product.productId == id.value.trim() &&
         product.expDate != "" &&
         date.value.trim() == ""
       );
@@ -133,7 +136,7 @@ class stockModel {
   unitError(stock, id, unit) {
     let match = stock.filter(product => {
       return (
-        product.prodId == id.value.trim() &&
+        product.productId == id.value.trim() &&
         product.unit != unit.value.trim()
       );
     });
@@ -223,7 +226,7 @@ class stockModel {
 
   getMatch(stock, id) {
     let match = stock.filter(product => {
-      return product.value.prodId == id;
+      return product.productId == id;
     });
 
     if (match.length > 0) {
@@ -262,8 +265,15 @@ class stockModel {
     return this.couch.uniqid();
   }
 
-  generateMultipleId(n) {
-    return this.couch.uniqid(n);
+  generateMultipleId(allMatch) {
+    
+    for (let i = 0; i < allMatch.length; i++) {
+      let n = i+1
+      let time = + new Date() 
+      allMatch[i]._id = `${time + n}a`
+      
+    }
+    return allMatch
   }
 
  async insertStocking(product,  qty) {
@@ -314,8 +324,9 @@ class stockModel {
   }
 
   checkSortedArray(sortedArray, product) {
+    
     let match = sortedArray.filter(item => {
-      return item.value.prodId == product.value.prodId;
+      return item.productId == product.productId;
     });
     if (match.length > 0) {
       return true;
@@ -334,8 +345,9 @@ class stockModel {
       if (sortedArray.length > 0) {
         //check if in array
         sortedArray.forEach(item => {
+          
           //if match is found
-          if (item.prodId == product.prodId) {
+          if (item.productId == product.productId) {
             //add up
             item.qty = Number(item.qty) + Number(product.qty);
           } else {
@@ -445,7 +457,7 @@ class stockModel {
     let match = stock.filter(item => {
       return (
         item.name.toUpperCase().includes(searchInput) ||
-        item.prodId.includes(searchInput)
+        item.productId.includes(searchInput)
       );
     });
 
@@ -461,7 +473,7 @@ class stockModel {
     let match = stock.filter(item => {
       return (
         item.name.toUpperCase().includes(searchInput) ||
-        item.prodId.includes(searchInput)
+        item.productId.includes(searchInput)
       );
     });
 
@@ -477,7 +489,7 @@ class stockModel {
     let match = stock.filter(item => {
       return (
         item.name.toUpperCase().includes(searchInput) ||
-        item.prodId.includes(searchInput)
+        item.productId.includes(searchInput)
       );
     });
 
@@ -490,7 +502,7 @@ class stockModel {
 
   getSelectedStock(stock, id) {
     let match = stock.filter(product => {
-      return product.prodId == id;
+      return product.productId == id;
     });
 
     if (match.length > 0) {
@@ -512,11 +524,11 @@ class stockModel {
     }
   }
 
-  insertUpdate(id, editClass, edit, batchId) {
+  insertUpdate(editClass, edit, batchId) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
-    return this.couch.insert("all_activities", {
-      id: id,
+    return activitiesDb.put({
+      _id: `${+ new Date()}`,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear(),
@@ -528,12 +540,12 @@ class stockModel {
       staffId: loginDetail.staffId
     });
   }
-  editUpdateStock(detail, editQty, editExpDate, id) {
-    return this.couch.update("stock", {
+  async editUpdateStock(detail, editQty, editExpDate, id) {
+    return stockDb.put({
       _id: id,
-      _rev: detail.rev,
+      _rev: detail._rev,
       batchId: detail.batchId,
-      productId: detail.prodId,
+      productId: detail.productId,
       brand: detail.brand,
       name: detail.name,
       qty: editQty,
@@ -564,12 +576,13 @@ class stockModel {
   }
 
   //update current match
-  updateMatch(detail, id, name, form, price, unit, brand) {
-    return this.couch.update("stock", {
+ async updateMatch(detail, id, name, form, price, unit, brand) {
+    
+    return stockDb.put({
       _id: id,
-      _rev: detail.rev,
+      _rev: detail._rev,
       batchId: detail.batchId,
-      productId: detail.prodId,
+      productId: detail.productId,
       brand: brand[0].toUpperCase() + brand.slice(1),
       name: name[0].toUpperCase() + name.slice(1),
       qty: detail.qty,
@@ -599,8 +612,8 @@ class stockModel {
     for (let i = 0; i < matchLength; i++) {
       //wait for update to happen
       await this.updateMatch(
-        allMatch[i].value,
-        allMatch[i].id,
+        allMatch[i],
+        allMatch[i]._id,
         name,
         form,
         price,
@@ -677,12 +690,12 @@ class stockModel {
     }
   }
 
-  insertProductUpdate(editClass, edit, batchId, id) {
+  insertProductUpdate(editClass, edit, batchId,id) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
 
-    return this.couch.insert("all_activities", {
-      id: id,
+    return activitiesDb.put( {
+      _id: `${+ new Date()}${batchId}`,
       day: date.getDate(),
       month: date.getMonth() + 1,
       year: date.getFullYear(),
@@ -695,25 +708,24 @@ class stockModel {
     });
   }
 
-  async insertAllProductEdit(allMatch, edit, editClass, genIds) {
+  async insertAllProductEdit(allMatch, edit, editClass) {
     const matchLength = allMatch.length;
     const checker = matchLength - 1;
-
     //loop through matches
     for (let i = 0; i < matchLength; i++) {
       //wait for insertion to happen
       await this.insertProductUpdate(
         editClass,
         edit,
-        allMatch[i].value.batchId,
-        genIds[i]
+        allMatch[i].batchId,
+        allMatch[i]._id
       );
     }
   }
 
   getActivityMatch(activities, batchId) {
     let match = activities.filter(activity => {
-      return activity.value.editedId == batchId;
+      return activity.editedId == batchId;
     });
     if (match.length > 0) {
       return match;
@@ -724,7 +736,7 @@ class stockModel {
 
   getAct(activities, rev) {
     let match = activities.filter(act => {
-      return act.value.rev == rev;
+      return act._rev == rev;
     });
     if (match.length > 0) {
       return match;
@@ -733,7 +745,7 @@ class stockModel {
 
   getActivitiesForBatch(activities, batchId) {
     let match = activities.filter(act => {
-      return act.value.editedId == batchId;
+      return act.editedId == batchId;
     });
     if (match.length > 0) {
       return match;
@@ -742,12 +754,12 @@ class stockModel {
     }
   }
 
-  deleteStock(id, rev) {
-    return this.couch.del("stock", id, rev);
+  async deleteStock(id, rev) {
+    return stockDb.remove(id,rev)
   }
 
   deleteActivity(id, rev) {
-    return this.couch.del("all_activities", id, rev);
+    return activitiesDb.remove( id, rev);
   }
 
   async deleteActs(allMatch) {
@@ -755,7 +767,7 @@ class stockModel {
     //loop through matches
     for (let i = 0; i < matchLength; i++) {
       //wait for insertion to happen
-      await this.deleteActivity(allMatch[i].id, allMatch[i].value.rev);
+      await this.deleteActivity(allMatch[i]._id, allMatch[i]._rev);
     }
 
     return true;
@@ -766,7 +778,7 @@ class stockModel {
     //loop through matches
     for (let i = 0; i < matchLength; i++) {
       //wait for insertion to happen
-      await this.deleteStock(allMatch[i].id, allMatch[i].value.rev);
+      await this.deleteStock(allMatch[i]._id, allMatch[i]._rev);
     }
 
     return true;

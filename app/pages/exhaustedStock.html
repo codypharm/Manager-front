@@ -54,13 +54,13 @@
     {{#each data}}
     
     <tr>
-      <td>{{value.name}}</td>
-      <td>{{value.prodId}}</td>
+      <td>{{name}}</td>
+      <td>{{productId}}</td>
      
-      <td>{{value.qty}}</td>
+      <td>{{qty}}</td>
       
       <td class="{{rankAccess}}">
-          <button class="btn btn-sm btn-secondary" onclick="deleteProduct(event,'{{value.prodId}}')">
+          <button class="btn btn-sm btn-secondary" onclick="deleteProduct(event,'{{productId}}')">
               Delete
           </button>
       </td>

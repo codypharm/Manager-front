@@ -54,15 +54,15 @@
     {{#each data}}
     
     <tr>
-      <td>{{value.name}}</td>
-      <td>{{value.prodId}}</td>
-      <td>{{value.batchId}}</td>
-      <td>{{value.form}}</td>
-      <td>{{value.qty}}</td>
-      <td>{{value.expDate}}</td>
-      <td>{{daysRemaining value.expDate}}</td>
+      <td>{{name}}</td>
+      <td>{{productId}}</td>
+      <td>{{batchId}}</td>
+      <td>{{form}}</td>
+      <td>{{qty}}</td>
+      <td>{{expDate}}</td>
+      <td>{{daysRemaining expDate}}</td>
       <td class="{{rankAccess}}">
-          <button class="btn btn-sm btn-secondary" onclick="deleteExpiredBatch(event,'{{value.batchId}}')">
+          <button class="btn btn-sm btn-secondary" onclick="deleteExpiredBatch(event,'{{batchId}}')">
               Clear
           </button>
       </td>

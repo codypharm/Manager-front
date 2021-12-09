@@ -580,11 +580,12 @@ const fillUp = e => {
     //get match
     let match = stockModel.getMatch(stock, id.value.trim());
     let matchFocus = match[0];
-    document.getElementById("productName").value = matchFocus.value.name;
-    document.getElementById("productBrand").value = matchFocus.value.brand;
-    document.getElementById("unit").value = matchFocus.value.unit;
-    document.getElementById("form").value = matchFocus.value.form;
-    document.getElementById("price").value = matchFocus.value.price;
+    
+    document.getElementById("productName").value = matchFocus.name;
+    document.getElementById("productBrand").value = matchFocus.brand;
+    document.getElementById("unit").value = matchFocus.unit;
+    document.getElementById("form").value = matchFocus.form;
+    document.getElementById("price").value = matchFocus.price;
   }
 };
 
@@ -610,11 +611,10 @@ const handleAllStockDisplay = () => {
 };
 
 //handle exhausted stock
-const handleExhaustedStockDisplay = () => {
-  let stockingGetter = stockModel.getStocking();
-  stockingGetter.then(
-    ({ data, header, status }) => {
-      stocking = data.rows;
+const handleExhaustedStockDisplay = async () => {
+  let stocking = await stockModel.getStocking();
+  
+ 
       //sort exhausted stock
       exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
 
@@ -629,11 +629,7 @@ const handleExhaustedStockDisplay = () => {
           " </td>" +
           " </tr>";
       }
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //handle expired stocking
@@ -655,12 +651,10 @@ const handleExpiredStockDisplay = () => {
 };
 
 // fetch all stock
-const fetchAllStock = stockViewType => {
+const fetchAllStock = async stockViewType => {
   showLoading();
-  let getStock = stockModel.getStock();
-  getStock.then(
-    ({ data, header, status }) => {
-      stock = data.rows;
+  stock = await stockModel.getStock()
+  
       switch (stockViewType) {
         case "allStock":
           handleAllStockDisplay();
@@ -678,11 +672,7 @@ const fetchAllStock = stockViewType => {
           break;
       }
       hideLoading();
-    },
-    err => {
-      console.log(err);
-    }
-  );
+   
 };
 
 //performing search in expired stock
@@ -798,7 +788,7 @@ const searchExhaustedStock = e => {
 const getProductQty = products => {
   let qty = 0;
   products.forEach(product => {
-    qty += Number(product.value.qty);
+    qty += Number(product.qty);
   });
 
   return qty;
@@ -828,29 +818,27 @@ const analyseTop = selectedStockList => {
   //insert details to DOM
   document.getElementById(
     "analysisStockName"
-  ).textContent = `${productDetail.value.name}`;
+  ).textContent = `${productDetail.name}`;
   document.getElementById(
     "analysisStockForm"
-  ).textContent = `${productDetail.value.form}`;
+  ).textContent = `${productDetail.form}`;
   document.getElementById("analysisStockQty").textContent = `${qty}`;
   document.getElementById(
     "analysisStockId"
-  ).textContent = `${productDetail.value.prodId}`;
+  ).textContent = `${productDetail.productId}`;
   document.getElementById(
     "analysisStockUnit"
-  ).textContent = `${productDetail.value.unit}`;
+  ).textContent = `${productDetail.unit}`;
   document.getElementById("analysisStockPrice").textContent = ` ₦${formatMoney(
-    productDetail.value.price
+    productDetail.price
   )}`;
   document.getElementById("analysisStockBrand").textContent =
-    productDetail.value.brand;
+    productDetail.brand;
 };
 
-const analyseStock = () => {
-  let getStock = stockModel.getStock();
-  getStock.then(
-    ({ data, header, status }) => {
-      stock = data.rows;
+const analyseStock = async () => {
+  stock = await stockModel.getStock();
+  
       let productId = analysisSelected;
 
       //get selected product
@@ -861,11 +849,7 @@ const analyseStock = () => {
 
       //display all batch
       listOutBatches(selectedStockList);
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //show error log
@@ -876,7 +860,7 @@ const showErrorLog = (e, batchId) => {
 
   //get batch
   let batch = stockModel.getBatch(stock, id);
-  let detail = batch[0].value;
+  let detail = batch[0];
   //add to DOM
   document.getElementById("errorBatchId").textContent = detail.batchId;
   if (detail.error == "") {
@@ -907,7 +891,7 @@ const editBatch = (e, id) => {
 
   //get batch
   let batch = stockModel.getBatch(stock, id);
-  let detail = batch[0].value;
+  let detail = batch[0];
   oldEditExpDate = detail.expDate;
   oldEditQty = detail.qty;
   //add to DOM
@@ -918,7 +902,7 @@ const editBatch = (e, id) => {
 };
 
 //submit batch edit form
-const submitBatchEdit = e => {
+const submitBatchEdit =async e => {
   e.preventDefault();
   let btn = document.getElementById("btnSpinner");
   btn.classList.add("spinner-border");
@@ -965,43 +949,34 @@ const submitBatchEdit = e => {
     }
     //get batch
     let batch = stockModel.getBatch(stock, batchEdited);
-    let updateId = batch[0].id;
-    let detail = batch[0].value;
+    let updateId = batch[0]._id;
+    let detail = batch[0];
 
     //record activity
-    let idGen = stockModel.generateId();
-    idGen.then(ids => {
-      let newId = ids[0];
-      let stockUpdateInsert = stockModel.insertUpdate(
-        newId,
+      let stockUpdateInsert = await stockModel.insertUpdate(
         editClass,
         edit,
         detail.batchId
       );
-      stockUpdateInsert.then(
-        ({ data, headers, status }) => {
-          if (status == 201) {
+     
+          
             //update stockingForm
-            let editUpdate = stockModel.editUpdateStock(
+            let editUpdate = await stockModel.editUpdateStock(
               detail,
               editQty,
               editExpDate,
               updateId
             );
 
-            editUpdate.then(
-              ({ data, headers, status }) => {
-                if (status == 201) {
+           
                   //get stock
-                  let getStock = stockModel.getStock();
-                  getStock.then(
-                    ({ data, header, status }) => {
-                      stock = data.rows;
+                  stock = await stockModel.getStock();
+                
 
                       //get selected product
                       let selectedStockList = stockModel.getSelectedStock(
                         stock,
-                        detail.prodId
+                        detail.productId
                       );
                       //handle top section
                       analyseTop(selectedStockList);
@@ -1018,24 +993,11 @@ const submitBatchEdit = e => {
 
                       //hide modal
                       hideGenStaticModal("batchEditContent");
-                    },
-                    err => {
-                      console.log(err);
-                    }
-                  );
-                }
-              },
-              err => {
-                console.log(err);
-              }
-            );
-          }
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    });
+                   
+                
+          
+        
+    
   } else {
     //remove spinner
     //remove spinner
@@ -1048,7 +1010,7 @@ const submitBatchEdit = e => {
 };
 
 //show form for general product editing
-const showAnalysisEditForm = e => {
+const showAnalysisEditForm = async e => {
   //hide error messages
   hideStockEditSuccess();
   hideStockEditError();
@@ -1057,15 +1019,13 @@ const showAnalysisEditForm = e => {
   let id = analysisSelected;
 
   //get stock
-  let getStock = stockModel.getStock();
-  getStock.then(
-    ({ data, header, status }) => {
-      stock = data.rows;
+  stock = await stockModel.getStock();
+  
 
       //get selected stock
       let selectedStock = stockModel.getSelectedStock(stock, id);
       if (selectedStock != false) {
-        let detail = selectedStock[0].value;
+        let detail = selectedStock[0];
 
         //insert to DOM
         document.getElementById("editAnalysisName").value = detail.name;
@@ -1081,15 +1041,11 @@ const showAnalysisEditForm = e => {
         oldName = detail.name;
         oldBrand = detail.brand;
       }
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //submit product edit
-const submitProductEdit = e => {
+const submitProductEdit = async e => {
   e.preventDefault();
   let btn = document.getElementById("btnProductEditSpinner");
   btn.classList.add("spinner-border");
@@ -1155,20 +1111,16 @@ const submitProductEdit = e => {
     //get all stock with this id
 
     let allMatch = stockModel.getMatch(stock, id);
-
+    
     //check if any editing was done
     if (edit.length > 0) {
-      //get ids
-      let genId = stockModel.generateMultipleId(allMatch.length);
-      genId.then(ids => {
-        let genIds = ids;
+    
+      
         //insert into activities for all matching stock
-
-        stockModel.insertAllProductEdit(allMatch, edit, editClass, genIds).then(
+      let actsIns = await stockModel.insertAllProductEdit(allMatch, edit, editClass)
           //update details
-          () => {
-            stockModel
-              .updateAllProduct(
+          
+        await  stockModel.updateAllProduct(
                 allMatch,
                 name.value.trim(),
                 form.value.trim(),
@@ -1176,16 +1128,12 @@ const submitProductEdit = e => {
                 unit.value,
                 brand.value
               )
-              .then(
-                () => {
                   //hide loading sign
                   btn.classList.remove("spinner-border");
                   btn.classList.remove("spinner-border-sm");
                   //get stock
-                  let getStock = stockModel.getStock();
-                  getStock.then(
-                    ({ data, header, status }) => {
-                      stock = data.rows;
+                  stock = await stockModel.getStock();
+                  
 
                       //get selected product
                       let selectedStockList = stockModel.getSelectedStock(
@@ -1202,22 +1150,10 @@ const submitProductEdit = e => {
                       editClass = [];
                       // remove modal
                       hideGenStaticModal("productEditContent");
-                    },
-                    err => {
-                      console.log(err);
-                    }
-                  );
-                },
-                err => {
-                  console.log(err);
-                }
-              );
-          },
-          err => {
-            console.log(err);
-          }
-        );
-      });
+                   
+               
+          
+      
     } else {
       //hide loading sign
       btn.classList.remove("spinner-border");
@@ -1228,15 +1164,13 @@ const submitProductEdit = e => {
 };
 
 //stock checking with id
-const checkStock = () => {
+const checkStock = async () => {
   document.getElementById("idBackBtn").dataset.productId = analysisSelected;
   //add batch id
   document.getElementById("stockCheckId").textContent = batchSelected;
   //get activities
-  let activitiesGetter = stockModel.getActivities();
-  activitiesGetter.then(
-    ({ data, headers, status }) => {
-      let activities = data.rows;
+  let activities = await stockModel.getActivities();
+  
 
       //filter out matches
       let list = stockModel.getActivityMatch(activities, batchSelected);
@@ -1251,11 +1185,7 @@ const checkStock = () => {
           " </td>" +
           " </tr>";
       }
-    },
-    err => {
-      console.log(err);
-    }
-  );
+   
 };
 
 //check batch analysis
@@ -1267,13 +1197,10 @@ const checkBatch = batchId => {
 };
 
 //view Changes
-const viewChanges = (e, rev) => {
+const viewChanges = async (e, rev) => {
   //get activities
-  let activitiesGetter = stockModel.getActivities();
-  activitiesGetter.then(
-    ({ data, headers, status }) => {
-      let activities = data.rows;
-
+  let activities = await stockModel.getActivities();
+ 
       //get a particular activity
       let act = stockModel.getAct(activities, rev)[0];
 
@@ -1281,38 +1208,28 @@ const viewChanges = (e, rev) => {
       showGenStaticModal("changesContent");
       //add to DOM
       document.getElementById("changesBatchId").textContent =
-        act.value.editedId;
-      document.getElementById("changesText").textContent = act.value.detail;
-    },
-    err => {
-      console.log(err);
-    }
-  );
+        act.editedId;
+      document.getElementById("changesText").textContent = act.detail;
+   
 };
 
 //delete batch from activities
-const deleteFromActivities = (batchId, btn) => {
+const deleteFromActivities =async (batchId, btn) => {
   //add spinner
   btn.innerHTML =
     '<span class="spinner-border spinner-border-sm"></span> Delete';
   //get activities
-  let actGetter = stockModel.getActivities();
-  actGetter.then(
-    ({ data, headers, status }) => {
-      let acts = data.rows;
-
+  let acts = await stockModel.getActivities();
+  
       //get matching actvities
       let selectedActs = stockModel.getActivityMatch(acts, batchId);
       //delete
       let deleted = stockModel.deleteActs(selectedActs);
 
-      deleted.then(
-        () => {
+      
           //get stock
-          let getStock = stockModel.getStock();
-          getStock.then(
-            ({ data, header, status }) => {
-              stock = data.rows;
+          stock = await stockModel.getStock();
+          
               //check if stock remains
               let remainingStock = stockModel.getMatch(stock, analysisSelected);
               if (remainingStock != false) {
@@ -1331,21 +1248,9 @@ const deleteFromActivities = (batchId, btn) => {
                 // go back
                 loadAllStock();
               }
-            },
-            err => {
-              console.log(err);
-            }
-          );
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    },
-    err => {
-      console.log(err);
-    }
-  );
+            hideLoading()
+       
+   
 };
 
 //delete batch
@@ -1364,38 +1269,26 @@ const deleteBatch = (e, batchId) => {
   });
 
   //check if response is yes
-  resp.then((response, checkboxChecked) => {
+  resp.then(async (response, checkboxChecked) => {
     if (response.response == 0) {
       showLoading();
       //get stock
-      let getStock = stockModel.getStock();
-      getStock.then(
-        ({ data, header, status }) => {
-          stock = data.rows;
-
+      stock = await stockModel.getStock();
+      
           //get the particular stock
           let batch = stockModel.getBatch(stock, batchId)[0];
-          let id = batch.id;
-          let details = batch.value;
+          let id = batch._id;
+          let details = batch;
           //delete stock
-          let stockDeleter = stockModel.deleteStock(id, details.rev);
-          stockDeleter.then(
-            ({ data, headers, status }) => {
+          let stockDeleter = await stockModel.deleteStock(id, details._rev);
+         
               //delete batch from activities
               deleteFromActivities(batchId, btn);
 
               //adjust notification
               notification();
-            },
-            err => {
-              console.log(err);
-            }
-          );
-        },
-        err => {
-          console.log(err);
-        }
-      );
+            
+       
     }
   });
 };
@@ -1403,16 +1296,14 @@ const deleteBatch = (e, batchId) => {
 //delete activities for the stock
 const deleteProductActs = async (btn, batches) => {
   //get activities
-  let activitiesGetter = stockModel.getActivities();
-  activitiesGetter.then(
-    ({ data, headers, status }) => {
-      let activities = data.rows;
+  let activities = await stockModel.getActivities();
+  
       let acts;
       //loop through products
       for (const batch of batches) {
         acts = stockModel.getActivitiesForBatch(
           activities,
-          batch.value.batchId
+          batch.batchId
         );
 
         if (acts.length > 0) {
@@ -1424,29 +1315,22 @@ const deleteProductActs = async (btn, batches) => {
       btn.innerHTML = "Delete Product";
       //go back
       pageLoader("allStock", fetchAllStock);
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //continue stock delete
-const proceedStockDelete = btn => {
+const proceedStockDelete =async btn => {
   let id = analysisSelected;
   //show spinner
   btn.innerHTML =
     '<span class="spinner-border spinner-border-sm"></span> Delete Product';
 
   //get stock
-  let getStock = stockModel.getStock();
-  getStock.then(
-    ({ data, header, status }) => {
-      stock = data.rows;
+  stock = await stockModel.getStock();
+  
       let thisStock = stockModel.getMatch(stock, id);
-      let deleteStock = stockModel.deleteThisProduct(thisStock);
-      deleteStock.then(
-        () => {
+      let deleteStock = await stockModel.deleteThisProduct(thisStock);
+      
           //delete activities
           deleteProductActs(btn, thisStock);
 
@@ -1454,16 +1338,8 @@ const proceedStockDelete = btn => {
           notification();
 
           hideLoading();
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    },
-    err => {
-      console.log(err);
-    }
-  );
+       
+    
 };
 
 //delete product
@@ -1491,7 +1367,7 @@ const deleteProduct = e => {
 //delete expired Batch
 
 //delete batch
-const deleteExpiredBatch = (e, batchId) => {
+const deleteExpiredBatch =  (e, batchId) => {
   batchSelected = batchId;
   let btn = e.target;
 
@@ -1506,38 +1382,27 @@ const deleteExpiredBatch = (e, batchId) => {
   });
 
   //check if response is yes
-  resp.then((response, checkboxChecked) => {
+  resp.then(async (response, checkboxChecked) => {
     if (response.response == 0) {
       showLoading();
       //get stock
-      let getStock = stockModel.getStock();
-      getStock.then(
-        ({ data, header, status }) => {
-          stock = data.rows;
+      stock = await stockModel.getStock();
+      
 
           //get the particular stock
           let batch = stockModel.getBatch(stock, batchId)[0];
-          let id = batch.id;
-          let details = batch.value;
+          let id = batch._id;
+          let details = batch;
           //delete stock
-          let stockDeleter = stockModel.deleteStock(id, details.rev);
-          stockDeleter.then(
-            ({ data, headers, status }) => {
+          let stockDeleter = await stockModel.deleteStock(id, details._rev);
+          
               //adjust notification
               notification();
               hideLoading();
               //deleteFromActivities(batchId, btn);
               fetchAllStock("expiredStock");
-            },
-            err => {
-              console.log(err);
-            }
-          );
-        },
-        err => {
-          console.log(err);
-        }
-      );
+           
+        
     }
   });
 };

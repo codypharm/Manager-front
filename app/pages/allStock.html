@@ -57,14 +57,14 @@
     {{#each data}}
     
     <tr>
-      <td>{{value.name}}</td>
-      <td>{{value.prodId}}</td>
-      <td>{{value.form}}</td>
-      <td>{{value.qty}}</td>
-      <td>{{value.unit}}</td>
-      <td>{{value.price}}</td>
+      <td>{{name}}</td>
+      <td>{{productId}}</td>
+      <td>{{form}}</td>
+      <td>{{qty}}</td>
+      <td>{{unit}}</td>
+      <td>{{price}}</td>
       <td>
-          <button class="btn btn-sm btn-secondary" onclick="showProduct('{{value.prodId}}')">
+          <button class="btn btn-sm btn-secondary" onclick="showProduct('{{productId}}')">
               Detail
           </button>
       </td>

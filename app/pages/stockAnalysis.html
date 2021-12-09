@@ -119,29 +119,29 @@
   <script id="batchListContainer" type="text/xhandlebars-template">
     {{#each data}}
     <tr>
-      <td>{{value.day}}-{{value.month}}-{{value.year}}</td>
-      <td>{{reverseDate value.expDate}}</td>
-      <td>{{value.batchId}}</td>
-      <td>{{daysRemaining value.expDate}}</td>
-      <td>{{value.qty}}</td>
+      <td>{{day}}-{{month}}-{{year}}</td>
+      <td>{{reverseDate expDate}}</td>
+      <td>{{batchId}}</td>
+      <td>{{daysRemaining expDate}}</td>
+      <td>{{qty}}</td>
       <td>
-           <button class="btn btn-sm btn-warning" onclick="showErrorLog(event, '{{value.batchId}}')" style="color:#FFF">
+           <button class="btn btn-sm btn-warning" onclick="showErrorLog(event, '{{batchId}}')" style="color:#FFF">
             View
           </button>
       </td>
       <td>
-         <button class="btn btn-sm btn-primary" onclick="checkBatch('{{value.batchId}}')" >
+         <button class="btn btn-sm btn-primary" onclick="checkBatch('{{batchId}}')" >
             Check
         </button>
       </td>
       <td >
           <td>
-            <button class="btn btn-sm btn-success" onclick="editBatch(event, '{{value.batchId}}')">
+            <button class="btn btn-sm btn-success" onclick="editBatch(event, '{{batchId}}')">
               Edit
             </button>
           </td>
           <td class="{{rankAccess}}">
-            <button class="btn btn-sm btn-secondary" onclick="deleteBatch(event,'{{value.batchId}}')">
+            <button class="btn btn-sm btn-secondary" onclick="deleteBatch(event,'{{batchId}}')">
               Delete
             </button>
           </td>

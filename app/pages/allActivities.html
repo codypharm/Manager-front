@@ -57,13 +57,13 @@
   <script id="stockCheckContainer" type="text/xhandlebars-template">
     {{#each data}}
     <tr>
-      <td>{{value.day}}-{{value.month}}-{{value.year}}</td>
-      <td>{{value.staffName}}</td>
-      <td>{{value.staffId}}</td>
+      <td>{{day}}-{{month}}-{{year}}</td>
+      <td>{{staffName}}</td>
+      <td>{{staffId}}</td>
       
-      <td class="text-center">{{value.activity}}</td>
+      <td class="text-center">{{activity}}</td>
       <td>
-          <button class="btn btn-sm btn-secondary" onclick="viewChanges(event,'{{value.rev}}')">
+          <button class="btn btn-sm btn-secondary" onclick="viewChanges(event,'{{_rev}}')">
               Detail
           </button>
       </td>

@@ -61,36 +61,28 @@ const hideStockEditSuccess = () => {
   }
 };
 
-const loadStoreContent = () => {
-  let getStocking = stockModel.getStocking();
-  let getStock = stockModel.getStock();
-  getStock.then(
-    ({ data, header, status }) => {
-      stock = data.rows;
-    },
-    err => {
-      console.log(err);
-    }
-  );
+const loadStoreContent = async () => {
+ 
+   stocking = await stockModel.getStocking();
+   stock = await stockModel.getStock();
+   console.log(stock)
 
-  getStocking.then(
-    ({ data, header, status }) => {
-      stocking = data.rows;
-    },
-    err => {
-      console.log(err);
-    }
-  );
   //ensure btn is active
   document.getElementById("addBtn").disabled = false;
-
+  
   //get products in store
-  let { record } = store.getRecordStore();
-
+  let record;
+  if(store.getRecordStore() != undefined){
+   record  = store.getRecordStore().record ? store.getRecordStore().record : store.getRecordStore();
+  }else{
+    
+  record = []
+  }
   //get last list number
-  if (record != undefined && record.length > 0) {
+  if ( record.length > 0) {
     listNumber = record.reverse()[0].no;
     recordedProduct = record;
+
     //show list
     updateRecordList(recordedProduct);
     document.getElementById("uploadBtn").disabled = false;
@@ -197,7 +189,7 @@ const cancelRecord = e => {
   });
 };
 
-const removeRecord = id => {
+const removeRecord =  id => {
   let currid = id;
 
   //remove from storage
@@ -206,12 +198,13 @@ const removeRecord = id => {
   //set store
   store.setRecordStore(recordedProduct);
   //reload list
-  loadStoreContent();
+    loadStoreContent();
 };
 
 const addProduct = e => {
+  
   if (recordedProduct == undefined) {
-    var recordedProduct = [];
+    recordedProduct = [];
   }
   //add to list number
   listNumber += 1;
@@ -232,6 +225,7 @@ const addProduct = e => {
   let uploadBtn = document.getElementById("uploadBtn");
 
   let detail = {
+    _id:`${+ new Date()}`,
     no: listNumber,
     productId: id.value.trim(),
     name: name.value.trim(),
@@ -464,6 +458,7 @@ const updateRecord = e => {
 
 //cancel all record
 const cancelAllRecord = e => {
+  if (recordedProduct.length < 1 || recordedProduct == undefined)return
   //get window object
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
@@ -502,14 +497,14 @@ const cancelAllRecord = e => {
 const getTotal = match => {
   let total = 0;
   match.forEach(product => {
-    total += Number(product.value.qty);
+    total += Number(product.qty);
   });
 
   return total;
 };
 
 //stoking settlement
-const settleStocking = product => {
+const settleStocking = async product => {
   let qty = 0;
   let stockMatch = stockModel.getStockMatch(stock, product.productId);
   let stockingMatch = stockModel.getStockingMatch(stocking, product.productId);
@@ -523,74 +518,58 @@ const settleStocking = product => {
   //insert or update
   if (stockingMatch.length > 0) {
     //update
-    let updateInsertion = stockModel.updateStocking(stockingMatch[0], qty);
-    updateInsertion.then(
-      ({ data, headers, status }) => {
-        if (status == 201) {
+    let updateInsertion = await stockModel.updateStocking(stockingMatch[0], qty);
+   
           //adjust notification
           notification();
-        } else {
-          console.log("error");
-        }
-      },
-      err => {
-        console.log(err);
-      }
-    );
+        
+     
   } else {
     //insert
-    let idGen = stockModel.generateId();
-    idGen.then(ids => {
-      let id = ids[0];
-      //upload
-      let detailInsertion = stockModel.insertStocking(product, id, qty);
-      detailInsertion.then(
-        ({ data, headers, status }) => {
-          if (status == 201) {
+    
+      let detailInsertion = await stockModel.insertStocking(product,  qty);
+     
+          
             //adjust notification
             notification();
-          } else {
-            console.log("error");
-          }
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    });
+         
+        
+   
   }
 };
 
+const clearOffList = () => {
+  //empty record
+  recordedProduct = [];
+  //set number to zero
+  listNumber = 0;
+
+  //empty store
+  store.setRecordStore(recordedProduct);
+  //reset form
+  document.getElementsByClassName("stockingForm")[0].reset();
+
+  //display record  empty message
+  document.getElementById("tableBody").innerHTML =
+    "<div style='padding-top: 20px; padding-left: 20px'>No existing record</div>";
+
+}
+
 //upload list
-const uploadList = e => {
+const uploadList = async e => {
   showLoading();
-  recordedProduct.forEach(product => {
-    //get id for database task
-    let idGen = stockModel.generateId();
-    idGen.then(ids => {
-      let id = ids[0];
-
-      //upload
-      let detailInsertion = stockModel.uploadList(product, id);
-      detailInsertion.then(
-        ({ data, headers, status }) => {
-          if (status == 201) {
-            settleStocking(product);
-            //reload list
-            removeRecord(product.productId);
-
-            //reset form
-            document.getElementsByClassName("stockingForm")[0].reset();
-          } else {
-            console.log("error");
-          }
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    });
-  });
+  let product;
+  console.log(recordedProduct.length)
+  for (let i = 0; i < recordedProduct.length; i++) {
+     product = recordedProduct[i];
+    //upload
+    let detailInsertion = await stockModel.uploadList(product);
+    
+    await  settleStocking(product);
+          
+  }
+    //clear of recorded List
+    clearOffList()
   hideLoading();
 };
 

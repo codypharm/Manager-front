@@ -1,6 +1,24 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //const staffModules = require('../src/js/staff')
+
+
+//global variables
+//const api = require("../api");
+var viewEmail;
+var editEmail;
+const { Notyf } = require("notyf");
+//get branches class
+const branchesClass = require("../api/branches");
+//const stockModel = require("../models/stockModel");
+
+//get websocket connection
+const webSocket = require("../src/js/websocket");
+
+//const onlineTester = require("../src/js/onlineTester");
+
+const branches = new branchesClass();
+
 //generate working list
 const generateWorkingList = async (db,list) => {
   let data = [];
@@ -393,17 +411,9 @@ const addClass = (elem, className) => {
 
 
 const notification = async () => {
-  let stock;
-  let stocking;
-  //get stock
-  let getStock = stockModel.getStock();
-  getStock.then(
-    ({ data, header, status }) => {
-      stock = data.rows;
-      let stockingGetter = stockModel.getStocking();
-      stockingGetter.then(
-        ({ data, header, status }) => {
-          stocking = data.rows;
+  let stock = await stockModel.getStock();
+  let stocking = await stockModel.getStocking();
+  
           if (stocking.length > 0) {
             //sort exhausted stock
             let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
@@ -417,16 +427,8 @@ const notification = async () => {
             document.getElementById("exhaustedSpan").textContent = exhausted;
             document.getElementById("expiredSpan").textContent = expired;
           }
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    },
-    err => {
-      console.log(err);
-    }
-  );
+        
+    
 };
 
 
@@ -1085,22 +1087,6 @@ setupDb.allDocs((err,doc) => {
   }
  })
 
-
-
-//global variables
-//const api = require("../api");
-var viewEmail;
-var editEmail;
-const { Notyf } = require("notyf");
-//get branches class
-const branchesClass = require("../api/branches");
-
-//get websocket connection
-const webSocket = require("../src/js/websocket");
-
-//const onlineTester = require("../src/js/onlineTester");
-
-const branches = new branchesClass();
 
 
 //get setup details

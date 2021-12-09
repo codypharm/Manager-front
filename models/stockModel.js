@@ -6,14 +6,16 @@ const moment = require("moment");
 class stockModel {
   
 
-  getStock() {
-    let viewUrl = this.viewUrl.stock;
-    return this.couch.get("stock", viewUrl);
+  async getStock() {
+    let {rows} = await stockDb.allDocs()
+    let stock = await generateWorkingList(stockDb, rows)
+    return stock;
   }
 
-  getStocking() {
-    let viewUrl = this.viewUrl.stocking;
-    return this.couch.get("stocking_record", viewUrl);
+  async getStocking() {
+    let {rows} = await stockingDb.allDocs()
+    let stocking = await generateWorkingList(stockingDb, rows)
+    return stocking;
   }
 
   getActivities() {
@@ -35,7 +37,7 @@ class stockModel {
 
   idExists(stock, id) {
     let match = stock.filter(product => {
-      return product.value.prodId == id.value.trim();
+      return product.prodId == id.value.trim();
     });
 
     if (match.length > 0) {
@@ -46,8 +48,8 @@ class stockModel {
   noNameMatch(stock, id, name) {
     let match = stock.filter(product => {
       return (
-        product.value.prodId == id.value.trim() &&
-        product.value.name.toUpperCase() != name.value.trim().toUpperCase()
+        product.prodId == id.value.trim() &&
+        product.name.toUpperCase() != name.value.trim().toUpperCase()
       );
     });
 
@@ -71,8 +73,8 @@ class stockModel {
   nameError(stock, id, name) {
     let match = stock.filter(product => {
       return (
-        product.value.prodId != id.value.trim() &&
-        product.value.name.toUpperCase() == name.value.trim().toUpperCase()
+        product.prodId != id.value.trim() &&
+        product.name.toUpperCase() == name.value.trim().toUpperCase()
       );
     });
 
@@ -84,8 +86,8 @@ class stockModel {
   noBrandMatch(stock, id, brand) {
     let match = stock.filter(product => {
       return (
-        product.value.prodId == id.value.trim() &&
-        product.value.brand.toUpperCase() != brand.value.trim().toUpperCase()
+        product.prodId == id.value.trim() &&
+        product.brand.toUpperCase() != brand.value.trim().toUpperCase()
       );
     });
 
@@ -97,8 +99,8 @@ class stockModel {
   noFormMatch(stock, id, form) {
     let match = stock.filter(product => {
       return (
-        product.value.prodId == id.value.trim() &&
-        product.value.form.toUpperCase() != form.value.trim().toUpperCase()
+        product.prodId == id.value.trim() &&
+        product.form.toUpperCase() != form.value.trim().toUpperCase()
       );
     });
 
@@ -110,8 +112,8 @@ class stockModel {
   expError(stock, id, date) {
     let match = stock.filter(product => {
       return (
-        product.value.prodId == id.value.trim() &&
-        product.value.expDate != "" &&
+        product.prodId == id.value.trim() &&
+        product.expDate != "" &&
         date.value.trim() == ""
       );
     });
@@ -131,8 +133,8 @@ class stockModel {
   unitError(stock, id, unit) {
     let match = stock.filter(product => {
       return (
-        product.value.prodId == id.value.trim() &&
-        product.value.unit != unit.value.trim()
+        product.prodId == id.value.trim() &&
+        product.unit != unit.value.trim()
       );
     });
 
@@ -144,8 +146,8 @@ class stockModel {
   priceError(stock, id, unit) {
     let match = stock.filter(product => {
       return (
-        product.value.prodId == id.value.trim() &&
-        product.value.price != price.value.trim()
+        product.prodId == id.value.trim() &&
+        product.price != price.value.trim()
       );
     });
 
@@ -156,7 +158,7 @@ class stockModel {
 
   getStockMatch(stock, id) {
     let match = stock.filter(product => {
-      return product.value.prodId == id.trim();
+      return product.prodId == id.trim();
     });
 
     return match;
@@ -164,7 +166,7 @@ class stockModel {
 
   getStockingMatch(stocking, id) {
     let match = stocking.filter(product => {
-      return product.value.productId == id.trim();
+      return product.productId == id.trim();
     });
 
     return match;
@@ -198,12 +200,14 @@ class stockModel {
   }
 
   deleteProduct(recordedProduct, id) {
+    
     let match = recordedProduct.filter(product => {
       return product.productId != id;
     });
-
     if (match.length > 0) {
       return match;
+    }else{
+      return []
     }
   }
 
@@ -262,15 +266,15 @@ class stockModel {
     return this.couch.uniqid(n);
   }
 
-  insertStocking(product, id, qty) {
-    return this.couch.insert("stocking_record", {
-      id,
+ async insertStocking(product,  qty) {
+    return stockingDb.put({
+      _id: `${+ new Date()}`,
       productId: product.productId,
       qty
     });
   }
 
-  uploadList(product, id) {
+ async uploadList(product) {
     let batchId = "BT";
     batchId += Math.floor(Math.random() * 10000000);
     let loginDetail = store.getLoginDetail();
@@ -284,8 +288,8 @@ class stockModel {
     } else {
       error = "";
     }
-    return this.couch.insert("stock", {
-      id: id,
+    return stockDb.put({
+      _id: product._id,
       name: product.name[0].toUpperCase() + product.name.slice(1),
       productId: product.productId,
       brand: product.brand[0].toUpperCase() + product.brand.slice(1),
@@ -331,9 +335,9 @@ class stockModel {
         //check if in array
         sortedArray.forEach(item => {
           //if match is found
-          if (item.value.prodId == product.value.prodId) {
+          if (item.prodId == product.prodId) {
             //add up
-            item.value.qty = Number(item.value.qty) + Number(product.value.qty);
+            item.qty = Number(item.qty) + Number(product.qty);
           } else {
             //check if object is already in sorted array
             let condition = this.checkSortedArray(sortedArray, product);
@@ -352,11 +356,11 @@ class stockModel {
   }
 
   getStockingQty(id, stocking) {
+    
     let match = stocking.filter(item => {
-      return item.value.productId == id;
+      return item.productId == id;
     });
-
-    return match[0].value.qty;
+    return match[0].qty;
   }
 
   checkIfDiminished(limit, stockingQty, qty) {
@@ -373,12 +377,12 @@ class stockModel {
     let match = [];
     sortedStock.forEach(product => {
       //get stocking qty
-      let stockingQty = this.getStockingQty(product.value.prodId, stocking);
+      let stockingQty = this.getStockingQty(product.productId, stocking);
       //check if diminished
       let diminished = this.checkIfDiminished(
         stockLimit,
         stockingQty,
-        product.value.qty
+        product.qty
       );
 
       if (diminished) match = [...match, product];
@@ -399,7 +403,7 @@ class stockModel {
     let { detail } = store.getSetupDetail();
 
     if (detail != undefined) {
-      let stockLimit = detail[0].value.stock_limit;
+      let stockLimit = detail.stock_limit;
       //get stocks that have reached limit
       return this.diminishingStock(sortedStock, stockLimit, stocking);
     }
@@ -418,12 +422,12 @@ class stockModel {
     let { detail } = store.getSetupDetail();
 
     if (detail != undefined) {
-      let dateLimit = detail[0].value.expiration_limit;
+      let dateLimit = detail.expiration_limit;
       let selectedStock = stock.filter(item => {
-        if (item.value.expDate != "") {
+        if (item.expDate != "") {
           return (
             //get stock with date below date limit and is in stock
-            this.calcDate(item.value.expDate) <= dateLimit && item.value.qty > 0
+            this.calcDate(item.expDate) <= dateLimit && item.qty > 0
           );
         }
       });
@@ -440,8 +444,8 @@ class stockModel {
     let searchInput = input.toUpperCase();
     let match = stock.filter(item => {
       return (
-        item.value.name.toUpperCase().includes(searchInput) ||
-        item.value.prodId.includes(searchInput)
+        item.name.toUpperCase().includes(searchInput) ||
+        item.prodId.includes(searchInput)
       );
     });
 
@@ -456,8 +460,8 @@ class stockModel {
     let searchInput = input.toUpperCase();
     let match = stock.filter(item => {
       return (
-        item.value.name.toUpperCase().includes(searchInput) ||
-        item.value.prodId.includes(searchInput)
+        item.name.toUpperCase().includes(searchInput) ||
+        item.prodId.includes(searchInput)
       );
     });
 
@@ -472,8 +476,8 @@ class stockModel {
     let searchInput = input.toUpperCase();
     let match = stock.filter(item => {
       return (
-        item.value.name.toUpperCase().includes(searchInput) ||
-        item.value.prodId.includes(searchInput)
+        item.name.toUpperCase().includes(searchInput) ||
+        item.prodId.includes(searchInput)
       );
     });
 
@@ -486,7 +490,7 @@ class stockModel {
 
   getSelectedStock(stock, id) {
     let match = stock.filter(product => {
-      return product.value.prodId == id;
+      return product.prodId == id;
     });
 
     if (match.length > 0) {
@@ -498,7 +502,7 @@ class stockModel {
 
   getBatch(stock, id) {
     let match = stock.filter(product => {
-      return product.value.batchId == id;
+      return product.batchId == id;
     });
 
     if (match.length > 0) {
@@ -550,11 +554,11 @@ class stockModel {
     });
   }
 
-  updateStocking(detail, qty) {
-    return this.couch.update("stocking_record", {
-      _id: detail.id,
-      _rev: detail.value.rev,
-      productId: detail.value.productId,
+  async updateStocking(detail, qty) {
+    return stockingDb.put({
+      _id: detail._id,
+      _rev: detail._rev,
+      productId: detail.productId,
       qty: qty
     });
   }

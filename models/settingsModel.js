@@ -5,37 +5,13 @@
 const moment = require("moment");
 
 class settingsModel {
+  async getSetup() {
+    let { rows } = await setupDb.allDocs();
+    let setup = await generateWorkingList(setupDb, rows);
+    return setup[0];
+  }
+
   
-
-  generateId() {
-    return this.couch.uniqid();
-  }
-
-  getSetup() {
-    let viewUrl = this.viewUrl.setup;
-    return this.couch.get("vemon_setup", viewUrl);
-  }
-
-  getStock() {
-    let viewUrl = this.viewUrl.stock;
-    return this.couch.get("stock", viewUrl);
-  }
-
-  getExpenses() {
-    let viewUrl = this.viewUrl.expenses;
-    return this.couch.get("expenses", viewUrl);
-  }
-
-  getAllInvoices() {
-    let viewUrl = this.viewUrl.invoices;
-    return this.couch.get("invoice", viewUrl);
-  }
-
-  getSales() {
-    let viewUrl = this.viewUrl.sales;
-    return this.couch.get("sales", viewUrl);
-  }
-
   getMatchingExp(month, year, allExp) {
     let match = allExp.filter(expense => {
       return expense.value.month == month && expense.value.year == year;
@@ -48,12 +24,12 @@ class settingsModel {
     }
   }
 
-  updateSetUp(detail, id) {
-    return this.couch.update("vemon_setup", {
+  async updateSetUp(detail, id) {
+    return setupDb.put({
       _id: id,
-      _rev: detail.rev,
+      _rev: detail._rev,
       address: detail.address,
-      package: detail.app_package,
+      package: detail.package,
       branchId: detail.branchId,
       companyId: detail.companyId,
       companyName: detail.companyName,

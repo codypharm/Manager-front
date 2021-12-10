@@ -63,23 +63,23 @@ const appendSettingsValues = () => {
 };
 
 //load settings sections
-const loadSettingsSections = () => {
+const loadSettingsSections = async() => {
   //show loading
   showLoading();
-  settingsModel.getSetup().then(({ data }) => {
-    setupInfo = data.rows[0].value;
-    setupId = data.rows[0].id;
+  
+    setupInfo = await settingsModel.getSetup()
+    setupId = setupInfo._id;
 
     //set setup details
-    store.setSetupDetail(data.rows);
+    store.setSetupDetail(setupInfo);
 
     //append values to DOM
     appendSettingsValues();
-  });
+  
 };
 
 //stock settings validation
-const submitStockSettings = e => {
+const submitStockSettings = async e => {
   //loading
   showLoading();
   //get values
@@ -95,22 +95,15 @@ const submitStockSettings = e => {
     setupInfo.stock_limit = stockLimit;
 
     //update database
-    settingsModel.updateSetUp(setupInfo, setupId).then(
-      ({ data, header, status }) => {
-        if (status == 201) {
+    await settingsModel.updateSetUp(setupInfo, setupId)
           //reload sections
           loadSettingsSections();
-        }
-      },
-      err => {
-        console.log(err);
-      }
-    );
+       
   }
 };
 
 //app section validation
-const submitAppSettings = e => {
+const submitAppSettings = async e => {
   //loading
   showLoading();
 
@@ -130,14 +123,11 @@ const submitAppSettings = e => {
     setupInfo.update_interval = update_interval;
 
     //update database
-    settingsModel.updateSetUp(setupInfo, setupId).then(
-      ({ data, header, status }) => {
-        if (status == 201) {
+   await settingsModel.updateSetUp(setupInfo, setupId)
+        
           //restore new value
-          let info = db.couch.get("vemon_setup", viewUrl);
-          info.then(
-            ({ data, headers, status }) => {
-              let setUpDetails = data.rows;
+          
+              let setUpDetails = await settingsModel.getSetup()
               //reload sections
               loadSettingsSections();
               //store data in electron store
@@ -147,17 +137,9 @@ const submitAppSettings = e => {
 
               //call websocket function on renderer.js
               connectSocket();
-            },
-            err => {
-              console.log(err);
-            }
-          );
-        }
-      },
-      err => {
-        console.log(err);
-      }
-    );
+            
+        
+      
   }
 };
 
@@ -257,7 +239,7 @@ const proceed = () => {
 };
 
 //submit account settings
-const submitAccountSettings = e => {
+const submitAccountSettings =async e => {
   //loading
   showLoading();
 
@@ -280,24 +262,18 @@ const submitAccountSettings = e => {
         phoneIsValid(phone)
       ) {
         //update setup info object
-        setupInfo.app_package = package;
+        setupInfo.package = package;
         setupInfo.companyName = companyName;
         setupInfo.address = address;
         setupInfo.phone = phone;
         //setupInfo.email = email;
         //update database
-        settingsModel.updateSetUp(setupInfo, setupId).then(
-          ({ data, header, status }) => {
-            if (status == 201) {
+       await settingsModel.updateSetUp(setupInfo, setupId)
               //reload sections
 
               loadSettingsSections();
-            }
-          },
-          err => {
-            console.log(err);
-          }
-        );
+            
+          
       }
     } else {
       //validate for premium account
@@ -312,7 +288,7 @@ const submitAccountSettings = e => {
         phoneIsValid(phone)
       ) {
         //update setup info object
-        setupInfo.app_package = package;
+        setupInfo.package = package;
         setupInfo.companyName = companyName;
         setupInfo.address = address;
         setupInfo.companyId = companyId;

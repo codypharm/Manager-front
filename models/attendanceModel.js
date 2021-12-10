@@ -5,7 +5,11 @@ const moment = require("moment");
 
 class attendanceModel {
   
-
+  async getAttendance(){
+    let {rows} = await attendanceDb.allDocs()
+    let attendance = await generateWorkingList(attendanceDb,rows)
+    return attendance
+  }
   
 
   getMatchingRecord(record, day, month, year) {

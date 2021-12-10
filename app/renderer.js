@@ -1131,6 +1131,8 @@ const connectSocket = detail => {
   }
 };
 
+
+
 //disconnect socket
 const disconnectSocket = () => {
   webSocket.disconnect();
@@ -1322,15 +1324,13 @@ const logMeOut = e => {
   });
 
   //check if response is yes
-  resp.then((response, checkboxChecked) => {
+  resp.then(async (response, checkboxChecked) => {
     if (response.response == 0) {
       //show loading
       showLoading();
 
-      let attendance = attendanceModel.getAttendance();
-      attendance.then(
-        ({ data }) => {
-          let attendanceRecord = data.rows;
+      
+          let attendanceRecord = await attendanceModel.getAttendance();
           let date = new Date();
 
           let day = date.getDate();
@@ -1345,9 +1345,8 @@ const logMeOut = e => {
             id
           )[0];
           //update attendance
-          let attendanceUpdater = attendanceModel.updateAttendance(myData);
-          attendanceUpdater.then(({ data, status }) => {
-            if (status == 201) {
+          await attendanceModel.updateAttendance(myData);
+          
               //logout
               store.forceLogout();
               //go to login page
@@ -1361,13 +1360,8 @@ const logMeOut = e => {
                 hideLoading();
                 document.getElementsByTagName("main")[0].innerHTML = data;
               });
-            }
-          });
-        },
-        err => {
-          console.log(err);
-        }
-      );
+           
+        
 
       //update attendance
       /*let attendanceUpdater = attendanceModel.updateAttendance(data);

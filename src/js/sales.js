@@ -345,23 +345,26 @@ const handleTransType = e => {
 };
 
 const sub = (obj, qty, cp, sp) => {
+  
+  
   //if stock is more than purchase quantity
   if (Number(obj.qty) > Number(qty)) {
-    cp += Number(obj.ppmu) * Number(qty);
+    cp += Number(obj.pricePerMinUnit) * Number(qty);
+    
     sp += Number(obj.price) * Number(qty);
-    //console.log(cp, sp, qty);
     //subtract purchase
     obj.qty = Number(obj.qty) - Number(qty);
     //purchase  = 0
     qty = 0;
-
+    
+    
     //return new values
     return [obj, qty, cp, sp];
     //if purchase is more than stock
   } else if (Number(obj.qty) < Number(qty)) {
     //did that batch contribute ?
     if (Number(obj.qty) > 0) {
-      cp += Number(obj.ppmu) * Number(obj.qty);
+      cp += Number(obj.pricePerMinUnit) * Number(obj.qty);
       sp += Number(obj.price) * Number(obj.qty);
     }
     //subtract stock from purchase
@@ -375,7 +378,7 @@ const sub = (obj, qty, cp, sp) => {
   } else {
     //did that batch contribute ?
     if (Number(obj.qty) > 0) {
-      cp += Number(obj.ppmu) * Number(qty);
+      cp += Number(obj.pricePerMinUnit) * Number(qty);
       sp += Number(obj.price) * Number(qty);
     }
     //purchase = 0
@@ -532,27 +535,6 @@ const insertSale = async (cart, cp, sp) => {
       
     
   }
-  /*cart.forEach(product => {
-    //generate id for user
-    let idGen = salesModel.generateId();
-    idGen.then(ids => {
-      let id = ids[0];
-      //insert details
-      let detailInsertion = salesModel.insertSales(
-        product,
-        id,
-        invoiceId,
-        transType,
-        disccount
-      );
-      detailInsertion.then(
-        ({ data, headers, status }) => {},
-        err => {
-          console.log(err);
-        }
-      );
-    });
-  });*/
 
   //insert details into invoice db
   execInvoice(
@@ -600,13 +582,13 @@ const execute = async (match, qty) => {
       );
       totalProductCp = cp;
       totalProductSp = sp;
-      //console.log(totalProductCp, totalProductSp, qty);
-      //assign new qty value to qty
+      
       qty = newQty;
 
-     // await salesModel.updateStock(newProd);
+     
     }
   }
+
 
   //update all matches
   for (let i = 0; i < match.length; i++) {
@@ -614,13 +596,6 @@ const execute = async (match, qty) => {
     await salesModel.updateStock(product)
   }
   
-
-  
-  /*match.forEach(obj => {
-    //get new values of each obj or product and qty remaining from purchase qty
-    //if qty > 0
-    
-  });*/
 
   return [totalProductCp, totalProductSp];
 };
@@ -636,10 +611,13 @@ const process = async cart => {
     let product = cart[i];
     //get matching product from db
     match = salesModel.getMatch(stock, product.productId);
+    
      //get quantity bought
      let qty = product.qty;
+     
       //handle each match
     let [totalProductCp, totalProductSp] = await execute(match, qty);
+    
     //assign this cp and sp to this product in cart
     cart[i].cp = totalProductCp;
     cart[i].sp = totalProductSp;
@@ -647,23 +625,10 @@ const process = async cart => {
     cartCp += totalProductCp;
     cartSp += totalProductSp;
   }
-  /*cart.forEach((product, index) => {
-    //get matching product from db
-    match = salesModel.getMatch(stock, product.productId);
-    //get quantity bought
-    let qty = product.qty;
-    //handle each match
-    let [totalProductCp, totalProductSp] = await execute(match, qty);
-    //assign this cp and sp to this product in cart
-    cart[index].cp = totalProductCp;
-    cart[index].sp = totalProductSp;
-    //add up this total cp and sp to total cart cp and sp
-    cartCp += totalProductCp;
-    cartSp += totalProductSp;
-  });*/
+  
 
   //insert into sales
-  insertSale(cart, cartCp, cartSp);
+ insertSale(cart, cartCp, cartSp);
 };
 
 //process cart

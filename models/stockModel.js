@@ -562,8 +562,8 @@ class stockModel {
       day: detail.day,
       month: detail.month,
       year: detail.year,
-      recorder: detail.recName,
-      recorderEmail: detail.recEmail
+      recorder: detail.recorder,
+      recorderEmail: detail.recorderEmail
     });
   }
 
@@ -599,8 +599,8 @@ class stockModel {
       day: detail.day,
       month: detail.month,
       year: detail.year,
-      recorder: detail.recName,
-      recorderEmail: detail.recEmail
+      recorder: detail.recorder,
+      recorderEmail: detail.recorderEmail
     });
   }
 
@@ -645,8 +645,8 @@ class stockModel {
       day: detail.day,
       month: detail.month,
       year: detail.year,
-      recorder: detail.recName,
-      recorderEmail: detail.recEmail
+      recorder: detail.recorder,
+      recorderEmail: detail.recorderEmail
     });
   }
 

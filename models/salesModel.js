@@ -217,15 +217,15 @@ class salesModel  {
       unit: product.unit,
       price: product.price,
       totalCost: product.totalCost,
-      pricePerMinUnit: product.ppmu,
+      pricePerMinUnit: product.pricePerMinUnit,
       remote: false,
       expDate: product.expDate,
       error: product.error,
       day: product.day,
       month: product.month,
       year: product.year,
-      recorder: product.recName,
-      recorderEmail: product.recEmail
+      recorder: product.recorder,
+      recorderEmail: product.recorderEmail
     });
   }
 

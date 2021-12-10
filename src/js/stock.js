@@ -654,7 +654,7 @@ const handleExpiredStockDisplay = () => {
 const fetchAllStock = async stockViewType => {
   showLoading();
   stock = await stockModel.getStock()
-  
+  console.log(stock)
       switch (stockViewType) {
         case "allStock":
           handleAllStockDisplay();

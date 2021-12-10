@@ -161,7 +161,7 @@ const displayMatchSales = sales => {
     data: sales
   };
 
-  Handlebars.registerHelper("price", price => {
+  Handlebars.registerHelper("myPrice", price => {
     return formatMoneyTemp(price);
   });
 
@@ -178,7 +178,7 @@ const displayMatchCashSales = sales => {
     data: sales
   };
 
-  Handlebars.registerHelper("price", price => {
+  Handlebars.registerHelper("myPrice", price => {
     return formatMoneyTemp(price);
   });
 
@@ -195,7 +195,7 @@ const displayMatchOnlineSales = sales => {
     data: sales
   };
 
-  Handlebars.registerHelper("price", price => {
+  Handlebars.registerHelper("myPrice", price => {
     return formatMoneyTemp(price);
   });
 
@@ -212,7 +212,7 @@ const displayMatchCreditSales = sales => {
     data: sales
   };
 
-  Handlebars.registerHelper("price", price => {
+  Handlebars.registerHelper("myPrice", price => {
     return formatMoneyTemp(price);
   });
 

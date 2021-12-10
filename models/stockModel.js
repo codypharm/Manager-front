@@ -336,6 +336,7 @@ class stockModel {
   }
 
   sortStock(stock) {
+    
     let sortedArray = [];
 
     //loop through stock

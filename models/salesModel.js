@@ -291,17 +291,18 @@ class salesModel  {
 
   //handling sales form
 
-  getSales() {
-    let viewUrl = this.viewUrl.sales;
-    return this.couch.get("sales", viewUrl);
+ async getSales() {
+    let {rows} = await salesDb.allDocs()
+    let sales = await generateWorkingList(salesDb,rows)
+    return sales
   }
 
   getMatchSales(sales, day, month, year) {
     let match = sales.filter(sale => {
       return (
-        sale.value.day == Number(day) &&
-        sale.value.month == Number(month) &&
-        sale.value.year == Number(year)
+        sale.day == Number(day) &&
+        sale.month == Number(month) &&
+        sale.year == Number(year)
       );
     });
 
@@ -315,10 +316,10 @@ class salesModel  {
   getOtherMatchSales(sales, day, month, year, saleType) {
     let match = sales.filter(sale => {
       return (
-        sale.value.day == Number(day) &&
-        sale.value.month == Number(month) &&
-        sale.value.year == Number(year) &&
-        sale.value.transType == saleType
+        sale.day == Number(day) &&
+        sale.month == Number(month) &&
+        sale.year == Number(year) &&
+        sale.transactionType == saleType
       );
     });
 
@@ -331,7 +332,7 @@ class salesModel  {
 
   getCashSales(sales) {
     let match = sales.filter(sale => {
-      return sale.value.transType == "cash";
+      return sale.transactionType == "cash";
     });
     if (match.length > 0) {
       return match;
@@ -342,7 +343,7 @@ class salesModel  {
 
   getOnlineSales(sales) {
     let match = sales.filter(sale => {
-      return sale.value.transType == "online";
+      return sale.transactionType == "online";
     });
     if (match.length > 0) {
       return match;
@@ -353,7 +354,7 @@ class salesModel  {
 
   getCreditSales(sales) {
     let match = sales.filter(sale => {
-      return sale.value.transType == "credit";
+      return sale.transactionType == "credit";
     });
     if (match.length > 0) {
       return match;
@@ -365,7 +366,7 @@ class salesModel  {
     let total = 0;
     //loop through all sales
     match.forEach(sale => {
-      total += Number(sale.value.price);
+      total += Number(sale.price);
     });
     return total;
   }
@@ -374,8 +375,8 @@ class salesModel  {
     let total = 0;
     //loop through all sales
     match.forEach(sale => {
-      if (sale.value.transType == saleType) {
-        total += Number(sale.value.price);
+      if (sale.transactionType == saleType) {
+        total += Number(sale.price);
       }
     });
     return total;
@@ -385,7 +386,7 @@ class salesModel  {
     let totalDisccount = 0;
     //loop through match
     match.forEach(sale => {
-      totalDisccount += Number(sale.value.disccount);
+      totalDisccount += Number(sale.disccount);
     });
     let averageDisccount = totalDisccount / match.length;
     return averageDisccount;
@@ -395,8 +396,8 @@ class salesModel  {
     let totalDisccount = 0;
     //loop through match
     match.forEach(sale => {
-      if (sale.value.transType == saleType) {
-        totalDisccount += Number(sale.value.disccount);
+      if (sale.transactionType == saleType) {
+        totalDisccount += Number(sale.disccount);
       }
     });
     let averageDisccount = totalDisccount / match.length;
@@ -407,20 +408,20 @@ class salesModel  {
     let match = sales.filter(sale => {
       if (salesType == "all") {
         return (
-          sale.value.day == day &&
-          sale.value.month == month &&
-          sale.value.year == year &&
-          (sale.value.name.toUpperCase().includes(searchValue.toUpperCase()) ||
-            sale.value.productId.includes(searchValue))
+          sale.day == day &&
+          sale.month == month &&
+          sale.year == year &&
+          (sale.name.toUpperCase().includes(searchValue.toUpperCase()) ||
+            sale.productId.includes(searchValue))
         );
       } else {
         return (
-          sale.value.day == day &&
-          sale.value.month == month &&
-          sale.value.year == year &&
-          sale.value.transType == salesType &&
-          (sale.value.name.toUpperCase().includes(searchValue.toUpperCase()) ||
-            sale.value.productId.includes(searchValue))
+          sale.day == day &&
+          sale.month == month &&
+          sale.year == year &&
+          sale.transactionType == salesType &&
+          (sale.name.toUpperCase().includes(searchValue.toUpperCase()) ||
+            sale.productId.includes(searchValue))
         );
       }
     });

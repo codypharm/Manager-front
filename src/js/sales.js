@@ -778,7 +778,7 @@ const addUpDispCashSales = match => {
     let total = 0;
     //loop through cash sales
     cashSales.forEach(sale => {
-      total += Number(sale.value.price);
+      total += Number(sale.price);
     });
     document.getElementById("totalCashSales").textContent = formatMoney(total);
   }
@@ -794,7 +794,7 @@ const addUpDispCreditSales = match => {
     let total = 0;
     //loop through cash sales
     creditSales.forEach(sale => {
-      total += Number(sale.value.price);
+      total += Number(sale.price);
     });
     document.getElementById("totalCreditSales").textContent = formatMoney(
       total
@@ -812,7 +812,7 @@ const addUpDispOnlineSales = match => {
     let total = 0;
     //loop through cash sales
     onlineSales.forEach(sale => {
-      total += Number(sale.value.price);
+      total += Number(sale.price);
     });
     document.getElementById("totalOnlineSales").textContent = formatMoney(
       total
@@ -869,8 +869,8 @@ const getSales = (day, month, year) => {
   document.getElementById("dispDate").textContent =
     day + "-" + month + "-" + year;
   if (match != false) {
+   
     displayMatchSales(match);
-
     //get total sales on display
     addUpDispSalesMoney(match);
 
@@ -938,7 +938,7 @@ const getOtherSales = (day, month, year, saleType) => {
 };
 
 //load current sales page
-const loadCurrentSales = () => {
+const loadCurrentSales =async () => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
@@ -946,21 +946,15 @@ const loadCurrentSales = () => {
   let year = date.getFullYear();
 
   //get sales
-  let salesGet = salesModel.getSales();
-  salesGet.then(
-    ({ data, headers, status }) => {
-      sales = data.rows;
+  sales = await salesModel.getSales();
+ 
       //get sales for the matching date
       getSales(day, month, year);
 
       //enable button
       document.getElementById("processBtn").disabled = false;
       hideLoading();
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 
   document.getElementById("saleDay").value = day;
   document.getElementById("saleMonth").value = month;
@@ -968,7 +962,7 @@ const loadCurrentSales = () => {
 };
 
 //load sales for online credit and cash transactions
-const loadOtherSales = saleType => {
+const loadOtherSales =async saleType => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
@@ -978,21 +972,15 @@ const loadOtherSales = saleType => {
   document.getElementById("otherSaleMonth").value = month;
   document.getElementById("otherSaleYear").value = year;
   //get sales
-  let salesGet = salesModel.getSales();
-  salesGet.then(
-    ({ data, headers, status }) => {
-      sales = data.rows;
+  sales = await salesModel.getSales();
+  
       //get sales for the matching date
       getOtherSales(day, month, year, saleType);
 
       hideLoading();
       //enable button
       document.getElementById("processBtn").disabled = false;
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 
   //enable button
   //document.getElementById("processBtn").disabled = false;

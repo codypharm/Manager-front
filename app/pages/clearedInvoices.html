@@ -112,15 +112,15 @@
 <script id="clearedInvoiceContainer" type="text/xhandlebars-template">
   {{#each data}}
   <tr>
-    <td>{{value.invoiceId}}</td>
-    <td>{{value.customerName}}</td>
-    <td>{{value.customerAddress}}</td>
-    <td>{{value.customerNumber}}</td>
+    <td>{{invoiceId}}</td>
+    <td>{{customerName}}</td>
+    <td>{{customerAddress}}</td>
+    <td>{{customerNumber}}</td>
 
-    <td>{{netPrice value.netPrice}}</td>
+    <td>{{netPrice netPrice}}</td>
 
     <td>
-      <button type="button" data-id='{{value.invoiceId}}' data-type='{{value.transType}}' class="btn btn-sm  btn-success " onclick="viewInvoice(event,'{{value.day}}-{{value.month}}-{{value.year}}','cleared')">
+      <button type="button" data-id='{{invoiceId}}' data-type='{{transType}}' class="btn btn-sm  btn-success " onclick="viewInvoice(event,'{{day}}-{{month}}-{{year}}','cleared')">
         view
       </button>
     </td>
@@ -132,9 +132,9 @@
 <script id="invoiceClearedSalesContainer" type="text/xhandlebars-template">
   {{#each data}}
   <tr>
-    <td>{{value.name}}</td>
-    <td>{{value.qty}}</td>
-    <td>{{value.price}}</td>
+    <td>{{name}}</td>
+    <td>{{qty}}</td>
+    <td>{{price}}</td>
   </tr>
 
   {{/each}}

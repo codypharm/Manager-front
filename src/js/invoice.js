@@ -266,7 +266,7 @@ const getOtherInvoices = (day, month, year, invoiceType) => {
 };
 
 //load current invoices page
-const loadCurrentInvoices = () => {
+const loadCurrentInvoices = async () => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
@@ -274,21 +274,15 @@ const loadCurrentInvoices = () => {
   let year = date.getFullYear();
 
   //get all invoices
-  let myInvoices = invoiceModel.getAllInvoices();
-  myInvoices.then(
-    ({ data, headers, status }) => {
-      invoices = data.rows;
+  invoices = await invoiceModel.getAllInvoices();
+  
       //get all invoices for the matching date
       getInvoices(day, month, year);
 
       //enable button
       document.getElementById("processBtn").disabled = false;
       hideLoading();
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 
   document.getElementById("invoiceDay").value = day;
   document.getElementById("invoiceMonth").value = month;
@@ -296,7 +290,7 @@ const loadCurrentInvoices = () => {
 };
 
 //load other invoices page
-const loadOtherInvoices = invoiceType => {
+const loadOtherInvoices = async invoiceType => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
@@ -304,21 +298,15 @@ const loadOtherInvoices = invoiceType => {
   let year = date.getFullYear();
 
   //get all invoices
-  let myInvoices = invoiceModel.getAllInvoices();
-  myInvoices.then(
-    ({ data, headers, status }) => {
-      invoices = data.rows;
+  invoices = await invoiceModel.getAllInvoices();
+ 
       //get other invoices for the mathching date
       getOtherInvoices(day, month, year, invoiceType);
 
       //enable button
       document.getElementById("processBtn").disabled = false;
       hideLoading();
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 
   document.getElementById("otherInvoiceDay").value = day;
   document.getElementById("otherInvoiceMonth").value = month;
@@ -368,7 +356,7 @@ const loadOtherEnteredInvoices = (e, invoiceType) => {
 };
 
 //invoice view button
-const viewInvoice = (e, saleDate, invoiceType) => {
+const viewInvoice =async (e, saleDate, invoiceType) => {
   let trans = e.target.dataset.type;
   let dispTrans =
     trans.toUpperCase() == "CASH"
@@ -381,10 +369,8 @@ const viewInvoice = (e, saleDate, invoiceType) => {
   let matchingInvoice = invoiceModel.getSelectedInvoice(invoices, invoiceId);
   let selectedInvoice = matchingInvoice[0];
 
-  let salesLoader = salesModel.getSales();
-  salesLoader.then(
-    ({ data, headers, status }) => {
-      let sales = data.rows;
+  let sales = await salesModel.getSales();
+  
 
       //get match sales
       let matchedSales = invoiceModel.getSalesForInvoice(sales, invoiceId);
@@ -406,36 +392,32 @@ const viewInvoice = (e, saleDate, invoiceType) => {
         //add to DOM
         let { detail } = store.getSetupDetail();
         document.getElementById("companyStaticName").textContent =
-          detail[0].value.companyName;
+          detail.companyName;
         document.getElementById("companyStaticAddress").textContent =
-          detail[0].value.branchAddress;
+          detail.branchAddress;
         document.getElementById("companyStaticNumber").textContent =
-          detail[0].value.branchPhone;
+          detail.branchPhone;
         document.getElementById(
           "transTypeStatic"
         ).textContent = `${dispTrans} TRANSACTION`;
         document.getElementById("date").textContent = saleDate;
         document.getElementById("invoiceId").textContent = invoiceId;
         document.getElementById("invoiceTotal").textContent = formatMoney(
-          selectedInvoice.value.totalPrice
+          selectedInvoice.totalPrice
         );
         document.getElementById("disccountStatic").textContent =
-          selectedInvoice.value.disccount + " %";
+          selectedInvoice.disccount + " %";
         document.getElementById(
           "netPriceStatic"
-        ).textContent = `₦ ${formatMoney(selectedInvoice.value.netPrice)}`;
+        ).textContent = `₦ ${formatMoney(selectedInvoice.netPrice)}`;
         document.getElementById(
           "invoiceAmtPaid"
-        ).textContent = `₦ ${formatMoney(selectedInvoice.value.amtPaid)}`;
+        ).textContent = `₦ ${formatMoney(selectedInvoice.amtPaid)}`;
         document.getElementById(
           "invoiceBalance"
-        ).textContent = `₦ ${formatMoney(selectedInvoice.value.balance)}`;
+        ).textContent = `₦ ${formatMoney(selectedInvoice.balance)}`;
       }
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //click clear button
@@ -447,9 +429,9 @@ const clearInvoice = e => {
     //get details for the invoice
     let invoiceDetail = invoiceModel.getSelectedInvoice(invoices, id);
     let detail = invoiceDetail[0];
-    document.getElementById("amt").value = detail.value.netPrice;
-    document.getElementById("paid").value = detail.value.amtPaid;
-    document.getElementById("invoiceClearBalance").value = detail.value.balance;
+    document.getElementById("amt").value = detail.netPrice;
+    document.getElementById("paid").value = detail.amtPaid;
+    document.getElementById("invoiceClearBalance").value = detail.balance;
     document.getElementById("clearProcessBtn").dataset.id = id;
   }
 };
@@ -457,16 +439,16 @@ const clearInvoice = e => {
 //update invoices array
 const invoiceUpdator = (invoices, newBalance, newAmtPaid, detail) => {
   invoices.forEach(invoice => {
-    if (invoice.value.invoiceId == detail.value.invoiceId) {
-      invoice.value.balance = newBalance;
-      invoice.value.amtPaid = newAmtPaid;
+    if (invoice.invoiceId == detail.invoiceId) {
+      invoice.balance = newBalance;
+      invoice.amtPaid = newAmtPaid;
     }
   });
   return invoices;
 };
 
 //process debt payment
-const processDebtPayment = e => {
+const processDebtPayment = async e => {
   e.preventDefault();
   //hide alert boxes
   let errorBox = document.getElementById("errorModalBox");
@@ -490,36 +472,30 @@ const processDebtPayment = e => {
   if (!regex.test(amtEntered)) {
     errorBox.classList.remove("hide");
     errorBox.textContent = "Please enter a valid input";
-  } else if (amtEntered > Number(myInvoiceDetail.value.balance)) {
+  } else if (amtEntered > Number(myInvoiceDetail.balance)) {
     errorBox.classList.remove("hide");
     errorBox.textContent = "Amount entered exceeds balance";
   } else {
     //get new paid amount
-    let newAmtPaid = Number(myInvoiceDetail.value.amtPaid) + Number(amtEntered);
+    let newAmtPaid = Number(myInvoiceDetail.amtPaid) + Number(amtEntered);
     //get new balance
     let newBalance =
-      Number(myInvoiceDetail.value.netPrice) - Number(newAmtPaid);
+      Number(myInvoiceDetail.netPrice) - Number(newAmtPaid);
     //update invoice in db
-    let invoiceUpdate = invoiceModel.updateInvoice(
+    await invoiceModel.updateInvoice(
       myInvoiceDetail,
       newBalance,
       newAmtPaid
     );
-    invoiceUpdate.then(
-      ({ data, headers, status }) => {
-        if (status == 201) {
-          let idGen = invoiceModel.generateId();
-          idGen.then(ids => {
-            let id = ids[0];
+        
+          
             //store in debtClearance database
-            let insertClearance = invoiceModel.insertClearanceDetails(
-              id,
+            await invoiceModel.insertClearanceDetails(
+              
               amtEntered,
               invoiceId
             );
 
-            insertClearance.then(({ data, headers, status }) => {
-              if (status == 201) {
                 //show Debt invoice
                 if (showDebtForm(debtClearanceInvoice, "invoice")) {
                   //get company detials
@@ -540,14 +516,14 @@ const processDebtPayment = e => {
 
                   // fill in invoice detail to the DOM
                   document.getElementById("debtCompanyName").textContent =
-                    detail[0].value.companyName;
+                    detail.companyName;
                   document.getElementById("debtCompanyAddress").textContent =
-                    detail[0].value.branchAddress;
+                    detail.branchAddress;
                   document.getElementById("debtCompanyNumber").textContent =
-                    detail[0].value.companyNumber;
+                    detail.companyNumber;
                   document.getElementById("clearedFor").textContent = invoiceId;
                   document.getElementById("clearedTotal").textContent =
-                    "₦ " + formatMoney(currentInvoice.value.netPrice);
+                    "₦ " + formatMoney(currentInvoice.netPrice);
                   document.getElementById("clearedPaid").textContent =
                     "₦ " + formatMoney(amtEntered);
                   document.getElementById("clearedTotalPaid").textContent =
@@ -582,15 +558,11 @@ const processDebtPayment = e => {
                   //get other invoices for the mathching date
                   getOtherInvoices(day, month, year, "debt");
                 }
-              }
-            });
-          });
-        }
-      },
-      err => {
-        console.log(err);
-      }
-    );
+              
+           
+          
+        
+      
   }
 
   //hideDebtModal();

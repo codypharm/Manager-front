@@ -5,13 +5,11 @@
 class Invoice {
   
 
-  generateId() {
-    return this.couch.uniqid();
-  }
 
-  getAllInvoices() {
-    let viewUrl = this.viewUrl.invoices;
-    return this.couch.get("invoice", viewUrl);
+ async getAllInvoices() {
+    let {rows} = await invoicesDb.allDocs()
+    let invoices = await generateWorkingList(invoicesDb,rows)
+    return invoices
   }
 
   getAllClearance() {
@@ -23,19 +21,19 @@ class Invoice {
     let match = invoices.filter(invoice => {
       if (invoiceType == "cleared") {
         return (
-          invoice.value.transType == "credit" &&
-          Number(invoice.value.balance) < 1 &&
-          invoice.value.day == Number(day) &&
-          invoice.value.month == Number(month) &&
-          invoice.value.year == Number(year)
+          invoice.transType == "credit" &&
+          Number(invoice.balance) < 1 &&
+          invoice.day == Number(day) &&
+          invoice.month == Number(month) &&
+          invoice.year == Number(year)
         );
       } else if (invoiceType == "debt") {
         return (
-          invoice.value.transType == "credit" &&
-          Number(invoice.value.balance) > 0 &&
-          invoice.value.day == Number(day) &&
-          invoice.value.month == Number(month) &&
-          invoice.value.year == Number(year)
+          invoice.transType == "credit" &&
+          Number(invoice.balance) > 0 &&
+          invoice.day == Number(day) &&
+          invoice.month == Number(month) &&
+          invoice.year == Number(year)
         );
       }
     });
@@ -50,9 +48,9 @@ class Invoice {
   getMatchInvoices(invoices, day, month, year) {
     let match = invoices.filter(invoice => {
       return (
-        invoice.value.day == Number(day) &&
-        invoice.value.month == Number(month) &&
-        invoice.value.year == Number(year)
+        invoice.day == Number(day) &&
+        invoice.month == Number(month) &&
+        invoice.year == Number(year)
       );
     });
 
@@ -65,7 +63,7 @@ class Invoice {
 
   getSalesForInvoice(sales, invoiceId) {
     let match = sales.filter(sale => {
-      return sale.value.invoiceId == invoiceId;
+      return sale.invoiceId == invoiceId;
     });
 
     if (match.length > 0) {
@@ -75,7 +73,7 @@ class Invoice {
 
   getSelectedInvoice(invoices, invoiceId) {
     let match = invoices.filter(invoice => {
-      return invoice.value.invoiceId == invoiceId;
+      return invoice.invoiceId == invoiceId;
     });
 
     if (match.length > 0) {
@@ -88,31 +86,31 @@ class Invoice {
       if (invoiceType == "debt") {
         //return balance > 0
         return (
-          (invoice.value.invoiceId.includes(searchValue) ||
-            invoice.value.customerName
+          (invoice.invoiceId.includes(searchValue) ||
+            invoice.customerName
               .toUpperCase()
               .includes(searchValue.toUpperCase())) &&
-          invoice.value.transType == "credit" &&
-          invoice.value.balance > 0
+          invoice.transType == "credit" &&
+          invoice.balance > 0
         );
       } else if (invoiceType == "cleared") {
         //return balance = 0
         return (
-          (invoice.value.invoiceId.includes(searchValue) ||
-            invoice.value.customerName
+          (invoice.invoiceId.includes(searchValue) ||
+            invoice.customerName
               .toUpperCase()
               .includes(searchValue.toUpperCase())) &&
-          invoice.value.transType == "credit" &&
-          invoice.value.balance == 0
+          invoice.transType == "credit" &&
+          invoice.balance == 0
         );
       } else {
         //return all credit
         return (
-          (invoice.value.invoiceId.includes(searchValue) ||
-            invoice.value.customerName
+          (invoice.invoiceId.includes(searchValue) ||
+            invoice.customerName
               .toUpperCase()
               .includes(searchValue.toUpperCase())) &&
-          invoice.value.transType == "credit"
+          invoice.transType == "credit"
         );
       }
     });
@@ -124,35 +122,35 @@ class Invoice {
     }
   }
 
-  updateInvoice(detail, newBalance, newAmtPaid) {
-    return this.couch.update("invoice", {
-      _id: detail.id,
-      _rev: detail.value.rev,
-      invoiceId: detail.value.invoiceId,
-      customerAddress: detail.value.customerAddress,
-      customerName: detail.value.customerName,
-      customerNumber: detail.value.customerNumber,
+ async  updateInvoice(detail, newBalance, newAmtPaid) {
+    return invoicesDb.put({
+      _id: detail._id,
+      _rev: detail._rev,
+      invoiceId: detail.invoiceId,
+      customerAddress: detail.customerAddress,
+      customerName: detail.customerName,
+      customerNumber: detail.customerNumber,
       transType: "credit",
-      attender: detail.value.attender,
-      disccount: detail.value.disccount,
-      netPrice: detail.value.netPrice,
-      totalPrice: detail.value.totalPrice,
+      attender: detail.attender,
+      disccount: detail.disccount,
+      netPrice: detail.netPrice,
+      totalPrice: detail.totalPrice,
       amtPaid: newAmtPaid,
       balance: newBalance,
-      cp: detail.value.cp,
-      sp: detail.value.sp,
+      cp: detail.cp,
+      sp: detail.sp,
       remote: false,
-      day: detail.value.day,
-      month: detail.value.month,
-      year: detail.value.year
+      day: detail.day,
+      month: detail.month,
+      year: detail.year
     });
   }
 
-  insertClearanceDetails(id, amtEntered, invoiceId) {
+ async insertClearanceDetails(amtEntered, invoiceId) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
-    return this.couch.insert("debt_clearance", {
-      id: id,
+    return debt_clearanceDb.put({
+      _id: `${+ new Date()}`,
       paymentFor: invoiceId,
       currentAmtPaid: amtEntered,
       remote: false,

@@ -486,6 +486,8 @@ const execInvoice = async (
               balance
             );
 
+            print()
+
             //clean up
             cart = [];
 

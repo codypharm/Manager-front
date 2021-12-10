@@ -10,10 +10,18 @@ const debt_clearanceDb = new PouchDB('debt_clearance');
 const stockingDb = new PouchDB('stocking');
 const invoicesDb = new PouchDB('invoices');
 const setupDb = new PouchDB('setup');
+//stockDb.destroy()
+//salesDb.destroy()
+//expensesDb.destroy()
+//activitiesDb.destroy()
+//debt_clearanceDb.destroy()
+//stockingDb.destroy()
+//invoicesDb.destroy()
 
 
 // validate comes from renderer process
 //require files
+const printJs = require('print-js')
 const SettingsModel = require("../models/settingsModel");
 const DashboardModel = require("../models/dashboardModel");
 const AttendanceModel = require("../models/attendanceModel");

@@ -19,6 +19,16 @@ const webSocket = require("../src/js/websocket");
 
 const branches = new branchesClass();
 
+//print
+const print = () => {
+  printJs({
+    printable: 'staticBody',
+    type: 'html',
+    targetStyles:['*'],
+    header:''
+  })
+}
+
 //generate working list
 const generateWorkingList = async (db,list) => {
   let data = [];

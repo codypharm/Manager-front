@@ -8,7 +8,7 @@ var searchArray = [];
 //get sales with this product id
 const getProductSales = (prodId, matchedSales) => {
   let match = matchedSales.filter(sale => {
-    return sale.value.productId == prodId;
+    return sale.productId == prodId;
   });
 
   if (match.length > 0) {
@@ -23,7 +23,7 @@ const calculateVolume = thisSales => {
   let total = 0;
   //loop through the sales
   thisSales.forEach(sale => {
-    total += Number(sale.value.qty);
+    total += Number(sale.qty);
   });
 
   return total;
@@ -33,7 +33,7 @@ const calculateVolume = thisSales => {
 const getTotalSalesVolume = matchedSales => {
   let totalVolume = 0;
   matchedSales.forEach(sale => {
-    totalVolume += Number(sale.value.qty);
+    totalVolume += Number(sale.qty);
   });
   return totalVolume;
 };
@@ -65,7 +65,7 @@ const getTotalProfit = matchedSales => {
   matchedSales.forEach(sale => {
     //let avgPpmu = getAveragePpmu(sale.value.productId);
     //let costPrice = sale.value.cp
-    let gain = Number(sale.value.sp - sale.value.cp);
+    let gain = Number(sale.sp - sale.cp);
     totalGain += gain;
   });
 
@@ -77,7 +77,7 @@ const getExpVolume = expStock => {
   let expVolume = 0;
   if (expStock.length > 0) {
     expStock.forEach(stock => {
-      expVolume += Number(stock.value.qty);
+      expVolume += Number(stock.qty);
     });
   }
   return expVolume;
@@ -87,7 +87,7 @@ const getExpVolume = expStock => {
 const getTotalExpense = allExp => {
   let exp = 0;
   allExp.forEach(expense => {
-    exp += Number(expense.value.amt);
+    exp += Number(expense.amt);
   });
   return exp;
 };
@@ -97,7 +97,7 @@ const getTotalIncome = invoices => {
   let totalIncome = 0;
   if (invoices.length > 0) {
     invoices.forEach(invoice => {
-      totalIncome += Number(invoice.value.netPrice);
+      totalIncome += Number(invoice.netPrice);
     });
   }
   return totalIncome;
@@ -140,7 +140,7 @@ const getSalesDays = (month, year) => {
 //vet all invoices
 const getDayInvoices = (invoices, saleDay) => {
   let match = invoices.filter(invoice => {
-    return invoice.value.day == saleDay;
+    return invoice.day == saleDay;
   });
 
   return match;
@@ -149,7 +149,7 @@ const getDayInvoices = (invoices, saleDay) => {
 //get expenses for a day
 const getDayExpenses = (mainExp, day) => {
   let match = mainExp.filter(exp => {
-    return exp.value.day == day;
+    return exp.day == day;
   });
 
   return match;
@@ -161,9 +161,9 @@ const addUpFields = invoices => {
   let amtPaid = 0;
   let toPay = 0;
   invoices.forEach(invoice => {
-    net += Number(invoice.value.netPrice);
-    amtPaid += Number(invoice.value.amtPaid);
-    toPay += Number(invoice.value.balance);
+    net += Number(invoice.netPrice);
+    amtPaid += Number(invoice.amtPaid);
+    toPay += Number(invoice.balance);
   });
 
   return [net, amtPaid, toPay];
@@ -174,7 +174,7 @@ const addUpExp = dayExpenses => {
   let totalExp = 0;
   if (dayExpenses.length > 0) {
     dayExpenses.forEach(expense => {
-      totalExp += Number(expense.value.amt);
+      totalExp += Number(expense.amt);
     });
   }
 
@@ -184,7 +184,7 @@ const addUpExp = dayExpenses => {
 //get sales fror current day
 const getCurrentDaySales = (matchedSales, saleDay) => {
   let match = matchedSales.filter(sale => {
-    return sale.value.day == saleDay;
+    return sale.day == saleDay;
   });
 
   return match;
@@ -213,13 +213,13 @@ const getAccountAnalysis = (invoices, day) => {
     //let unitSold = Number(product.value.qty / unit);
     //get selling price
     //let sellingPrice = unitSold * product.value.price;
-    let sellingPrice = invoice.value.sp;
+    let sellingPrice = invoice.sp;
     dailySp += sellingPrice;
     //get average ppmu (pricePerMinUnit)
     //let averagePpmu = getAveragePpmu(product.value.productId);
     //console.log(averagePpmu, product);
     //get cost price
-    let costPrice = invoice.value.cp; //averagePpmu * unitSold;
+    let costPrice = invoice.cp; //averagePpmu * unitSold;
     dailyCp += costPrice;
 
     //get gain
@@ -242,7 +242,7 @@ const getSalesForLastDay = (day, month, sales) => {
 //extract invoices for last day of previous month
 const getInvoicesForLastDay = (day, month, invoices) => {
   let match = invoices.filter(invoice => {
-    return invoice.value.day == day && invoice.value.month == month;
+    return invoice.day == day && invoice.month == month;
   });
 
   return match;
@@ -413,8 +413,8 @@ const getTotalSpCp = sales => {
   let sp = 0;
   let cp = 0;
   sales.forEach(sale => {
-    sp += sale.value.sp;
-    cp += sale.value.cp;
+    sp += sale.sp;
+    cp += sale.cp;
   });
   return [sp, cp];
 };
@@ -429,22 +429,22 @@ const proceedToSortStockSales = matchedSales => {
   //loop through sortedStock
   sortedStock.forEach(product => {
     //extract sales with this product id
-    let productSales = getProductSales(product.value.prodId, matchedSales);
+    let productSales = getProductSales(product.productId, matchedSales);
     if (productSales != false) {
       //calculate sale volume
       let saleVolume = calculateVolume(productSales);
       //get percent volume
       let percentVol = calculatePercentVolume(saleVolume, totalSalesVolume);
       //calculate number of unit sold
-      let unitSold = Number(saleVolume / product.value.unit);
+      let unitSold = Number(saleVolume / product.unit);
       let [sp, cp] = getTotalSpCp(productSales);
       let profit = sp - cp;
       //calculate percentage profit
       let percentageGain = ((profit / totalGain) * 100).toFixed(2);
 
       reportArray.push({
-        id: product.value.prodId,
-        name: product.value.name,
+        id: product.productId,
+        name: product.name,
         saleVolume: saleVolume,
         percentVolume: percentVol,
         percentProfit: percentageGain
@@ -452,8 +452,8 @@ const proceedToSortStockSales = matchedSales => {
     } else {
       //everything should be zero
       reportArray.push({
-        id: product.value.prodId,
-        name: product.value.name,
+        id: product.productId,
+        name: product.name,
         saleVolume: 0,
         percentVolume: 0,
         percentProfit: 0
@@ -466,7 +466,7 @@ const proceedToSortStockSales = matchedSales => {
 };
 
 // proceed to list
-const proceedToGetSales = (month, year, reportType) => {
+const proceedToGetSales = async (month, year, reportType) => {
   //check if theres sales for this date
   let matchedSales = reportModel.getMatchingSales(sales, month, year);
   if (matchedSales == false) {
@@ -503,20 +503,16 @@ const proceedToGetSales = (month, year, reportType) => {
       reportArray = [];
     } else {
       //get expenses for this month
-      let expenses = reportModel.getExpenses();
-      expenses.then(
-        ({ data }) => {
-          let allExp = data.rows;
+      let allExp = await expenseModel.getExpenses();
+      
 
           //get expenses for this month
           let mainExp = reportModel.getMatchingExp(month, year, allExp);
           //get expired stock for this month
           let expStock = reportModel.getMonthExpiredStock(stock, month, year);
 
-          let allInvoices = reportModel.getAllInvoices();
-          allInvoices.then(
-            ({ data }) => {
-              let invoices = data.rows;
+          let invoices = await invoiceModel.getAllInvoices();
+          
 
               let actualInvoices = reportModel.getMatchInvoices(
                 invoices,
@@ -539,22 +535,14 @@ const proceedToGetSales = (month, year, reportType) => {
               hideLoading();
               //empty list
               reportArray = [];
-            },
-            err => {
-              console.log(err);
-            }
-          );
-        },
-        err => {
-          console.log(err);
-        }
-      );
+            
+        
     }
   }
 };
 
 ///list report
-const listProductReport = () => {
+const listProductReport =async  () => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
@@ -565,15 +553,11 @@ const listProductReport = () => {
   document.getElementById("prodReportYear").value = year;
   document.getElementById("prodReportMonth").value = month;
 
-  let getStock = reportModel.getStock();
-  getStock.then(
-    ({ data, header, status }) => {
-      stock = data.rows;
+  stock = await stockModel.getStock();
+  
 
-      let getSales = reportModel.getSales();
-      getSales.then(
-        ({ data, headers, status }) => {
-          sales = data.rows;
+       sales =await salesModel.getSales();
+     
 
           // proceed to list
           proceedToGetSales(month, year, "product");
@@ -582,16 +566,8 @@ const listProductReport = () => {
 
           //enable button
           document.getElementById("processBtn").disabled = false;
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    },
-    err => {
-      console.log(err);
-    }
-  );
+        
+   
 };
 
 //load list for entered date
@@ -663,7 +639,7 @@ const searchProductReport = event => {
 };
 
 //account report start
-const listAccountReport = () => {
+const listAccountReport = async () => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
@@ -674,15 +650,11 @@ const listAccountReport = () => {
   document.getElementById("acctReportYear").value = year;
   document.getElementById("acctReportMonth").value = month;
 
-  let getStock = reportModel.getStock();
-  getStock.then(
-    ({ data, header, status }) => {
-      stock = data.rows;
+  stock = await stockModel.getStock();
 
-      let getSales = reportModel.getSales();
-      getSales.then(
-        ({ data, headers, status }) => {
-          sales = data.rows;
+
+      sales = await salesModel.getSales();
+     
 
           // proceed to list
           proceedToGetSales(month, year, "account");
@@ -691,16 +663,8 @@ const listAccountReport = () => {
 
           //enable button
           document.getElementById("processBtn").disabled = false;
-        },
-        err => {
-          console.log(err);
-        }
-      );
-    },
-    err => {
-      console.log(err);
-    }
-  );
+       
+    
 };
 
 ///button to load each gain analysis

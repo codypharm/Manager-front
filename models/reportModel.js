@@ -6,33 +6,9 @@ const moment = require("moment");
 class reportModel {
   
 
-  generateId() {
-    return this.couch.uniqid();
-  }
-
-  getStock() {
-    let viewUrl = this.viewUrl.stock;
-    return this.couch.get("stock", viewUrl);
-  }
-
-  getExpenses() {
-    let viewUrl = this.viewUrl.expenses;
-    return this.couch.get("expenses", viewUrl);
-  }
-
-  getAllInvoices() {
-    let viewUrl = this.viewUrl.invoices;
-    return this.couch.get("invoice", viewUrl);
-  }
-
-  getSales() {
-    let viewUrl = this.viewUrl.sales;
-    return this.couch.get("sales", viewUrl);
-  }
-
   getMatchingExp(month, year, allExp) {
     let match = allExp.filter(expense => {
-      return expense.value.month == month && expense.value.year == year;
+      return expense.month == month && expense.year == year;
     });
 
     return match;
@@ -40,7 +16,7 @@ class reportModel {
 
   getMatchingSales(sales, month, year) {
     let match = sales.filter(sale => {
-      return sale.value.month == month && sale.value.year == year;
+      return sale.month == month && sale.year == year;
     });
 
     if (match.length > 0) {
@@ -52,7 +28,7 @@ class reportModel {
 
   checkSortedArray(sortedArray, product) {
     let match = sortedArray.filter(item => {
-      return item.value.prodId == product.value.prodId;
+      return item.productId == product.productId;
     });
     if (match.length > 0) {
       return true;
@@ -72,7 +48,7 @@ class reportModel {
         //check if in array
         sortedArray.forEach(item => {
           //if match is found
-          if (item.value.prodId == product.value.prodId) {
+          if (item.productId == product.productId) {
             //add up
             //do nothing
           } else {
@@ -111,8 +87,8 @@ class reportModel {
     let expProducts = [];
 
     stock.forEach(product => {
-      if (product.value.expDate.length > 0) {
-        let expDateArray = product.value.expDate.split("-");
+      if (product.expDate.length > 0) {
+        let expDateArray = product.expDate.split("-");
 
         if (
           Number(expDateArray[0]) == Number(year) &&
@@ -129,8 +105,8 @@ class reportModel {
   getMatchInvoices(invoices, month, year) {
     let match = invoices.filter(invoice => {
       return (
-        invoice.value.month == Number(month) &&
-        invoice.value.year == Number(year)
+        invoice.month == Number(month) &&
+        invoice.year == Number(year)
       );
     });
 

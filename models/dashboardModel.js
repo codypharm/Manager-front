@@ -4,42 +4,7 @@
 const moment = require("moment");
 
 class dashboardModel {
-  
-
-  generateId() {
-    return this.couch.uniqid();
-  }
-
-  getUsers() {
-    let viewUrl = this.viewUrl.users;
-    return this.couch.get("users", viewUrl);
-  }
-
-  getAttendance() {
-    let viewUrl = this.viewUrl.attendance;
-    return this.couch.get("attendance", viewUrl);
-  }
-
-  getExpenses() {
-    let viewUrl = this.viewUrl.expenses;
-    return this.couch.get("expenses", viewUrl);
-  }
-
-  getStock() {
-    let viewUrl = this.viewUrl.stock;
-    return this.couch.get("stock", viewUrl);
-  }
-
-  getSales() {
-    let viewUrl = this.viewUrl.sales;
-    return this.couch.get("sales", viewUrl);
-  }
-
-  getAllInvoices() {
-    let viewUrl = this.viewUrl.invoices;
-    return this.couch.get("invoice", viewUrl);
-  }
-
+ 
   checkSortedArray(sortedArray, product) {
     let match = sortedArray.filter(item => {
       return item.value.prodId == product.value.prodId;

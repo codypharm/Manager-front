@@ -8,10 +8,7 @@ const {
   COUNTRY_CODE
 } = require("nigerian-phone-number-validator");
 
-class salesModel  {
-  
-
-
+class salesModel {
   isEmpty(inputs) {
     //filter input
     let emptyInputs = inputs.filter(element => {
@@ -64,7 +61,7 @@ class salesModel  {
     let match = stock.filter(product => {
       return (
         product.productId.includes(id) ||
-          product.name.toUpperCase().includes(id.toUpperCase()) //&&Number(product.qty) > 0
+        product.name.toUpperCase().includes(id.toUpperCase()) //&&Number(product.qty) > 0
       );
     });
 
@@ -204,7 +201,6 @@ class salesModel  {
   }
 
   async updateStock(product) {
-    
     return stockDb.put({
       _id: product._id,
       _rev: product._rev,
@@ -232,7 +228,7 @@ class salesModel  {
   insertSales(product, invoiceId, transType, disccount) {
     let date = new Date();
     return salesDb.put({
-      _id: `${+ new Date()}${product.productId}`,
+      _id: `${+new Date()}${product.productId}`,
       qty: product.qty,
       name: product.name,
       price: product.price,
@@ -268,7 +264,7 @@ class salesModel  {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
     return invoicesDb.put({
-      _id: `${+ new Date()}`,
+      _id: `${+new Date()}`,
       invoiceId: invoiceId,
       customerAddress: customerAddress,
       customerName: customerName,
@@ -291,10 +287,10 @@ class salesModel  {
 
   //handling sales form
 
- async getSales() {
-    let {rows} = await salesDb.allDocs()
-    let sales = await generateWorkingList(salesDb,rows)
-    return sales
+  async getSales() {
+    let { rows } = await salesDb.allDocs();
+    let sales = await generateWorkingList(salesDb, rows);
+    return sales;
   }
 
   getMatchSales(sales, day, month, year) {

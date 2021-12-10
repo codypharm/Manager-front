@@ -18,18 +18,16 @@ const getTotalStock = stock => {
   let total = 0;
 
   stock.forEach(prod => {
-    total += Number(prod.value.qty);
+    total += Number(prod.qty);
   });
 
   return total;
 };
 
 //get low stock
-const getLowStock = stock => {
-  let stockingGetter = stockModel.getStocking();
-  stockingGetter.then(
-    ({ data, header, status }) => {
-      stocking = data.rows;
+const getLowStock = async stock => {
+  
+      stocking = await stockModel.getStocking();
       if (stocking.length > 0) {
         //sort exhausted stock
         exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
@@ -53,18 +51,13 @@ const getLowStock = stock => {
           " </td>" +
           " </tr>";
       }
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //handle dashStock
-const handleStock = () => {
-  dashboardModel.getStock().then(
-    ({ data }) => {
-      dashStock = data.rows;
+const handleStock =async () => {
+  
+      dashStock = await stockModel.getStock()
 
       //get total stock
       let totalStock = getTotalStock(dashStock);
@@ -75,20 +68,16 @@ const handleStock = () => {
       document.getElementById("span5").textContent = totalStock;
       //hide loading
       hideLoading();
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //get current sales
 const getCurrentSales = sales => {
   return sales.filter(sale => {
     return (
-      sale.value.day == day &&
-      sale.value.month == month &&
-      sale.value.year == year
+      sale.day == day &&
+      sale.month == month &&
+      sale.year == year
     );
   });
 };
@@ -97,7 +86,7 @@ const getCurrentSales = sales => {
 const getTotalSales = sales => {
   let total = 0;
   sales.forEach(sale => {
-    total += Number(sale.value.qty);
+    total += Number(sale.qty);
   });
 
   return total;
@@ -108,17 +97,15 @@ const getTotalAmt = sales => {
   let total = 0;
 
   sales.forEach(sale => {
-    total += Number(sale.value.price);
+    total += Number(sale.price);
   });
   return total;
 };
 
 //handle dashSales
-const handleSales = () => {
-  dashboardModel.getSales().then(
-    ({ data }) => {
-      dashSales = data.rows;
-
+const handleSales = async () => {
+  dashSales = await salesModel.getSales()
+  
       //get sales for today
       let currentSales = getCurrentSales(dashSales);
       //get total Sales
@@ -130,20 +117,16 @@ const handleSales = () => {
       //append to DOM
       document.getElementById("span1").textContent = formatMoney(totalSales);
       //document.getElementById("span4").textContent = totalAmt;
-    },
-    err => {
-      console.log(err);
-    }
-  );
+   
 };
 
 //get invoices
 const getCurrentInvoices = invoices => {
   return invoices.filter(invoice => {
     return (
-      invoice.value.day == day &&
-      invoice.value.month == month &&
-      invoice.value.year == year
+      invoice.day == day &&
+      invoice.month == month &&
+      invoice.year == year
     );
   });
 };
@@ -155,9 +138,9 @@ const getInvoiceBreakDown = invoices => {
   let totalDebt = 0;
 
   invoices.forEach(invoice => {
-    amount += Number(invoice.value.netPrice);
-    totalPaid += Number(invoice.value.amtPaid);
-    totalDebt += Number(invoice.value.balance);
+    amount += Number(invoice.netPrice);
+    totalPaid += Number(invoice.amtPaid);
+    totalDebt += Number(invoice.balance);
   });
 
   return [amount, totalPaid, totalDebt];
@@ -166,7 +149,7 @@ const getInvoiceBreakDown = invoices => {
 //get debt invoices
 const getCurrentDebts = invoices => {
   return invoices.filter(invoice => {
-    return Number(invoice.value.balance) > 0;
+    return Number(invoice.balance) > 0;
   });
 };
 
@@ -252,11 +235,11 @@ const getTransNumbers = invoices => {
   let creditTrans = 0;
 
   invoices.forEach(invoice => {
-    if (invoice.value.transType == "cash") {
+    if (invoice.transType == "cash") {
       cashTrans++;
-    } else if (invoice.value.transType == "online") {
+    } else if (invoice.transType == "online") {
       onlineTrans++;
-    } else if (invoice.value.transType == "credit") {
+    } else if (invoice.transType == "credit") {
       creditTrans++;
     }
   });
@@ -267,8 +250,8 @@ const getTransNumbers = invoices => {
 const checkMoneyThisMonth = (thisMonth, invoices) => {
   let total = 0;
   invoices.forEach(invoice => {
-    if (invoice.value.year == year && invoice.value.month == thisMonth) {
-      total += Number(invoice.value.netPrice);
+    if (invoice.year == year && invoice.month == thisMonth) {
+      total += Number(invoice.netPrice);
     }
   });
 
@@ -286,10 +269,9 @@ const getAmountPerMonth = invoices => {
 };
 
 //handle dashInvoices
-const handleInvoices = () => {
-  dashboardModel.getAllInvoices().then(
-    ({ data }) => {
-      dashInvoices = data.rows;
+const handleInvoices =async () => {
+  
+      dashInvoices = await invoiceModel.getAllInvoices()
 
       //get money made for each month
       let amountArray = getAmountPerMonth(dashInvoices);
@@ -331,38 +313,24 @@ const handleInvoices = () => {
       document.getElementById("span4").textContent = formatMoney(amount);
       document.getElementById("span6").textContent = currentInvoices.length;
       document.getElementById("span8").textContent = currentInvoices.length;
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //handle dashUsers
-const handleUsers = () => {
-  dashboardModel.getUsers().then(
-    ({ data }) => {
-      dashUsers = data.rows;
+const handleUsers = async () => {
+  
+      dashUsers = await staffModel.getUsers()
 
       //appende to DOM
       document.getElementById("span7").textContent = dashUsers.length;
-    },
-    err => {
-      console.log(err);
-    }
-  );
+    
 };
 
 //handle exenses
-const handleDashExpenses = () => {
-  dashboardModel.getExpenses().then(
-    ({ data }) => {
-      dashExpenses = data.rows;
-    },
-    err => {
-      console.log(err);
-    }
-  );
+const handleDashExpenses = async () => {
+  
+      dashExpenses = await expenseModel.getExpenses()
+    
 };
 
 //load up dashboard
@@ -379,7 +347,7 @@ const loadUpdashboard = () => {
 
   //get setup details
   let { detail } = store.getSetupDetail();
-  setup = detail[0];
+  setup = detail;
 
   //get dashSales
   handleSales();
@@ -392,8 +360,8 @@ const loadUpdashboard = () => {
   //get dashStock
   handleStock();
 
-  document.getElementById("brId").textContent = setup.value.branchId
-    ? setup.value.branchId
+  document.getElementById("brId").textContent = setup.branchId
+    ? setup.branchId
     : "N/A";
 };
 

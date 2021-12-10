@@ -3,14 +3,18 @@
 //import db file
 
 class staffModel {
- 
+  async getUsers() {
+    let { rows } = await usersDb.allDocs();
+    let users = await generateWorkingList(usersDb, rows);
+    return users;
+  }
 
   async insertDetails(details) {
     let staffId = "STF";
     staffId += Math.floor(Math.random() * 1000);
     let date = new Date();
     return usersDb.put({
-      _id: `${+ new Date()}`,
+      _id: `${+new Date()}`,
       firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
       lastname: details.lname[0].toUpperCase() + details.lname.slice(1),
       email: details.email,
@@ -75,7 +79,8 @@ class staffModel {
     return usersDb.put({
       _id: id,
       _rev: details._rev,
-      firstname: details.firstname[0].toUpperCase() + details.firstname.slice(1),
+      firstname:
+        details.firstname[0].toUpperCase() + details.firstname.slice(1),
       lastname: details.lastname[0].toUpperCase() + details.lastname.slice(1),
       email: details.email,
       number: details.number,
@@ -192,10 +197,7 @@ class staffModel {
   filterStaffDetails(users, id) {
     let match = users.filter(user => {
       //filter email match or ID match
-      return (
-        user.email == id ||
-        user.staffId.toUpperCase() == id.toUpperCase()
-      );
+      return user.email == id || user.staffId.toUpperCase() == id.toUpperCase();
     });
 
     if (match.length > 0) {
@@ -215,7 +217,6 @@ class staffModel {
   }
 
   extractUsers(allUsers, val) {
-    
     let email = store.getLoginDetail().email;
     let fname = store.getLoginDetail().fname;
     let lname = store.getLoginDetail().lname;

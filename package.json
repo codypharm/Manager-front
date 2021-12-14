@@ -1,11 +1,29 @@
 {
-  "name": "Manager-front",
+  "name": "Managerfront",
   "version": "1.0.0",
   "description": "A business management system",
   "main": "app/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "build":"electron-builder"
+  },
+  "build":{
+    "appId": "managerfront",
+    "win":{
+      "target":[
+        "nsis"
+      ],
+      "icon":"icon.ico"
+    },
+    "nsis":{
+      "oneClick":true,
+      "installerIcon":"icon.ico",
+      "uninstallerIcon":"icon.ico",
+      "uninstallDisplayName":"Managerfront uninstaller",
+      "license":"license.md",
+      "allowToChangeInstallationDirectory":false
+    }
   },
   "repository": {
     "type": "git",

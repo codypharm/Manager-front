@@ -12,9 +12,10 @@ class Invoice {
     return invoices
   }
 
-  getAllClearance() {
-    let viewUrl = this.viewUrl.allClearance;
-    return this.couch.get("debt_clearance", viewUrl);
+ async getAllClearance() {
+    let {rows} = await debt_clearanceDb.allDocs()
+    let clearances = await generateWorkingList(debt_clearanceDb,rows)
+    return clearances
   }
 
   getOtherMatchInvoices(invoices, day, month, year, invoiceType) {
@@ -163,9 +164,9 @@ class Invoice {
 
   //update current match
   remoteInvoicesUpdateMatch(detail, id) {
-    return this.couch.update("invoice", {
+    return invoicesDb.put( {
       _id: id,
-      _rev: detail.rev,
+      _rev: detail._rev,
       invoiceId: detail.invoiceId,
       customerAddress: detail.customerAddress,
       customerName: detail.customerName,
@@ -193,15 +194,15 @@ class Invoice {
     //loop through matches
     for (let i = 0; i < matchLength; i++) {
       //wait for update to happen
-      await this.remoteInvoicesUpdateMatch(allMatch[i].value, allMatch[i].id);
+      await this.remoteInvoicesUpdateMatch(allMatch[i], allMatch[i]._id);
     }
   }
 
   //update current match
   remoteClearanceUpdateMatch(detail, id) {
-    return this.couch.update("debt_clearance", {
+    return debt_clearanceDb.put( {
       _id: id,
-      _rev: detail.rev,
+      _rev: detail._rev,
       paymentFor: detail.paymentFor,
       currentAmtPaid: detail.currentAmtPaid,
       attender: detail.attender,
@@ -219,7 +220,7 @@ class Invoice {
     //loop through matches
     for (let i = 0; i < matchLength; i++) {
       //wait for update to happen
-      await this.remoteClearanceUpdateMatch(allMatch[i].value, allMatch[i].id);
+      await this.remoteClearanceUpdateMatch(allMatch[i], allMatch[i]._id);
     }
   }
 }

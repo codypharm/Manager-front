@@ -20,19 +20,17 @@ class Sales {
 
     //upload these Sales
     if (filteredSales.length > 0) {
-      let upload = modules.upload(filteredSales, this.setupDetails.detail[0]);
+      let upload = modules.upload(filteredSales, this.setupDetails.detail);
     }
     //move on while the task runs asynchronously
     proceedToInvoices();
   }
 
   //handle Sales
-  handleSales(proceedToInvoices) {
+ async handleSales(proceedToInvoices) {
     //get staff list
-    const allSales = salesModel.getSales();
-    allSales.then(({ data, headers, status }) => {
-      this.uploadSalesToRemote(data.rows, proceedToInvoices);
-    });
+    const allSales = await salesModel.getSales();
+    this.uploadSalesToRemote(allSales, proceedToInvoices);
   }
 }
 

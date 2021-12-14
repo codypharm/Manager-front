@@ -45,7 +45,7 @@ const appendSettingsValues = () => {
   document.getElementById("logoutTime").selectedIndex = logout;
 
   //account settigs details
-  if (setupInfo.app_package == "premium") {
+  if (setupInfo.package == "premium") {
     accountType = 1;
   } else {
     accountType = 2;
@@ -205,19 +205,12 @@ const emailIsValid = email => {
   }
 };
 
-const completeUpdate = () => {
+const completeUpdate = async () => {
   //update database
-  settingsModel.updateSetUp(setupInfo, setupId).then(
-    ({ data, header, status }) => {
-      if (status == 201) {
+  await settingsModel.updateSetUp(setupInfo, setupId)
         //reload sections
         loadSettingsSections();
-      }
-    },
-    err => {
-      console.log(err);
-    }
-  );
+     
 };
 
 //continue premium processing
@@ -225,8 +218,9 @@ const continuePremium = data => {
   //if empty show error
   if (data.length == 0) {
     showModal(
-      "No record exists for this branch. Please ensure you create a company and branch online and fill in their details here."
+      "No record exists for this branch. Please ensure you create a company and branch online and fill in their matching details here."
     );
+    hideLoading()
   } else {
     //update data online
     branches.updateBranchOnline(data[0].id, setupInfo, completeUpdate);

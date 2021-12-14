@@ -5,7 +5,7 @@ const salesModel = new ourModel();
 
 const filterSales = sales => {
   let match = sales.filter(sale => {
-    return sale.value.remote == false;
+    return sale.remote == false;
   });
 
   return match;
@@ -13,23 +13,23 @@ const filterSales = sales => {
 
 const upload = async (sales, setup) => {
   // add company and branch ID manually
-  let company = setup.value.companyId;
-  let branch = setup.value.branchId;
+  let company = setup.companyId;
+  let branch = setup.branchId;
   let promises = [];
   for (let i = 0; i < sales.length; i++) {
     promises.push(
       axiosInstance.post("sales/", {
-        date: `${sales[i].value.year}-${sales[i].value.month}-${sales[i].value.day}`,
-        transactionType: sales[i].value.transType,
-        staffId: sales[i].value.staffId,
-        invoiceId: sales[i].value.invoiceId,
-        discount: sales[i].value.disccount,
-        price: sales[i].value.price,
-        quantity: sales[i].value.qty,
-        productName: sales[i].value.name,
-        productId: sales[i].value.productId,
-        cost_price: Number(sales[i].value.cp),
-        selling_price: Number(sales[i].value.sp),
+        date: `${sales[i].year}-${sales[i].month}-${sales[i].day}`,
+        transactionType: sales[i].transactionType,
+        staffId: sales[i].staffId,
+        invoiceId: sales[i].invoiceId,
+        discount: sales[i].disccount,
+        price: sales[i].price,
+        quantity: sales[i].qty,
+        productName: sales[i].name,
+        productId: sales[i].productId,
+        cost_price: Number(sales[i].cp),
+        selling_price: Number(sales[i].sp),
         companyId: company,
         branchId: branch
       })

@@ -6,7 +6,7 @@ const ourStore = require("../../src/js/store");
 //const ourStaffModel = require("../../models/staffModel");
 //const modules = require("./modules");
 const { Notyf } = require("notyf");
-require("dotenv").config();
+const env = require("../../utils/appConstants")
 
 // instantiate classes
 const store = new ourStore();
@@ -29,9 +29,9 @@ class Branches {
       RendShowLoading();
     }
     axios
-      .post(`${process.env.HOST}/login/`, {
-        email: process.env.APP,
-        password: process.env.PASSWORD
+      .post(`${env.BACKEND_URL}/login/`, {
+        email:env.APP,
+        password: env.PASSWORD
         // email: email ? email : this.currentUser.email,
         // password: password ? password : this.currentUser.pwd
       })
@@ -83,7 +83,7 @@ class Branches {
     RendHideLoading = false
   ) {
     axiosInstance
-      .get(`${process.env.HOST}/branches/${company}/${branch}/`)
+      .get(`branches/${company}/${branch}/`)
       .then(res => {
         continuePremium(res.data);
       })
@@ -117,7 +117,7 @@ class Branches {
     RendHideLoading = false
   ) {
     axiosInstance
-      .put(`${process.env.HOST}/branches/branch/${id}/`, {
+      .put(`branches/branch/${id}/`, {
         branchId: detail.branchId,
         companyId: detail.companyId,
         address: detail.address,

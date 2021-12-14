@@ -4,10 +4,11 @@ const axios = require("axios");
 const Store = require("../src/js/store.js");
 const store = new Store();
 
-require("dotenv").config();
+const env = require("../utils/appConstants")
+
 
 const axiosInstance = axios.create({
-  baseURL: `${process.env.HOST}/`,
+  baseURL: `${env.BACKEND_URL}/`,
   headers: { Accept: "application/json" },
   headers: { "Content-Type": "application/json" }
 });

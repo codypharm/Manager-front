@@ -6,7 +6,8 @@ const ourStaffModel = require("../../models/staffModel");
 const modules = require("./modules");
 const { Notyf } = require("notyf");
 const axiosInstance = require("../axiosInstance");
-require("dotenv").config();
+//require("dotenv").config();
+const env = require("../../utils/appConstants")
 
 // instantiate classes
 const store = new ourStore();
@@ -15,22 +16,24 @@ const staffModel = new ourStaffModel();
 class Users {
   constructor() {
     //this.currentUser = store.getLoginDetail();
-    this.setupDetails = store.getSetupDetail();
+   // this.setupDetails = store.getSetupDetail();
+    
   }
 
   loginRemote(proceed) {
     axios
-      .post(`${process.env.HOST}/login/`, {
-        email: process.env.APP,
-        password: process.env.PASSWORD
+      .post(`${env.BACKEND_URL}/login/`, {
+        email: env.APP,
+        password: env.PASSWORD
       })
       .then(res => {
         //store tokens
+        let setupDetails = store.getSetupDetail()
         store.setTokens(res.data.access, res.data.refresh);
         //check is expiration exists
-        let companyId = this.setupDetails.detail[0].value.companyId;
+        let companyId = setupDetails.detail.companyId;
         axiosInstance
-          .get(`${process.env.HOST}/companies/${companyId}`)
+          .get(`${env.BACKEND_URL}/companies/${companyId}`)
           .then(res => {
             let message = res.data.message;
             if (message.toUpperCase() === "OPEN") {
@@ -70,7 +73,7 @@ class Users {
       })
       .catch(err => {
         let errorMessage = "An error occurred";
-
+        console.log(err)
         if (err.response) {
           errorMessage = err.response.data.detail
             ? "Invalid online credentials or your account has not been activated"
@@ -94,23 +97,22 @@ class Users {
 
   //upload
   uploadUsersToRemote(users, proceedToStock) {
+    let setupDetails = store.getSetupDetail()
     //filter out users with remote =  false
     let filteredUsers = modules.filterUsers(users);
     //upload these users
     if (filteredUsers.length > 0) {
-      let upload = modules.upload(filteredUsers, this.setupDetails.detail[0]);
+      let upload = modules.upload(filteredUsers,setupDetails.detail);
     }
     //move on while the task runs asynchronously
     proceedToStock();
   }
 
   //handle users
-  handleUsers(proceedToStock) {
+ async handleUsers(proceedToStock) {
     //get staff list
-    const allStaff = staffModel.getUsers();
-    allStaff.then(({ data, headers, status }) => {
-      this.uploadUsersToRemote(data.rows, proceedToStock);
-    });
+    const allStaff = await staffModel.getUsers();
+    this.uploadUsersToRemote(allStaff, proceedToStock);
   }
 }
 

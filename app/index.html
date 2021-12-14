@@ -98,6 +98,7 @@
               type="button"
               class="btn btn-secondary btn-sm "
               data-dismiss="modal"
+              onclick="prevent(event)"
             >
               Cancel
             </button>
@@ -119,6 +120,7 @@
             type="button"
             class="btn btn-primary btn-sm"
             data-dismiss="modal"
+            onclick="prevent(event)"
           >
             Done
           </button>
@@ -157,7 +159,7 @@
           <button type="button" class="btn btn-success " onclick="print()">
             Print Again
           </button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="prevent(event)">
             Done
           </button>
         </div>
@@ -544,7 +546,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn  btn-default " data-dismiss="modal">Close</button>
+          <button type="button" class="btn  btn-default " data-dismiss="modal" onclick="prevent(event)">Close</button>
         </div>
       </div>
     </div>

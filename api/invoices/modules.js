@@ -5,7 +5,7 @@ const invoiceModel = new ourModel();
 
 const filterInvoices = invoices => {
   let match = invoices.filter(invoice => {
-    return invoice.value.remote == false;
+    return invoice.remote == false;
   });
 
   return match;
@@ -13,26 +13,26 @@ const filterInvoices = invoices => {
 
 const upload = async (invoices, setup) => {
   // add company and branch ID manually
-  let company = setup.value.companyId;
-  let branch = setup.value.branchId;
+  let company = setup.companyId;
+  let branch = setup.branchId;
   let promises = [];
   for (let i = 0; i < invoices.length; i++) {
     promises.push(
       axiosInstance.post("invoices/", {
-        date: `${invoices[i].value.year}-${invoices[i].value.month}-${invoices[i].value.day}`,
-        transactionType: invoices[i].value.transType,
-        invoiceId: invoices[i].value.invoiceId,
-        total_price: invoices[i].value.totalPrice,
-        discount: invoices[i].value.disccount,
-        net_price: invoices[i].value.netPrice,
-        paid: invoices[i].value.amtPaid,
-        balance: invoices[i].value.balance,
-        attender: invoices[i].value.attender,
-        customer_name: invoices[i].value.customerName,
-        customer_number: invoices[i].value.customerNumber,
-        customer_address: invoices[i].value.customerAddress,
-        cost_price: Number(invoices[i].value.cp),
-        selling_price: Number(invoices[i].value.sp),
+        date: `${invoices[i].year}-${invoices[i].month}-${invoices[i].day}`,
+        transactionType: invoices[i].transType,
+        invoiceId: invoices[i].invoiceId,
+        total_price: invoices[i].totalPrice,
+        discount: invoices[i].disccount,
+        net_price: invoices[i].netPrice,
+        paid: invoices[i].amtPaid,
+        balance: invoices[i].balance,
+        attender: invoices[i].attender,
+        customer_name: invoices[i].customerName,
+        customer_number: invoices[i].customerNumber,
+        customer_address: invoices[i].customerAddress,
+        cost_price: Number(invoices[i].cp),
+        selling_price: Number(invoices[i].sp),
         companyId: company,
         branchId: branch
       })

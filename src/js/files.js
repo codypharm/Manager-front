@@ -35,8 +35,8 @@ const Validator = require("../src/js/validator");
 const Store = require("../src/js/store");
 const Database = require("../src/js/db");
 const { remote } = require("electron");
-const fetch = remote.require("electron-fetch").default;
-const handleBar = remote.require("electron-handlebars");
+//const fetch = remote.require("electron-fetch").default;
+//const handleBar = remote.require("electron-handlebars");
 const api = require("../api");
 const fs = require("fs");
 

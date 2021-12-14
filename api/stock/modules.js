@@ -4,7 +4,7 @@ const stockModel = new ourModel();
 const { Notyf } = require("notyf");
 const filterStock = stock => {
   let match = stock.filter(product => {
-    return product.value.remote == false;
+    return product.remote == false;
   });
 
   return match;
@@ -12,20 +12,20 @@ const filterStock = stock => {
 
 const upload = async (stock, setup) => {
   // add company and branch ID manually
-  let company = setup.value.companyId;
-  let branch = setup.value.branchId;
+  let company = setup.companyId;
+  let branch = setup.branchId;
   let promises = [];
   for (let i = 0; i < stock.length; i++) {
     promises.push(
       axiosInstance.post(`stock/company=${company}/branch=${branch}/`, {
-        productName: stock[i].value.name,
-        productId: stock[i].value.prodId,
-        quantity: stock[i].value.qty,
-        batchId: stock[i].value.batchId,
-        expiryDate: stock[i].value.expDate,
-        unit: stock[i].value.unit,
-        ppmu: stock[i].value.ppmu,
-        price: stock[i].value.price,
+        productName: stock[i].name,
+        productId: stock[i].productId,
+        quantity: stock[i].qty,
+        batchId: stock[i].batchId,
+        expiryDate: stock[i].expDate,
+        unit: stock[i].unit,
+        ppmu: stock[i].pricePerMinUnit,
+        price: stock[i].price,
         companyId: company,
         branchId: branch
       })

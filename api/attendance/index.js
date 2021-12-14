@@ -22,7 +22,7 @@ class Attendance {
     if (filteredAttendance.length > 0) {
       let upload = modules.upload(
         filteredAttendance,
-        this.setupDetails.detail[0]
+        this.setupDetails.detail
       );
     }
     //move on while the task runs asynchronously
@@ -30,12 +30,10 @@ class Attendance {
   }
 
   //handle Attendance
-  handleAttendance(proceedToSales) {
+ async handleAttendance(proceedToSales) {
     //get staff list
-    const allAttendance = attendanceModel.getAttendance();
-    allAttendance.then(({ data, headers, status }) => {
-      this.uploadAttendanceToRemote(data.rows, proceedToSales);
-    });
+    const allAttendance = await attendanceModel.getAttendance();
+    this.uploadAttendanceToRemote(allAttendance, proceedToSales);
   }
 }
 

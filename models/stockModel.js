@@ -625,12 +625,12 @@ class stockModel {
   }
 
   //update current match
-  remoteUpdateMatch(detail, id) {
-    return this.couch.update("stock", {
+ async  remoteUpdateMatch(detail, id) {
+    return stockDb.put({
       _id: id,
-      _rev: detail.rev,
+      _rev: detail._rev,
       batchId: detail.batchId,
-      productId: detail.prodId,
+      productId: detail.productId,
       brand: detail.brand[0].toUpperCase() + detail.brand.slice(1),
       name: detail.name[0].toUpperCase() + detail.name.slice(1),
       qty: detail.qty,
@@ -639,7 +639,7 @@ class stockModel {
       price: detail.price,
       totalCost: detail.totalCost,
       expDate: detail.expDate,
-      pricePerMinUnit: detail.ppmu,
+      pricePerMinUnit: detail.pricePerMinUnit,
       error: detail.error,
       remote: true,
       day: detail.day,
@@ -658,15 +658,15 @@ class stockModel {
 
     for (let i = 0; i < matchLength; i++) {
       //wait for update to happen
-      await this.remoteUpdateMatch(allMatch[i].value, allMatch[i].id);
+      await this.remoteUpdateMatch(allMatch[i], allMatch[i]._id);
     }
   }
 
   //update current match
   remoteActivityUpdateMatch(detail, id) {
-    return this.couch.update("all_activities", {
+    return activitiesDb.put({
       _id: id,
-      _rev: detail.rev,
+      _rev: detail._rev,
       day: detail.day,
       month: detail.month,
       year: detail.year,
@@ -687,7 +687,7 @@ class stockModel {
 
     for (let i = 0; i < matchLength; i++) {
       //wait for update to happen
-      await this.remoteActivityUpdateMatch(allMatch[i].value, allMatch[i].id);
+      await this.remoteActivityUpdateMatch(allMatch[i], allMatch[i]._id);
     }
   }
 

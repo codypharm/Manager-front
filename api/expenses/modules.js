@@ -5,7 +5,7 @@ const expenseModel = new ourModel();
 
 const filterExpenses = expenses => {
   let match = expenses.filter(expense => {
-    return expense.value.remote == false;
+    return expense.remote == false;
   });
 
   return match;
@@ -13,16 +13,16 @@ const filterExpenses = expenses => {
 
 const upload = async (expenses, setup) => {
   // add company and branch ID manually
-  let company = setup.value.companyId;
-  let branch = setup.value.branchId;
+  let company = setup.companyId;
+  let branch = setup.branchId;
   let promises = [];
   for (let i = 0; i < expenses.length; i++) {
     promises.push(
       axiosInstance.post("expenses/", {
-        date: `${expenses[i].value.year}-${expenses[i].value.month}-${expenses[i].value.day}`,
-        name: expenses[i].value.name,
-        description: expenses[i].value.description,
-        amount: expenses[i].value.amt,
+        date: `${expenses[i].year}-${expenses[i].month}-${expenses[i].day}`,
+        name: expenses[i].name,
+        description: expenses[i].description,
+        amount: expenses[i].amt,
         companyId: company,
         branchId: branch
       })

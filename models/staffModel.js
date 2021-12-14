@@ -143,11 +143,11 @@ class staffModel {
 
   //update remote status
   async updateAfterRemoteUpload(id, rev, details) {
-    return this.couch.update("users", {
+    return usersDb.put( {
       _id: id,
       _rev: rev,
-      firstname: details.fname[0].toUpperCase() + details.fname.slice(1),
-      lastname: details.lname[0].toUpperCase() + details.lname.slice(1),
+      firstname: details.firstname[0].toUpperCase() + details.firstname.slice(1),
+      lastname: details.lastname[0].toUpperCase() + details.lastname.slice(1),
       email: details.email,
       number: details.number,
       position: details.position,
@@ -161,7 +161,7 @@ class staffModel {
       permission: details.permission,
       access: details.access,
       image: details.image,
-      password: details.pwd,
+      password: details.password,
       regDay: details.regDay,
       regMonth: details.regMonth,
       regYear: details.regYear,

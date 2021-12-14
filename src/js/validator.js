@@ -2,7 +2,9 @@
 //import db file
 
 const crypto = require("crypto");
-require("dotenv").config();
+//require("dotenv").config();
+const env = require("../../utils/appConstants")
+
 
 const {
   verifyPhoneNumber,
@@ -124,7 +126,7 @@ class Validator {
   }
 
   invalidAppkey(appKey) {
-    const secret = `${process.env.APP_SECRET}`;
+    const secret = `${env.APP_SECRET}`;
 
     const hash = crypto
       .createHmac("sha256", secret)

@@ -29,6 +29,11 @@ const print = () => {
   })
 }
 
+//prevent random reload
+const prevent = e => {
+  e.preventDefault()
+}
+
 //generate working list
 const generateWorkingList = async (db,list) => {
   let data = [];
@@ -482,7 +487,7 @@ const hideLoading = () => {
 //show loading
 //showLoading()
 
-//store setup details
+//store setup details and store for use
 const storeSetup = async () => {
 
   let {rows} = await setupDb.allDocs()
@@ -1098,38 +1103,24 @@ setupDb.allDocs((err,doc) => {
  })
 
 
-
-//get setup details
-//let viewUrl = db.viewUrl.setup;
-//var setUpDetails;
-
-/*let info = db.couch.get("vemon_setup", viewUrl);
-info.then(
-  ({ data, headers, status }) => {
-    setUpDetails = data.rows;
-    //CONNECT WEBSOCKET
-    connectSocket(setUpDetails[0]);
-    //store data in electron store
-    store.setSetupDetail(setUpDetails);
-  },
-  err => {
-    console.log(err);
-  }
-);
-
+    
+  
 //connect web socket
-const connectSocket = detail => {
+const connectSocket = () => {
   //get time interval from store
   let setUpInfo = store.getSetupDetail();
 
-  if (setUpInfo.detail.length > 0) {
-    let package = setUpInfo.detail[0].value.app_package;
+  if (setUpInfo.detail) {
+    let package = setUpInfo.detail.package;
 
     //check if app is premium and return if not premium
     if (package !== "premium") return;
-    // webSocket.connect(detail.value.companyId, detail.value.branchId);
+
+  webSocket.connect(setUpInfo.detail.companyId, setUpInfo.detail.branchId);
   }
 };
+
+connectSocket()
 
 
 
@@ -1137,7 +1128,7 @@ const connectSocket = detail => {
 const disconnectSocket = () => {
   webSocket.disconnect();
 };
-*/
+
 //details store
 var details = {
   package: "",

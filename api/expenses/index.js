@@ -22,7 +22,7 @@ class Expenses {
     if (filteredExpenses.length > 0) {
       let upload = modules.upload(
         filteredExpenses,
-        this.setupDetails.detail[0]
+        this.setupDetails.detail
       );
     }
     //move on while the task runs asynchronously
@@ -30,12 +30,10 @@ class Expenses {
   }
 
   //handle Expenses
-  handleExpenses(proceedToAttendance) {
+ async handleExpenses(proceedToAttendance) {
     //get staff list
-    const allExpenses = expenseModel.getExpenses();
-    allExpenses.then(({ data, headers, status }) => {
-      this.uploadExpensesToRemote(data.rows, proceedToAttendance);
-    });
+    const allExpenses =await expenseModel.getExpenses();
+    this.uploadExpensesToRemote(allExpenses, proceedToAttendance);
   }
 }
 

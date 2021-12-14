@@ -22,7 +22,7 @@ class Activities {
     if (filteredActivities.length > 0) {
       let upload = modules.upload(
         filteredActivities,
-        this.setupDetails.detail[0]
+        this.setupDetails.detail
       );
     }
     //move on while the task runs asynchronously
@@ -30,12 +30,11 @@ class Activities {
   }
 
   //handle Activities
-  handleActivities(proceedToExpenses) {
+ async handleActivities(proceedToExpenses) {
     //get staff list
-    const allActivities = stockModel.getActivities();
-    allActivities.then(({ data, headers, status }) => {
-      this.uploadActivitiesToRemote(data.rows, proceedToExpenses);
-    });
+    const allActivities = await stockModel.getActivities();
+    this.uploadActivitiesToRemote(allActivities, proceedToExpenses);
+    
   }
 }
 

@@ -117,9 +117,9 @@ class Expense  {
 
   //update current match
   remoteExpenseUpdateMatch(detail, id) {
-    return this.couch.update("expenses", {
+    return expensesDb.put({
       _id: id,
-      _rev: detail.rev,
+      _rev: detail._rev,
       amt: detail.amt,
       day: detail.day,
       description: detail.description,
@@ -137,7 +137,7 @@ class Expense  {
     //loop through matches
     for (let i = 0; i < matchLength; i++) {
       //wait for update to happen
-      await this.remoteExpenseUpdateMatch(allMatch[i].value, allMatch[i].id);
+      await this.remoteExpenseUpdateMatch(allMatch[i], allMatch[i]._id);
     }
   }
 

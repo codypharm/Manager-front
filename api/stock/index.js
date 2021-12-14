@@ -19,19 +19,17 @@ class Stock {
     let filteredStock = modules.filterStock(stock);
     //upload these stocks
     if (filteredStock.length > 0) {
-      let upload = modules.upload(filteredStock, this.setupDetails.detail[0]);
+      let upload = modules.upload(filteredStock, this.setupDetails.detail);
     }
     //move on while the task runs asynchronously
     proceedToActivities();
   }
 
   //handle stocks
-  handleStock(proceedToActivities) {
+ async handleStock(proceedToActivities) {
     //get staff list
-    const allStock = stockModel.getStock();
-    allStock.then(({ data, headers, status }) => {
-      this.uploadStockToRemote(data.rows, proceedToActivities);
-    });
+    const allStock =await stockModel.getStock();
+    this.uploadStockToRemote(allStock, proceedToActivities);
   }
 }
 

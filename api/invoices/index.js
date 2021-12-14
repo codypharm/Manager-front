@@ -22,7 +22,7 @@ class Invoices {
     if (filteredInvoices.length > 0) {
       let upload = modules.upload(
         filteredInvoices,
-        this.setupDetails.detail[0]
+        this.setupDetails.detail
       );
     }
     //move on while the task runs asynchronously
@@ -30,12 +30,10 @@ class Invoices {
   }
 
   //handle Invoices
-  handleInvoices(proceedToClearance) {
+ async handleInvoices(proceedToClearance) {
     //get staff list
-    const allInvoices = invoiceModel.getAllInvoices();
-    allInvoices.then(({ data, headers, status }) => {
-      this.uploadInvoicesToRemote(data.rows, proceedToClearance);
-    });
+    const allInvoices = await invoiceModel.getAllInvoices();
+    this.uploadInvoicesToRemote(allInvoices, proceedToClearance);
   }
 }
 

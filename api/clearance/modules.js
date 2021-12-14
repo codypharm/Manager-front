@@ -5,7 +5,7 @@ const invoiceModel = new ourModel();
 
 const filterClearance = clearance => {
   let match = clearance.filter(item => {
-    return item.value.remote == false;
+    return item.remote == false;
   });
 
   return match;
@@ -13,17 +13,17 @@ const filterClearance = clearance => {
 
 const upload = async (clearance, setup) => {
   // add company and branch ID manually
-  let company = setup.value.companyId;
-  let branch = setup.value.branchId;
+  let company = setup.companyId;
+  let branch = setup.branchId;
   let promises = [];
   for (let i = 0; i < clearance.length; i++) {
     promises.push(
       axiosInstance.post("clearance/", {
-        date: `${clearance[i].value.year}-${clearance[i].value.month}-${clearance[i].value.day}`,
-        transactionType: clearance[i].value.transType,
-        invoiceId: clearance[i].value.paymentFor,
-        paid: clearance[i].value.currentAmtPaid,
-        attender: clearance[i].value.attender,
+        date: `${clearance[i].year}-${clearance[i].month}-${clearance[i].day}`,
+        
+        invoiceId: clearance[i].paymentFor,
+        paid: clearance[i].currentAmtPaid,
+        attender: clearance[i].attender,
         companyId: company,
         branchId: branch
       })

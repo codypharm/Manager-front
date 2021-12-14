@@ -430,16 +430,16 @@ class salesModel {
 
   //update current match
   remoteSalesUpdateMatch(detail, id) {
-    return this.couch.update("sales", {
+    return salesDb.put({
       _id: id,
-      _rev: detail.rev,
+      _rev: detail._rev,
       qty: detail.qty,
       name: detail.name,
       price: detail.price,
       productId: detail.productId,
       brand: detail.brand,
       invoiceId: detail.invoiceId,
-      transactionType: detail.transType,
+      transactionType: detail.transactionType,
       disccount: detail.disccount,
       cp: detail.cp,
       sp: detail.sp,
@@ -457,7 +457,7 @@ class salesModel {
     //loop through matches
     for (let i = 0; i < matchLength; i++) {
       //wait for update to happen
-      await this.remoteSalesUpdateMatch(allMatch[i].value, allMatch[i].id);
+      await this.remoteSalesUpdateMatch(allMatch[i], allMatch[i]._id);
     }
   }
 }

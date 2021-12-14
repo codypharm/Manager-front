@@ -368,7 +368,7 @@ const loadUpdashboard = () => {
 //synchronize with remote
 const synchronize = e => {
   let setUpInfo = store.getSetupDetail();
-  let package = setUpInfo.detail[0].value.app_package;
+  let package = setUpInfo.detail.package;
 
   //check if app is premium and return if not premium
   if (package !== "premium") {

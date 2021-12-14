@@ -22,7 +22,7 @@ class Clearance {
     if (filteredClearance.length > 0) {
       let upload = modules.upload(
         filteredClearance,
-        this.setupDetails.detail[0]
+        this.setupDetails.detail
       );
     }
     //move on while the task runs asynchronously
@@ -30,12 +30,10 @@ class Clearance {
   }
 
   //handle Clearance
-  handleClearance(proceedToNext) {
+  async handleClearance(proceedToNext) {
     //get clearance list
-    const allClearance = invoiceModel.getAllClearance();
-    allClearance.then(({ data, headers, status }) => {
-      this.uploadClearanceToRemote(data.rows, proceedToNext);
-    });
+    const allClearance = await invoiceModel.getAllClearance();
+    this.uploadClearanceToRemote(allClearance, proceedToNext);
   }
 }
 

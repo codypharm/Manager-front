@@ -5,7 +5,7 @@ const stockModel = new ourModel();
 
 const filterActivities = activities => {
   let match = activities.filter(activity => {
-    return activity.value.remote == false;
+    return activity.remote == false;
   });
 
   return match;
@@ -14,17 +14,17 @@ const filterActivities = activities => {
 const upload = async (activities, setup) => {
   console.log(activities, setup);
   // add company and branch ID manually
-  let company = setup.value.companyId;
-  let branch = setup.value.branchId;
+  let company = setup.companyId;
+  let branch = setup.branchId;
   let promises = [];
   for (let i = 0; i < activities.length; i++) {
     promises.push(
       axiosInstance.post("stockactivity/", {
-        date: `${activities[i].value.year}-${activities[i].value.month}-${activities[i].value.day}`,
-        activity: activities[i].value.activity,
-        detail: activities[i].value.detail,
-        editor: activities[i].value.staffName,
-        editorId: activities[i].value.staffId,
+        date: `${activities[i].year}-${activities[i].month}-${activities[i].day}`,
+        activity: activities[i].activity,
+        detail: activities[i].detail,
+        editor: activities[i].staffName,
+        editorId: activities[i].staffId,
         //
         companyId: company,
         branchId: branch

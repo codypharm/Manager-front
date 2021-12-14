@@ -151,9 +151,9 @@ class attendanceModel {
 
   //update current match
   remoteAttendanceUpdateMatch(detail, id) {
-    return this.couch.update("attendance", {
+    return attendanceDb.put({
       _id: id,
-      _rev: detail.rev,
+      _rev: detail._rev,
       staffId: detail.staffId,
       staffName: detail.staffName,
       arrivalTime: detail.arrivalTime,
@@ -176,7 +176,7 @@ class attendanceModel {
     //loop through matches
     for (let i = 0; i < matchLength; i++) {
       //wait for update to happen
-      await this.remoteAttendanceUpdateMatch(allMatch[i].value, allMatch[i].id);
+      await this.remoteAttendanceUpdateMatch(allMatch[i], allMatch[i]._id);
     }
   }
 }

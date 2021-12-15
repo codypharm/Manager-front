@@ -22,7 +22,7 @@ class Activities {
     if (filteredActivities.length > 0) {
       let upload = modules.upload(
         filteredActivities,
-        this.setupDetails.detail
+        store.getSetupDetail().detail
       );
     }
     //move on while the task runs asynchronously

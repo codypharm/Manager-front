@@ -22,7 +22,7 @@ class Expenses {
     if (filteredExpenses.length > 0) {
       let upload = modules.upload(
         filteredExpenses,
-        this.setupDetails.detail
+        store.getSetupDetail().detail
       );
     }
     //move on while the task runs asynchronously

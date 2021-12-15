@@ -1,3 +1,13 @@
+//stockDb.destroy()
+//salesDb.destroy()
+//expensesDb.destroy()
+//activitiesDb.destroy()
+//debt_clearanceDb.destroy()
+//stockingDb.destroy()
+//invoicesDb.destroy()
+//setupDb.destroy()
+//usersDb.destroy()
+//attendanceDb.destroy()
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //const staffModules = require('../src/js/staff')
@@ -49,7 +59,7 @@ const generateWorkingList = async (db,list) => {
 //page loader
 const pageLoader = (page, fxn = false) => {
   pagePlate = document.getElementsByClassName("pagePlate")[0];
-  let url = `./app/pages/${page}.html`;
+  let url = `${__dirname}/pages/${page}.html`;
 
   fs.readFile(url, "utf-8", (err, data) => {
     if (err) {
@@ -800,6 +810,11 @@ const completeSetup = async  () => {
     //insert details
     let detailInsertion = await validate.insertDetails(details);
     if(detailInsertion.ok){
+      //set setup details
+      let {rows} = await setupDb.allDocs()
+      let workingList = await generateWorkingList(setupDb,rows)
+      store.setSetupDetail(workingList[0]);
+      //create users
       createUser()
     }
     /*detailInsertion.then(
@@ -831,7 +846,7 @@ const continueSetup = data => {
     const notyf = new Notyf({
       duration: 5000
     });
-
+    hideLoading()
     // Display an error notification
     notyf.error(
       "No Branch exists with this matching company Id and branch Id, please verify and try again."
@@ -1011,7 +1026,7 @@ const processLogin = async e => {
                 );
 
                       //display app container
-                      let url = "./app/pages/container.html";
+                      let url = `${__dirname}/pages/container.html`;
 
                       fs.readFile(url, "utf-8", (err, data) => {
                         if (err) {
@@ -1059,7 +1074,8 @@ setupDb.allDocs((err,doc) => {
   
   
   if(doc.rows.length < 1){
-    let url = "./app/setup.html";
+    //let url = "./app/setup.html";
+    let url = `${__dirname}/setup.html`
     fs.readFile(url, "utf-8", (err, data) => {
       if (err) {
         console.log(err);
@@ -1073,7 +1089,9 @@ setupDb.allDocs((err,doc) => {
     //if user is not logged in
     if (loginStatus == false) {
       //display login page
-      let url = "./app/pages/login.html";
+      
+      let url = `${__dirname}/pages/login.html`;
+      //let url = remote.getCurrentWindow().loadURL(`file://${__dirname}/pages/login.html`);
       fs.readFile(url, "utf-8", (err, data) => {
         if (err) {
           console.log(err);
@@ -1084,7 +1102,7 @@ setupDb.allDocs((err,doc) => {
     }else{
       //display app container since user is logged in
       document.getElementsByTagName("body")[0].classList.remove("setupBack");
-      let url = "./app/pages/container.html";
+      let url = `${__dirname}/pages/container.html`;
       fs.readFile(url, "utf-8", (err, data) => {
         if (err) {
           console.log(err);
@@ -1116,7 +1134,7 @@ const connectSocket = () => {
     //check if app is premium and return if not premium
     if (package !== "premium") return;
 
-  webSocket.connect(setUpInfo.detail.companyId, setUpInfo.detail.branchId);
+ webSocket.connect(setUpInfo.detail.companyId, setUpInfo.detail.branchId);
   }
 };
 
@@ -1275,7 +1293,7 @@ const socketLogOut = () => {
           store.forceLogout();
           //go to login page
 
-          let url = "./app/pages/login.html";
+          let url = `${__dirname}/pages/login.html`;
           fs.readFile(url, "utf-8", (err, data) => {
             if (err) {
               console.log(err);
@@ -1342,7 +1360,7 @@ const logMeOut = e => {
               store.forceLogout();
               //go to login page
 
-              let url = "./app/pages/login.html";
+              let url = `${__dirname}/pages/login.html`;
               fs.readFile(url, "utf-8", (err, data) => {
                 if (err) {
                   console.log(err);

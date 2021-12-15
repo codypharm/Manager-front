@@ -2,6 +2,7 @@
 
 //validate came from files.js-
 /* eslint-disable no-unused-vars */
+var { dialog, BrowserWindow } = remote.require("electron");
 
 //global variable definition
 var oldDetails;
@@ -717,6 +718,10 @@ const appendValues = async details => {
 
   document.getElementById("gender").selectedIndex = genderIndex;
   document.getElementById("permission").selectedIndex = permissionIndex;
+
+  //focus on firstname
+  document.getElementById("fname").focus()
+  
 };
 
 //display staff details
@@ -752,16 +757,29 @@ const showStaffValues = async selectedEmail => {
 };
 
 //update status
-const updateStatus = async (e, staffEmail, command) => {
+const updateStatus = (e, staffEmail, command) => {
   //ensure only super user blocks someone
   if (store.getLoginDetail().permission.toUpperCase() !== "SUPER_ADMIN") {
     showModal("Only a super admin can block a user.");
     return;
   }
+
+   //get window object
+   const window = BrowserWindow.getFocusedWindow();
   //confirm command
-  let confirmation = "Click OK to continue";
-  if (confirm(confirmation)) {
-    //add waiting
+  //show dialog
+  let resp = dialog.showMessageBox(window, {
+    title: "Manager-front",
+    buttons: ["Yes", "Cancel"],
+    type: "info",
+    message: "Click OK to continue"
+  });
+  
+  
+  //check if response is yes
+  resp.then(async (response, checkboxChecked) => {
+    if (response.response == 0) {
+      //add waiting
     e.target.textContent = "Please wait...";
     //get command
     let mainCommand = e.target.dataset.acctStatus;
@@ -832,7 +850,9 @@ const updateStatus = async (e, staffEmail, command) => {
            
          
       
-  }
+    }
+  });
+  
 };
 
 //view click

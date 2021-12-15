@@ -41,11 +41,12 @@ $(document).ready(function() {
       })
       .then(async function(response) {
         showLoading();
+        console.log(remote.app.getAppPath())
         let date = Date.now();
         let rand = Math.floor(Math.random() * 101);
         //image name
-        let imagePath = `./images/image${rand}${date}.png`;
-        let imageName = `../images/image${rand}${date}.png`;
+        let imagePath = `${remote.app.getAppPath('userData')}image${rand}${date}.png`;
+        //let imageName = `../images/image${rand}${date}.png`;
         //split image
         var image = response.split(";base64,").pop();
         let staffDetail = store.getEditDetail().detail;
@@ -55,12 +56,12 @@ $(document).ready(function() {
         });
 
         await staffModel
-          .updateUserImage(staffDetail._id, staffDetail, imageName)
+          .updateUserImage(staffDetail._id, staffDetail, imagePath)
           
-            $("#staffImage").attr("src", imageName);
+            $("#staffImage").attr("src", imagePath);
               
             if (store.getLoginDetail().staffId == staffDetail.staffId) {
-              $("#containerImg").attr("src", imageName);
+              $("#containerImg").attr("src", imagePath);
 
               user = {
                 firstname: staffDetail.firstname,
@@ -69,7 +70,7 @@ $(document).ready(function() {
                 staffId: staffDetail.staffId,
                 position: staffDetail.position,
                 permission: staffDetail.permission,
-                image: imageName,
+                image: imagePath,
                 access: staffDetail.access,
                 _id: staffDetail._id
               };

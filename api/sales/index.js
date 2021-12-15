@@ -20,7 +20,7 @@ class Sales {
 
     //upload these Sales
     if (filteredSales.length > 0) {
-      let upload = modules.upload(filteredSales, this.setupDetails.detail);
+      let upload = modules.upload(filteredSales, store.getSetupDetail().detail);
     }
     //move on while the task runs asynchronously
     proceedToInvoices();

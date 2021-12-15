@@ -22,7 +22,7 @@ class Attendance {
     if (filteredAttendance.length > 0) {
       let upload = modules.upload(
         filteredAttendance,
-        this.setupDetails.detail
+        store.getSetupDetail().detail
       );
     }
     //move on while the task runs asynchronously

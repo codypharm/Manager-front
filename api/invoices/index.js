@@ -22,7 +22,7 @@ class Invoices {
     if (filteredInvoices.length > 0) {
       let upload = modules.upload(
         filteredInvoices,
-        this.setupDetails.detail
+        store.getSetupDetail().detail
       );
     }
     //move on while the task runs asynchronously

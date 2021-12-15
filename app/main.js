@@ -9,7 +9,7 @@ const Store = require("../src/js/store");
 
 //const path = require("path");
 // eslint-disable-next-line
-require("electron-reload")(__dirname);
+//require("electron-reload")(__dirname);
 
 //enable the use of css grid
 app.commandLine.appendSwitch("enable-experimental-web-platform-features");

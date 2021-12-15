@@ -22,7 +22,7 @@ class Clearance {
     if (filteredClearance.length > 0) {
       let upload = modules.upload(
         filteredClearance,
-        this.setupDetails.detail
+        store.getSetupDetail().detail
       );
     }
     //move on while the task runs asynchronously

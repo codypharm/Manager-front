@@ -19,7 +19,7 @@ class Stock {
     let filteredStock = modules.filterStock(stock);
     //upload these stocks
     if (filteredStock.length > 0) {
-      let upload = modules.upload(filteredStock, this.setupDetails.detail);
+      let upload = modules.upload(filteredStock, store.getSetupDetail().detail);
     }
     //move on while the task runs asynchronously
     proceedToActivities();

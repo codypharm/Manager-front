@@ -3,8 +3,7 @@
 
 const crypto = require("crypto");
 //require("dotenv").config();
-const env = require("../../utils/appConstants")
-
+const env = require("../../utils/appConstants");
 
 const {
   verifyPhoneNumber,
@@ -13,19 +12,9 @@ const {
 } = require("nigerian-phone-number-validator");
 
 class Validator {
-  
-
-  createDb(dbName) {
-    return this.couch.createDatabase(dbName);
-  }
-
-  generateId() {
-    return this.couch.uniqid();
-  }
-
- async insertDetails(details) {
+  async insertDetails(details) {
     return setupDb.put({
-      _id: `${+ new Date()}`,
+      _id: `${+new Date()}`,
       package: details.package,
       companyName:
         details.companyName[0].toUpperCase() + details.companyName.slice(1),
@@ -55,7 +44,7 @@ class Validator {
     staffId += Math.floor(Math.random() * 1000);
     let date = new Date();
     return usersDb.put({
-      _id: `${+ new Date()}`,
+      _id: `${+new Date()}`,
       image: "../images/profile.png",
       staffId: staffId,
       firstname:

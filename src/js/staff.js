@@ -183,56 +183,47 @@ const resetSaveBtn = btn => {
 //email exists function
 const emailExists = async (errorDiv, email, btn, details) => {
   //check if email already exists
-  let {rows} = await usersDb.allDocs()
-  let allUsers = await generateWorkingList(usersDb,rows)
-  
-      //filter match
-      let match = staffModel.filterUsers(allUsers, email);
-      if (match) {
-        // eslint-disable-next-line no-undef
-        displayError(errorDiv, " sorry this email already exist");
-        resetBtn(btn);
-        hideLoading();
-      } else {
-        
-          let detailInsertion = await staffModel.insertDetails(details);
-          
-              if (detailInsertion.ok) {
-                hideLoading();
-                // eslint-disable-next-line no-undef
-                displaySuccess("Staff registered");
-                //hide password boxes
-                let pwdBearer = document.getElementsByClassName(
-                  "passwordBearer"
-                )[0];
+  let { rows } = await usersDb.allDocs();
+  let allUsers = await generateWorkingList(usersDb, rows);
 
-                if (!pwdBearer.classList.contains("hide")) {
-                  pwdBearer.classList.add("hide");
-                }
+  //filter match
+  let match = staffModel.filterUsers(allUsers, email);
+  if (match) {
+    // eslint-disable-next-line no-undef
+    displayError(errorDiv, " sorry this email already exist");
+    resetBtn(btn);
+    hideLoading();
+  } else {
+    let detailInsertion = await staffModel.insertDetails(details);
 
-                setTimeout(() => {
-                  //clear and restart form
-                  document.getElementsByClassName("pwd2")[0].style.border = "";
-                  document.getElementsByClassName("staffReg")[0].reset();
-                  // eslint-disable-next-line no-undef
-                  hideSuccess();
-                  resetBtn(btn);
-                  document.getElementById("fname").focus();
-                }, 900);
-              } else {
-                //display error
-                // eslint-disable-next-line no-undef
-                displayError(
-                  errorDiv,
-                  " sorry an error occurred please try again later"
-                );
-                resetBtn(btn);
-                hideLoading();
-              }
-            
-       
+    if (detailInsertion.ok) {
+      hideLoading();
+      // eslint-disable-next-line no-undef
+      displaySuccess("Staff registered");
+      //hide password boxes
+      let pwdBearer = document.getElementsByClassName("passwordBearer")[0];
+
+      if (!pwdBearer.classList.contains("hide")) {
+        pwdBearer.classList.add("hide");
       }
-    
+
+      setTimeout(() => {
+        //clear and restart form
+        document.getElementsByClassName("pwd2")[0].style.border = "";
+        document.getElementsByClassName("staffReg")[0].reset();
+        // eslint-disable-next-line no-undef
+        hideSuccess();
+        resetBtn(btn);
+        document.getElementById("fname").focus();
+      }, 900);
+    } else {
+      //display error
+      // eslint-disable-next-line no-undef
+      displayError(errorDiv, " sorry an error occurred please try again later");
+      resetBtn(btn);
+      hideLoading();
+    }
+  }
 };
 
 //update staff details
@@ -240,57 +231,52 @@ const updateStaffDetails = async (newDetails, oldDetails, errorDiv, btn) => {
   let id = oldDetails._id;
   let rev = oldDetails._rev;
 
-  let update =  await staffModel.updateUser(id, rev, newDetails, oldDetails);
-  
-      if (!update.ok) {
-        // eslint-disable-next-line no-undef
-        displayError(errorDiv, "update not successful, please try again");
-        hideLoading();
-      } else {
-        
-        //check logged in is same with edited
-        if (
-          store.getLoginDetail().staffId.toUpperCase() ==
-          oldDetails.staffId.toUpperCase()
-        ) {
+  let update = await staffModel.updateUser(id, rev, newDetails, oldDetails);
 
-          
-          //set login details
-          store.setUserData({
-            loginStatus: true,
-            firstname: newDetails.fname,
-            lastname: newDetails.lname,
-            email: newDetails.email,
-            staffId: oldDetails.staffId,
-            position: newDetails.position,
-            permission: newDetails.permission,
-            image: oldDetails.image,
-            access: newDetails.access,
-            _id: oldDetails._id,
-            password: newDetails.pwd
-          });
+  if (!update.ok) {
+    // eslint-disable-next-line no-undef
+    displayError(errorDiv, "update not successful, please try again");
+    hideLoading();
+  } else {
+    //check logged in is same with edited
+    if (
+      store.getLoginDetail().staffId.toUpperCase() ==
+      oldDetails.staffId.toUpperCase()
+    ) {
+      //set login details
+      store.setUserData({
+        loginStatus: true,
+        firstname: newDetails.fname,
+        lastname: newDetails.lname,
+        email: newDetails.email,
+        staffId: oldDetails.staffId,
+        position: newDetails.position,
+        permission: newDetails.permission,
+        image: oldDetails.image,
+        access: newDetails.access,
+        _id: oldDetails._id,
+        password: newDetails.pwd
+      });
 
-          
-          //update logged in user details
-          document.getElementById(
-            "nameBox"
-          ).textContent = `${newDetails.fname[0].toUpperCase() +
-            newDetails.fname.slice(1)} ${newDetails.lname[0].toUpperCase() +
-            newDetails.lname.slice(1)}`;
-          document.getElementById(
-            "position"
-          ).textContent = `${newDetails.position}`;
-        }
-        hideLoading();
-        displaySuccess("staff data updated successfully");
-        resetSaveBtn(btn);
+      //update logged in user details
+      document.getElementById(
+        "nameBox"
+      ).textContent = `${newDetails.fname[0].toUpperCase() +
+        newDetails.fname.slice(1)} ${newDetails.lname[0].toUpperCase() +
+        newDetails.lname.slice(1)}`;
+      document.getElementById(
+        "position"
+      ).textContent = `${newDetails.position}`;
+    }
+    hideLoading();
+    displaySuccess("staff data updated successfully");
+    resetSaveBtn(btn);
 
-        setTimeout(() => {
-          hideSuccess();
-          loadStaffList();
-        }, 900);
-      }
-    
+    setTimeout(() => {
+      hideSuccess();
+      loadStaffList();
+    }, 900);
+  }
 };
 
 //save edited detail
@@ -583,7 +569,6 @@ const displayCurrentStaff = () => {
     access,
     docId
   } = store.getLoginDetail();
-  
 
   //display current user details first
   $(".currentStaffName").append(fname + " " + lname);
@@ -593,18 +578,16 @@ const displayCurrentStaff = () => {
   $("#currentStaffEdit").attr("data-staffEmail", email);
 };
 
-const showList =async  () => {
- 
+const showList = async () => {
   //showLoading();
-  let {rows} = await usersDb.allDocs()
-  let users = await generateWorkingList(usersDb,rows)
-  
-      //show staff template
-      allUsers = users;
-      displayCurrentStaff();
-      displayStaff(users);
-      hideLoading();
-    
+  let { rows } = await usersDb.allDocs();
+  let users = await generateWorkingList(usersDb, rows);
+
+  //show staff template
+  allUsers = users;
+  displayCurrentStaff();
+  displayStaff(users);
+  hideLoading();
 };
 
 //search staff
@@ -623,7 +606,7 @@ const searchStaff = e => {
     }
   } else {
     searchResult = staffModel.extractUsers(allUsers, val);
-    console.log(searchResult)
+    console.log(searchResult);
     if (searchResult != false) {
       displayStaff(searchResult);
       if (!warn.classList.contains("hide")) {
@@ -647,27 +630,19 @@ const appendDetails = details => {
   document.getElementsByClassName("staffImage")[0].src = details.image;
   document.getElementsByClassName("id")[0].textContent = details.staffId;
 
-  document.getElementsByClassName("gender")[0].textContent =
-    details.gender;
+  document.getElementsByClassName("gender")[0].textContent = details.gender;
   document.getElementsByClassName("email")[0].textContent = details.email;
-  document.getElementsByClassName("number")[0].textContent =
-    details.number;
+  document.getElementsByClassName("number")[0].textContent = details.number;
   document.getElementsByClassName("street")[0].textContent =
     details.address.street;
-  document.getElementsByClassName("town")[0].textContent =
-    details.address.town;
+  document.getElementsByClassName("town")[0].textContent = details.address.town;
   document.getElementsByClassName("state")[0].textContent =
     details.address.state;
   document.getElementsByClassName("permission")[0].textContent =
     details.permission;
-  document.getElementsByClassName("access")[0].textContent =
-    details.access;
+  document.getElementsByClassName("access")[0].textContent = details.access;
   document.getElementsByClassName("regDate")[0].textContent =
-    details.regDay +
-    " / " +
-    details.regMonth +
-    " / " +
-    details.regYear;
+    details.regDay + " / " + details.regMonth + " / " + details.regYear;
   if (details.updateDay != undefined) {
     document.getElementsByClassName("updateDate")[0].textContent =
       details.updateDay +
@@ -680,9 +655,9 @@ const appendDetails = details => {
 
 //append values to form
 const appendValues = async details => {
-  let {rows} = await usersDb.allDocs()
-  allUsers = await generateWorkingList(usersDb,rows)
-  
+  let { rows } = await usersDb.allDocs();
+  allUsers = await generateWorkingList(usersDb, rows);
+
   oldDetails = details;
 
   document.getElementById("fname").value = details.firstname;
@@ -702,10 +677,10 @@ const appendValues = async details => {
   let genderIndex;
   if (gender == "female") {
     genderIndex = 1;
-  } else if(gender == "male") {
+  } else if (gender == "male") {
     genderIndex = 2;
-  }else{
-    genderIndex = 0
+  } else {
+    genderIndex = 0;
   }
 
   if (permission.toUpperCase() == "SUPER_ADMIN") {
@@ -720,40 +695,33 @@ const appendValues = async details => {
   document.getElementById("permission").selectedIndex = permissionIndex;
 
   //focus on firstname
-  document.getElementById("fname").focus()
-  
+  document.getElementById("fname").focus();
 };
 
 //display staff details
 const showStaffDetails = async selectedEmail => {
   showLoading();
-  let {rows} = await usersDb.allDocs()
-  let users = await generateWorkingList(usersDb,rows)
-  
-      //filter
-      let [details] = staffModel.filterStaffDetails(users, selectedEmail);
+  let { rows } = await usersDb.allDocs();
+  let users = await generateWorkingList(usersDb, rows);
 
-      appendDetails(details);
-      hideLoading();
-    
-    
+  //filter
+  let [details] = staffModel.filterStaffDetails(users, selectedEmail);
+
+  appendDetails(details);
+  hideLoading();
 };
 
 //display edit details
 const showStaffValues = async selectedEmail => {
   showLoading();
   //get users and filter with email provided
-  let {rows} = await usersDb.allDocs()
-  let users = await generateWorkingList(usersDb,rows)
-  
-      let [staffDetails] = staffModel.filterStaffDetails(
-        users,
-        selectedEmail
-      );
-      appendValues(staffDetails);
-      editDetail = staffDetails;
-      hideLoading();
-   
+  let { rows } = await usersDb.allDocs();
+  let users = await generateWorkingList(usersDb, rows);
+
+  let [staffDetails] = staffModel.filterStaffDetails(users, selectedEmail);
+  appendValues(staffDetails);
+  editDetail = staffDetails;
+  hideLoading();
 };
 
 //update status
@@ -764,8 +732,8 @@ const updateStatus = (e, staffEmail, command) => {
     return;
   }
 
-   //get window object
-   const window = BrowserWindow.getFocusedWindow();
+  //get window object
+  const window = BrowserWindow.getFocusedWindow();
   //confirm command
   //show dialog
   let resp = dialog.showMessageBox(window, {
@@ -774,85 +742,76 @@ const updateStatus = (e, staffEmail, command) => {
     type: "info",
     message: "Click OK to continue"
   });
-  
-  
+
   //check if response is yes
   resp.then(async (response, checkboxChecked) => {
     if (response.response == 0) {
       //add waiting
-    e.target.textContent = "Please wait...";
-    //get command
-    let mainCommand = e.target.dataset.acctStatus;
-    //if main command is defined else use the one in function argument
-    if (mainCommand) {
-      command = mainCommand;
-    }
+      e.target.textContent = "Please wait...";
+      //get command
+      let mainCommand = e.target.dataset.acctStatus;
+      //if main command is defined else use the one in function argument
+      if (mainCommand) {
+        command = mainCommand;
+      }
 
-    //declare new access
-    let access = command === "block" ? "closed" : "open";
+      //declare new access
+      let access = command === "block" ? "closed" : "open";
 
-    let newClass = command === "block" ? "activate" : "block";
+      let newClass = command === "block" ? "activate" : "block";
 
-    let {rows} = await usersDb.allDocs()
-    //get users
-    let users = await generateWorkingList(usersDb, rows);
-    
-        let [selectedUser] = staffModel.filterStaffDetails(
-          users,
-          staffEmail
-        );
-        let id = selectedUser._id;
-        let rev = selectedUser._rev;
+      let { rows } = await usersDb.allDocs();
+      //get users
+      let users = await generateWorkingList(usersDb, rows);
 
-        //create details of user
-        let details = {
-          fname: selectedUser.firstname,
-          lname: selectedUser.lastname,
-          email: selectedUser.email,
-          number: selectedUser.number,
-          position: selectedUser.position,
-          gender: selectedUser.gender,
-          street: selectedUser.address.street,
-          town: selectedUser.address.town,
-          state: selectedUser.address.state,
-          permission: selectedUser.permission,
-          access: access,
-          staffId: selectedUser.staffId,
-          image: selectedUser.image,
-          pwd: selectedUser.password,
-          regDay: selectedUser.regDay,
-          regMonth: selectedUser.regMonth,
-          regYear: selectedUser.regYear,
-          updateDay: selectedUser.updateDay,
-          updateMonth: selectedUser.updateMonth,
-          updateYear: selectedUser.updateYear,
-          editedBy: selectedUser.editedBy,
-          editorEmail: selectedUser.editorEmail,
-          remote: selectedUser.remote
-        };
-        //update details
-        let updator = await staffModel.updateStatus(id, rev, details);
-        
-            
-              let target = e.target;
-              //remove both block and activate classes
-              if (target.classList.contains("block")) {
-                target.classList.remove("block");
-              } else if (target.classList.contains("activate")) {
-                target.classList.remove("activate");
-              }
-              //add new class
-              target.classList.add(newClass);
-              //add new dataset
-              target.dataset.acctStatus = newClass;
-              //add new text
-              target.innerHTML = newClass;
-           
-         
-      
+      let [selectedUser] = staffModel.filterStaffDetails(users, staffEmail);
+      let id = selectedUser._id;
+      let rev = selectedUser._rev;
+
+      //create details of user
+      let details = {
+        fname: selectedUser.firstname,
+        lname: selectedUser.lastname,
+        email: selectedUser.email,
+        number: selectedUser.number,
+        position: selectedUser.position,
+        gender: selectedUser.gender,
+        street: selectedUser.address.street,
+        town: selectedUser.address.town,
+        state: selectedUser.address.state,
+        permission: selectedUser.permission,
+        access: access,
+        staffId: selectedUser.staffId,
+        image: selectedUser.image,
+        pwd: selectedUser.password,
+        regDay: selectedUser.regDay,
+        regMonth: selectedUser.regMonth,
+        regYear: selectedUser.regYear,
+        updateDay: selectedUser.updateDay,
+        updateMonth: selectedUser.updateMonth,
+        updateYear: selectedUser.updateYear,
+        editedBy: selectedUser.editedBy,
+        editorEmail: selectedUser.editorEmail,
+        remote: selectedUser.remote
+      };
+      //update details
+      let updator = await staffModel.updateStatus(id, rev, details);
+
+      let target = e.target;
+      //remove both block and activate classes
+      if (target.classList.contains("block")) {
+        target.classList.remove("block");
+      } else if (target.classList.contains("activate")) {
+        target.classList.remove("activate");
+      }
+      //add new class
+      target.classList.add(newClass);
+      //add new dataset
+      target.dataset.acctStatus = newClass;
+      //add new text
+      target.innerHTML = newClass;
     }
   });
-  
 };
 
 //view click

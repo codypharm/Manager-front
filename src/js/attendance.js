@@ -5,7 +5,7 @@
 let attendanceRecord;
 let staffData;
 const recordAttendance = e => {
-  showGenStaticModal("attendanceContent");
+  attendanceModal();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -30,7 +30,7 @@ const recordAttendance = e => {
 
 //get list
 const getList = (day, month, year) => {
-  console.log(attendanceRecord)
+  console.log(attendanceRecord);
   let matchingList = attendanceModel.getMatchingRecord(
     attendanceRecord,
     day,
@@ -52,32 +52,31 @@ const getList = (day, month, year) => {
   }
 };
 //list attendance
-const listAttendance = async() => {
+const listAttendance = async () => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
   let month = date.getMonth() + 1;
   let year = date.getFullYear();
 
-  let {rows} = await usersDb.allDocs()
-   staffData = await generateWorkingList(usersDb,rows)
-      let attendanceRow = await attendanceDb.allDocs()
-       attendanceRecord = await generateWorkingList(attendanceDb, attendanceRow.rows)
-      
-        //get list
-        getList(day, month, year);
-        //enable button
-        document.getElementById("processBtn").disabled = false;
-        //add values to DOM
-        document.getElementById("attendanceDay").value = day;
-        document.getElementById("attendanceMonth").value = month;
-        document.getElementById("attendanceYear").value = year;
-        document.getElementById(
-          "dispDate"
-        ).textContent = `${day}-${month}-${year}`;
-        hideLoading();
-     
-   
+  let { rows } = await usersDb.allDocs();
+  staffData = await generateWorkingList(usersDb, rows);
+  let attendanceRow = await attendanceDb.allDocs();
+  attendanceRecord = await generateWorkingList(
+    attendanceDb,
+    attendanceRow.rows
+  );
+
+  //get list
+  getList(day, month, year);
+  //enable button
+  document.getElementById("processBtn").disabled = false;
+  //add values to DOM
+  document.getElementById("attendanceDay").value = day;
+  document.getElementById("attendanceMonth").value = month;
+  document.getElementById("attendanceYear").value = year;
+  document.getElementById("dispDate").textContent = `${day}-${month}-${year}`;
+  hideLoading();
 };
 
 //process attendance list
@@ -132,7 +131,7 @@ const searchAllAttendance = e => {
 };
 
 //submit attendance
-const submitAttendance = e => {
+const submitAttendance = async e => {
   e.preventDefault();
   let valueId = document.getElementById("attendanceId").value;
   let errorBox = document.getElementById("attendanceAlert");
@@ -174,28 +173,23 @@ const submitAttendance = e => {
 
     let thisUser = attendanceModel.getThisUser(staffData, valueId);
 
-   
-      //insert into attendance database
-      let dataRecord = attendanceModel.recordAttendance(thisUser[0]);
+    //insert into attendance database
+    let dataRecord = attendanceModel.recordAttendance(thisUser[0]);
 
-        
-            //hide spinner
-            btnSpinner.classList.remove("spinner-border");
-            btnSpinner.classList.remove("spinner-border-sm");
+    //hide spinner
+    btnSpinner.classList.remove("spinner-border");
+    btnSpinner.classList.remove("spinner-border-sm");
 
-            //show success attendance Alert
-            if (successBox.classList.contains("hide")) {
-              successBox.classList.remove("hide");
-            }
+    //show success attendance Alert
+    if (successBox.classList.contains("hide")) {
+      successBox.classList.remove("hide");
+    }
 
-            //HIDE modal
-            hideGenStaticModal("attendanceContent");
+    //HIDE modal
+    hideAttendanceModal();
 
-            //go back and show list
-            listAttendance();
-          
-        
-   
+    //go back and show list
+    listAttendance();
   }
 };
 
@@ -221,7 +215,7 @@ const exitStaff = async e => {
   let currMonth = date.getMonth() + 1;
 
   let currYear = date.getFullYear();
-  
+
   //check if we are in the current day
   if (currDay == day && currMonth == month && currYear == year) {
     let data = attendanceModel.getThisAttendance(
@@ -232,31 +226,25 @@ const exitStaff = async e => {
       id
     )[0];
     let updater = await attendanceModel.updateAttendance(data);
-   
-        
-          let {rows} = await attendanceDb.allDocs()
-          attendanceRecord = await generateWorkingList(attendanceDb, rows)
-          
-            day = document.getElementById("attendanceDay").value;
-            month = document.getElementById("attendanceMonth").value;
-            year = document.getElementById("attendanceYear").value;
 
-            //get list
-            getList(day, month, year);
-            //enable button
-            document.getElementById("processBtn").disabled = false;
-            //add values to DOM
-            document.getElementById("attendanceDay").value = day;
-            document.getElementById("attendanceMonth").value = month;
-            document.getElementById("attendanceYear").value = year;
-            document.getElementById(
-              "dispDate"
-            ).textContent = `${day}-${month}-${year}`;
+    let { rows } = await attendanceDb.allDocs();
+    attendanceRecord = await generateWorkingList(attendanceDb, rows);
 
-            hideLoading();
-        
-        
-     
+    day = document.getElementById("attendanceDay").value;
+    month = document.getElementById("attendanceMonth").value;
+    year = document.getElementById("attendanceYear").value;
+
+    //get list
+    getList(day, month, year);
+    //enable button
+    document.getElementById("processBtn").disabled = false;
+    //add values to DOM
+    document.getElementById("attendanceDay").value = day;
+    document.getElementById("attendanceMonth").value = month;
+    document.getElementById("attendanceYear").value = year;
+    document.getElementById("dispDate").textContent = `${day}-${month}-${year}`;
+
+    hideLoading();
   } else {
     //show error message
     showModal("You can no longer exit from this date");

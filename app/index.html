@@ -196,13 +196,140 @@
     </div>
   </div>
   <!-- modal end-->
-
-  <!-- general purpose static modal starts-->
-
+  
   <!--static modal -->
   <!-- Modal -->
   <div
-    class="modal genStaticModal"
+    class="modal expStaticModal"
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-md mt-7"
+      role="document"
+    >
+
+      <!-- content for expense-->
+      <div class="modal-content " id="expenseContent">
+        <form class="form" id="expFormDetail" onsubmit="submitExpenses(event)">
+          <div class="modal-body" id="expForm">
+            <div class="alert alert-danger hide" id="expWarning"></div>
+
+            <div class="alert alert-success hide" id="expSuccess"></div>
+            <div class="form-group">
+              <label for="expAmt">Amount:</label>
+              <div class="border border-top-0 border-right-0 border-left-0">
+                <input
+                  type="text"
+                  class="form-control border-right-0 border-top-0 border-left-0 border-bottom-0 bg-light"
+                  placeholder="00.00"
+                  id="expAmt"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="expDescription">Description:</label>
+              <div class="border border-top-0 border-right-0 border-left-0">
+                <textarea
+                  class="form-control border-right-0 border-top-0 border-left-0 border-bottom-0 bg-light"
+                  id="expDescription"
+                  cols="2"
+                  rows="2"
+                  placeholder="enter expense description"
+                ></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="expName">Collected by:</label>
+              <div class="border border-top-0 border-right-0 border-left-0">
+                <input
+                  type="text"
+                  class="form-control border-right-0 border-top-0 border-left-0 border-bottom-0 bg-light"
+                  placeholder="enter fullname"
+                  id="expName"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-top-0">
+            <button
+              type="reset"
+              data-dismiss="modal"
+              class="btn btn-secondary "
+              
+            >
+              Cancel
+            </button>
+            <button type="submit" onclick="submitExpenses(event)"  class="btn btn-primary">
+              Done
+            </button>
+          </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+  <!-- static modal ends -->
+
+  <!-- Modal -->
+  <div
+    class="modal attendanceStaticModal"
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-md mt-7"
+      role="document"
+    >
+
+         <!--content for attendance -->
+         <div class="modal-content" id="attendanceContent">
+          <form class="form" id="errorLogFormDetail" onsubmit="submitAttendance(event)">
+            <div class="modal-body" id="attendanceForm">
+              <h4>Attendance for <span id="attendanceDate"></span></h4>
+              <div class="border"></div>
+
+              <div class="alert alert-danger mt-2" id="attendanceAlert"></div>
+              <div class="alert alert-success mt-2" id="attendanceSuc">Attendance recorded</div>
+              <div class="pt-1 pb-5"  id="">
+                <div class="form-group">
+                  <label for="attendanceId"></label>
+                  <input type="text" id="attendanceId" placeholder="Staff ID" class="form-control">
+                </div>
+              </div>
+              
+              <div class="border"></div>
+            </div>
+            <div class="modal-footer border-top-0">
+              <button type="reset" data-dismiss="modal" class="btn btn-secondary">
+                
+                Cancel
+              </button>
+              <button onclick="submitAttendance(event)"  class="btn btn-primary">
+                <span id="subAttandanceLoader"></span>
+                Done
+              </button>
+            </div>
+          </form>
+        </div>
+
+     
+      
+    </div>
+  </div>
+  <!-- static modal ends -->
+
+  <!-- Modal -->
+  <div
+    class="modal prodStaticModal"
     id="staticBackdrop"
     data-backdrop="static"
     tabindex="-1"
@@ -216,14 +343,14 @@
     >
 
       <!--content for editing a product-->
-      <div class="modal-content hide " id="productEditContent">
-        <form class="form" id="errorLogFormDetail">
+      <div class="modal-content" id="productEditContent">
+        <form class="form" id="errorLogFormDetail" onsubmit="submitProductEdit(event)">
           <div class="modal-body" >
              <div class="alert alert-danger hide" id="stockEditWarning"></div>
 
             <div class="alert alert-success hide" id="stockEditSuccess"></div>
            <form  class="form" >
-            <h4> <span id="editBatchId" style="word-break: break-all;">Paracetamol</span></h4>
+            <h4> <span id="editBatchId" style="word-break: break-all;">Product</span></h4>
             <div class="border mb-3"></div>
             <div class="row">
               <div class="col">
@@ -288,11 +415,12 @@
             <button
               type="reset"
               class="btn btn-secondary "
-              onclick="hideProductEditForm()"
+              data-dismiss="modal"
+              onclick="hideProdModal"
             >
               Cancel
             </button>
-            <button type="submit" class="btn btn-primary" onclick="submitProductEdit(event)">
+            <button type="submit" class="btn btn-primary" >
               <span id="btnProductEditSpinner"></span>
               Done
             </button>
@@ -300,10 +428,30 @@
            </form>
         
       </div>
+      
+    
+    </div>
+  </div>
+  <!-- static modal ends -->
 
+
+  <!-- Modal -->
+  <div
+    class="modal batchStaticModal"
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-md mt-7"
+      role="document"
+    >
       <!--content for editing batch-->
-      <div class="modal-content hide " id="batchEditContent">
-        <form class="form" id="errorLogFormDetail">
+      <div class="modal-content " id="batchEditContent">
+        <form class="form" id="errorLogFormDetail" onsubmit="submitBatchEdit(event)">
           <div class="modal-body" >
            <form  class="form" >
             <h4>Batch <span id="editBatchId"></span></h4>
@@ -334,11 +482,11 @@
             <button
               type="reset"
               class="btn btn-secondary "
-              onclick="hideEditForm()"
+              onclick="hideBatchModal()"
             >
               Cancel
             </button>
-            <button type="submit" class="btn btn-primary" onclick="submitBatchEdit(event)">
+            <button type="submit" class="btn btn-primary" >
               <span id="btnSpinner"></span>
               Done
             </button>
@@ -348,10 +496,29 @@
       </div>
 
 
+       
+    </div>
+  </div>
+  <!-- static modal ends -->
+
+
+  <!-- Modal -->
+  <div
+    class="modal changesStaticModal"
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-md mt-7"
+      role="document"
+    >
 
          <!--content for changes -->
-      <div class="modal-content hide " id="changesContent">
-        <form class="form" id="errorLogFormDetail" >
+      <div class="modal-content" id="changesContent">
           <div class="modal-body" id="errorLogForm">
             <h4>Batch <span id="changesBatchId"></span></h4>
             <div class="border"></div>
@@ -364,46 +531,41 @@
           </div>
           <div class="modal-footer border-top-0">
            
-            <button onclick="hideChangesDetail()" class="btn btn-primary">
+            <button onclick="hideChangesModal()" class="btn btn-primary">
               Done
             </button>
           </div>
         
       </div>
 
-         <!--content for attendance -->
-         <div class="modal-content hide " id="attendanceContent">
-          <form class="form" id="errorLogFormDetail" onsubmit="submitAttendance(event)">
-            <div class="modal-body" id="attendanceForm">
-              <h4>Attendance for <span id="attendanceDate"></span></h4>
-              <div class="border"></div>
 
-              <div class="alert alert-danger mt-2" id="attendanceAlert"></div>
-              <div class="alert alert-success mt-2" id="attendanceSuc">Attendance recorded</div>
-              <div class="pt-1 pb-5"  id="">
-                <div class="form-group">
-                  <label for="attendanceId"></label>
-                  <input type="text" id="attendanceId" placeholder="Staff ID" class="form-control">
-                </div>
-              </div>
-              
-              <div class="border"></div>
-            </div>
-            <div class="modal-footer border-top-0">
-              <button onclick="hideAttendance(event)" class="btn btn-secondary">
-                
-                Cancel
-              </button>
-              <button onclick="submitAttendance(event)"  class="btn btn-primary">
-                <span id="subAttandanceLoader"></span>
-                Done
-              </button>
-            </div>
-          </form>
-        </div>
+      
+
+     
+      
+    </div>
+  </div>
+  <!-- static modal ends -->
+
+  
+  <!-- Modal -->
+  <div
+    class="modal errorStaticModal"
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-md mt-7"
+      role="document"
+    >
+
 
       <!--content for error log-->
-      <div class="modal-content hide " id="errorLogContent">
+      <div class="modal-content " id="errorLogContent">
         <form class="form" id="errorLogFormDetail" >
           <div class="modal-body" id="errorLogForm">
             <h4>Batch <span id="errorBatchId"></span></h4>
@@ -417,15 +579,37 @@
           </div>
           <div class="modal-footer border-top-0">
            
-            <button onclick="hideErrorForm()" class="btn btn-primary">
+            <button onclick="hideErrorModal(event)" class="btn btn-primary">
               Done
             </button>
           </div>
         
       </div>
 
+    
+      
+    </div>
+  </div>
+  <!-- static modal ends -->
+
+
+  
+  <!-- Modal -->
+  <div
+    class="modal gainStaticModal"
+    id="staticBackdrop"
+    data-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-md mt-7"
+      role="document"
+    >
       <!--content for gain analysis-->
-      <div class="modal-content hide " id="gainAnalysisContent">
+      <div class="modal-content" id="gainAnalysisContent">
         <!--<form class="form" onsubmit="submitExpenses(event)">-->
           <div class="modal-body" >
             <h4>Gain Analysis For <span id="currentDate"></span></h4>
@@ -454,74 +638,17 @@
           </div>
           <div class="modal-footer border-top-0">
            
-            <button onclick="hideGainAnalysis()" class="btn btn-primary">
+            <button onclick="hideGainModal(event)" class="btn btn-primary">
               Done
             </button>
           </div>
         
       </div>
-      <!-- content for expense-->
-      <div class="modal-content hide " id="expenseContent">
-        <form class="form" id="expFormDetail" onsubmit="submitExpenses(event)">
-          <div class="modal-body" id="expForm">
-            <div class="alert alert-danger hide" id="expWarning"></div>
-
-            <div class="alert alert-success hide" id="expSuccess"></div>
-            <div class="form-group">
-              <label for="expAmt">Amount:</label>
-              <div class="border border-top-0 border-right-0 border-left-0">
-                <input
-                  type="text"
-                  class="form-control border-right-0 border-top-0 border-left-0 border-bottom-0 bg-light"
-                  placeholder="00.00"
-                  id="expAmt"
-                />
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="expDescription">Description:</label>
-              <div class="border border-top-0 border-right-0 border-left-0">
-                <textarea
-                  class="form-control border-right-0 border-top-0 border-left-0 border-bottom-0 bg-light"
-                  id="expDescription"
-                  cols="2"
-                  rows="2"
-                  placeholder="enter expense description"
-                ></textarea>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="expName">Collected by:</label>
-              <div class="border border-top-0 border-right-0 border-left-0">
-                <input
-                  type="text"
-                  class="form-control border-right-0 border-top-0 border-left-0 border-bottom-0 bg-light"
-                  placeholder="enter fullname"
-                  id="expName"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer border-top-0">
-            <button
-              type="reset"
-              class="btn btn-secondary "
-              onclick="hideExpForm()"
-            >
-              Cancel
-            </button>
-            <button type="submit" onclick="submitExpenses(event)"  class="btn btn-primary">
-              Done
-            </button>
-          </div>
-        </form>
-      </div>
-      
+     
     </div>
   </div>
   <!-- static modal ends -->
 
-  <!-- general purpose static modal ends-->
 
   <!-- crop image modal-->
   <div id="uploadImageModal" class="modal">

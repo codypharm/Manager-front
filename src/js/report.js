@@ -504,45 +504,37 @@ const proceedToGetSales = async (month, year, reportType) => {
     } else {
       //get expenses for this month
       let allExp = await expenseModel.getExpenses();
-      
 
-          //get expenses for this month
-          let mainExp = reportModel.getMatchingExp(month, year, allExp);
-          //get expired stock for this month
-          let expStock = reportModel.getMonthExpiredStock(stock, month, year);
+      //get expenses for this month
+      let mainExp = reportModel.getMatchingExp(month, year, allExp);
+      //get expired stock for this month
+      let expStock = reportModel.getMonthExpiredStock(stock, month, year);
 
-          let invoices = await invoiceModel.getAllInvoices();
-          
+      let invoices = await invoiceModel.getAllInvoices();
 
-              let actualInvoices = reportModel.getMatchInvoices(
-                invoices,
-                month,
-                year
-              );
+      let actualInvoices = reportModel.getMatchInvoices(invoices, month, year);
 
-              //get for account
-              let reportList = proceedToSortAccountList(
-                matchedSales,
-                mainExp,
-                expStock,
-                actualInvoices,
-                invoices,
-                month,
-                year
-              );
+      //get for account
+      let reportList = proceedToSortAccountList(
+        matchedSales,
+        mainExp,
+        expStock,
+        actualInvoices,
+        invoices,
+        month,
+        year
+      );
 
-              displayAccountReportList(reportList);
-              hideLoading();
-              //empty list
-              reportArray = [];
-            
-        
+      displayAccountReportList(reportList);
+      hideLoading();
+      //empty list
+      reportArray = [];
     }
   }
 };
 
 ///list report
-const listProductReport =async  () => {
+const listProductReport = async () => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
@@ -554,20 +546,16 @@ const listProductReport =async  () => {
   document.getElementById("prodReportMonth").value = month;
 
   stock = await stockModel.getStock();
-  
 
-       sales =await salesModel.getSales();
-     
+  sales = await salesModel.getSales();
 
-          // proceed to list
-          proceedToGetSales(month, year, "product");
-          //display date
-          document.getElementById("dispDate").textContent = `${month}-${year}`;
+  // proceed to list
+  proceedToGetSales(month, year, "product");
+  //display date
+  document.getElementById("dispDate").textContent = `${month}-${year}`;
 
-          //enable button
-          document.getElementById("processBtn").disabled = false;
-        
-   
+  //enable button
+  document.getElementById("processBtn").disabled = false;
 };
 
 //load list for entered date
@@ -652,24 +640,20 @@ const listAccountReport = async () => {
 
   stock = await stockModel.getStock();
 
+  sales = await salesModel.getSales();
 
-      sales = await salesModel.getSales();
-     
+  // proceed to list
+  proceedToGetSales(month, year, "account");
+  //display date
+  document.getElementById("dispDate").textContent = `${month}-${year}`;
 
-          // proceed to list
-          proceedToGetSales(month, year, "account");
-          //display date
-          document.getElementById("dispDate").textContent = `${month}-${year}`;
-
-          //enable button
-          document.getElementById("processBtn").disabled = false;
-       
-    
+  //enable button
+  document.getElementById("processBtn").disabled = false;
 };
 
 ///button to load each gain analysis
 const loadGainAnalysis = e => {
-  if (showGenStaticModal("gainAnalysisContent")) {
+  if (gainModal()) {
     let btn = e.target.dataset;
     //extract details
     let dailyGain = btn.gain;
@@ -711,6 +695,6 @@ const loadGainAnalysis = e => {
 };
 
 //hide gain gainAnalysisContent
-const hideGainAnalysis = () => {
+/*const hideGainAnalysis = () => {
   hideGenStaticModal("gainAnalysisContent");
-};
+};*/

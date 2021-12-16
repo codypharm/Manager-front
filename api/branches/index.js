@@ -6,7 +6,7 @@ const ourStore = require("../../src/js/store");
 //const ourStaffModel = require("../../models/staffModel");
 //const modules = require("./modules");
 const { Notyf } = require("notyf");
-const env = require("../../utils/appConstants")
+const env = require("../../utils/appConstants");
 
 // instantiate classes
 const store = new ourStore();
@@ -30,7 +30,7 @@ class Branches {
     }
     axios
       .post(`${env.BACKEND_URL}/login/`, {
-        email:env.APP,
+        email: env.APP,
         password: env.PASSWORD
         // email: email ? email : this.currentUser.email,
         // password: password ? password : this.currentUser.pwd

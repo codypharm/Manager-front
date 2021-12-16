@@ -35,8 +35,7 @@ const createWindow = () => {
     minWidth: 700,
     autoHideMenuBar: true,
     webPreferences: {
-      nodeIntegration: true,
-      
+      nodeIntegration: true
     }
   });
 

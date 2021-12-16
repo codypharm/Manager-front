@@ -26,59 +26,51 @@ const getTotalStock = stock => {
 
 //get low stock
 const getLowStock = async stock => {
-  
-      stocking = await stockModel.getStocking();
-      if (stocking.length > 0) {
-        //sort exhausted stock
-        exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
+  stocking = await stockModel.getStocking();
+  if (stocking.length > 0) {
+    //sort exhausted stock
+    exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
 
-        if (exhaustedStock != false) {
-          //display all exhausted stock
-          displayLowStock(exhaustedStock);
-        } else {
-          document.getElementById("lowStockList").innerHTML =
-            " <tr>" +
-            ' <td colspan="3" class="text-center">' +
-            "  <span>No record found</span>" +
-            " </td>" +
-            " </tr>";
-        }
-      } else {
-        document.getElementById("lowStockList").innerHTML =
-          " <tr>" +
-          ' <td colspan="3" class="text-center">' +
-          "  <span>No record found</span>" +
-          " </td>" +
-          " </tr>";
-      }
-    
+    if (exhaustedStock != false) {
+      //display all exhausted stock
+      displayLowStock(exhaustedStock);
+    } else {
+      document.getElementById("lowStockList").innerHTML =
+        " <tr>" +
+        ' <td colspan="3" class="text-center">' +
+        "  <span>No record found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  } else {
+    document.getElementById("lowStockList").innerHTML =
+      " <tr>" +
+      ' <td colspan="3" class="text-center">' +
+      "  <span>No record found</span>" +
+      " </td>" +
+      " </tr>";
+  }
 };
 
 //handle dashStock
-const handleStock =async () => {
-  
-      dashStock = await stockModel.getStock()
+const handleStock = async () => {
+  dashStock = await stockModel.getStock();
 
-      //get total stock
-      let totalStock = getTotalStock(dashStock);
-      //get low stock
-      let lowStock = getLowStock(dashStock);
+  //get total stock
+  let totalStock = getTotalStock(dashStock);
+  //get low stock
+  let lowStock = getLowStock(dashStock);
 
-      //append to DOM
-      document.getElementById("span5").textContent = totalStock;
-      //hide loading
-      hideLoading();
-    
+  //append to DOM
+  document.getElementById("span5").textContent = totalStock;
+  //hide loading
+  hideLoading();
 };
 
 //get current sales
 const getCurrentSales = sales => {
   return sales.filter(sale => {
-    return (
-      sale.day == day &&
-      sale.month == month &&
-      sale.year == year
-    );
+    return sale.day == day && sale.month == month && sale.year == year;
   });
 };
 
@@ -104,30 +96,25 @@ const getTotalAmt = sales => {
 
 //handle dashSales
 const handleSales = async () => {
-  dashSales = await salesModel.getSales()
-  
-      //get sales for today
-      let currentSales = getCurrentSales(dashSales);
-      //get total Sales
-      let totalSales = getTotalSales(currentSales);
+  dashSales = await salesModel.getSales();
 
-      //get total amount
-      let totalAmt = getTotalAmt(currentSales);
+  //get sales for today
+  let currentSales = getCurrentSales(dashSales);
+  //get total Sales
+  let totalSales = getTotalSales(currentSales);
 
-      //append to DOM
-      document.getElementById("span1").textContent = formatMoney(totalSales);
-      //document.getElementById("span4").textContent = totalAmt;
-   
+  //get total amount
+  let totalAmt = getTotalAmt(currentSales);
+
+  //append to DOM
+  document.getElementById("span1").textContent = formatMoney(totalSales);
+  //document.getElementById("span4").textContent = totalAmt;
 };
 
 //get invoices
 const getCurrentInvoices = invoices => {
   return invoices.filter(invoice => {
-    return (
-      invoice.day == day &&
-      invoice.month == month &&
-      invoice.year == year
-    );
+    return invoice.day == day && invoice.month == month && invoice.year == year;
   });
 };
 
@@ -269,68 +256,59 @@ const getAmountPerMonth = invoices => {
 };
 
 //handle dashInvoices
-const handleInvoices =async () => {
-  
-      dashInvoices = await invoiceModel.getAllInvoices()
+const handleInvoices = async () => {
+  dashInvoices = await invoiceModel.getAllInvoices();
 
-      //get money made for each month
-      let amountArray = getAmountPerMonth(dashInvoices);
+  //get money made for each month
+  let amountArray = getAmountPerMonth(dashInvoices);
 
-      //get current dashInvoices
-      let currentInvoices = getCurrentInvoices(dashInvoices);
-      let [onlineTrans, cashTrans, creditTrans] = getTransNumbers(
-        currentInvoices
-      );
+  //get current dashInvoices
+  let currentInvoices = getCurrentInvoices(dashInvoices);
+  let [onlineTrans, cashTrans, creditTrans] = getTransNumbers(currentInvoices);
 
-      let [amount, totalPaid, totalDebt] = getInvoiceBreakDown(currentInvoices);
-      if (onlineTrans == 0 && cashTrans == 0 && creditTrans == 0) {
-        document.getElementById("doughnutBox").textContent =
-          "No transactions yet";
-      } else {
-        //display doughnut
-        displayDoughtnut(onlineTrans, cashTrans, creditTrans);
-      }
-      //display chart
-      displayChart(amountArray);
+  let [amount, totalPaid, totalDebt] = getInvoiceBreakDown(currentInvoices);
+  if (onlineTrans == 0 && cashTrans == 0 && creditTrans == 0) {
+    document.getElementById("doughnutBox").textContent = "No transactions yet";
+  } else {
+    //display doughnut
+    displayDoughtnut(onlineTrans, cashTrans, creditTrans);
+  }
+  //display chart
+  displayChart(amountArray);
 
-      //get debt invoices
-      let debtInvoices = getCurrentDebts(currentInvoices);
+  //get debt invoices
+  let debtInvoices = getCurrentDebts(currentInvoices);
 
-      if (debtInvoices.length > 0) {
-        //display debts
-        displayDashDebts(debtInvoices);
-      } else {
-        document.getElementById("dashDebtList").innerHTML =
-          " <tr>" +
-          ' <td colspan="2" class="text-center">' +
-          "  <span>No record found</span>" +
-          " </td>" +
-          " </tr>";
-      }
-      //append to DOM
-      document.getElementById("span2").textContent = formatMoney(totalDebt);
-      document.getElementById("span3").textContent = formatMoney(totalPaid);
-      document.getElementById("span4").textContent = formatMoney(amount);
-      document.getElementById("span6").textContent = currentInvoices.length;
-      document.getElementById("span8").textContent = currentInvoices.length;
-    
+  if (debtInvoices.length > 0) {
+    //display debts
+    displayDashDebts(debtInvoices);
+  } else {
+    document.getElementById("dashDebtList").innerHTML =
+      " <tr>" +
+      ' <td colspan="2" class="text-center">' +
+      "  <span>No record found</span>" +
+      " </td>" +
+      " </tr>";
+  }
+  //append to DOM
+  document.getElementById("span2").textContent = formatMoney(totalDebt);
+  document.getElementById("span3").textContent = formatMoney(totalPaid);
+  document.getElementById("span4").textContent = formatMoney(amount);
+  document.getElementById("span6").textContent = currentInvoices.length;
+  document.getElementById("span8").textContent = currentInvoices.length;
 };
 
 //handle dashUsers
 const handleUsers = async () => {
-  
-      dashUsers = await staffModel.getUsers()
+  dashUsers = await staffModel.getUsers();
 
-      //appende to DOM
-      document.getElementById("span7").textContent = dashUsers.length;
-    
+  //appende to DOM
+  document.getElementById("span7").textContent = dashUsers.length;
 };
 
 //handle exenses
 const handleDashExpenses = async () => {
-  
-      dashExpenses = await expenseModel.getExpenses()
-    
+  dashExpenses = await expenseModel.getExpenses();
 };
 
 //load up dashboard

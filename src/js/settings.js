@@ -63,19 +63,18 @@ const appendSettingsValues = () => {
 };
 
 //load settings sections
-const loadSettingsSections = async() => {
+const loadSettingsSections = async () => {
   //show loading
   showLoading();
-  
-    setupInfo = await settingsModel.getSetup()
-    setupId = setupInfo._id;
 
-    //set setup details
-    store.setSetupDetail(setupInfo);
+  setupInfo = await settingsModel.getSetup();
+  setupId = setupInfo._id;
 
-    //append values to DOM
-    appendSettingsValues();
-  
+  //set setup details
+  store.setSetupDetail(setupInfo);
+
+  //append values to DOM
+  appendSettingsValues();
 };
 
 //stock settings validation
@@ -95,10 +94,9 @@ const submitStockSettings = async e => {
     setupInfo.stock_limit = stockLimit;
 
     //update database
-    await settingsModel.updateSetUp(setupInfo, setupId)
-          //reload sections
-          loadSettingsSections();
-       
+    await settingsModel.updateSetUp(setupInfo, setupId);
+    //reload sections
+    loadSettingsSections();
   }
 };
 
@@ -123,23 +121,20 @@ const submitAppSettings = async e => {
     setupInfo.update_interval = update_interval;
 
     //update database
-   await settingsModel.updateSetUp(setupInfo, setupId)
-        
-          //restore new value
-          
-              let setUpDetails = await settingsModel.getSetup()
-              //reload sections
-              loadSettingsSections();
-              //store data in electron store
-              store.setSetupDetail(setUpDetails);
-              //call sync function on renderer.js
-              autosync();
+    await settingsModel.updateSetUp(setupInfo, setupId);
 
-              //call websocket function on renderer.js
-              connectSocket();
-            
-        
-      
+    //restore new value
+
+    let setUpDetails = await settingsModel.getSetup();
+    //reload sections
+    loadSettingsSections();
+    //store data in electron store
+    store.setSetupDetail(setUpDetails);
+    //call sync function on renderer.js
+    autosync();
+
+    //call websocket function on renderer.js
+    connectSocket();
   }
 };
 
@@ -207,10 +202,9 @@ const emailIsValid = email => {
 
 const completeUpdate = async () => {
   //update database
-  await settingsModel.updateSetUp(setupInfo, setupId)
-        //reload sections
-        loadSettingsSections();
-     
+  await settingsModel.updateSetUp(setupInfo, setupId);
+  //reload sections
+  loadSettingsSections();
 };
 
 //continue premium processing
@@ -220,7 +214,7 @@ const continuePremium = data => {
     showModal(
       "No record exists for this branch. Please ensure you create a company and branch online and fill in their matching details here."
     );
-    hideLoading()
+    hideLoading();
   } else {
     //update data online
     branches.updateBranchOnline(data[0].id, setupInfo, completeUpdate);
@@ -233,7 +227,7 @@ const proceed = () => {
 };
 
 //submit account settings
-const submitAccountSettings =async e => {
+const submitAccountSettings = async e => {
   //loading
   showLoading();
 
@@ -262,12 +256,10 @@ const submitAccountSettings =async e => {
         setupInfo.phone = phone;
         //setupInfo.email = email;
         //update database
-       await settingsModel.updateSetUp(setupInfo, setupId)
-              //reload sections
+        await settingsModel.updateSetUp(setupInfo, setupId);
+        //reload sections
 
-              loadSettingsSections();
-            
-          
+        loadSettingsSections();
       }
     } else {
       //validate for premium account

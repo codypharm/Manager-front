@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 const axios = require("axios");
 const ourModel = require("../../models/staffModel");
-const env = require("../../utils/appConstants")
+const env = require("../../utils/appConstants");
 const { Notyf } = require("notyf");
 const axiosInstance = require("../axiosInstance");
 const staffModel = new ourModel();
@@ -31,9 +31,8 @@ const upload = async (users, setup) => {
         return await axiosInstance.post(`staff/`, {
           staffId: user.staffId,
           staffName: `${user.firstname.charAt(0).toUpperCase() +
-            user.firstname.slice(1)} ${user.lastname
-            .charAt(0)
-            .toUpperCase() + user.lastname.slice(1)}`,
+            user.firstname.slice(1)} ${user.lastname.charAt(0).toUpperCase() +
+            user.lastname.slice(1)}`,
           position: user.position,
           email: user.email,
           phone: user.number,
@@ -47,7 +46,7 @@ const upload = async (users, setup) => {
           branchId: branch
         });
       } catch (err) {
-        console.log(err)
+        console.log(err);
         //handle error
         const notyf = new Notyf({
           duration: 3000
@@ -64,7 +63,7 @@ const upload = async (users, setup) => {
     };
     const callEndPoint = async () => {
       const responseData = await postData();
-      console.log(responseData)
+      console.log(responseData);
       //update user record to remote true
       if (responseData.status == 200) {
         let updateDb = await staffModel.updateAfterRemoteUpload(

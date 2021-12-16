@@ -30,7 +30,7 @@ class Attendance {
   }
 
   //handle Attendance
- async handleAttendance(proceedToSales) {
+  async handleAttendance(proceedToSales) {
     //get staff list
     const allAttendance = await attendanceModel.getAttendance();
     this.uploadAttendanceToRemote(allAttendance, proceedToSales);

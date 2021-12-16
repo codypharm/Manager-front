@@ -1,20 +1,19 @@
 /* eslint-disable no-unused-vars */
 //classes get instantiated here
-const usersDb = new PouchDB('users');
-const stockDb = new PouchDB('stock');
-const salesDb = new PouchDB('sales');
-const attendanceDb = new PouchDB('attendance');
-const expensesDb = new PouchDB('expenses');
-const activitiesDb = new PouchDB('activities');
-const debt_clearanceDb = new PouchDB('debt_clearance');
-const stockingDb = new PouchDB('stocking');
-const invoicesDb = new PouchDB('invoices');
-const setupDb = new PouchDB('setup');
-
+const usersDb = new PouchDB("users");
+const stockDb = new PouchDB("stock");
+const salesDb = new PouchDB("sales");
+const attendanceDb = new PouchDB("attendance");
+const expensesDb = new PouchDB("expenses");
+const activitiesDb = new PouchDB("activities");
+const debt_clearanceDb = new PouchDB("debt_clearance");
+const stockingDb = new PouchDB("stocking");
+const invoicesDb = new PouchDB("invoices");
+const setupDb = new PouchDB("setup");
 
 // validate comes from renderer process
 //require files
-const printJs = require('print-js')
+const printJs = require("print-js");
 const SettingsModel = require("../models/settingsModel");
 const DashboardModel = require("../models/dashboardModel");
 const AttendanceModel = require("../models/attendanceModel");
@@ -26,7 +25,7 @@ const StaffModel = require("../models/staffModel");
 const StockModel = require("../models/stockModel");
 const Validator = require("../src/js/validator");
 const Store = require("../src/js/store");
-const Database = require("../src/js/db");
+//const Database = require("../src/js/db");
 const { remote } = require("electron");
 //const fetch = remote.require("electron-fetch").default;
 //const handleBar = remote.require("electron-handlebars");

@@ -1,5 +1,5 @@
 const staff = require("./staff");
-const env = require("../../utils/appConstants")
+const env = require("../../utils/appConstants");
 
 class WebSocketService {
   static instance = null;
@@ -15,15 +15,13 @@ class WebSocketService {
   }
 
   connect(company, branch) {
-    
     //if undefined
-    if(!company || !branch){
+    if (!company || !branch) {
       let setUpInfo = store.getSetupDetail();
-      company = setUpInfo.detail.companyId
-      branch = setUpInfo.detail.branchId
+      company = setUpInfo.detail.companyId;
+      branch = setUpInfo.detail.branchId;
     }
 
-    
     const path = `${env.SOCKET}/staff/${company}${branch}/`;
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
@@ -104,7 +102,7 @@ class WebSocketService {
     return this.socketRef.readyState;
   }
 
- /* waitForSocketConnection(callback) {
+  /* waitForSocketConnection(callback) {
     const socket = this.socketRef;
     const recursion = this.waitForSocketConnection;
     setTimeout(() => {

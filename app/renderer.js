@@ -12,7 +12,6 @@
 /* eslint-disable no-unused-vars */
 //const staffModules = require('../src/js/staff')
 
-
 //global variables
 //const api = require("../api");
 var viewEmail;
@@ -32,29 +31,29 @@ const branches = new branchesClass();
 //print
 const print = () => {
   printJs({
-    printable: 'staticBody',
-    type: 'html',
-    targetStyles:['*'],
-    header:''
-  })
-}
+    printable: "staticBody",
+    type: "html",
+    targetStyles: ["*"],
+    header: ""
+  });
+};
 
 //prevent random reload
 const prevent = e => {
-  e.preventDefault()
-}
+  e.preventDefault();
+};
 
 //generate working list
-const generateWorkingList = async (db,list) => {
+const generateWorkingList = async (db, list) => {
   let data = [];
   for (let i = 0; i < list.length; i++) {
     //wait for update to happen
-    let doc = await db.get(list[i].id)
-    data = [...data, doc]
+    let doc = await db.get(list[i].id);
+    data = [...data, doc];
   }
 
-  return data
-}
+  return data;
+};
 
 //page loader
 const pageLoader = (page, fxn = false) => {
@@ -112,10 +111,6 @@ const pageLoader = (page, fxn = false) => {
     }
   });
 };
-
-
-
-
 
 //dashboard
 const loadDashboard = e => {
@@ -344,7 +339,6 @@ const formatMoney = money => {
   return amount;
 };
 
-
 // sidebar handler
 const hideSideBar = e => {
   let sideBar = document.getElementsByClassName("sidePane")[0];
@@ -433,29 +427,22 @@ const addClass = (elem, className) => {
   elem.classList.add(className);
 };
 
-
-
 const notification = async () => {
   let stock = await stockModel.getStock();
   let stocking = await stockModel.getStocking();
-  
-          if (stocking.length > 0) {
-            //sort exhausted stock
-            let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
-            let expiredStock = stockModel.getExpiredStock(stock);
-            let exhausted = !exhaustedStock ? 0 : exhaustedStock.length;
-            let expired = !expiredStock ? 0 : expiredStock.length;
-            let totalNotifications = exhausted + expired;
-            document.getElementById(
-              "notCounter"
-            ).textContent = totalNotifications;
-            document.getElementById("exhaustedSpan").textContent = exhausted;
-            document.getElementById("expiredSpan").textContent = expired;
-          }
-        
-    
-};
 
+  if (stocking.length > 0) {
+    //sort exhausted stock
+    let exhaustedStock = stockModel.getExhaustedStock(stock, stocking);
+    let expiredStock = stockModel.getExpiredStock(stock);
+    let exhausted = !exhaustedStock ? 0 : exhaustedStock.length;
+    let expired = !expiredStock ? 0 : expiredStock.length;
+    let totalNotifications = exhausted + expired;
+    document.getElementById("notCounter").textContent = totalNotifications;
+    document.getElementById("exhaustedSpan").textContent = exhausted;
+    document.getElementById("expiredSpan").textContent = expired;
+  }
+};
 
 //hide for non admin
 const setRankElements = () => {
@@ -493,27 +480,24 @@ const hideLoading = () => {
   $(".loadingModal").modal("hide");
 };
 
-
 //show loading
 //showLoading()
 
 //store setup details and store for use
 const storeSetup = async () => {
-
-  let {rows} = await setupDb.allDocs()
-  let workingList = await generateWorkingList(setupDb,rows)
-  console.log(workingList[0])
+  let { rows } = await setupDb.allDocs();
+  let workingList = await generateWorkingList(setupDb, rows);
+  console.log(workingList[0]);
   store.setSetupDetail(workingList[0]);
-}
+};
 
-storeSetup()
-
+storeSetup();
 
 //auto sync with remote
 const autosync = () => {
   //get time interval from store
   let setUpInfo = store.getSetupDetail();
-  
+
   let interval = setUpInfo.update_interval;
   let package = setUpInfo.package;
 
@@ -544,11 +528,9 @@ const autosync = () => {
   }, updateTime);
 };
 
-
-
 const appendUserDetails = () => {
   let user = store.getLoginDetail();
-  console.log(user)
+  console.log(user);
   document.getElementById("containerImg").src = user.image;
   document.getElementById(
     "nameBox"
@@ -556,15 +538,13 @@ const appendUserDetails = () => {
   document.getElementById("position").textContent = user.position;
 };
 
-
 const play = async () => {
+  let { rows } = await usersDb.allDocs();
+  let workingList = await generateWorkingList(usersDb, rows);
+  console.log(workingList);
+};
 
-  let {rows} = await usersDb.allDocs()
-  let workingList = await generateWorkingList(usersDb,rows)
-  console.log(workingList)
-}
-
-play()
+play();
 //compare the two passwords
 // eslint-disable-next-line no-unused-vars
 const comparePassword = e => {
@@ -600,7 +580,6 @@ const displaySuccess = message => {
     element.textContent = message;
   }
 };
-
 
 //success hide
 const hideSuccess = message => {
@@ -712,7 +691,6 @@ const backToBranchDetails = e => {
   changeForm(managerForm, setupForm);
 };
 
-
 //process on clicking next button
 // eslint-disable-next-line no-unused-vars
 const showManagerDetail = e => {
@@ -757,7 +735,6 @@ const handleBodyClick = e => {
   }
 };
 
-
 // eslint-disable-next-line no-unused-vars
 const showInputs = e => {
   //hide error box
@@ -791,33 +768,29 @@ const showInputs = e => {
   }
 };
 
-
-
 //user creation
 const createUser = async () => {
   let userDetailInsertion = await validate.insertUser(details);
-  if(userDetailInsertion.ok){
-    
-   remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
+  if (userDetailInsertion.ok) {
+    remote.getCurrentWindow().loadURL(`file://${__dirname}/index.html`);
   }
- 
 };
 
 //complete setup
-const completeSetup = async  () => {
+const completeSetup = async () => {
   //create setup  database
   //generate id
-    //insert details
-    let detailInsertion = await validate.insertDetails(details);
-    if(detailInsertion.ok){
-      //set setup details
-      let {rows} = await setupDb.allDocs()
-      let workingList = await generateWorkingList(setupDb,rows)
-      store.setSetupDetail(workingList[0]);
-      //create users
-      createUser()
-    }
-    /*detailInsertion.then(
+  //insert details
+  let detailInsertion = await validate.insertDetails(details);
+  if (detailInsertion.ok) {
+    //set setup details
+    let { rows } = await setupDb.allDocs();
+    let workingList = await generateWorkingList(setupDb, rows);
+    store.setSetupDetail(workingList[0]);
+    //create users
+    createUser();
+  }
+  /*detailInsertion.then(
       ({ data, headers, status }) => {
         //generate id
         let userIdGen = validate.generateId();
@@ -830,7 +803,6 @@ const completeSetup = async  () => {
         console.warn(err);
       }
     );*/
-  
 };
 
 const setUp = () => {
@@ -846,7 +818,7 @@ const continueSetup = data => {
     const notyf = new Notyf({
       duration: 5000
     });
-    hideLoading()
+    hideLoading();
     // Display an error notification
     notyf.error(
       "No Branch exists with this matching company Id and branch Id, please verify and try again."
@@ -969,8 +941,6 @@ const loadRightMenu = () => {
   $("#staffAccount").attr("data-staffEmail", email);
 };
 
-
-
 //login processing begins here
 const processLogin = async e => {
   e.preventDefault();
@@ -994,102 +964,88 @@ const processLogin = async e => {
     displayError(errorDiv, "Email invalid");
     hideLoading();
   } else {
-    
-    
-        //get users
-        let {rows} = await usersDb.allDocs()
-        let users = await generateWorkingList(usersDb,rows)
-        
-        //filter users for a match
-        let match = login.filterUsers(users, email, pwd);
-        if (match) {
-          //check if account is blocked
-          let access = login.checkAccess(users, email);
+    //get users
+    let { rows } = await usersDb.allDocs();
+    let users = await generateWorkingList(usersDb, rows);
 
-          if (access) {
-            //get user details and store it
-            let user = login.getUserData(users, email);
-   
-            console.log(user)
-            //store them in electron store
-            if (store.setUserData(user)) {
-              //start auto sync
-              autosync();
+    //filter users for a match
+    let match = login.filterUsers(users, email, pwd);
+    if (match) {
+      //check if account is blocked
+      let access = login.checkAccess(users, email);
 
-              //record attendance
-              //get user details
+      if (access) {
+        //get user details and store it
+        let user = login.getUserData(users, email);
 
-              let thisUser = attendanceModel.getThisUser(users, user.staffId);
+        console.log(user);
+        //store them in electron store
+        if (store.setUserData(user)) {
+          //start auto sync
+          autosync();
 
-                let dataRecord = await attendanceModel.recordAttendance(
-                  thisUser[0]
-                );
+          //record attendance
+          //get user details
 
-                      //display app container
-                      let url = `${__dirname}/pages/container.html`;
+          let thisUser = attendanceModel.getThisUser(users, user.staffId);
 
-                      fs.readFile(url, "utf-8", (err, data) => {
-                        if (err) {
-                          console.log(err);
-                        }
+          let dataRecord = await attendanceModel.recordAttendance(thisUser[0]);
 
-                        //append main page
-                        document.getElementsByTagName(
-                          "main"
-                        )[0].innerHTML = data;
-                        //start notification
-                        notification();
-                        //hide loading
-                        hideLoading();
-                        //load dashboard
-                        pageLoader("dashboard", loadUpdashboard);
+          //display app container
+          let url = `${__dirname}/pages/container.html`;
 
-                        document
-                          .getElementsByTagName("body")[0]
-                          .classList.remove("setupBack");
-                        appendUserDetails();
-                      });
-                   
-             
+          fs.readFile(url, "utf-8", (err, data) => {
+            if (err) {
+              console.log(err);
             }
-          } else {
+
+            //append main page
+            document.getElementsByTagName("main")[0].innerHTML = data;
+            //start notification
+            notification();
+            //hide loading
             hideLoading();
-            displayError(
-              errorDiv,
-              "Access denied, please contact appropriate personnel"
-            );
-          }
-        } else {
-          hideLoading();
-          displayError(errorDiv, "Invalid email or wrong password");
+            //load dashboard
+            pageLoader("dashboard", loadUpdashboard);
+
+            document
+              .getElementsByTagName("body")[0]
+              .classList.remove("setupBack");
+            appendUserDetails();
+          });
         }
-     
+      } else {
+        hideLoading();
+        displayError(
+          errorDiv,
+          "Access denied, please contact appropriate personnel"
+        );
+      }
+    } else {
+      hideLoading();
+      displayError(errorDiv, "Invalid email or wrong password");
+    }
   }
 };
 
-
-
 //check for setup details
-setupDb.allDocs((err,doc) => {
-  
-  
-  if(doc.rows.length < 1){
+setupDb.allDocs((err, doc) => {
+  if (doc.rows.length < 1) {
     //let url = "./app/setup.html";
-    let url = `${__dirname}/setup.html`
+    let url = `${__dirname}/setup.html`;
     fs.readFile(url, "utf-8", (err, data) => {
       if (err) {
         console.log(err);
       }
       document.getElementsByTagName("main")[0].innerHTML = data;
-      
     });
-  }else {
+  } else {
     //check if user is logged in
     let { loginStatus } = store.getLoginDetail();
     //if user is not logged in
     if (loginStatus == false) {
       //display login page
-      
+
       let url = `${__dirname}/pages/login.html`;
       //let url = remote.getCurrentWindow().loadURL(`file://${__dirname}/pages/login.html`);
       fs.readFile(url, "utf-8", (err, data) => {
@@ -1099,7 +1055,7 @@ setupDb.allDocs((err,doc) => {
         document.getElementsByTagName("main")[0].innerHTML = data;
         hideLoading();
       });
-    }else{
+    } else {
       //display app container since user is logged in
       document.getElementsByTagName("body")[0].classList.remove("setupBack");
       let url = `${__dirname}/pages/container.html`;
@@ -1118,11 +1074,8 @@ setupDb.allDocs((err,doc) => {
       });
     }
   }
- })
+});
 
-
-    
-  
 //connect web socket
 const connectSocket = () => {
   //get time interval from store
@@ -1134,13 +1087,11 @@ const connectSocket = () => {
     //check if app is premium and return if not premium
     if (package !== "premium") return;
 
- webSocket.connect(setUpInfo.detail.companyId, setUpInfo.detail.branchId);
+    webSocket.connect(setUpInfo.detail.companyId, setUpInfo.detail.branchId);
   }
 };
 
-connectSocket()
-
-
+connectSocket();
 
 //disconnect socket
 const disconnectSocket = () => {
@@ -1204,6 +1155,71 @@ const showGenStaticModal = elem => {
 
   document.getElementById(elem).classList.remove("hide");
   // $("#" + body).html(message);
+  return true;
+};
+
+const expenseModal = () => {
+  $(".expStaticModal").modal("show");
+  return true;
+};
+
+const hideExpModal = () => {
+  $(".expStaticModal").modal("hide");
+  return true;
+};
+
+const attendanceModal = () => {
+  $(".attendanceStaticModal").modal("show");
+  return true;
+};
+
+const hideAttendanceModal = () => {
+  $(".attendanceStaticModal").modal("hide");
+  return true;
+};
+
+const prodModal = () => {
+  $(".prodStaticModal").modal("show");
+  return true;
+};
+const hideProdModal = () => {
+  $(".prodStaticModal").modal("hide");
+  return true;
+};
+
+const batchModal = () => {
+  $(".batchStaticModal").modal("show");
+  return true;
+};
+const hideBatchModal = () => {
+  $(".batchStaticModal").modal("hide");
+  return true;
+};
+const changesModal = () => {
+  $(".changesStaticModal").modal("show");
+  return true;
+};
+const hideChangesModal = () => {
+  $(".changesStaticModal").modal("hide");
+  return true;
+};
+const errorModal = () => {
+  $(".errorStaticModal").modal("show");
+  return true;
+};
+const hideErrorModal = e => {
+  e.preventDefault();
+  $(".errorStaticModal").modal("hide");
+  return true;
+};
+
+const gainModal = () => {
+  $(".gainStaticModal").modal("show");
+  return true;
+};
+const hideGainModal = e => {
+  e.preventDefault();
+  $(".gainStaticModal").modal("hide");
   return true;
 };
 
@@ -1338,39 +1354,36 @@ const logMeOut = e => {
       //show loading
       showLoading();
 
-      
-          let attendanceRecord = await attendanceModel.getAttendance();
-          let date = new Date();
+      let attendanceRecord = await attendanceModel.getAttendance();
+      let date = new Date();
 
-          let day = date.getDate();
-          let month = date.getMonth() + 1;
-          let year = date.getFullYear();
-          let id = store.getLoginDetail().staffId;
-          let myData = attendanceModel.getThisAttendance(
-            attendanceRecord,
-            day,
-            month,
-            year,
-            id
-          )[0];
-          //update attendance
-          await attendanceModel.updateAttendance(myData);
-          
-              //logout
-              store.forceLogout();
-              //go to login page
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+      let id = store.getLoginDetail().staffId;
+      let myData = attendanceModel.getThisAttendance(
+        attendanceRecord,
+        day,
+        month,
+        year,
+        id
+      )[0];
+      //update attendance
+      await attendanceModel.updateAttendance(myData);
 
-              let url = `${__dirname}/pages/login.html`;
-              fs.readFile(url, "utf-8", (err, data) => {
-                if (err) {
-                  console.log(err);
-                }
-                //hide loading
-                hideLoading();
-                document.getElementsByTagName("main")[0].innerHTML = data;
-              });
-           
-        
+      //logout
+      store.forceLogout();
+      //go to login page
+
+      let url = `${__dirname}/pages/login.html`;
+      fs.readFile(url, "utf-8", (err, data) => {
+        if (err) {
+          console.log(err);
+        }
+        //hide loading
+        hideLoading();
+        document.getElementsByTagName("main")[0].innerHTML = data;
+      });
 
       //update attendance
       /*let attendanceUpdater = attendanceModel.updateAttendance(data);

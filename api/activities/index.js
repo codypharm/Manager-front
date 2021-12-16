@@ -30,11 +30,10 @@ class Activities {
   }
 
   //handle Activities
- async handleActivities(proceedToExpenses) {
+  async handleActivities(proceedToExpenses) {
     //get staff list
     const allActivities = await stockModel.getActivities();
     this.uploadActivitiesToRemote(allActivities, proceedToExpenses);
-    
   }
 }
 

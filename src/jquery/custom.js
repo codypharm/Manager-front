@@ -41,11 +41,13 @@ $(document).ready(function() {
       })
       .then(async function(response) {
         showLoading();
-        console.log(remote.app.getAppPath())
+        console.log(remote.app.getAppPath());
         let date = Date.now();
         let rand = Math.floor(Math.random() * 101);
         //image name
-        let imagePath = `${remote.app.getAppPath('userData')}image${rand}${date}.png`;
+        let imagePath = `${remote.app.getAppPath(
+          "userData"
+        )}image${rand}${date}.png`;
         //let imageName = `../images/image${rand}${date}.png`;
         //split image
         var image = response.split(";base64,").pop();
@@ -55,29 +57,32 @@ $(document).ready(function() {
           //console.log(error);
         });
 
-        await staffModel
-          .updateUserImage(staffDetail._id, staffDetail, imagePath)
-          
-            $("#staffImage").attr("src", imagePath);
-              
-            if (store.getLoginDetail().staffId == staffDetail.staffId) {
-              $("#containerImg").attr("src", imagePath);
+        await staffModel.updateUserImage(
+          staffDetail._id,
+          staffDetail,
+          imagePath
+        );
 
-              user = {
-                firstname: staffDetail.firstname,
-                lastname: staffDetail.lastname,
-                email: staffDetail.email,
-                staffId: staffDetail.staffId,
-                position: staffDetail.position,
-                permission: staffDetail.permission,
-                image: imagePath,
-                access: staffDetail.access,
-                _id: staffDetail._id
-              };
+        $("#staffImage").attr("src", imagePath);
 
-              store.setUserData(user);
-            }
-          
+        if (store.getLoginDetail().staffId == staffDetail.staffId) {
+          $("#containerImg").attr("src", imagePath);
+
+          user = {
+            firstname: staffDetail.firstname,
+            lastname: staffDetail.lastname,
+            email: staffDetail.email,
+            staffId: staffDetail.staffId,
+            position: staffDetail.position,
+            permission: staffDetail.permission,
+            image: imagePath,
+            access: staffDetail.access,
+            _id: staffDetail._id
+          };
+
+          store.setUserData(user);
+        }
+
         //hide modal
         $("#uploadImageModal").modal("hide");
         hideLoading();

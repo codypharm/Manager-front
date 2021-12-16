@@ -7,7 +7,7 @@ const modules = require("./modules");
 const { Notyf } = require("notyf");
 const axiosInstance = require("../axiosInstance");
 //require("dotenv").config();
-const env = require("../../utils/appConstants")
+const env = require("../../utils/appConstants");
 
 // instantiate classes
 const store = new ourStore();
@@ -16,8 +16,7 @@ const staffModel = new ourStaffModel();
 class Users {
   constructor() {
     //this.currentUser = store.getLoginDetail();
-   // this.setupDetails = store.getSetupDetail();
-    
+    // this.setupDetails = store.getSetupDetail();
   }
 
   loginRemote(proceed) {
@@ -28,7 +27,7 @@ class Users {
       })
       .then(res => {
         //store tokens
-        let setupDetails = store.getSetupDetail()
+        let setupDetails = store.getSetupDetail();
         store.setTokens(res.data.access, res.data.refresh);
         //check is expiration exists
         let companyId = setupDetails.detail.companyId;
@@ -73,7 +72,7 @@ class Users {
       })
       .catch(err => {
         let errorMessage = "An error occurred";
-        console.log(err)
+        console.log(err);
         if (err.response) {
           errorMessage = err.response.data.detail
             ? "Invalid online credentials or your account has not been activated"
@@ -97,19 +96,19 @@ class Users {
 
   //upload
   uploadUsersToRemote(users, proceedToStock) {
-    let setupDetails = store.getSetupDetail()
+    let setupDetails = store.getSetupDetail();
     //filter out users with remote =  false
     let filteredUsers = modules.filterUsers(users);
     //upload these users
     if (filteredUsers.length > 0) {
-      let upload = modules.upload(filteredUsers,setupDetails.detail);
+      let upload = modules.upload(filteredUsers, setupDetails.detail);
     }
     //move on while the task runs asynchronously
     proceedToStock();
   }
 
   //handle users
- async handleUsers(proceedToStock) {
+  async handleUsers(proceedToStock) {
     //get staff list
     const allStaff = await staffModel.getUsers();
     this.uploadUsersToRemote(allStaff, proceedToStock);

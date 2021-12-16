@@ -4,8 +4,7 @@ const axios = require("axios");
 const Store = require("../src/js/store.js");
 const store = new Store();
 
-const env = require("../utils/appConstants")
-
+const env = require("../utils/appConstants");
 
 const axiosInstance = axios.create({
   baseURL: `${env.BACKEND_URL}/`,

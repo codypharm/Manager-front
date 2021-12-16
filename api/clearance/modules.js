@@ -20,7 +20,7 @@ const upload = async (clearance, setup) => {
     promises.push(
       axiosInstance.post("clearance/", {
         date: `${clearance[i].year}-${clearance[i].month}-${clearance[i].day}`,
-        
+
         invoiceId: clearance[i].paymentFor,
         paid: clearance[i].currentAmtPaid,
         attender: clearance[i].attender,

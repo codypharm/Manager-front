@@ -30,9 +30,9 @@ class Expenses {
   }
 
   //handle Expenses
- async handleExpenses(proceedToAttendance) {
+  async handleExpenses(proceedToAttendance) {
     //get staff list
-    const allExpenses =await expenseModel.getExpenses();
+    const allExpenses = await expenseModel.getExpenses();
     this.uploadExpensesToRemote(allExpenses, proceedToAttendance);
   }
 }

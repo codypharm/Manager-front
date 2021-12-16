@@ -119,17 +119,19 @@ const calculateTotal = cart => {
 };
 
 //load cart
-const loadCart =async () => {
+const loadCart = async () => {
   stock = await stockModel.getStock();
-  
-  let record
+
+  let record;
   //get products in store
-  if(store.getSaleStore() != undefined){
-    record = store.getSaleStore().record ? store.getSaleStore().record : store.getSaleStore()
-  }else{
-    record = []
+  if (store.getSaleStore() != undefined) {
+    record = store.getSaleStore().record
+      ? store.getSaleStore().record
+      : store.getSaleStore();
+  } else {
+    record = [];
   }
- 
+
   //get last list
   if (record != undefined && record.length > 0) {
     cart = record;
@@ -208,7 +210,7 @@ const addUpMatch = (stock, id) => {
 const suggestProduct = e => {
   let word = e.target.value.trim();
   let match = salesModel.getMatchingProduct(stock, word);
-  let sorted = stockModel.sortStock(match)
+  let sorted = stockModel.sortStock(match);
   if (sorted) {
     displaySuggestions(sorted);
   }
@@ -345,19 +347,16 @@ const handleTransType = e => {
 };
 
 const sub = (obj, qty, cp, sp) => {
-  
-  
   //if stock is more than purchase quantity
   if (Number(obj.qty) > Number(qty)) {
     cp += Number(obj.pricePerMinUnit) * Number(qty);
-    
+
     sp += Number(obj.price) * Number(qty);
     //subtract purchase
     obj.qty = Number(obj.qty) - Number(qty);
     //purchase  = 0
     qty = 0;
-    
-    
+
     //return new values
     return [obj, qty, cp, sp];
     //if purchase is more than stock
@@ -403,8 +402,7 @@ const loadInvoiceStaticSection = (
 ) => {
   let date = new Date();
   let { detail } = store.getSetupDetail();
-  document.getElementById("companyStaticName").textContent =
-    detail.companyName;
+  document.getElementById("companyStaticName").textContent = detail.companyName;
   document.getElementById("companyStaticAddress").textContent =
     detail.branchAddress;
   document.getElementById("companyStaticNumber").textContent =
@@ -450,52 +448,47 @@ const execInvoice = async (
   cartCp,
   cartSp
 ) => {
-  
-    //insert details into invoice
-     await salesModel.insertInvoice(
+  //insert details into invoice
+  await salesModel.insertInvoice(
+    invoiceId,
+    customerAddress,
+    customerName,
+    customerNumber,
+    deposit,
+    transType,
+    disccount,
+    netPrice,
+    totalPrice,
+    amtPaid,
+    balance,
+    cartCp,
+    cartSp
+  );
+
+  //display and print invoice
+  if (showStaticModal(invoiceTemplate)) {
+    //load purchase to invoice
+    //console.log(cart);
+    displayPurchase(cart);
+    //enter static part of invoice
+    loadInvoiceStaticSection(
       invoiceId,
-      customerAddress,
-      customerName,
-      customerNumber,
       deposit,
       transType,
       disccount,
       netPrice,
       totalPrice,
       amtPaid,
-      balance,
-      cartCp,
-      cartSp
+      balance
     );
-   
-        
-          //display and print invoice
-          if (showStaticModal(invoiceTemplate)) {
-            //load purchase to invoice
-            //console.log(cart);
-            displayPurchase(cart);
-            //enter static part of invoice
-            loadInvoiceStaticSection(
-              invoiceId,
-              deposit,
-              transType,
-              disccount,
-              netPrice,
-              totalPrice,
-              amtPaid,
-              balance
-            );
 
-            print()
+    print();
 
-            //clean up
-            cart = [];
+    //clean up
+    cart = [];
 
-            document.getElementById("prodName").focus();
-          }
-        
-      
-  
+    document.getElementById("prodName").focus();
+  }
 };
 
 //insert sale into db
@@ -525,17 +518,15 @@ const insertSale = async (cart, cp, sp) => {
   //loop through the cart and insert details to sales db
   for (let i = 0; i < cart.length; i++) {
     let product = cart[i];
-    
-      //insert details
-     await salesModel.insertSales(
-        product,
-        
-        invoiceId,
-        transType,
-        disccount
-      );
-      
-    
+
+    //insert details
+    await salesModel.insertSales(
+      product,
+
+      invoiceId,
+      transType,
+      disccount
+    );
   }
 
   //insert details into invoice db
@@ -565,7 +556,6 @@ const insertSale = async (cart, cp, sp) => {
 
 //subtract qty from stock and update stock table
 const execute = async (match, qty) => {
-  
   //reverse the array
   //match = match.reverse();
   //loop through the match
@@ -574,7 +564,7 @@ const execute = async (match, qty) => {
 
   for (let i = 0; i < match.length; i++) {
     let obj = match[i];
-    
+
     if (qty > 0) {
       let [newProd, newQty, cp, sp] = sub(
         obj,
@@ -584,20 +574,16 @@ const execute = async (match, qty) => {
       );
       totalProductCp = cp;
       totalProductSp = sp;
-      
-      qty = newQty;
 
-     
+      qty = newQty;
     }
   }
-
 
   //update all matches
   for (let i = 0; i < match.length; i++) {
     let product = match[i];
-    await salesModel.updateStock(product)
+    await salesModel.updateStock(product);
   }
-  
 
   return [totalProductCp, totalProductSp];
 };
@@ -613,13 +599,13 @@ const process = async cart => {
     let product = cart[i];
     //get matching product from db
     match = salesModel.getMatch(stock, product.productId);
-    
-     //get quantity bought
-     let qty = product.qty;
-     
-      //handle each match
+
+    //get quantity bought
+    let qty = product.qty;
+
+    //handle each match
     let [totalProductCp, totalProductSp] = await execute(match, qty);
-    
+
     //assign this cp and sp to this product in cart
     cart[i].cp = totalProductCp;
     cart[i].sp = totalProductSp;
@@ -627,10 +613,9 @@ const process = async cart => {
     cartCp += totalProductCp;
     cartSp += totalProductSp;
   }
-  
 
   //insert into sales
- insertSale(cart, cartCp, cartSp);
+  insertSale(cart, cartCp, cartSp);
 };
 
 //process cart
@@ -697,6 +682,7 @@ const processCart = e => {
 
 //cancel all sales in rocess
 const cancelAllSales = e => {
+  if (cart.length == 0) return;
   //get window object
   const window = BrowserWindow.getFocusedWindow();
   //show dialog
@@ -704,7 +690,7 @@ const cancelAllSales = e => {
     title: "Manager-front",
     buttons: ["Yes", "Cancel"],
     type: "info",
-    message: "Click Ok to delete item from cart"
+    message: "Click Ok to delete all items in cart"
   });
 
   //check if response is yes
@@ -836,7 +822,6 @@ const getSales = (day, month, year) => {
   document.getElementById("dispDate").textContent =
     day + "-" + month + "-" + year;
   if (match != false) {
-   
     displayMatchSales(match);
     //get total sales on display
     addUpDispSalesMoney(match);
@@ -905,7 +890,7 @@ const getOtherSales = (day, month, year, saleType) => {
 };
 
 //load current sales page
-const loadCurrentSales =async () => {
+const loadCurrentSales = async () => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
@@ -914,14 +899,13 @@ const loadCurrentSales =async () => {
 
   //get sales
   sales = await salesModel.getSales();
- 
-      //get sales for the matching date
-      getSales(day, month, year);
 
-      //enable button
-      document.getElementById("processBtn").disabled = false;
-      hideLoading();
-    
+  //get sales for the matching date
+  getSales(day, month, year);
+
+  //enable button
+  document.getElementById("processBtn").disabled = false;
+  hideLoading();
 
   document.getElementById("saleDay").value = day;
   document.getElementById("saleMonth").value = month;
@@ -929,7 +913,7 @@ const loadCurrentSales =async () => {
 };
 
 //load sales for online credit and cash transactions
-const loadOtherSales =async saleType => {
+const loadOtherSales = async saleType => {
   showLoading();
   let date = new Date();
   let day = date.getDate();
@@ -940,14 +924,13 @@ const loadOtherSales =async saleType => {
   document.getElementById("otherSaleYear").value = year;
   //get sales
   sales = await salesModel.getSales();
-  
-      //get sales for the matching date
-      getOtherSales(day, month, year, saleType);
 
-      hideLoading();
-      //enable button
-      document.getElementById("processBtn").disabled = false;
-    
+  //get sales for the matching date
+  getOtherSales(day, month, year, saleType);
+
+  hideLoading();
+  //enable button
+  document.getElementById("processBtn").disabled = false;
 
   //enable button
   //document.getElementById("processBtn").disabled = false;

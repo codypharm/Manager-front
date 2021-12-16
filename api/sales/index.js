@@ -27,7 +27,7 @@ class Sales {
   }
 
   //handle Sales
- async handleSales(proceedToInvoices) {
+  async handleSales(proceedToInvoices) {
     //get staff list
     const allSales = await salesModel.getSales();
     this.uploadSalesToRemote(allSales, proceedToInvoices);

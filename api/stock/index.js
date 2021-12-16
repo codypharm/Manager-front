@@ -26,9 +26,9 @@ class Stock {
   }
 
   //handle stocks
- async handleStock(proceedToActivities) {
+  async handleStock(proceedToActivities) {
     //get staff list
-    const allStock =await stockModel.getStock();
+    const allStock = await stockModel.getStock();
     this.uploadStockToRemote(allStock, proceedToActivities);
   }
 }

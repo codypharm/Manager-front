@@ -3,7 +3,7 @@
     <i class="fas fa-file-invoice"></i>
   </div>
   <div class="sectionHeader">
-    <h2>Debt Invoice</h2>
+    <h2>All Debt</h2>
   </div>
   <div class="sectionActions">
     <form>
@@ -12,7 +12,7 @@
           <input
             type="text"
             placeholder="search invoices by ID or Customer name..."
-            oninput="processInvoiceSearch(event,'debt')"
+            oninput="processMySearch(event,'debt')"
           />
         </div>
       </div>
@@ -24,7 +24,7 @@
 
 <!-- main stocking form -->
 <section class="stockingBox row m-auto">
-  <div class="col-sm-12 col-lg-6 border m-auto  p-3 ">
+  <!---<div class="col-sm-12 col-lg-6 border m-auto  p-3 ">
     <form action="">
       <h5 class="">Date:</h5>
       <div class="row">
@@ -65,14 +65,14 @@
         </div>
       </div>
     </form>
-  </div>
+  </div>--->
 </section>
 
 <section class="row  m-auto pt-4">
   <div class="card card-default w-100">
     <div class="card-header clear-fix">
       <div class="float-left pt-1">
-        Sales Invoice For <strong><span id="dispDate"></span></strong>
+        All Debts
       </div>
 
       <div class="float-right cardHeadSearchBox">
@@ -97,7 +97,7 @@
             <th>Balance</th>
             <th colspan="3" class="text-center">Action</th>
           </thead>
-          <tbody id="invoicesList">
+          <tbody id="debtsList">
             <tr>
               <td colspan="8" class="text-center">
                 <div class="spinner-grow text-success"></div>
@@ -110,7 +110,7 @@
   </div>
 </section>
 
-<script id="debtInvoiceContainer" type="text/xhandlebars-template">
+<script id="debtListContainer" type="text/xhandlebars-template">
   {{#each data}}
   <tr>
 
@@ -129,7 +129,7 @@
           </button>
         </td>
         <td>
-          <button type="button" data-id='{{invoiceId}}' class="btn btn-sm  btn-success" onclick="clearInvoice(event,'invoicepage')">
+          <button type="button" data-id='{{invoiceId}}' class="btn btn-sm  btn-success" onclick="clearInvoice(event,'allDebt')">
             clear
           </button>
         </td>

@@ -3,19 +3,16 @@
 //import db file
 
 class Invoice {
-  
-
-
- async getAllInvoices() {
-    let {rows} = await invoicesDb.allDocs()
-    let invoices = await generateWorkingList(invoicesDb,rows)
-    return invoices
+  async getAllInvoices() {
+    let { rows } = await invoicesDb.allDocs();
+    let invoices = await generateWorkingList(invoicesDb, rows);
+    return invoices;
   }
 
- async getAllClearance() {
-    let {rows} = await debt_clearanceDb.allDocs()
-    let clearances = await generateWorkingList(debt_clearanceDb,rows)
-    return clearances
+  async getAllClearance() {
+    let { rows } = await debt_clearanceDb.allDocs();
+    let clearances = await generateWorkingList(debt_clearanceDb, rows);
+    return clearances;
   }
 
   getOtherMatchInvoices(invoices, day, month, year, invoiceType) {
@@ -36,6 +33,30 @@ class Invoice {
           invoice.month == Number(month) &&
           invoice.year == Number(year)
         );
+      }
+    });
+
+    if (match.length > 0) {
+      return match;
+    } else {
+      return false;
+    }
+  }
+
+  getMyDebtMatchInvoices(invoices, invoiceType) {
+    let match = invoices.filter(invoice => {
+      /*if (invoiceType == "cleared") {
+        return (
+          invoice.transType == "credit" &&
+          Number(invoice.balance) < 1 &&
+          invoice.day == Number(day) &&
+          invoice.month == Number(month) &&
+          invoice.year == Number(year)
+        );
+      } else */ if (
+        invoiceType == "debt"
+      ) {
+        return invoice.transType == "credit" && Number(invoice.balance) > 0;
       }
     });
 
@@ -123,7 +144,8 @@ class Invoice {
     }
   }
 
- async  updateInvoice(detail, newBalance, newAmtPaid) {
+  async updateInvoice(detail, newBalance, newAmtPaid) {
+    //console.log(detail._id, detail._rev);
     return invoicesDb.put({
       _id: detail._id,
       _rev: detail._rev,
@@ -147,11 +169,11 @@ class Invoice {
     });
   }
 
- async insertClearanceDetails(amtEntered, invoiceId) {
+  async insertClearanceDetails(amtEntered, invoiceId) {
     let date = new Date();
     let loginDetail = store.getLoginDetail();
     return debt_clearanceDb.put({
-      _id: `${+ new Date()}`,
+      _id: `${+new Date()}`,
       paymentFor: invoiceId,
       currentAmtPaid: amtEntered,
       remote: false,
@@ -164,7 +186,7 @@ class Invoice {
 
   //update current match
   remoteInvoicesUpdateMatch(detail, id) {
-    return invoicesDb.put( {
+    return invoicesDb.put({
       _id: id,
       _rev: detail._rev,
       invoiceId: detail.invoiceId,
@@ -200,7 +222,7 @@ class Invoice {
 
   //update current match
   remoteClearanceUpdateMatch(detail, id) {
-    return debt_clearanceDb.put( {
+    return debt_clearanceDb.put({
       _id: id,
       _rev: detail._rev,
       paymentFor: detail.paymentFor,

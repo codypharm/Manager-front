@@ -329,7 +329,7 @@ const submitExpenses = async e => {
     document.getElementById("expName").value = "";
     setTimeout(() => {
       //hide the pop up
-      if (hideGenStaticModal("expenseContent")) {
+      if (hideExpModal()) {
         //reload table with date
         loadCurrentExpenses();
       }

@@ -85,6 +85,10 @@ const pageLoader = (page, fxn = false) => {
             fxn("debt");
             break;
 
+          case "debts":
+            fxn("debt");
+            break;
+
           case "clearedInvoices":
             fxn("cleared");
             break;
@@ -285,6 +289,17 @@ const loadDebtInvoices = e => {
   addClass(debtInvoices, "selected");
   addClass(subMenu4, "selectedDropper");
   pageLoader("debtInvoices", loadOtherInvoices);
+};
+
+//debt invoices
+const loadAllDebtsList = e => {
+  let subMenu4 = document.getElementsByClassName("subMenu4")[0];
+  let debts = document.getElementsByClassName("debts")[0];
+  //remove previous selections
+  selectionRemover();
+  addClass(debts, "selected");
+  //addClass(subMenu4, "selectedDropper");
+  pageLoader("debts", loadMyDebtsList);
 };
 
 //expenses

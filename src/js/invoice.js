@@ -213,6 +213,48 @@ const getInvoices = (day, month, year) => {
 };
 
 //get other invoices for the mathching date
+const getMyDebtInvoices = invoiceType => {
+  //get sales if sales have been defined
+  let match = invoiceModel.getMyDebtMatchInvoices(
+    invoices,
+
+    invoiceType
+  );
+
+  //show display date
+  //document.getElementById("dispDate").textContent =
+  // day + "-" + month + "-" + year;
+
+  if (match != false) {
+    /*if (invoiceType == "cleared") {
+      //display cleared invoices
+      displayClearedMatchInvoices(match);
+    } else {*/
+    //display debt invoices
+    displayAllDebtList(match);
+    // }
+  } /* else {
+    if (invoiceType == "cleared") {
+      document.getElementById("invoicesList").innerHTML =
+        " <tr>" +
+        ' <td colspan="7" class="text-center">' +
+        "  <span>No invoice found</span>" +
+        " </td>" +
+        " </tr>";
+    } else {
+      document.getElementById("invoicesList").innerHTML =
+        " <tr>" +
+        ' <td colspan="8" class="text-center">' +
+        "  <span>No invoice found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+
+    // allSummaryHandle(saleType);
+  }*/
+};
+
+//get other invoices for the mathching date
 const getOtherInvoices = (day, month, year, invoiceType) => {
   //get sales if sales have been defined
   let match = invoiceModel.getOtherMatchInvoices(
@@ -309,6 +351,28 @@ const loadOtherInvoices = async invoiceType => {
   document.getElementById("otherInvoiceDay").value = day;
   document.getElementById("otherInvoiceMonth").value = month;
   document.getElementById("otherInvoiceYear").value = year;
+};
+//load debts page
+const loadMyDebtsList = async invoiceType => {
+  showLoading();
+  //let date = new Date();
+  //let day = date.getDate();
+  //let month = date.getMonth() + 1;
+  //let year = date.getFullYear();
+
+  //get all invoices
+  invoices = await invoiceModel.getAllInvoices();
+
+  //get other invoices for the mathching date
+  getMyDebtInvoices(invoiceType);
+
+  //enable button
+  //  document.getElementById("processBtn").disabled = false;
+  hideLoading();
+
+  //document.getElementById("otherInvoiceDay").value = day;
+  //document.getElementById("otherInvoiceMonth").value = month;
+  //document.getElementById("otherInvoiceYear").value = year;
 };
 
 //process invoice for date entered
@@ -417,7 +481,7 @@ const viewInvoice = async (e, saleDate, invoiceType) => {
 };
 
 //click clear button
-const clearInvoice = e => {
+const clearInvoice = (e, page = false) => {
   let id = e.target.dataset.id;
   //show modal
   let debtModal = showDebtForm(debtForm, "form");
@@ -429,6 +493,7 @@ const clearInvoice = e => {
     document.getElementById("paid").value = detail.amtPaid;
     document.getElementById("invoiceClearBalance").value = detail.balance;
     document.getElementById("clearProcessBtn").dataset.id = id;
+    if (page) document.getElementById("clearProcessBtn").dataset.page = page;
   }
 };
 
@@ -446,6 +511,9 @@ const invoiceUpdator = (invoices, newBalance, newAmtPaid, detail) => {
 //process debt payment
 const processDebtPayment = async e => {
   e.preventDefault();
+  let page;
+  if (e.target.dataset.page) page = e.target.dataset.page;
+
   //hide alert boxes
   let errorBox = document.getElementById("errorModalBox");
   let successBox = document.getElementById("successModalBox");
@@ -519,28 +587,42 @@ const processDebtPayment = async e => {
       /* successBox.classList.remove("hide");
                 successBox.textContent = "Transaction successfull";*/
 
-      print();
+      if (page == "allDebt") {
+        document.getElementById("debtsList").innerHTML =
+          "<tr>" +
+          '<td colspan="8" class="text-center" >' +
+          '<div class="spinner-grow text-success"></div>' +
+          "</td>" +
+          "</tr>";
+      } else {
+        document.getElementById("invoicesList").innerHTML =
+          "<tr>" +
+          '<td colspan="8" class="text-center" >' +
+          '<div class="spinner-grow text-success"></div>' +
+          "</td>" +
+          "</tr>";
+      }
 
-      document.getElementById("invoicesList").innerHTML =
-        "<tr>" +
-        '<td colspan="8" class="text-center" >' +
-        '<div class="spinner-grow text-success"></div>' +
-        "</td>" +
-        "</tr>";
-
-      let day = document.getElementById("otherInvoiceDay").value;
-      let month = document.getElementById("otherInvoiceMonth").value;
-      let year = document.getElementById("otherInvoiceYear").value;
       //update invoices in array
-      invoices = invoiceUpdator(
+      /*invoices = invoiceUpdator(
         invoices,
         newBalance,
         newAmtPaid,
         myInvoiceDetail
-      );
+      );*/
 
-      //get other invoices for the mathching date
-      getOtherInvoices(day, month, year, "debt");
+      invoices = await invoiceModel.getAllInvoices();
+
+      print();
+      if (page == "allDebt") {
+        getMyDebtInvoices("debt");
+      } else {
+        let day = document.getElementById("otherInvoiceDay").value;
+        let month = document.getElementById("otherInvoiceMonth").value;
+        let year = document.getElementById("otherInvoiceYear").value;
+        //get other invoices for the mathching date
+        getOtherInvoices(day, month, year, "debt");
+      }
     }
   }
 
@@ -595,5 +677,37 @@ const processInvoiceSearch = (e, invoiceType) => {
   } else {
     //click process button
     document.getElementById("processBtn").click();
+  }
+};
+
+//function for handling invoice search
+const processMySearch = (e, invoiceType) => {
+  let searchValue = e.target.value.trim();
+
+  //if no input was provided
+  if (!searchValue.length == 0) {
+    //fetch the invoice
+    let matchingInvoices = invoiceModel.getMatchingInvoice(
+      searchValue,
+      invoices,
+      invoiceType
+    );
+
+    if (matchingInvoices != false) {
+      //show display date
+      // document.getElementById("dispDate").textContent = "all date";
+
+      displayAllDebtList(matchingInvoices);
+    } else {
+      //display no record found
+      document.getElementById("debtsList").innerHTML =
+        " <tr>" +
+        ' <td colspan="8" class="text-center">' +
+        "  <span>No invoice found</span>" +
+        " </td>" +
+        " </tr>";
+    }
+  } else {
+    getMyDebtInvoices("debt");
   }
 };

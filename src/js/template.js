@@ -298,6 +298,30 @@ const displayDebtMatchInvoices = invoices => {
   let container = (document.getElementById("invoicesList").innerHTML = myhtml);
 };
 
+const displayAllDebtList = invoices => {
+  let newObj = {
+    data: invoices
+  };
+
+  Handlebars.registerHelper("netPrice", price => {
+    return formatMoneyTemp(price);
+  });
+
+  Handlebars.registerHelper("invoiceBalance", balance => {
+    return formatMoneyTemp(balance);
+  });
+
+  Handlebars.registerHelper("paid", amt => {
+    return formatMoneyTemp(amt);
+  });
+  let template = document.getElementById("debtListContainer").innerHTML;
+  let compiledData = Handlebars.compile(template);
+
+  let myhtml = compiledData(newObj);
+
+  let container = (document.getElementById("debtsList").innerHTML = myhtml);
+};
+
 //display matching expenses
 const displayExpenses = expenses => {
   //assing array to ab object property

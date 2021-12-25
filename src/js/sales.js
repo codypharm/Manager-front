@@ -261,6 +261,8 @@ const processSale = e => {
   } else {
     //updateCart
     addToCart(cart, prodId.value.trim(), qty, unit);
+    //empty suggestions
+    document.getElementById("suggestionItems").innerHTML = "";
   }
 };
 

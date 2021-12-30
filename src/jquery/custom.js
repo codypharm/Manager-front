@@ -29,11 +29,12 @@ $(document).ready(function() {
     };
 
     reader.readAsDataURL(this.files[0]);
-    hideLoading();
+
     $("#uploadImageModal").modal("show");
   });
 
-  $(".crop_image").click(function() {
+  $(".crop_image").click(function(event) {
+    event.preventDefault();
     $image_crop
       .croppie("result", {
         type: "canvas",
@@ -41,7 +42,7 @@ $(document).ready(function() {
       })
       .then(async function(response) {
         showLoading();
-        console.log(remote.app.getAppPath());
+
         let date = Date.now();
         let rand = Math.floor(Math.random() * 101);
         //image name

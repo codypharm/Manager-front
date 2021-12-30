@@ -6,23 +6,30 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build":"electron-builder"
+    "build": "electron-builder --ia32 --x64 -w"
   },
-  "build":{
+  "build": {
     "appId": "managerfront",
-    "win":{
-      "target":[
-        "nsis"
+    "productName": "Manager front",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
       ],
-      "icon":"icon.ico"
+      "icon": "icon.ico"
     },
-    "nsis":{
-      "oneClick":true,
-      "installerIcon":"icon.ico",
-      "uninstallerIcon":"icon.ico",
-      "uninstallDisplayName":"Managerfront uninstaller",
-      "license":"license.md",
-      "allowToChangeInstallationDirectory":false
+    "nsis": {
+      "oneClick": true,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "uninstallDisplayName": "Managerfront uninstaller",
+      "license": "license.md",
+      "allowToChangeInstallationDirectory": false
     }
   },
   "repository": {

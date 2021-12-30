@@ -834,7 +834,7 @@ const editStaff = e => {
 
 const uploadImage = () => {
   document.getElementById("upload_image").click();
-  showLoading();
+
   store.setEditDetail(editDetail);
 };
 

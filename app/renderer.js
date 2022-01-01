@@ -7,11 +7,12 @@
 //invoicesDb.destroy()
 //setupDb.destroy()
 //usersDb.destroy()
-//attendanceDb.destroy()
+//attendanceDb.destroy();
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 //const staffModules = require('../src/js/staff')
 
+const { ipcRenderer } = require("electron");
 //global variables
 //const api = require("../api");
 var viewEmail;
@@ -1350,6 +1351,35 @@ const socketLogOut = () => {
     }
   });*/
 };
+
+//logout on window close
+const windowLogout = async () => {
+  let attendanceRecord = await attendanceModel.getAttendance();
+  let date = new Date();
+
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+  let id = store.getLoginDetail().staffId;
+  if (id) {
+    let myData = attendanceModel.getThisAttendance(
+      attendanceRecord,
+      day,
+      month,
+      year,
+      id
+    )[0];
+    //update attendance
+    await attendanceModel.updateAttendance(myData);
+
+    //logout
+    store.forceLogout();
+  }
+};
+
+ipcRenderer.on("window-close", function(event, message) {
+  windowLogout();
+});
 
 //logout code
 const logMeOut = e => {

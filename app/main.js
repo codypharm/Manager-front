@@ -2,14 +2,18 @@
 /* eslint-disable no-undef */
 "use strict";
 
-const { app, BrowserWindow, ipcMain, Notification } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Notification,
+  remote,
+  dialog
+} = require("electron");
 //const Database = require("../src/js/db");
 const Store = require("../src/js/store");
 //const { CATCH_ON_MAIN } = require("../utils/constants");
-
-//const path = require("path");
-// eslint-disable-next-line
-//require("electron-reload")(__dirname);
+var force_quit = false;
 
 //enable the use of css grid
 app.commandLine.appendSwitch("enable-experimental-web-platform-features");
@@ -45,40 +49,10 @@ const createWindow = () => {
   //load
   mainWindow.loadURL(`file://${__dirname}/index.html`);
   mainWindow.maximize();
-
-  /*
-  //handle dblist the promise
-  db.listDb().then(
-    () => {
-      displayPage();
-    },
-    err => {
-      console.log(err);
-    }
-  );
-
-  const displayPage = () => {
-    db.getSetup().then(
-      ({ data }) => {
-        let setUp = data.rows;
-
-        if (setUp.length > 0) {
-          // and load the setup.html of the app.
-
-          mainWindow.loadURL(`file://${__dirname}/index.html`);
-          mainWindow.maximize();
-          //get current page
-        } else {
-          // and load the index.html of the app.
-          mainWindow.loadURL(`file://${__dirname}/setup.html`);
-          mainWindow.maximize();
-        }
-      },
-      err => {
-        console.log(err);
-      }
-    );
-  };*/
+  mainWindow.on("close", function() {
+    //   <---- Catch close event
+    mainWindow.webContents.send("window-close", "Mark");
+  });
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools();

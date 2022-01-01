@@ -10,7 +10,7 @@
   },
   "build": {
     "appId": "managerfront",
-    "productName": "Manager front",
+    "productName": "Managerfront",
     "win": {
       "target": [
         {
@@ -29,7 +29,8 @@
       "uninstallerIcon": "icon.ico",
       "uninstallDisplayName": "Managerfront uninstaller",
       "license": "license.md",
-      "allowToChangeInstallationDirectory": false
+      "allowToChangeInstallationDirectory": false,
+      "deleteAppDataOnUninstall": true
     }
   },
   "repository": {

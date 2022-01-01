@@ -290,6 +290,7 @@ class salesModel {
   async getSales() {
     let { rows } = await salesDb.allDocs();
     let sales = await generateWorkingList(salesDb, rows);
+
     return sales;
   }
 

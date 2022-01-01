@@ -221,37 +221,17 @@ const getMyDebtInvoices = invoiceType => {
     invoiceType
   );
 
-  //show display date
-  //document.getElementById("dispDate").textContent =
-  // day + "-" + month + "-" + year;
-
   if (match != false) {
-    /*if (invoiceType == "cleared") {
-      //display cleared invoices
-      displayClearedMatchInvoices(match);
-    } else {*/
-    //display debt invoices
     displayAllDebtList(match);
     // }
-  } /* else {
-    if (invoiceType == "cleared") {
-      document.getElementById("invoicesList").innerHTML =
-        " <tr>" +
-        ' <td colspan="7" class="text-center">' +
-        "  <span>No invoice found</span>" +
-        " </td>" +
-        " </tr>";
-    } else {
-      document.getElementById("invoicesList").innerHTML =
-        " <tr>" +
-        ' <td colspan="8" class="text-center">' +
-        "  <span>No invoice found</span>" +
-        " </td>" +
-        " </tr>";
-    }
-
-    // allSummaryHandle(saleType);
-  }*/
+  } else {
+    document.getElementById("debtsList").innerHTML =
+      " <tr>" +
+      ' <td colspan="8" class="text-center">' +
+      "  <span>No invoice found</span>" +
+      " </td>" +
+      " </tr>";
+  }
 };
 
 //get other invoices for the mathching date
@@ -277,15 +257,6 @@ const getOtherInvoices = (day, month, year, invoiceType) => {
       //display debt invoices
       displayDebtMatchInvoices(match);
     }
-
-    //get total sales on display
-    /* addUpOtherDispSalesMoney(match, saleType);
-
-    //get average disccount
-    getOtherAverageDisccount(match, saleType);
-
-    //get balance
-    getOtherBalance(match, saleType);*/
   } else {
     if (invoiceType == "cleared") {
       document.getElementById("invoicesList").innerHTML =

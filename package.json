@@ -69,6 +69,7 @@
     "electron-updater": "^4.3.9",
     "font-awesome": "^4.7.0",
     "jquery": "^3.6.0",
+    "jsbarcode": "^3.11.5",
     "moment": "^2.25.3",
     "nigerian-phone-number-validator": "^1.0.0",
     "node-couchdb": "^1.3.0",

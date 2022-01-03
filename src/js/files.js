@@ -11,6 +11,7 @@ const stockingDb = new PouchDB("stocking");
 const invoicesDb = new PouchDB("invoices");
 const setupDb = new PouchDB("setup");
 
+const JsBarcode = require("jsbarcode");
 // validate comes from renderer process
 //require files
 const printJs = require("print-js");

@@ -43,6 +43,11 @@ var debtClearanceInvoice =
   '     <td id="clearedBal"></td>' +
   "   </tr>" +
   " </table>" +
+  "<div" +
+  '  class=" text-center pt-3 pb-3"' +
+  ">" +
+  '<canvas id="barcode"></canvas>' +
+  "</div>" +
   ' <div class="border border-right-0 border-left-0 text-center">' +
   "  <h5>Thank You</h5>" +
   " </div>" +
@@ -174,6 +179,11 @@ var invoiceOtherTemplate =
   " </tr>" +
   "</tfoot>" +
   " </table>" +
+  "<div" +
+  '  class=" text-center pt-3 pb-3"' +
+  ">" +
+  '<canvas id="barcode"></canvas>' +
+  "</div>" +
   "<div" +
   '  class="border border-right-0 border-left-0 text-center pt-3 pb-3"' +
   ">" +
@@ -448,6 +458,11 @@ const viewInvoice = async (e, saleDate, invoiceType) => {
     document.getElementById("invoiceBalance").textContent = `₦ ${formatMoney(
       selectedInvoice.balance
     )}`;
+
+    JsBarcode("#barcode", `${invoiceId}`, {
+      width: 2,
+      height: 40
+    });
   }
 };
 
@@ -554,6 +569,10 @@ const processDebtPayment = async e => {
         "₦ " + formatMoney(newBalance);
       document.getElementById("debtClearanceDate").textContent =
         clearanceDay + "-" + clearanceMonth + "-" + clearanceYear;
+      JsBarcode("#barcode", `${invoiceId}`, {
+        width: 2,
+        height: 40
+      });
       //display success
       /* successBox.classList.remove("hide");
                 successBox.textContent = "Transaction successfull";*/

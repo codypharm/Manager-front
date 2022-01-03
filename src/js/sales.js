@@ -82,6 +82,11 @@ var invoiceTemplate =
   "</tfoot>" +
   " </table>" +
   "<div" +
+  '  class=" text-center pt-3 pb-3"' +
+  ">" +
+  '<canvas id="barcode"></canvas>' +
+  "</div>" +
+  "<div" +
   '  class="border border-right-0 border-left-0 text-center pt-3 pb-3"' +
   ">" +
   "  <strong>THANK YOU</strong>" +
@@ -420,6 +425,11 @@ const loadInvoiceStaticSection = (
   document.getElementById("balance").textContent = "₦ " + formatMoney(balance);
   document.getElementById("date").textContent =
     date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
+
+  JsBarcode("#barcode", `${invoiceId}`, {
+    width: 2,
+    height: 40
+  });
 };
 
 //invoice id genration

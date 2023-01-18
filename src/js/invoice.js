@@ -651,7 +651,7 @@ const processInvoiceSearch = (e, invoiceType) => {
       if (invoiceType == "cleared" || invoiceType == "all") {
         document.getElementById("invoicesList").innerHTML =
           " <tr>" +
-          ' <td colspan="7" class="text-center">' +
+          ' <td colspan="9" class="text-center">' +
           "  <span>No invoice found</span>" +
           " </td>" +
           " </tr>";

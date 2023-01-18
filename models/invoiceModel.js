@@ -128,11 +128,9 @@ class Invoice {
       } else {
         //return all credit
         return (
-          (invoice.invoiceId.includes(searchValue) ||
-            invoice.customerName
-              .toUpperCase()
-              .includes(searchValue.toUpperCase())) &&
-          invoice.transType == "credit"
+          invoice.invoiceId.includes(searchValue) ||
+          invoice.customerName.toUpperCase().includes(searchValue.toUpperCase())
+          //&& invoice.transType == "credit"
         );
       }
     });

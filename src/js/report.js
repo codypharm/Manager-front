@@ -352,8 +352,8 @@ const proceedToSortAccountList = (
 
     todayGain = dailyGain.toFixed(2);
     gainDiff = todayGain - yesterdayGain;
-    percDiff = Number((gainDiff * 100) / todayGain).toFixed(1);
-    console.log(gainDiff);
+    percDiff = Number((gainDiff / yesterdayGain) * 100).toFixed(1);
+
     if (isFinite(percDiff)) {
       if (percDiff >= 0) {
         percOutCome = "+" + percDiff;

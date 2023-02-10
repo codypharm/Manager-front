@@ -532,13 +532,7 @@ const insertSale = async (cart, cp, sp) => {
     let product = cart[i];
 
     //insert details
-    await salesModel.insertSales(
-      product,
-
-      invoiceId,
-      transType,
-      disccount
-    );
+    await salesModel.insertSales(product, invoiceId, transType, disccount);
   }
 
   //insert details into invoice db
@@ -564,6 +558,8 @@ const insertSale = async (cart, cp, sp) => {
   emptyTable();
   //empty cart from store
   store.setSaleStore([]);
+  //reload add sales page
+  loadAddSales();
 };
 
 //subtract qty from stock and update stock table
